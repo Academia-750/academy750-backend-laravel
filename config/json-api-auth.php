@@ -2,6 +2,8 @@
 
 return [
 
+    'access_key' => 'access_key', // email, document, uuid
+
     /*
     |--------------------------------------------------------------------------
     | Json Api Authentication Show Token After Registration

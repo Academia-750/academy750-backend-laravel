@@ -16,21 +16,63 @@ class LoginController
     {
         try {
 
-            if(Auth::attempt($request->only(['email', 'password']))) {
-                return $this->showCredentials(Auth::user());
+            /*Auth::attempt($request->only(['access_key', 'password']))*/
+            $attemptAuth = $this->attemptAuthentication(
+                $request->get(config('json-api-auth.access_key', 'access_key')),
+                $request->get('password')
+            );
+            if($attemptAuth['attempt']) {
+
+                $attemptAuth['user']->last_session = now();
+                $attemptAuth['user']->save();
+
+                return $this->showCredentials(
+                    $attemptAuth['user']
+                );
             }
 
         } catch (Exception $exception) {
-
-            return response()->json([
-                'message' => $exception->getMessage()
-            ], 400);
-
+            abort(500, $exception->getMessage());
         }
 
-        return response()->json([
-            'message' => __('json-api-auth.failed'),
-        ], 401);
+        $error = \Illuminate\Validation\ValidationException::withMessages([
+            config('json-api-auth.access_key', 'access_key') => ['Estas credenciales no coinciden con nuestros registros']
+        ]);
 
+        throw $error;
+
+    }
+
+    public function attemptAuthentication ($access_key, $password) {
+        $user = User::query()->where('identification_number', $access_key)
+            /*->orWhere('email', $access_key)*/
+            ->first();
+
+        return [
+            'attempt' => ($user && Hash::check($password, $user->password)),
+            'user' => $user
+        ];
+    }
+
+    public function showCredentials($user, int $code = 200, bool $showToken = true){
+        return response()->json([
+            'user_id' => $user->getRouteKey(),
+            'token' => $this->createToken($user)
+        ]);
+    }
+
+    protected function createToken(User $user)
+    {
+        $token = $user->createToken(
+            config('json-api-auth.token_id') ?? 'App',
+            // Here you can customize the scopes for a new user
+            config('json-api-auth.scopes') ?? []
+        );
+
+        if(AuthKit::isSanctum()) {
+            return $token->plainTextToken;
+        }
+
+        return $token->accessToken;
     }
 }

@@ -24,7 +24,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|string|email',
+            config('json-api-auth.access_key', 'access_key') => 'required|string|min:10|max:80',
             'password' => 'required|string',
         ];
     }

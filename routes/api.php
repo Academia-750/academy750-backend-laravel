@@ -21,6 +21,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 require __DIR__ . '/json-api-auth.php';
 
+Route::get('/check-status-server', function () {
+    return response()->json([
+        'status' => 'OK'
+    ]);
+});
+
 /*
 |--------------------------------------------------------------------------
 | An example of how to use the verified email feature with api endpoints
