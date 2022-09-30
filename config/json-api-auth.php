@@ -31,7 +31,7 @@ return [
 
     'revoke_only_current_token' => false,
 
-    'revoke_all_tokens' => false,
+    'revoke_all_tokens' => true,
 
     'delete_current_token' => false,
 
