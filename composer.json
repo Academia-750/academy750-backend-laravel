@@ -36,7 +36,9 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan bomberos750:migrate --ansi",
+            "@php artisan storage:link --ansi"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -45,7 +47,9 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
+            "@php artisan key:generate --ansi",
+            "@php artisan storage:link --ansi",
+            "@php artisan bomberos750:migrate --ansi"
         ]
     },
     "extra": {
