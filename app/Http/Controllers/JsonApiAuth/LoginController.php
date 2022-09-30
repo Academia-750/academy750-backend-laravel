@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\JsonApiAuth;
 
+use App\Http\Controllers\JsonApiAuth\Actions\AuthKit;
 use App\Http\Controllers\JsonApiAuth\Traits\HasToShowApiTokens;
 use App\Http\Requests\JsonApiAuth\LoginRequest;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class LoginController
 {
