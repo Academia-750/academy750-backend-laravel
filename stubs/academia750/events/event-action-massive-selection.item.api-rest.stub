@@ -1,0 +1,50 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Http\Resources\Api\{{ modelPlural }}\{{ modelPlural }}Collection;
+use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Foundation\Events\Dispatchable;
+use Illuminate\Queue\SerializesModels;
+
+class {{ class }} implements ShouldBroadcast
+{
+    use Dispatchable, InteractsWithSockets, SerializesModels;
+    public $action;
+    public $records;
+
+    public function __construct($action , $records)
+    {
+        $this->action = $action;
+        $this->records = $records;
+    }
+
+    public function broadcastOn(): array
+    {
+        return [
+            new PrivateChannel('resource.{{ resourceName }}'),
+        ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'resource.{{ resourceName }}.action-for-massive-selection.event';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'data' => {{ modelPlural }}Collection::make($this->records),
+            'action' => $this->action
+        ];
+    }
+
+    public function broadcastWhen(): bool
+    {
+        return true;
+    }
+}

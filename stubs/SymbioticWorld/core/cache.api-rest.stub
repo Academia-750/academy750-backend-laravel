@@ -1,0 +1,74 @@
+<?php
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ namespacedInterface }};
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Cache;
+
+class {{ class }} implements {{ interfaceName }}
+{
+    protected ${{ dbNameVariable }};
+
+    public function __construct({{ namespacedDB }} ${{ dbNameVariable }} ){
+        $this->{{ dbNameVariable }} = ${{ dbNameVariable }};
+    }
+
+    public function index(){
+
+        $nameCache = '';
+
+        ( empty(request()->query()) ) ? $nameCache = '{{ modelVariableTagCache }}.get.all' : $nameCache = json_encode( request()->query() );
+
+        return Cache::store('redis')->tags('{{ modelVariableTagCache }}')->rememberForever($nameCache, function () {
+            return $this->{{ dbNameVariable }}->index();
+        });
+
+    }
+
+    public function create( $request ){
+
+        Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
+
+        return $this->{{ dbNameVariable }}->create( $request );
+    }
+
+    public function read( ${{ modelVariable }} ){
+
+        return Cache::store('redis')->tags('{{ modelVariableTagCache }}')->rememberForever("{{ modelVariableTagCache }}.find.".${{ modelVariable }}->getRouteKey(), function () use ( ${{ modelVariable }} ) {
+            return $this->{{ dbNameVariable }}->read( ${{ modelVariable }} );
+        });
+    }
+
+    public function update( $request, ${{ modelVariable }} ){
+
+        Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
+
+        return $this->{{ dbNameVariable }}->update( $request, ${{ modelVariable }} );
+    }
+
+    public function delete( ${{ modelVariable }} ){
+
+        Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
+
+        return $this->{{ dbNameVariable }}->delete( ${{ modelVariable }} );
+    }
+
+    public function mass_selection_for_action( $request ): string{
+
+        Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
+
+        return $this->{{ dbNameVariable }}->mass_selection_for_action( $request );
+    }
+
+    public function export_records( $request ){
+        return $this->{{ dbNameVariable }}->export_records( $request );
+    }
+
+    public function import_records( $request ){
+        Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
+
+        return $this->{{ dbNameVariable }}->import_records( $request );
+    }
+
+}

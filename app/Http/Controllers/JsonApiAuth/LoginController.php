@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\JsonApiAuth;
 
 use App\Http\Controllers\JsonApiAuth\Actions\AuthKit;
+use App\Http\Controllers\JsonApiAuth\Revokers\SanctumRevoker;
 use App\Http\Controllers\JsonApiAuth\Traits\HasToShowApiTokens;
 use App\Http\Requests\JsonApiAuth\LoginRequest;
 use App\Models\User;
@@ -10,11 +11,17 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use JetBrains\PhpStorm\ArrayShape;
 
 class LoginController
 {
     use HasToShowApiTokens;
 
+    /**
+     * @param LoginRequest $request
+     *
+     * @return JsonResponse
+     */
     public function __invoke(LoginRequest $request): JsonResponse
     {
         try {
@@ -25,6 +32,8 @@ class LoginController
                 $request->get('password')
             );
             if($attemptAuth['attempt']) {
+
+                $this->removeAllTokenSanctumOfCurrentUserAuth($attemptAuth['user']);
 
                 $attemptAuth['user']->last_session = now();
                 $attemptAuth['user']->save();
@@ -43,12 +52,19 @@ class LoginController
         ]);
 
         throw $error;
-
     }
 
-    public function attemptAuthentication ($access_key, $password) {
-        $user = User::query()->where('identification_number', $access_key)
-            /*->orWhere('email', $access_key)*/
+    /**
+     * @param $access_key
+     * @param $password
+     *
+     * @return array
+     */
+    public function attemptAuthentication ($access_key, $password): array
+    {
+        $user = User::query()->orWhere('dni','=', $access_key)
+            /*->orWhere('email', '=', $access_key)
+            ->orWhere('username', '=', $access_key)*/
             ->first();
 
         return [
@@ -57,25 +73,24 @@ class LoginController
         ];
     }
 
-    public function showCredentials($user, int $code = 200, bool $showToken = true){
+    /**
+     * @param $user
+     * @param int $code
+     * @param bool $showToken
+     *
+     * @return JsonResponse
+     */
+    public function showCredentials($user, int $code = 200, bool $showToken = true): JsonResponse
+    {
         return response()->json([
             'user_id' => $user->getRouteKey(),
-            'token' => $this->createToken($user)
+            'token' => $this->createToken($user),
+            'type' => 'Bearer'
         ]);
     }
 
-    protected function createToken(User $user)
-    {
-        $token = $user->createToken(
-            config('json-api-auth.token_id') ?? 'App',
-            // Here you can customize the scopes for a new user
-            config('json-api-auth.scopes') ?? []
-        );
-
-        if(AuthKit::isSanctum()) {
-            return $token->plainTextToken;
-        }
-
-        return $token->accessToken;
+    private function removeAllTokenSanctumOfCurrentUserAuth ($authUser): void {
+        $instanceRevokerTokensSanctum = new SanctumRevoker($authUser);
+        $instanceRevokerTokensSanctum->deleteAllTokens();
     }
 }

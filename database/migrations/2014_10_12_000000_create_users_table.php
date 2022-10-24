@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,16 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('identification_number',10)->unique();
-            $table->string('name',25);
-            $table->string('last_name',25);
-            $table->timestamp('last_session')->nullable();
-            $table->string('number_phone',20)->nullable()->unique();
-            $table->string('email')->unique();
+            /*$table->string('url_photo')->nullable()->default(null);*/
+            $table->uuid('id')->primary()->comment('Identificador UUID');
+            $table->string('dni', 20)->unique()->comment('Documento Nacional de Identidad');
+            $table->string('first_name', 70);
+            $table->string('last_name', 70);
+            $table->string('phone', 25)->comment('Numero de telefono');
+            $table->timestamp('last_session')->nullable()->comment('Fecha de ultimo login');
             $table->smallInteger('state')->default(1)->comment('0=disabled, 1=enabled');
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
+            $table->string('email', 120)->unique();
+            $table->timestamp('email_verified_at')->nullable()->comment('Está el correo verificado?');
+            $table->string('password', 80);
             $table->rememberToken();
             $table->timestamps();
         });
@@ -38,4 +39,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('users');
     }
-};
+}

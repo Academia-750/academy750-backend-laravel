@@ -1,0 +1,57 @@
+<?php
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ namespacedInterface }};
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Gate;
+
+class {{ class }} implements {{ interfaceName }}
+{
+    protected ${{ schemaNameVariable }};
+
+    public function __construct({{ namespacedSchema }} ${{ schemaNameVariable }} ){
+        $this->{{ schemaNameVariable }} = ${{ schemaNameVariable }};
+    }
+
+    public function index(){
+        Gate::authorize('index', {{ modelInstanceClass }} );
+        return $this->{{ schemaNameVariable }}->index();
+    }
+
+    public function create( $request ){
+        Gate::authorize('create', {{ modelInstanceClass }} );
+        return $this->{{ schemaNameVariable }}->create($request);
+    }
+
+    public function read( ${{ modelVariable }} ){
+        Gate::authorize('read', ${{ modelVariable }} );
+        return $this->{{ schemaNameVariable }}->read( ${{ modelVariable }} );
+    }
+
+    public function update( $request, ${{ modelVariable }} ){
+        Gate::authorize('update', ${{ modelVariable }} );
+        return $this->{{ schemaNameVariable }}->update( $request, ${{ modelVariable }} );
+    }
+
+    public function delete( ${{ modelVariable }} ){
+        Gate::authorize('delete', ${{ modelVariable }} );
+        return $this->{{ schemaNameVariable }}->delete( ${{ modelVariable }} );
+    }
+
+    public function mass_selection_for_action( $request ): string{
+        Gate::authorize('mass_selection_for_action', {{ modelInstanceClass }} );
+        return $this->{{ schemaNameVariable }}->mass_selection_for_action( $request );
+    }
+
+    public function export_records( $request ){
+        Gate::authorize('export_records', {{ modelInstanceClass }} );
+        return $this->{{ schemaNameVariable }}->export_records( $request );
+    }
+
+    public function import_records( $request ){
+        Gate::authorize('import_records', {{ modelInstanceClass }} );
+        return $this->{{ schemaNameVariable }}->import_records( $request );
+    }
+
+}

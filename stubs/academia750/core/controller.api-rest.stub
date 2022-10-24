@@ -1,0 +1,59 @@
+<?php
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ namespacedInterface }};
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\Api\{{ modelPlural }}\Create{{ model }}Request;
+use App\Http\Requests\Api\{{ modelPlural }}\Update{{ model }}Request;
+use App\Http\Requests\Api\{{ modelPlural }}\ActionForMassiveSelection{{ modelPlural }}Request;
+use App\Http\Requests\Api\{{ modelPlural }}\Export{{ modelPlural }}Request;
+use App\Http\Requests\Api\{{ modelPlural }}\Import{{ modelPlural }}Request;
+
+class {{ class }} extends Controller
+{
+    protected ${{ interfaceNameVariable }};
+
+    public function __construct({{ interfaceName }} ${{ interfaceNameVariable }} ){
+        $this->{{ interfaceNameVariable }} = ${{ interfaceNameVariable }};
+    }
+
+    public function index(){
+        return $this->{{ interfaceNameVariable }}->index();
+    }
+
+    public function create(Create{{ model }}Request $request){
+        return $this->{{ interfaceNameVariable }}->create($request);
+    }
+
+    public function read({{ model }} ${{ modelVariable }}){
+        return $this->{{ interfaceNameVariable }}->read( ${{ modelVariable }} );
+    }
+
+    public function update(Update{{ model }}Request $request, {{ model }} ${{ modelVariable }}){
+        return $this->{{ interfaceNameVariable }}->update( $request, ${{ modelVariable }} );
+    }
+
+    public function delete({{ model }} ${{ modelVariable }}){
+        return $this->{{ interfaceNameVariable }}->delete( ${{ modelVariable }} );
+    }
+
+    public function mass_selection_for_action(ActionForMassiveSelection{{ modelPlural }}Request $request): string{
+        return $this->{{ interfaceNameVariable }}->mass_selection_for_action( $request );
+    }
+
+    public function export_records(Export{{ modelPlural }}Request $request){
+        return $this->{{ interfaceNameVariable }}->export_records( $request );
+    }
+
+    public function import_records(Import{{ modelPlural }}Request $request){
+        return $this->{{ interfaceNameVariable }}->import_records( $request );
+    }
+
+    public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
+        return Storage::disk('public')->download('templates_import/{{ modelVariable }}.csv', 'template_import_{{ modelVariable }}');
+    }
+}

@@ -55,6 +55,7 @@ class JsonApiIncludes
 
                 // Realizamos la carga de la relación. Puedes invocar por ejemplo la relacion con roles
                 // Si quieres acceder a la relacion de permisos a traves de los roles, tu relacion debe ser así: roles.permissions
+
                 $this->with($relationName);
 
             }

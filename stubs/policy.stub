@@ -1,0 +1,64 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Auth\Access\HandlesAuthorization;
+use {{ namespacedModel }};
+use {{ namespacedUserModel }};
+
+class {{ class }}
+{
+    use HandlesAuthorization;
+
+    public function index({{ user }} $user): bool
+    {
+        return true;
+    }
+
+    public function read({{ user }} $user, {{ model }} ${{ modelVariable }}): bool
+    {
+        return true;
+    }
+
+    public function create({{ user }} $user): bool
+    {
+        return true;
+    }
+
+    public function update({{ user }} $user, {{ model }} ${{ modelVariable }}): bool
+    {
+        return true;
+    }
+
+    public function delete({{ user }} $user, {{ model }} ${{ modelVariable }}): bool
+    {
+        return true;
+    }
+
+    public function mass_selection_for_action({{ user }} $user): bool
+    {
+        return true;
+    }
+
+    public function export_records({{ user }} $user): bool
+    {
+        return true;
+    }
+    public function import_records({{ user }} $user): bool
+    {
+        return true;
+    }
+
+    public function get_companies_archived(User $user): bool
+    {
+        return true;
+    }
+    public function restore_archived(User $user, ${{ modelVariable }}): bool
+    {
+        return true;
+    }
+    public function force_delete_archived(User $user, ${{ modelVariable }}): bool
+    {
+        return true;
+    }
+}

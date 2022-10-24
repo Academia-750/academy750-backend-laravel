@@ -1,0 +1,20 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\{{ nameController }}Controller;
+
+// Rutas del recurso {{ nameController }}
+
+Route::get('{{ prefixRoute }}', [{{ nameController }}Controller::class, 'index'])->name('api.v1.{{ nameRoute }}.index');
+Route::get('{{ prefixRoute }}/{{{ argumentRouteSingular }}}', [{{ nameController }}Controller::class, 'read'])->name('api.v1.{{ nameRoute }}.read');
+Route::post('{{ prefixRoute }}/create', [{{ nameController }}Controller::class, 'create'])->name('api.v1.{{ nameRoute }}.create');
+Route::patch('{{ prefixRoute }}/update/{{{ argumentRouteSingular }}}', [{{ nameController }}Controller::class, 'update'])->name('api.v1.{{ nameRoute }}.update');
+Route::delete('{{ prefixRoute }}/delete/{{{ argumentRouteSingular }}}', [{{ nameController }}Controller::class, 'delete'])->name('api.v1.{{ nameRoute }}.soft-delete');
+Route::post('{{ prefixRoute }}/mass-selection-action', [{{ nameController }}Controller::class, 'mass_selection_for_action'])->name('api.v1.{{ nameRoute }}.massSelectionForAction');
+Route::post('{{ prefixRoute }}/export', [{{ nameController }}Controller::class, 'export_records'])->name('api.v1.{{ nameRoute }}.export');
+Route::post('{{ prefixRoute }}/import', [{{ nameController }}Controller::class, 'import_records'])->name('api.v1.{{ nameRoute }}.import');
+Route::get('{{ prefixRoute }}/import/template', [{{ nameController }}Controller::class, 'download_template_import_records'])->name('api.v1.{{ nameRoute }}.import.template');
+
+Route::get('/{{ prefixRoute }}/records/archived', [{{ nameController }}Controller::class, 'get_records_archived'])->name('api.v1.{{ nameRoute }}.archived.get');
+Route::get('/{{ prefixRoute }}/records/archived/restore/{company}', [{{ nameController }}Controller::class, 'restore_archived'])->name('api.v1.{{ nameRoute }}.archived.restore');
+Route::delete('/{{ prefixRoute }}/records/archived/force-delete/{company}', [{{ nameController }}Controller::class, 'force_delete_archived'])->name('api.v1.{{ nameRoute }}.archived.force-delete');

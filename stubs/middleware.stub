@@ -1,0 +1,20 @@
+<?php
+
+namespace {{ namespace }};
+
+use Closure;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+
+class {{ class }}
+{
+    public function handle(Request $request, Closure $next, /*$params*/)
+    {
+
+        /*if($params){
+            return response()->json([], 401);
+        }*/
+
+        return $next($request);
+    }
+}

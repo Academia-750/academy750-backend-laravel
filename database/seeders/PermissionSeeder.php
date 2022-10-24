@@ -2,21 +2,15 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 
 class PermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
-    public function run()
+    public function run(): void
     {
-        // Permisos: Gestion de Alumnos
         Permission::create(['name' => 'list-students-system']);
         Permission::create(['name' => 'create-student']);
         Permission::create(['name' => 'edit-student']);
@@ -66,8 +60,10 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'see-my-information-like-student']);
         Permission::create(['name' => 'see-my-history-results-questions-of-all-tests']);
 
-        $role_admin = Role::query()->where('name', '=', 'admin')->first();
-        $role_student = Role::query()->where('name', '=', 'student')->first();
+        $role_student = Role::query()->where('name', '=', 'student')
+            ->first();
+        $role_admin = Role::query()->where('name', '=', 'admin')
+            ->first();
 
         $role_admin->givePermissionTo([
             'list-students-system',

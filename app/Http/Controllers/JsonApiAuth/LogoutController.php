@@ -14,7 +14,7 @@ class LogoutController
         (new RevokerFactory)->make()->{$this->applyRevokeStrategy()}();
 
         return response([
-            'message' => __('json-api-auth.logout'),
+            'message' => '¡Has cerrado sesión con éxito!',
         ], 200);
     }
 

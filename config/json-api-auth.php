@@ -2,8 +2,7 @@
 
 return [
 
-    'access_key' => 'access_key', // email, document, uuid
-
+    'access_key' => 'access_key', // email, dni
     /*
     |--------------------------------------------------------------------------
     | Json Api Authentication Show Token After Registration
@@ -59,7 +58,7 @@ return [
     |
     */
 
-    'token_id' => 'App',
+    'token_id' => env('APP_NAME', 'Academia Bomberos 750'),
 
     /*
     |--------------------------------------------------------------------------

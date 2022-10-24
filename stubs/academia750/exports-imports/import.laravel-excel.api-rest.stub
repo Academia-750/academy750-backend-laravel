@@ -1,0 +1,86 @@
+<?php
+
+namespace App\Imports\Api\{{ nameImportModel }};
+
+use App\Events\FailedImportEvent;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Collection;
+use App\Models\{{ nameModel }};
+use App\Events\Api\{{ nameImportModel }}\Import{{ nameImportModel }}Event;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Concerns\Importable;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Concerns\SkipsEmptyRows;
+use Maatwebsite\Excel\Concerns\SkipsErrors;
+use Maatwebsite\Excel\Concerns\SkipsFailures;
+use Maatwebsite\Excel\Concerns\SkipsOnError;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
+use Maatwebsite\Excel\Concerns\ToCollection;
+use Maatwebsite\Excel\Concerns\WithChunkReading;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Validators\Failure;
+
+class {{ nameImportModel }}Import implements ToCollection, WithHeadingRow, SkipsEmptyRows, SkipsOnError, SkipsOnFailure, WithValidation, WithChunkReading, ShouldQueue, WithEvents
+{
+    use Importable, SkipsErrors, SkipsFailures, RegistersEventListeners;
+
+    public $failuresArray;
+    private $userAuth;
+    private $failedBoolean;
+    public function __construct($userAuth) {
+        // ESTE PROCESO DE IMPORTACIÓN SOLO FUNCIONARÁ EN CONJUNTO CON WEBSOCKETS, PARA NOTIFICAR EN TIEMPO REAL EL INICIO O FINAL DEL PROCESO, ASI COMO ERRORES QUE SE PUEDAN PRESENTAR
+        $this->failuresArray = collect([]);
+        $this->userAuth = $userAuth;
+        $this->failedBoolean = false;
+    }
+
+    public function collection(Collection $rows): void {
+        try {
+            DB::beginTransaction();
+            if ( $this->failuresArray->isEmpty() ) {
+                foreach ($rows as $row) {
+                    // Hacer la inserción de registros a la base de datos
+                }
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            $this->failedBoolean = true;
+            broadcast(new FailedImportEvent($e->getMessage(), $this->userAuth));
+            //broadcast(new ImportUsersEvent(array('errors' => [$e->getMessage()]), $this->userAuth));
+        }
+    }
+
+    public function prepareForValidation($data, $index)
+    {
+        // Con este tenemos la libertad de modificar cada celda, y convertirla en un tipo de dato que podamos validar
+        return $data;
+    }
+
+    public function rules(): array
+    {
+        return [
+            '*.field-header' => ['required'],
+        ];
+    }
+
+    public function chunkSize(): int
+    {
+        return 10;
+    }
+
+    public static function afterSheet(AfterSheet $event): void
+    {
+        // Aqui se deberá disparar un evento a un canal en tiempo real para notificar al usuario que el proceso ha terminado
+        broadcast(new Import{{ nameImportModel }}Event($event->getConcernable()->failuresArray, $event->getConcernable()->userAuth, $event->getConcernable()->failedBoolean));
+    }
+
+    public function onFailure(Failure ...$failure): void
+    {
+        $this->failuresArray->push($failure);
+    }
+
+}

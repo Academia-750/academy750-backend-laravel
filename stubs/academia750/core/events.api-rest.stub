@@ -1,0 +1,66 @@
+<?php
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ namespacedInterface }};
+use {{ namespacedEventNotifyCreatedItem }};
+use {{ namespacedEventNotifyUpdateItem }};
+use {{ namespacedEventNotifyDeleteOrCancelItem }};
+use {{ namespacedEventNotifyActionForMassiveSelectionItem }};
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
+class {{ class }} implements {{ interfaceName }}
+{
+    protected ${{ cacheNameVariable }};
+
+    public function __construct({{ namespacedCache }} ${{ cacheNameVariable }} ){
+        $this->{{ cacheNameVariable }} = ${{ cacheNameVariable }};
+    }
+
+    public function index(){
+        return $this->{{ cacheNameVariable }}->index();
+    }
+
+    public function create( $request ){
+        $itemCreatedInstance = $this->{{ cacheNameVariable }}->create( $request );
+        broadcast(new Create{{ resourceNameSingular }}Event($itemCreatedInstance));
+        return $itemCreatedInstance;
+    }
+
+    public function read( ${{ modelVariable }} ){
+        return $this->{{ cacheNameVariable }}->read( ${{ modelVariable }} );
+    }
+
+    public function update( $request, ${{ modelVariable }} ){
+        $itemUpdatedInstance = $this->{{ cacheNameVariable }}->update( $request );
+        broadcast(new Update{{ resourceNameSingular }}Event($itemUpdatedInstance));
+        return $this->{{ cacheNameVariable }}->update( $request, ${{ modelVariable }} );
+    }
+
+    public function delete( ${{ modelVariable }} ){
+        broadcast(new Delete{{ resourceNameSingular }}Event(${{ modelVariable }}));
+
+        return $this->{{ cacheNameVariable }}->delete( ${{ modelVariable }} );
+    }
+
+    public function mass_selection_for_action( $request ): string{
+
+        $records = {{ resourceNameSingular }}::whereIn('id', $request->get('{{ resourceNamePluralSnakeCase }}'));
+
+        broadcast(
+            new ActionForMassiveSelection{{ resourceNameSingular }}Event( $request->get('action'), $records )
+        );
+
+        return $this->{{ cacheNameVariable }}->mass_selection_for_action( $request );
+    }
+
+    public function export_records( $request ){
+        return $this->{{ cacheNameVariable }}->export_records( $request );
+    }
+
+    public function import_records( $request ){
+        $this->{{ cacheNameVariable }}->import_records( $request );
+    }
+
+}

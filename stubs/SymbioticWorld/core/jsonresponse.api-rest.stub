@@ -1,0 +1,60 @@
+<?php
+namespace {{ namespace }};
+
+use {{ namespacedModel }};
+use {{ namespacedInterface }};
+use App\Http\Resources\Api\{{ modelVariablePluralForFiles }}\{{ modelVariablePluralForFiles }}Collection;
+use App\Http\Resources\Api\{{ modelVariablePluralForFiles }}\{{ modelVariablePluralForFiles }}Resource;
+use Illuminate\Support\Str;
+
+class {{ class }} implements {{ interfaceName }}
+{
+    protected ${{ eventNameVariable }};
+
+    public function __construct({{ namespacedEvent }} ${{ eventNameVariable }} ){
+        $this->{{ eventNameVariable }} = ${{ eventNameVariable }};
+    }
+
+    public function index(){
+        return {{ modelVariablePluralForFiles }}Collection::make(
+            $this->{{ eventNameVariable }}->index()
+        );
+    }
+
+    public function create( $request ){
+        return {{ modelVariablePluralForFiles }}Resource::make($this->{{ eventNameVariable }}->create($request))
+                    ->response()
+                    ->setStatusCode(201);
+    }
+
+    public function read( ${{ modelVariable }} ){
+        return {{ modelVariablePluralForFiles }}Resource::make(
+            $this->{{ eventNameVariable }}->read( ${{ modelVariable }} )
+        );
+    }
+
+    public function update( $request, ${{ modelVariable }} ){
+        return {{ modelVariablePluralForFiles }}Resource::make(
+            $this->{{ eventNameVariable }}->update( $request, ${{ modelVariable }} )
+        );
+    }
+
+    public function delete( ${{ modelVariable }} ){
+        return response()->json($this->{{ eventNameVariable }}->delete( ${{ modelVariable }} ), 204);
+    }
+
+    public function mass_selection_for_action( $request ): string{
+        return response()->json([
+            'message' => $this->{{ eventNameVariable }}->mass_selection_for_action( $request )
+        ], 200);
+    }
+
+    public function export_records( $request ){
+        return $this->{{ eventNameVariable }}->export_records( $request );
+    }
+
+    public function import_records( $request ){
+        return $this->{{ eventNameVariable }}->import_records( $request );
+    }
+
+}

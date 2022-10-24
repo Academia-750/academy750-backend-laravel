@@ -1,0 +1,79 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Console\Command;
+use App\Console\Traits\helpersJsonApi;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
+
+class {{ class }} extends Command
+{
+    use helpersJsonApi;
+
+    protected $filesystem;
+    protected $signature = '{{ command }}';
+
+    protected $description = 'Command description';
+
+    public function __construct(Filesystem $filesystem)
+    {
+        parent::__construct();
+        $this->filesystem = $filesystem;
+    }
+
+    public function handle():void
+        {
+            $path = $this->getSourceFilePath();
+
+            $this->makeDirectory(dirname($path));
+
+            $contents = $this->getSourceFile();
+
+            if( ! $this->filesystem->exists($path) ){
+                $this->filesystem->put($path, $contents);
+
+                $this->info("File 'Example Item' api Rest: {$path} created successfully!");
+            }else{
+                $this->error("File : {$path} already exits");
+            }
+
+        }
+
+        /**
+         **
+         * Map the stub variables present in stub to its value
+         *
+         * @return array
+         *
+         */
+        public function getStubVariables():array{
+            $pascalCaseNameResourcePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
+
+            return [
+                "namespace" => 'App\\Example\\Api\\'. $pascalCaseNameResourcePlural,
+                "class" => 'Example' . $this->getSingularClassName(Str::camel($this->argument('name'))) .'Class',
+            ];
+        }
+
+        /**
+         * Return the stub file path
+         * @return string
+         *
+         */
+        public function getStubPath():string{
+            return base_path("stubs\\loteria\\");
+        }
+
+
+        /**
+         * Get the full path of generate class
+         *
+         * @return string
+         */
+        public function getSourceFilePath():string{
+            $resourceNameSingular = $this->getSingularClassName(Str::camel($this->argument('name')));
+            $resourceNamePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
+            return base_path("app/Example/Api/" . $resourceNamePlural . '/' . 'Example' . $resourceNameSingular . 'Class.php');
+        }
+}

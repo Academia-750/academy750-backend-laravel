@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Resources\Api\User;
+
+use App\Http\Resources\Api\Permission\PermissionCollection;
+use App\Http\Resources\Api\Role\RoleCollection;
+use App\Models\Permission;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Http\Resources\Json\JsonResource;
+use JetBrains\PhpStorm\ArrayShape;
+
+class UserResource extends JsonResource
+{
+    #[ArrayShape(['type' => "string", 'id' => "mixed", 'attributes' => "array", 'relationships' => "array"])] public function toArray($request): array
+    {
+        return [
+            'type' => 'users',
+            'id' => $this->resource->getRouteKey(),
+            'attributes' => [
+                'id' => $this->resource->id,
+                'dni' => $this->resource->dni,
+                'first_name' => $this->resource->first_name,
+                'last_name' => $this->resource->last_name,
+                'phone' => $this->resource->phone,
+                'state_account' => $this->resource->state === 1 ? 'enable': 'disabled',
+                'email' => $this->resource->email,
+                "email_verified_at" => ($this->resource->email_verified_at !== null) ? $this->resource->email_verified_at->format('Y-m-d h:m:s') : null ,
+                "last_session" => ($this->resource->last_session !== null) ? $this->resource->last_session->format('Y-m-d h:m:s') : null ,
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
+            ],
+            'relationships' => [
+                //'roles' => \App\Http\Resources\Api\Role\RoleCollection::make($this->whenLoaded('roles'))
+                'roles' => $this->when(collect($this->resource)->has('roles'),
+                    function () {
+                    return RoleCollection::make($this->resource->roles);
+                })
+            ]
+        ];
+    }
+}
