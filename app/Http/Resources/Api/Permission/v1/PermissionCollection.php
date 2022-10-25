@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\Permission;
+namespace App\Http\Resources\Api\Permission\v1;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 

@@ -91,6 +91,6 @@ class MakeInterfaceResourceApiRestCommand extends Command
     public function getSourceFilePath():string{
 
         $resourceNameFormatter = $this->getPluralClassName(Str::camel($this->argument('name')));
-        return base_path("app/Core/Resources/". $resourceNameFormatter ."/Interfaces/". $resourceNameFormatter . 'Interface.php');
+        return base_path("app/Core/Resources/". $resourceNameFormatter ."/v1/Interfaces/". $resourceNameFormatter . 'Interface.php');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\JsonApiAuth\Traits;
 
 use App\Http\Controllers\JsonApiAuth\Actions\AuthKit;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
 trait HasToShowApiTokens
@@ -28,7 +29,9 @@ trait HasToShowApiTokens
         $token = $user->createToken(
             config('json-api-auth.token_id') ?? 'App',
             // Here you can customize the scopes for a new user
-            config('json-api-auth.scopes') ?? []
+            config('json-api-auth.scopes') ?? [],
+            Carbon::now()->addMinutes(config('sanctum.expiration'))
+
         );
 
         if(AuthKit::isSanctum()) {

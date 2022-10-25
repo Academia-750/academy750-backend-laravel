@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Resources\Api\Profile;
+namespace App\Http\Resources\Api\Profile\v1;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use JetBrains\PhpStorm\ArrayShape;
 
 class ProfileResource extends JsonResource
 {
-    public function toArray($request): array
+    #[ArrayShape(['type' => "string", 'id' => "mixed", 'attributes' => "array"])] public function toArray($request): array
     {
         return [
             'type' => 'profile',

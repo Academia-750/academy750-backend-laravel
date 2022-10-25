@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Core\Resources\Profile;
+namespace App\Core\Resources\Profile\v1;
 
-use App\Core\Resources\Profile\Interfaces\ProfileInterface;
-use App\Http\Resources\Api\Profile\ProfileResource;
+use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
+use App\Http\Resources\Api\User\v1\UserResource;
 
 class SchemaJson implements ProfileInterface
 {
@@ -17,6 +17,6 @@ class SchemaJson implements ProfileInterface
 
     public function getDataMyProfile()
     {
-        return ProfileResource::make($this->cacheApp->getDataMyProfile());
+        return UserResource::make($this->cacheApp->getDataMyProfile());
     }
 }

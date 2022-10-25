@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Core\Resources\Profile\Authorizer;
-use App\Core\Resources\Profile\Interfaces\ProfileInterface;
+use App\Core\Resources\Profile\v1\Authorizer;
+use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
 use Illuminate\Support\ServiceProvider;
 
 class InstanceInterfaceAppProvider extends ServiceProvider

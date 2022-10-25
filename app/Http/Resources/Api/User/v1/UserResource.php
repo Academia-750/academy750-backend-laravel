@@ -1,12 +1,8 @@
 <?php
 
-namespace App\Http\Resources\Api\User;
+namespace App\Http\Resources\Api\User\v1;
 
-use App\Http\Resources\Api\Permission\PermissionCollection;
-use App\Http\Resources\Api\Role\RoleCollection;
-use App\Models\Permission;
-use App\Models\Role;
-use App\Models\User;
+use App\Http\Resources\Api\Role\v1\RoleCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JetBrains\PhpStorm\ArrayShape;
 
@@ -18,7 +14,6 @@ class UserResource extends JsonResource
             'type' => 'users',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-                'id' => $this->resource->id,
                 'dni' => $this->resource->dni,
                 'first_name' => $this->resource->first_name,
                 'last_name' => $this->resource->last_name,

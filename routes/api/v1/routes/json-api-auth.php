@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\ProfileController;
 use App\Http\Controllers\JsonApiAuth\ConfirmablePasswordController;
 use App\Http\Controllers\JsonApiAuth\EmailVerificationNotificationController;
 use App\Http\Controllers\JsonApiAuth\LoginController;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', RegisterController::class)->name('json-api-auth.register');
 
-Route::post('/login', LoginController::class)->name('json-api-auth.login');
+Route::post('/login', LoginController::class)->middleware(['throttle:10,1'])->name('json-api-auth.login');
 
 Route::get('/logout', LogoutController::class)
     ->middleware('auth:sanctum')
@@ -35,3 +36,5 @@ Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
 Route::post('/confirm-password', ConfirmablePasswordController::class)
     ->middleware('auth:sanctum')
     ->name('json-api-auth.password.confirm');
+
+Route::post('/check-previous-session', [ProfileController::class, 'checkPreviousSessionAccess']);

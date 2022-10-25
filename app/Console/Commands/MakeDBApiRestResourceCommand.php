@@ -91,6 +91,6 @@ class MakeDBApiRestResourceCommand extends Command
     public function getSourceFilePath():string{
 
         $resourceName = $this->getPluralClassName(Str::camel($this->argument('name')));
-        return base_path("app/Core/Resources/".$resourceName. '/DBApp.php');
+        return base_path("app/Core/Resources/".$resourceName. '/v1/DBApp.php');
     }
 }

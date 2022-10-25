@@ -74,12 +74,12 @@ class DeleteResourceApiRestCommand extends Command
             "database/factories/{$resourceNamePascalCasePlural}Factory.php",
             "database/seeders/{$resourceNamePascalCasePlural}Seeder.php",
             // Core Files
-            /*"app/Core/Resources/{$resourceNamePascalCasePlural}/Authorizer.php",
-            "app/Core/Resources/{$resourceNamePascalCasePlural}/CacheApp.php",
-            "app/Core/Resources/{$resourceNamePascalCasePlural}/DBApp.php",
-            "app/Core/Resources/{$resourceNamePascalCasePlural}/EventApp.php",
-            "app/Core/Resources/{$resourceNamePascalCasePlural}/SchemaJson.php",
-            "app/Core/Resources/". $resourceNamePascalCasePlural ."/Interfaces/". $resourceNamePascalCasePlural . 'Interface.php',*/
+            /*"app/Core/Resources/v1{$resourceNamePascalCasePlural}/Authorizer.php",
+            "app/Core/Resources/v1{$resourceNamePascalCasePlural}/CacheApp.php",
+            "app/Core/Resources/v1{$resourceNamePascalCasePlural}/DBApp.php",
+            "app/Core/Resources/v1{$resourceNamePascalCasePlural}/EventApp.php",
+            "app/Core/Resources/v1{$resourceNamePascalCasePlural}/SchemaJson.php",
+            "app/Core/Resources/v1". $resourceNamePascalCasePlural ."/Interfaces/". $resourceNamePascalCasePlural . 'Interface.php',*/
             // Routes
             "routes/api/v1/routes/{$nameFormatterPluralSnakeCaseSlug}.routes.php",
             /*"routes/channels/". $nameFormatterPluralSnakeCaseSlug . '.channels.php',*/
@@ -99,7 +99,7 @@ class DeleteResourceApiRestCommand extends Command
     protected function get_directories (): array {
         $resourceNamePascalCasePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
         return array(
-            "app/Core/Resources/{$resourceNamePascalCasePlural}",
+            "app/Core/Resources/v1{$resourceNamePascalCasePlural}",
             "app/Events/Api/{$resourceNamePascalCasePlural}",
             "app/Http/Requests/Api/{$resourceNamePascalCasePlural}",
             "app/Http/Resources/Api/{$resourceNamePascalCasePlural}",

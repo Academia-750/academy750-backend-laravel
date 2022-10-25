@@ -31,12 +31,12 @@ class MakeResourceJsonApiCoreCommand extends Command
         $argNamePlural = $this->getPluralClassName($argName);
 
         //Create Controller
-        Artisan::call('make:json-api:controller', ['name' => $argNamePlural]);
+        Artisan::call('make:json-api:controller', ['name' => "v1/{$argNamePlural}"]);
         $this->info("Controller created successfully!");
 
         //Create Events Realtime
-        Artisan::call('make:json-api:events-resource', ['name' => $argNamePlural]);
-        $this->info("Controller created successfully!");
+        /*Artisan::call('make:json-api:events-resource', ['name' => $argNamePlural]);
+        $this->info("Controller created successfully!");*/
 
         //Create Interface
         Artisan::call('make:json-api:interface', ['name' => $argName]);
@@ -63,7 +63,7 @@ class MakeResourceJsonApiCoreCommand extends Command
         $this->info("DB App created successfully!");
 
         //Create Policy
-        Artisan::call('make:policy',['name' => 'Api/'.$argNameSingular.'Policy','--model' => $argNameSingular]);
+        Artisan::call('make:policy',['name' => 'Api/v1/'.$argNameSingular.'Policy','--model' => $argNameSingular]);
         $this->info("Policy created successfully!");
 
         //Create Model and Migration
@@ -85,16 +85,16 @@ class MakeResourceJsonApiCoreCommand extends Command
         $this->info("Factory created successfully.");
 
         //Create Resources
-        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/'.$argNameSingular.'Resource']);
-        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/'.$argNameSingular.'Collection']);
+        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/v1'.$argNameSingular.'Resource']);
+        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/v1'.$argNameSingular.'Collection']);
         $this->info("Resource and Collection created successfully.");
 
         //Create Requests
-        Artisan::call('make:request',['name' => 'Api/'.$argNamePlural.'/Create'.$argNameSingular.'Request']);
-        Artisan::call('make:request',['name' => 'Api/'.$argNamePlural.'/Update'.$argNameSingular.'Request']);
-        /*Artisan::call('make:request',['name' => 'Api/'.$argNamePlural.'/Export'.$argNamePlural.'Request']);*/
-        Artisan::call('make:request',['name' => 'Api/'.$argNamePlural.'/ActionForMassiveSelection'.$argNamePlural.'Request']);
-        Artisan::call('make:request',['name' => 'Api/'.$argNamePlural.'/Import'.$argNamePlural.'Request']);
+        Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Create'.$argNameSingular.'Request']);
+        Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Update'.$argNameSingular.'Request']);
+        /*Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Export'.$argNamePlural.'Request']);*/
+        Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/ActionForMassiveSelection'.$argNamePlural.'Request']);
+        Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Import'.$argNamePlural.'Request']);
         $this->info("Requests created successfully.");
 
         //Crear el archivo blade para exportacion PDF

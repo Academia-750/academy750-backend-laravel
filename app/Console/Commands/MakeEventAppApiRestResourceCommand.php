@@ -96,6 +96,6 @@ class MakeEventAppApiRestResourceCommand extends Command
      */
     public function getSourceFilePath():string{
         $resourceName = $this->getPluralClassName(Str::camel($this->argument('name')));
-        return base_path("app/Core/Resources/".$resourceName. '/EventApp.php');
+        return base_path("app/Core/Resources/".$resourceName. '/v1/EventApp.php');
     }
 }

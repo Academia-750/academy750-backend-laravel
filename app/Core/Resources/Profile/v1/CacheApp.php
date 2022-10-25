@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Core\Resources\Profile;
+namespace App\Core\Resources\Profile\v1;
 
-use App\Core\Resources\Profile\Interfaces\ProfileInterface;
+use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
 
 class CacheApp implements ProfileInterface
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core\Resources\Profile\Interfaces;
+namespace App\Core\Resources\Profile\v1\Interfaces;
 
 interface ProfileInterface
 {

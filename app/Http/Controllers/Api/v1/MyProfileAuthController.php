@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Api\User\UserResource;
+use App\Http\Resources\Api\User\v1\UserResource;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class MyProfileAuthController extends Controller
 {

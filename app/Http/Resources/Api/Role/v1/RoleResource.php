@@ -1,10 +1,9 @@
 <?php
 
-namespace App\Http\Resources\Api\Role;
+namespace App\Http\Resources\Api\Role\v1;
 
-
-use App\Http\Resources\Api\Permission\PermissionCollection;
-use App\Http\Resources\Api\User\UserCollection;
+use App\Http\Resources\Api\Permission\v1\PermissionCollection;
+use App\Http\Resources\Api\User\v1\UserCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class RoleResource extends JsonResource
