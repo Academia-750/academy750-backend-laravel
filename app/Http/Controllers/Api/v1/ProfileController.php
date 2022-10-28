@@ -4,13 +4,14 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\Profile\UpdateDataProfileRequest;
 use App\Http\Requests\JsonApiAuth\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class ProfileController extends Controller implements ProfileInterface
+class ProfileController extends Controller
 {
     protected ProfileInterface $profileInterface;
 
@@ -22,6 +23,11 @@ class ProfileController extends Controller implements ProfileInterface
     public function getDataMyProfile()
     {
         return $this->profileInterface->getDataMyProfile();
+    }
+
+    public function updateDataMyProfile(UpdateDataProfileRequest $request)
+    {
+        return $this->profileInterface->updateDataMyProfile($request);
     }
 
     public function checkPreviousSessionAccess (LoginRequest $request): \Illuminate\Http\JsonResponse

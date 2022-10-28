@@ -29,4 +29,19 @@ trait UserServiceTrait
     {
         return Str::orderedUuid();
     }
+
+    public function getNumberPhoneSpain (): string
+    {
+        return $this->generateNumberPhoneSpain();
+    }
+
+    public function generateNumberPhoneSpain (): string
+    {
+        $numberPhone = (string) random_int(6,9);
+        for ($i = 0; $i < 8; $i++) {
+            $numberPhone.= random_int(1,9);
+        }
+
+        return $numberPhone;
+    }
 }

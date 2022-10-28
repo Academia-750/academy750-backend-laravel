@@ -22,41 +22,41 @@ class UserSeeder extends Seeder
         /*Admin*/
         $adminAdolfo = User::query()->create([
             'id' => $this->getUUIDUnique(),
-            'first_name' => 'Adolfo Salamanca - Super Admin',
+            'first_name' => 'Adolfo Feria',
             'email' => 'adolfoferia.admin@academia750.com',
             'last_name' => $factory->lastName(),
             'dni' => "42711006Y",
-            'phone' => $factory->phoneNumber(),
+            'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('admin'),
         ]);
 
         $adminRaul = User::query()->create([
             'id' => $this->getUUIDUnique(),
-            'first_name' => 'Raul Moheno - Super Admin',
+            'first_name' => 'Raul Moheno',
             'email' => 'raulmoheno.admin@academia750.com',
             'last_name' => $factory->lastName(),
             'dni' => "32631674X",
-            'phone' => $factory->phoneNumber(),
+            'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('admin'),
         ]);
 
         /*Editor*/
         $studentAdolfo = User::query()->create([
             'id' => $this->getUUIDUnique(),
-            'first_name' => 'Adolfo Salamanca - Supervisor',
+            'first_name' => 'Adolfo Feria',
             'email' => 'adolfoferia.student@academia750.com',
             'last_name' => $factory->lastName(),
             'dni' => "67239172Y",
-            'phone' => $factory->phoneNumber(),
+            'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('student'),
         ]);
         $studentRaul = User::query()->create([
             'id' => $this->getUUIDUnique(),
-            'first_name' => 'Raul Moheno - Supervisor',
+            'first_name' => 'Raul Moheno',
             'email' => 'raulmoheno.student@academia750.com',
             'last_name' => $factory->lastName(),
             'dni' => "14071663X",
-            'phone' => $factory->phoneNumber(),
+            'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('student'),
         ]);
 

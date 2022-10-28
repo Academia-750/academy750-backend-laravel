@@ -20,6 +20,12 @@ class {{ class }} extends FormRequest
         ];
     }
 
+    public function messages(): array {
+        return [
+            //
+        ];
+    }
+
     public function attributes():array
     {
         // Este metodo remplaza cada índice que es mostrado en el error

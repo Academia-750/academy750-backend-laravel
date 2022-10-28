@@ -93,4 +93,5 @@ class LoginController
         $instanceRevokerTokensSanctum = new SanctumRevoker($authUser);
         $instanceRevokerTokensSanctum->deleteAllTokens();
     }
+
 }

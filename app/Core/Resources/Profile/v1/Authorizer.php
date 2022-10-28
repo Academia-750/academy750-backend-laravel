@@ -17,4 +17,9 @@ class Authorizer implements ProfileInterface
     {
         return $this->schemaJson->getDataMyProfile();
     }
+
+    public function updateDataMyProfile($request)
+    {
+        return $this->schemaJson->updateDataMyProfile($request);
+    }
 }

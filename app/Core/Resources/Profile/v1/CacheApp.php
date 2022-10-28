@@ -17,4 +17,8 @@ class CacheApp implements ProfileInterface
     {
         return $this->DBQuery->getDataMyProfile();
     }
+    public function updateDataMyProfile($request)
+    {
+        return $this->DBQuery->updateDataMyProfile($request);
+    }
 }

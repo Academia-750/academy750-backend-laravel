@@ -19,4 +19,9 @@ class SchemaJson implements ProfileInterface
     {
         return UserResource::make($this->cacheApp->getDataMyProfile());
     }
+
+    public function updateDataMyProfile($request)
+    {
+        return UserResource::make($this->cacheApp->updateDataMyProfile($request));
+    }
 }
