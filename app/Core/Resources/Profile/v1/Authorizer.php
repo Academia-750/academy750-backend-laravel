@@ -22,4 +22,9 @@ class Authorizer implements ProfileInterface
     {
         return $this->schemaJson->updateDataMyProfile($request);
     }
+
+    public function unsubscribeFromSystem()
+    {
+        return $this->schemaJson->unsubscribeFromSystem();
+    }
 }

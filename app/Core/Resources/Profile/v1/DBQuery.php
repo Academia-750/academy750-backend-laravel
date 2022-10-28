@@ -4,6 +4,7 @@ namespace App\Core\Resources\Profile\v1;
 
 use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class DBQuery implements ProfileInterface
@@ -35,6 +36,25 @@ class DBQuery implements ProfileInterface
             DB::commit();
 
             return $this->model->applyIncludes()->find($user->getRouteKey());
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
+
+    public function unsubscribeFromSystem()
+    {
+        try {
+
+            DB::beginTransaction();
+
+                $user = Auth::user();
+
+                $user->delete();
+
+            DB::commit();
+
+            return "Se ha dado de baja del sistema con éxito";
         } catch (\Exception $e) {
             DB::rollback();
             abort(500,$e->getMessage());

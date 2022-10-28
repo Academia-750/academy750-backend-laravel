@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('dni', 20)->unique()->comment('Documento Nacional de Identidad');
             $table->string('first_name', 70);
             $table->string('last_name', 70);
-            $table->string('phone', 25)->comment('Numero de telefono');
+            $table->string('phone', 25)->unique()->comment('Numero de telefono');
             $table->timestamp('last_session')->nullable()->comment('Fecha de ultimo login');
             $table->smallInteger('state')->default(1)->comment('0=disabled, 1=enabled');
             $table->string('email', 120)->unique();

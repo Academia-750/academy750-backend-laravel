@@ -6,4 +6,5 @@ interface ProfileInterface
 {
     public function getDataMyProfile ();
     public function updateDataMyProfile ($request);
+    public function unsubscribeFromSystem ();
 }

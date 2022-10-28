@@ -29,6 +29,10 @@ class ProfileController extends Controller
     {
         return $this->profileInterface->updateDataMyProfile($request);
     }
+    public function unsubscribeFromSystem()
+    {
+        return $this->profileInterface->unsubscribeFromSystem();
+    }
 
     public function checkPreviousSessionAccess (LoginRequest $request): \Illuminate\Http\JsonResponse
     {

@@ -21,4 +21,9 @@ class CacheApp implements ProfileInterface
     {
         return $this->DBQuery->updateDataMyProfile($request);
     }
+
+    public function unsubscribeFromSystem()
+    {
+        return $this->DBQuery->unsubscribeFromSystem();
+    }
 }

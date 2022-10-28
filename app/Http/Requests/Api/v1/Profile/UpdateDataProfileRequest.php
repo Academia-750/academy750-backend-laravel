@@ -19,8 +19,8 @@ class UpdateDataProfileRequest extends FormRequest
     {
         return [
             //'dni' => ['required', 'alpha_num', Rule::unique('users', 'dni')->ignore(auth()->user()->id), new ValidateCorrectDNISpain],
-            'first-name' => ['required', 'min:3', 'max:25', /*'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'*/],
-            'last-name' => ['required', 'min:3', 'max:25', /*'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'*/],
+            'first-name' => ['required', 'min:3', 'max:25', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'],
+            'last-name' => ['required', 'min:3', 'max:25', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'],
             'phone' => ['required', 'numeric', 'regex:/^[6789]\d{8}$/', Rule::unique('users', 'phone')->ignore(auth()->user()->id)],
             'email' => ['required', 'email', Rule::unique('users', 'email')->ignore(auth()->user()->id)],
         ];
@@ -43,7 +43,7 @@ class UpdateDataProfileRequest extends FormRequest
             'last-name.max' => 'Apellido muy largo',
             'phone.required' => 'Ingresa un telefono',
             'phone.numeric' => 'El telefono deben ser números',
-            'phone.unique' => 'Este teléfono ya existe',
+            'phone.unique' => 'Este teléfono ya se encuentra registrado',
             'phone.regex' => 'No es un formato válido para un número de España',
             'email.required' => 'Ingresa un correo eléctronico',
             'email.email' => 'Dirección de correo no valida',

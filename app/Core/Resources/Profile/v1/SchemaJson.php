@@ -24,4 +24,11 @@ class SchemaJson implements ProfileInterface
     {
         return UserResource::make($this->cacheApp->updateDataMyProfile($request));
     }
+
+    public function unsubscribeFromSystem()
+    {
+        return response()->json([
+            'message' => $this->cacheApp->unsubscribeFromSystem()
+        ], 200);
+    }
 }
