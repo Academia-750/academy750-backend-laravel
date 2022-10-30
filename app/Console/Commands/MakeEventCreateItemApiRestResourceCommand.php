@@ -77,7 +77,7 @@ class MakeEventCreateItemApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\events\\event-create.item.api-rest.stub");
+        return base_path("stubs\\academia750\\events\\event-create.item.api-rest.stub");
     }
 
 

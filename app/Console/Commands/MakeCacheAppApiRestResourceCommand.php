@@ -63,16 +63,16 @@ class MakeCacheAppApiRestResourceCommand extends Command
         $pascalCaseNameResourcePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
 
         return [
-            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural,
+            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural. '\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\ProcessTime
-            "namespacedDB" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\DBApp', // App\Core\Resources\ProcessTimes\DBApp
+            "namespacedDB" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\DBApp', // App\Core\Resources\ProcessTimes\DBApp
             "class" => 'CacheApp',
             "interfaceName" => $pascalCaseNameResourcePlural . 'Interface', // ProcessTimesInterface
             "dbName" => 'DBApp',
             "dbNameVariable" => 'dbApp',
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // process_time
             "modelVariableTagCache" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // user
-            "namespacedInterface" => 'App\\Core\\Resources\\'. $pascalCaseNameResourcePlural .'\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
+            "namespacedInterface" => 'App\\Core\\Resources\\'. $pascalCaseNameResourcePlural .'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
         ];
     }
 
@@ -82,7 +82,7 @@ class MakeCacheAppApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\core\\cache.api-rest.stub");
+        return base_path("stubs\\academia750\\core\\cache.api-rest.stub");
     }
 
     /**

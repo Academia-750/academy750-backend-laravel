@@ -71,7 +71,7 @@ class MakeImportApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\exports-imports\\import.laravel-excel.api-rest.stub");
+        return base_path("stubs\\academia750\\exports-imports\\import.laravel-excel.api-rest.stub");
     }
 
     /**

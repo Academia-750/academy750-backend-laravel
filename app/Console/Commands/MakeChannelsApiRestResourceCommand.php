@@ -79,7 +79,7 @@ class MakeChannelsApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\routes\\channels.api-rest.stub");
+        return base_path("stubs\\academia750\\routes\\channels.api-rest.stub");
     }
 
     /**

@@ -63,9 +63,9 @@ class MakeControllerApiRestResourceCommand extends Command
         $pascalCaseNameResourcePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
 
         return [
-            "namespace" => 'App\\Http\\Controllers\\Api',
+            "namespace" => 'App\\Http\\Controllers\\Api\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\User
-            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
+            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
             "class" => $pascalCaseNameResourcePlural . 'Controller', //class UsersController
             "interfaceName" => $pascalCaseNameResourcePlural. 'Interface', // UsersInterface
             "interfaceNameVariable" => Str::camel($this->getPluralClassName(Str::camel($this->argument('name')))) .'Interface', // usersInterface
@@ -81,7 +81,7 @@ class MakeControllerApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\core\\controller.api-rest.stub");
+        return base_path("stubs\\academia750\\core\\controller.api-rest.stub");
     }
 
 

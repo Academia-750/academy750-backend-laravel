@@ -86,7 +86,7 @@ class MakeEventAppApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\core\\events.api-rest.stub");
+        return base_path("stubs\\academia750\\core\\events.api-rest.stub");
     }
 
     /**

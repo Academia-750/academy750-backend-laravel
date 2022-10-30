@@ -68,9 +68,9 @@ class DeleteResourceApiRestCommand extends Command
             '-'
         );
         return array(
-            "app/Http/Controllers/Api/{$resourceNamePascalCasePlural}Controller.php",
+            "app/Http/Controllers/Api/v1/{$resourceNamePascalCasePlural}Controller.php",
             "app/Models/{$resourceNamePascalCaseSingular}.php",
-            "app/Policies/Api/{$resourceNamePascalCasePlural}Policy.php",
+            "app/Policies/Api/v1/{$resourceNamePascalCasePlural}Policy.php",
             "database/factories/{$resourceNamePascalCasePlural}Factory.php",
             "database/seeders/{$resourceNamePascalCasePlural}Seeder.php",
             // Core Files
@@ -99,12 +99,12 @@ class DeleteResourceApiRestCommand extends Command
     protected function get_directories (): array {
         $resourceNamePascalCasePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
         return array(
-            "app/Core/Resources/v1{$resourceNamePascalCasePlural}",
+            "app/Core/Resources/{$resourceNamePascalCasePlural}/v1",
             "app/Events/Api/{$resourceNamePascalCasePlural}",
-            "app/Http/Requests/Api/{$resourceNamePascalCasePlural}",
-            "app/Http/Resources/Api/{$resourceNamePascalCasePlural}",
-            "app/Imports/Api/{$resourceNamePascalCasePlural}",
-            "app/Exports/Api/{$resourceNamePascalCasePlural}",
+            "app/Http/Requests/Api/v1/{$resourceNamePascalCasePlural}",
+            "app/Http/Resources/Api/{$resourceNamePascalCasePlural}/v1",
+            "app/Imports/Api/{$resourceNamePascalCasePlural}/v1",
+            "app/Exports/Api/{$resourceNamePascalCasePlural}/v1",
             "tests/Feature/{$resourceNamePascalCasePlural}",
         );
     }

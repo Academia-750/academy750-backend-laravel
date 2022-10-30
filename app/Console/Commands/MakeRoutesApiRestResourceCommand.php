@@ -89,7 +89,7 @@ class MakeRoutesApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\routes\\routes.api-rest.stub");
+        return base_path("stubs\\academia750\\routes\\routes.api-rest.stub");
     }
 
     /**

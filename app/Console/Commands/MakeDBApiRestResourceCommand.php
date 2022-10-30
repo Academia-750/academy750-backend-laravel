@@ -62,7 +62,7 @@ class MakeDBApiRestResourceCommand extends Command
         $pascalCaseNameResourcePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
 
         return [
-            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural,
+            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\User
             "class" => 'DBApp',
             "interfaceName" => $pascalCaseNameResourcePlural. 'Interface', // UsersInterface
@@ -70,7 +70,7 @@ class MakeDBApiRestResourceCommand extends Command
             "modelNamePlural" => $this->getPluralClassName(Str::camel($this->argument('name'))), // Users
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // process_time
             "modelVariablePlural" => Str::snake($this->getPluralClassName(Str::camel($this->argument('name')))), // process_times
-            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
+            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
         ];
     }
 
@@ -80,7 +80,7 @@ class MakeDBApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\core\\db.api-rest.stub");
+        return base_path("stubs\\academia750\\core\\db.api-rest.stub");
     }
 
     /**

@@ -54,7 +54,7 @@ class AutoRegisterInterfaceControllerExecutableRealtimeApiRestResourceCommand ex
      */
     public function getStubNewLines():string{
         $resource = $this->getPluralClassName(Str::camel($this->argument('name')));
-        return "app()->bind(\App\Core\Resources\\{$resource}\Interfaces\\{$resource}Interface::class, \App\Core\Resources\\{$resource}\Authorizer::class);
+        return "app()->bind(\App\Core\Resources\\{$resource}\\v1\\Interfaces\\{$resource}Interface::class, \App\Core\Resources\\{$resource}\Authorizer::class);
         // [EndOfLineMethodRegister]";
     }
 

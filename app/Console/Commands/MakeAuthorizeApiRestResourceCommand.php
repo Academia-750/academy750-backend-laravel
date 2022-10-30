@@ -62,15 +62,15 @@ class MakeAuthorizeApiRestResourceCommand extends Command
         $pascalCaseNameResourcePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
 
         return [
-            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural,
+            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural. '\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\User
-            "namespacedSchema" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\SchemaJson', // App\Core\Resources\Users\SchemaJson
+            "namespacedSchema" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\SchemaJson', // App\Core\Resources\Users\SchemaJson
             "class" => 'Authorizer', //class Authorizer
             "interfaceName" => $pascalCaseNameResourcePlural. 'Interface', // UsersInterface
             "schemaName" => 'SchemaJson',
             "schemaNameVariable" => 'schemaJson',
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // process_time
-            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
+            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
             "modelInstanceClass" => $this->getSingularClassName(Str::camel($this->argument('name'))) . '::class', // ProcessTime::class
         ];
     }
@@ -81,7 +81,7 @@ class MakeAuthorizeApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\core\\access.authorizer.api-rest.stub");
+        return base_path("stubs\\academia750\\core\\access.authorizer.api-rest.stub");
     }
 
     /**

@@ -66,7 +66,7 @@ class MakeInterfaceResourceApiRestCommand extends Command
      */
     public function getStubVariables():array{
         return [
-            "namespace" => 'App\\Core\\Resources\\'.$this->getPluralClassName(Str::camel($this->argument('name'))).'\\Interfaces',
+            "namespace" => 'App\\Core\\Resources\\'.$this->getPluralClassName(Str::camel($this->argument('name'))).'\\v1\\Interfaces',
             "interface" => $this->getPluralClassName(Str::camel($this->argument('name'))) . 'Interface', // UsersInterface
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // process_time
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\User
@@ -80,7 +80,7 @@ class MakeInterfaceResourceApiRestCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\core\\interface.api-rest.stub");
+        return base_path("stubs\\academia750\\core\\interface.api-rest.stub");
     }
 
     /**

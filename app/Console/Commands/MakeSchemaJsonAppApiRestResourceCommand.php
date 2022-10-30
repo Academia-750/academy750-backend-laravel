@@ -61,16 +61,16 @@ class MakeSchemaJsonAppApiRestResourceCommand extends Command
     public function getStubVariables():array{
         $pascalCaseNameResourcePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
         return [
-            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural,
+            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural. '\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\User
-            "namespacedEvent" => '\\App\\Core\\Resources\\'. $pascalCaseNameResourcePlural . '\\EventApp', // App\Core\Resources\Users\EventApp
+            "namespacedEvent" => '\\App\\Core\\Resources\\'. $pascalCaseNameResourcePlural . '\\v1\\EventApp', // App\Core\Resources\Users\EventApp
             "class" => 'SchemaJson',
             "interfaceName" => $pascalCaseNameResourcePlural. 'Interface', // UsersInterface
             "eventName" => 'EventApp',
             "eventNameVariable" => 'eventApp',
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // user
             "modelVariablePluralForFiles" => $this->getPluralClassName(Str::camel($this->argument('name'))), // Users
-            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
+            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
         ];
     }
 
@@ -80,7 +80,7 @@ class MakeSchemaJsonAppApiRestResourceCommand extends Command
      *
      */
     public function getStubPath():string{
-        return base_path("stubs\\SymbioticWorld\\core\\jsonresponse.api-rest.stub");
+        return base_path("stubs\\academia750\\core\\jsonresponse.api-rest.stub");
     }
 
     /**
