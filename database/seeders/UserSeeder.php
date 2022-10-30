@@ -15,16 +15,21 @@ class UserSeeder extends Seeder
 {
     use UserServiceTrait;
 
+    public $factory;
+
+    public function __construct()
+    {
+        $this->factory = Factory::create();
+    }
+
     public function run(): void
     {
-        $factory = Factory::create();
-
         /*Admin*/
         $adminAdolfo = User::query()->create([
             'id' => $this->getUUIDUnique(),
             'first_name' => 'Adolfo Feria',
             'email' => 'adolfoferia.admin@academia750.com',
-            'last_name' => $factory->lastName(),
+            'last_name' => $this->factory->lastName(),
             'dni' => "42711006Y",
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('admin'),
@@ -34,7 +39,7 @@ class UserSeeder extends Seeder
             'id' => $this->getUUIDUnique(),
             'first_name' => 'Raul Moheno',
             'email' => 'raulmoheno.admin@academia750.com',
-            'last_name' => $factory->lastName(),
+            'last_name' => $this->factory->lastName(),
             'dni' => "32631674X",
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('admin'),
@@ -45,7 +50,7 @@ class UserSeeder extends Seeder
             'id' => $this->getUUIDUnique(),
             'first_name' => 'Adolfo Feria',
             'email' => 'adolfoferia.student@academia750.com',
-            'last_name' => $factory->lastName(),
+            'last_name' => $this->factory->lastName(),
             'dni' => "67239172Y",
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('student'),
@@ -54,7 +59,7 @@ class UserSeeder extends Seeder
             'id' => $this->getUUIDUnique(),
             'first_name' => 'Raul Moheno',
             'email' => 'raulmoheno.student@academia750.com',
-            'last_name' => $factory->lastName(),
+            'last_name' => $this->factory->lastName(),
             'dni' => "14071663X",
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('student'),

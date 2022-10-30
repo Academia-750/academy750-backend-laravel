@@ -31,14 +31,20 @@ class AuthenticationTest extends TestCase
         $user = User::factory()->create();
 
         $response = $this->post(route('json-api-auth.login'), [
-            'email' => $user->email,
-            'password' => 'password',
+            'access_key' => $user->dni,
+            'password' => 'academia750',
         ]);
 
-        $this->assertAuthenticated();
+        $response->assertOk();
+
+        $response->assertJsonStructure([
+            "user_id",
+            "token",
+            "type"
+        ]);
 
         $response->assertSee([
-            'message' => 'success',
+            'user_id' => $user->getRouteKey(),
         ]);
 
         $user->refresh();

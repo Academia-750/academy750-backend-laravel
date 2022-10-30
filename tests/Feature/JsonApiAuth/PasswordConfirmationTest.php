@@ -40,7 +40,7 @@ class PasswordConfirmationTest extends TestCase
     public function test_password_can_be_confirmed()
     {
         $response = $this->postJson(route('json-api-auth.password.confirm'), [
-            'password' => 'password',
+            'password' => 'academia750',
         ]);
 
         $response->assertSessionHasNoErrors();

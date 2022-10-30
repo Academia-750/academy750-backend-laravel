@@ -3,6 +3,7 @@
 namespace App\Core\Services;
 
 use App\Models\User;
+use Faker\Provider\es_ES\Person;
 use Illuminate\Support\Str;
 
 trait UserServiceTrait
@@ -43,5 +44,26 @@ trait UserServiceTrait
         }
 
         return $numberPhone;
+    }
+
+    public function existsDNIInTableUser ($dni): bool {
+        $existsDNI = User::query()->where("dni","=", $dni)
+            ->first();
+
+        return $existsDNI !== null;
+    }
+
+    public function generateNewDNI () {
+        return Person::dni();
+    }
+
+    public function generateDNIUnique () {
+        $DNIGenerated = $this->generateNewDNI();
+
+        while ($this->existsDNIInTableUser($DNIGenerated)) {
+            $DNIGenerated = $this->generateNewDNI();
+        }
+
+        return $DNIGenerated;
     }
 }
