@@ -6,6 +6,7 @@ use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DBQuery implements ProfileInterface
 {
@@ -55,6 +56,25 @@ class DBQuery implements ProfileInterface
             DB::commit();
 
             return "Se ha dado de baja del sistema con éxito";
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
+
+    public function changePasswordAuth($request)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            $user = Auth::user();
+            $user->password = Hash::make($request->get('password'));
+            $user->save();
+
+            DB::commit();
+
+            return "La contraseña ha sido actualizada con éxito";
         } catch (\Exception $e) {
             DB::rollback();
             abort(500,$e->getMessage());

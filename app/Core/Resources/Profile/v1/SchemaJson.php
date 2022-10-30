@@ -31,4 +31,11 @@ class SchemaJson implements ProfileInterface
             'message' => $this->cacheApp->unsubscribeFromSystem()
         ], 200);
     }
+
+    public function changePasswordAuth($request)
+    {
+        return response()->json([
+            'message' => $this->cacheApp->changePasswordAuth($request)
+        ], 200);
+    }
 }

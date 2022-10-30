@@ -26,4 +26,9 @@ class CacheApp implements ProfileInterface
     {
         return $this->DBQuery->unsubscribeFromSystem();
     }
+
+    public function changePasswordAuth($request)
+    {
+        return $this->DBQuery->changePasswordAuth($request);
+    }
 }

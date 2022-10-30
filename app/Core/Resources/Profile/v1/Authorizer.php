@@ -27,4 +27,9 @@ class Authorizer implements ProfileInterface
     {
         return $this->schemaJson->unsubscribeFromSystem();
     }
+
+    public function changePasswordAuth($request)
+    {
+        return $this->schemaJson->changePasswordAuth($request);
+    }
 }

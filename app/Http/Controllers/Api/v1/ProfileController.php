@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\Profile\ChangeMyPasswordRequest;
 use App\Http\Requests\Api\v1\Profile\UpdateDataProfileRequest;
 use App\Http\Requests\JsonApiAuth\LoginRequest;
 use App\Models\User;
@@ -29,9 +30,15 @@ class ProfileController extends Controller
     {
         return $this->profileInterface->updateDataMyProfile($request);
     }
+
     public function unsubscribeFromSystem()
     {
         return $this->profileInterface->unsubscribeFromSystem();
+    }
+
+    public function changePasswordAuth(ChangeMyPasswordRequest $request)
+    {
+        return $this->profileInterface->changePasswordAuth($request);
     }
 
     public function checkPreviousSessionAccess (LoginRequest $request): \Illuminate\Http\JsonResponse
