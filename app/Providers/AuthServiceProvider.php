@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 // use Illuminate\Support\Facades\Gate;
+use App\Core\Services\AuthService;
 use Carbon\Carbon;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\DB;
@@ -30,16 +31,9 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::guessPolicyNamesUsing(function ($model) {
-            return 'App\\Policies\\Api\\'. Pluralizer::plural(class_basename($model)).'Policy';
+            return 'App\\Policies\\Api\\v1\\'. Pluralizer::plural(class_basename($model)).'Policy';
         });
 
-        /* Por cada petición, antes de procesar la operación, eliminaremos los tokens que ya están expirados */
-        $recordsTokenExpired = DB::table('personal_access_tokens')->where('expires_at', '<', Carbon::now())->pluck('id');
-
-        if ($recordsTokenExpired->count() > 0 ) {
-            foreach ($recordsTokenExpired as $token_id) {
-                DB::table('personal_access_tokens')->where('id', '=', $token_id)->delete();
-            }
-        }
+        AuthService::RemoveExpiredTokensAction();
     }
 }
