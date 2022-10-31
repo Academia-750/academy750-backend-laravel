@@ -83,6 +83,6 @@ class MakeExportApiRestResourceCommand extends Command
      */
     public function getSourceFilePath():string{
         $resourceName = $this->getPluralClassName(Str::camel($this->argument('name')));
-        return base_path("app/Exports/Api/". $resourceName . "/" .$resourceName . "Export.php");
+        return base_path("app/Exports/Api/". $resourceName . "/v1/" .$resourceName . "Export.php");
     }
 }

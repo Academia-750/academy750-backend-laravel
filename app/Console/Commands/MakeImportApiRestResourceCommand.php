@@ -81,6 +81,6 @@ class MakeImportApiRestResourceCommand extends Command
      */
     public function getSourceFilePath():string{
         $resourceName = $this->getPluralClassName(Str::camel($this->argument('name')));
-        return base_path("app/Imports/Api/" . $resourceName . '/' .$resourceName. 'Import.php');
+        return base_path("app/Imports/Api/" . $resourceName . '/v1/' .$resourceName. 'Import.php');
     }
 }

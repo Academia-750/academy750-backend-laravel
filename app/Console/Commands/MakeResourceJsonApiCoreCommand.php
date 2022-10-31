@@ -97,9 +97,7 @@ class MakeResourceJsonApiCoreCommand extends Command
         Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Import'.$argNamePlural.'Request']);
         $this->info("Requests created successfully.");
 
-        //Crear el archivo blade para exportacion PDF
-        /*Artisan::call('make:json-api:export-pdf-view', ['name' => $argName]);
-        $this->info("File Export View Blade created successfully!");*/
+
 
         //Crear el archivo de rutas
         Artisan::call('make:json-api:routes', ['name' => $argName]);
@@ -109,10 +107,13 @@ class MakeResourceJsonApiCoreCommand extends Command
         /*Artisan::call('make:json-api:channels', ['name' => $argName]);
         $this->info("File Channels Realtime created successfully!");*/
 
+        //Crear el archivo blade para exportacion PDF
+        Artisan::call('make:json-api:export-pdf-view', ['name' => $argName]);
+        $this->info("File Export View Blade created successfully!");
         //Create Export and Import files Laravel Excel
-        /*Artisan::call('make:json-api:import', ['name' => $argName]);
-        Artisan::call('make:json-api:export', ['name' => $argName]);
-        $this->info("Export and Import files - Laravel Excel");*/
+        Artisan::call('make:json-api:import', ['name' => "v1\\" . $argName]);
+        Artisan::call('make:json-api:export', ['name' => "v1\\" . $argName]);
+        $this->info("Export and Import files - Laravel Excel");
 
         //Create Test
         Artisan::call('make:test', ['name' => $argNamePlural.'/v1/create'.$argNamePlural.'/'.$argNamePlural.'CreateTest']);

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\Api\{{ modelNamePlural }}\{{ modelNamePlural }}Import;
-use App\Exports\Api\{{ modelNamePlural }}\{{ modelNamePlural }}Export;
+use App\Imports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Import;
+use App\Exports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Export;
 
 
 class {{ class }} implements {{ interfaceName }}

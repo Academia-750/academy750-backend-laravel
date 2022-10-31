@@ -196,7 +196,8 @@ return [
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         \App\Providers\InstanceInterfaceAppProvider::class,
-        \App\Providers\JsonApiProvider::class
+        \App\Providers\JsonApiProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
     ],
 
     /*
@@ -211,6 +212,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 
