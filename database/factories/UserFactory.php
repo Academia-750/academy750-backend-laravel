@@ -16,7 +16,7 @@ class UserFactory extends Factory
      *
      * @return array
      */
-    #[ArrayShape(['id' => "\Ramsey\Uuid\UuidInterface", 'first_name' => "string", 'last_name' => "string", 'email' => "string", 'dni' => "mixed", 'phone' => "string", 'password' => "mixed", 'email_verified_at' => "\Illuminate\Support\Carbon", 'remember_token' => "string"])] public function definition(): array
+    public function definition(): array
     {
         return [
             'id' => $this->getUUIDUnique(),
@@ -25,6 +25,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'dni' => $this->generateDNIUnique(),
             'phone' => $this->getNumberPhoneSpain(),
+            'state' => 1,
             'password' => Hash::make('academia750'),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),

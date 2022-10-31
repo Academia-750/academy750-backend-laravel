@@ -76,6 +76,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'id' => 'string',
+        'state' => 'integer',
         'last_session' => 'datetime',
         'created_at' => 'datetime',
         'email_verified_at' => 'datetime',

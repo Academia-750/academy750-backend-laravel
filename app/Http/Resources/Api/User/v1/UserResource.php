@@ -12,7 +12,7 @@ class UserResource extends JsonResource
     {
         return [
             'type' => 'users',
-            'id' => $this->resource->getRouteKey(),
+            'id' => (string) $this->resource->getRouteKey(),
             'attributes' => [
                 'dni' => $this->resource->dni,
                 'first_name' => $this->resource->first_name,
