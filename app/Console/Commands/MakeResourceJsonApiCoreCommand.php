@@ -72,16 +72,16 @@ class MakeResourceJsonApiCoreCommand extends Command
         $this->info("Migration created successfully.");
 
         //Crear el Seeder
-        Artisan::call('make:seeder', ['name' => "{$argNamePlural}Seeder"]);
+        Artisan::call('make:seeder', ['name' => "{$argNameSingular}Seeder"]);
         $this->info("Seeder created successfully!");
 
         //Hace el registro automatico del Seeder en el DatatableSeeder.php
-        Artisan::call('register:json-api:seeder', ['name' => $argNamePlural]);
+        Artisan::call('register:json-api:seeder', ['name' => $argNameSingular]);
         $this->info("Seeder register successfully!");
 
         //Create Factory
         //make:factory ZoneFactory --model Zone
-        Artisan::call('make:factory',['name' => $argNamePlural.'Factory','--model'=> $argNameSingular]);
+        Artisan::call('make:factory',['name' => $argNameSingular.'Factory','--model'=> $argNameSingular]);
         $this->info("Factory created successfully.");
 
         //Create Resources
@@ -111,8 +111,8 @@ class MakeResourceJsonApiCoreCommand extends Command
         Artisan::call('make:json-api:export-pdf-view', ['name' => $argName]);
         $this->info("File Export View Blade created successfully!");
         //Create Export and Import files Laravel Excel
-        Artisan::call('make:json-api:import', ['name' => "v1\\" . $argName]);
-        Artisan::call('make:json-api:export', ['name' => "v1\\" . $argName]);
+        Artisan::call('make:json-api:import', ['name' => $argName]);
+        Artisan::call('make:json-api:export', ['name' => $argName]);
         $this->info("Export and Import files - Laravel Excel");
 
         //Create Test
