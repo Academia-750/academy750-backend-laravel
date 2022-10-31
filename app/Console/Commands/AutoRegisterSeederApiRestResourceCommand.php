@@ -53,7 +53,7 @@ class AutoRegisterSeederApiRestResourceCommand extends Command
      *
      */
     public function getStubNewLines():string{
-        $nameResource = $this->getPluralClassName(Str::camel($this->argument('name')));
+        $nameResource = $this->getSingularClassName(Str::camel($this->argument('name')));
         return "\$this->call({$nameResource}Seeder::class);
         // [EndOfLineMethodRegister]";
     }

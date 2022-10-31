@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Import;
+//use App\Imports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Import;
 use App\Exports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Export;
 
 
@@ -109,7 +109,7 @@ class {{ class }} implements {{ interfaceName }}
         if ($request->get('type') === 'pdf') {
             $domPDF = App::make('dompdf.wrapper');
             ${{ modelVariablePlural }} = $this->model->query()->whereIn('id', $request->get('{{ modelVariablePlural }}'))->get();
-            $domPDF->loadView('resources.pdf.datatables-info.{{ modelVariablePlural }}', compact('{{ modelVariablePlural }}'))->setPaper('a4', 'landscape')->setWarnings(false);
+            $domPDF->loadView('resources.export.templates.pdf.{{ modelVariablePlural }}', compact('{{ modelVariablePlural }}'))->setPaper('a4', 'landscape')->setWarnings(false);
             return $domPDF->download('report-{{ modelVariablePlural }}.pdf');
         }
         return Excel::download(new {{ modelNamePlural }}Export($request->get('{{ modelVariablePlural }}')), '{{ modelVariablePlural }}.'. $request->get('type'));
@@ -117,7 +117,7 @@ class {{ class }} implements {{ interfaceName }}
 
     public function import_records( $request ): string{
         //Proceso de importacion con Queues - El archivo debe tener
-        (new {{ modelNamePlural }}Import(Auth::user()))->import($request->file('{{ modelVariablePlural }}'));
+        //(new {{ modelNamePlural }}Import(Auth::user()))->import($request->file('{{ modelVariablePlural }}'));
 
          /*
          // Lanzamiento de errores en caso de validacion sin uso de Queues

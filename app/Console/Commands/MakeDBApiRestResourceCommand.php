@@ -69,7 +69,9 @@ class MakeDBApiRestResourceCommand extends Command
             "modelName" => $this->getSingularClassName(Str::camel($this->argument('name'))), // User
             "modelNamePlural" => $this->getPluralClassName(Str::camel($this->argument('name'))), // Users
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // process_time
-            "modelVariablePlural" => Str::snake($this->getPluralClassName(Str::camel($this->argument('name')))), // process_times
+            "modelVariablePlural" => Str::snake(
+                $this->getPluralClassName(Str::camel($this->argument('name'))), '-'
+            ), // process_times
             "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
         ];
     }

@@ -91,7 +91,7 @@ class MakeControllerApiRestResourceCommand extends Command
      * @return string
      */
     public function getSourceFilePath():string{
-        return base_path("app/Http/Controllers/Api/v1"). $this->getPluralClassName(Str::camel($this->argument('name'))) . 'Controller.php'; //
+        return base_path("app/Http/Controllers/Api/v1/" . $this->getPluralClassName(Str::camel($this->argument('name'))) . 'Controller.php'); //
     }
 
 }

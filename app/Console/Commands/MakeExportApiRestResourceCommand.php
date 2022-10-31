@@ -60,6 +60,7 @@ class MakeExportApiRestResourceCommand extends Command
      */
     public function getStubVariables():array{
         return [
+            "namespaceFileExport" => $this->getPluralClassName(Str::camel($this->argument('name'))) . '\\v1',
             "nameExportModel" => $this->getPluralClassName(Str::camel($this->argument('name'))),
             "nameModel" => $this->getSingularClassName(Str::camel($this->argument('name'))),
             "nameExportModelPlural" => Str::snake($this->getPluralClassName(Str::camel($this->argument('name')))),

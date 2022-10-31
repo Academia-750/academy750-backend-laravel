@@ -83,6 +83,6 @@ class MakeViewPDFExportApiRestResourceCommand extends Command
     public function getSourceFilePath():string{
         $resourceName = Str::snake($this->getPluralClassName(Str::camel($this->argument('name'))), '-');
 
-        return base_path("resources/views/resources/pdf/datatables-info/".$resourceName. '.blade.php');
+        return base_path("resources/views/resources/export/templates/pdf/".$resourceName. '.blade.php');
     }
 }

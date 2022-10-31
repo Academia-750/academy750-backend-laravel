@@ -76,7 +76,7 @@ class MakeRoutesApiRestResourceCommand extends Command
         );
 
         return [
-            "nameController" => $this->getPluralClassName(Str::camel($this->argument('name'))),
+            "nameController" => 'v1\\' . $this->getPluralClassName(Str::camel($this->argument('name'))),
             "prefixRoute" => $nameRouteResource,
             "nameRoute" => $nameRouteResource,
             "argumentRouteSingular" => $argumentRoute

@@ -67,7 +67,7 @@ class MakeResourceJsonApiCoreCommand extends Command
         $this->info("Policy created successfully!");
 
         //Create Model and Migration
-        Artisan::call('make:model',['name' => $argNameSingular,'-m'=> true]);
+        Artisan::call('make:model',['name' => $argNameSingular, '-m'=> true]);
         $this->info("Model created successfully.");
         $this->info("Migration created successfully.");
 
@@ -85,16 +85,16 @@ class MakeResourceJsonApiCoreCommand extends Command
         $this->info("Factory created successfully.");
 
         //Create Resources
-        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/v1'.$argNameSingular.'Resource']);
-        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/v1'.$argNameSingular.'Collection']);
+        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/v1/'.$argNameSingular.'Resource']);
+        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/v1/'.$argNameSingular.'Collection']);
         $this->info("Resource and Collection created successfully.");
 
         //Create Requests
-        Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Create'.$argNameSingular.'Request']);
-        Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Update'.$argNameSingular.'Request']);
+        Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/Create'.$argNameSingular.'Request']);
+        Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/Update'.$argNameSingular.'Request']);
         /*Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Export'.$argNamePlural.'Request']);*/
-        Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/ActionForMassiveSelection'.$argNamePlural.'Request']);
-        Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Import'.$argNamePlural.'Request']);
+        Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/ActionForMassiveSelection'.$argNamePlural.'Request']);
+        Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/Import'.$argNamePlural.'Request']);
         $this->info("Requests created successfully.");
 
 
@@ -111,7 +111,7 @@ class MakeResourceJsonApiCoreCommand extends Command
         Artisan::call('make:json-api:export-pdf-view', ['name' => $argName]);
         $this->info("File Export View Blade created successfully!");
         //Create Export and Import files Laravel Excel
-        Artisan::call('make:json-api:import', ['name' => $argName]);
+        //Artisan::call('make:json-api:import', ['name' => $argName]);
         Artisan::call('make:json-api:export', ['name' => $argName]);
         $this->info("Export and Import files - Laravel Excel");
 

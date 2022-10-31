@@ -62,13 +62,13 @@ class MakeEventAppApiRestResourceCommand extends Command
         $pascalCaseNameResourcePlural = $this->getPluralClassName(Str::camel($this->argument('name')));
         $prefixNamespacedEvents = "App\\Events\\Api\\";
         return [
-            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural,
+            "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\User
-            "namespacedEventNotifyCreatedItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\' . 'Create' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
-            "namespacedEventNotifyUpdateItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\' . 'Update' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
-            "namespacedEventNotifyDeleteOrCancelItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\' . 'Delete' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
-            "namespacedEventNotifyActionForMassiveSelectionItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\' . 'ActionForMassiveSelection' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
-            "namespacedCache" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\CacheApp', // App\Core\Resources\Users\EventApp
+            "namespacedEventNotifyCreatedItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\v1\\' . 'Create' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
+            "namespacedEventNotifyUpdateItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\v1\\' . 'Update' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
+            "namespacedEventNotifyDeleteOrCancelItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\v1\\' . 'Delete' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
+            "namespacedEventNotifyActionForMassiveSelectionItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\v1\\' . 'ActionForMassiveSelection' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
+            "namespacedCache" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\CacheApp', // App\Core\Resources\Users\EventApp
             'resourceNameSingular' => $this->getSingularClassName(Str::camel($this->argument('name'))),
             'resourceNamePluralSnakeCase' => Str::snake($this->getPluralClassName(Str::camel($this->argument('name')))),
             "class" => 'EventApp',
@@ -76,7 +76,7 @@ class MakeEventAppApiRestResourceCommand extends Command
             "cacheName" => 'CacheApp',
             "cacheNameVariable" => 'cacheApp',
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // user
-            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
+            "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
         ];
     }
 
