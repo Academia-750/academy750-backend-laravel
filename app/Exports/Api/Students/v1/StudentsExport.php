@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Exports\Api\{{ namespaceFileExport }};
+namespace App\Exports\Api\Students\v1;
 
 
-use App\Models\{{ nameModel }};
+use App\Models\Student;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Maatwebsite\Excel\Concerns\WithHeadings;
@@ -12,16 +12,16 @@ use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class {{ nameExportModel }}Export implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
+class StudentsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
-    private ${{ nameExportModelPlural }};
-    public function __construct(${{ nameExportModelPlural }}) {
-        $this->{{ nameExportModelPlural }} = ${{ nameExportModelPlural }};
+    private $student_ids;
+    public function __construct($student_idsID) {
+        $this->student_idsID = $student_idsID;
     }
 
     public function query()
     {
-        return {{ nameModel }}::query()->whereIn('id', $this->{{ nameExportModelPlural }});
+        return Student::query()->whereIn('id', $this->student_idsID);
     }
 
     public function headings(): array
