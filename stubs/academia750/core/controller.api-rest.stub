@@ -7,11 +7,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\Api\{{ modelPlural }}\Create{{ model }}Request;
-use App\Http\Requests\Api\{{ modelPlural }}\Update{{ model }}Request;
-use App\Http\Requests\Api\{{ modelPlural }}\ActionForMassiveSelection{{ modelPlural }}Request;
-use App\Http\Requests\Api\{{ modelPlural }}\Export{{ modelPlural }}Request;
-use App\Http\Requests\Api\{{ modelPlural }}\Import{{ modelPlural }}Request;
+use App\Http\Requests\Api\v1\{{ modelPlural }}\Create{{ model }}Request;
+use App\Http\Requests\Api\v1\{{ modelPlural }}\Update{{ model }}Request;
+use App\Http\Requests\Api\v1\{{ modelPlural }}\ActionForMassiveSelection{{ modelPlural }}Request;
+use App\Http\Requests\Api\v1\{{ modelPlural }}\Export{{ modelPlural }}Request;
+use App\Http\Requests\Api\v1\{{ modelPlural }}\Import{{ modelPlural }}Request;
 
 class {{ class }} extends Controller
 {

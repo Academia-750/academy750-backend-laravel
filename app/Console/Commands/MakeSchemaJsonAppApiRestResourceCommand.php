@@ -69,7 +69,7 @@ class MakeSchemaJsonAppApiRestResourceCommand extends Command
             "eventName" => 'EventApp',
             "eventNameVariable" => 'eventApp',
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // user
-            "modelVariablePluralForFiles" => $this->getPluralClassName(Str::camel($this->argument('name'))), // Users
+            "modelVariableSingularForFiles" => $this->getSingularClassName(Str::camel($this->argument('name'))), // Users
             "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
         ];
     }

@@ -3,8 +3,8 @@ namespace {{ namespace }};
 
 use {{ namespacedModel }};
 use {{ namespacedInterface }};
-use App\Http\Resources\Api\{{ modelVariablePluralForFiles }}\{{ modelVariablePluralForFiles }}Collection;
-use App\Http\Resources\Api\{{ modelVariablePluralForFiles }}\{{ modelVariablePluralForFiles }}Resource;
+use App\Http\Resources\Api\{{ modelVariableSingularForFiles }}\v1\{{ modelVariableSingularForFiles }}Collection;
+use App\Http\Resources\Api\{{ modelVariableSingularForFiles }}\v1\{{ modelVariableSingularForFiles }}Resource;
 use Illuminate\Support\Str;
 
 class {{ class }} implements {{ interfaceName }}
@@ -16,25 +16,25 @@ class {{ class }} implements {{ interfaceName }}
     }
 
     public function index(){
-        return {{ modelVariablePluralForFiles }}Collection::make(
+        return {{ modelVariableSingularForFiles }}Collection::make(
             $this->{{ eventNameVariable }}->index()
         );
     }
 
     public function create( $request ){
-        return {{ modelVariablePluralForFiles }}Resource::make($this->{{ eventNameVariable }}->create($request))
+        return {{ modelVariableSingularForFiles }}Resource::make($this->{{ eventNameVariable }}->create($request))
                     ->response()
                     ->setStatusCode(201);
     }
 
     public function read( ${{ modelVariable }} ){
-        return {{ modelVariablePluralForFiles }}Resource::make(
+        return {{ modelVariableSingularForFiles }}Resource::make(
             $this->{{ eventNameVariable }}->read( ${{ modelVariable }} )
         );
     }
 
     public function update( $request, ${{ modelVariable }} ){
-        return {{ modelVariablePluralForFiles }}Resource::make(
+        return {{ modelVariableSingularForFiles }}Resource::make(
             $this->{{ eventNameVariable }}->update( $request, ${{ modelVariable }} )
         );
     }
