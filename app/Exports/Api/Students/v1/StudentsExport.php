@@ -14,14 +14,14 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class StudentsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
-    private $student_ids;
-    public function __construct($student_idsID) {
-        $this->student_idsID = $student_idsID;
+    private array $students_id;
+    public function __construct($students_id) {
+        $this->students_id = $students_id;
     }
 
     public function query()
     {
-        return Student::query()->whereIn('id', $this->student_idsID);
+        return Student::query()->whereIn('id', $this->students_id);
     }
 
     public function headings(): array

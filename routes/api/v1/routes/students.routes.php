@@ -15,6 +15,6 @@ Route::post('students/export', [StudentsController::class, 'export_records'])->n
 Route::post('students/import', [StudentsController::class, 'import_records'])->name('api.v1.students.import');
 Route::get('students/import/template', [StudentsController::class, 'download_template_import_records'])->name('api.v1.students.import.template');
 
-Route::get('/students/records/archived', [StudentsController::class, 'get_records_archived'])->name('api.v1.students.archived.get');
+/*Route::get('/students/records/archived', [StudentsController::class, 'get_records_archived'])->name('api.v1.students.archived.get');
 Route::get('/students/records/archived/restore/{company}', [StudentsController::class, 'restore_archived'])->name('api.v1.students.archived.restore');
-Route::delete('/students/records/archived/force-delete/{company}', [StudentsController::class, 'force_delete_archived'])->name('api.v1.students.archived.force-delete');
+Route::delete('/students/records/archived/force-delete/{company}', [StudentsController::class, 'force_delete_archived'])->name('api.v1.students.archived.force-delete');*/
