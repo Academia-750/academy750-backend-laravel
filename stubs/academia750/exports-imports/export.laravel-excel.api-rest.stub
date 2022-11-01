@@ -14,7 +14,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class {{ nameExportModel }}Export implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize, WithStyles
 {
-    private ${{ nameExportModelPlural }}ID;
+    private ${{ nameExportModelPlural }};
     public function __construct(${{ nameExportModelPlural }}ID) {
         $this->{{ nameExportModelPlural }}ID = ${{ nameExportModelPlural }}ID;
     }

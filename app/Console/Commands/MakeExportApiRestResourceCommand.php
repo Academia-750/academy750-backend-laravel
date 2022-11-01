@@ -63,7 +63,11 @@ class MakeExportApiRestResourceCommand extends Command
             "namespaceFileExport" => $this->getPluralClassName(Str::camel($this->argument('name'))) . '\\v1',
             "nameExportModel" => $this->getPluralClassName(Str::camel($this->argument('name'))),
             "nameModel" => $this->getSingularClassName(Str::camel($this->argument('name'))),
-            "nameExportModelPlural" => Str::snake($this->getPluralClassName(Str::camel($this->argument('name')))),
+            "nameExportModelPlural" => Str::snake(
+                $this->getPluralClassName(
+                    $this->argument('name').'Id'
+                )
+            ),
             "nameExportModelSingular" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))),
         ];
     }

@@ -85,8 +85,8 @@ class MakeResourceJsonApiCoreCommand extends Command
         $this->info("Factory created successfully.");
 
         //Create Resources
-        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/v1/'.$argNameSingular.'Resource']);
-        Artisan::call('make:resource',['name' => 'Api/'.$argNamePlural.'/v1/'.$argNameSingular.'Collection']);
+        Artisan::call('make:resource',['name' => 'Api/'.$argNameSingular.'/v1/'.$argNameSingular.'Resource']);
+        Artisan::call('make:resource',['name' => 'Api/'.$argNameSingular.'/v1/'.$argNameSingular.'Collection']);
         $this->info("Resource and Collection created successfully.");
 
         //Create Requests
