@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\{{ nameController }}Controller;
+use App\Http\Controllers\Api\v1\{{ nameController }}Controller;
 
 // Rutas del recurso {{ nameController }}
 

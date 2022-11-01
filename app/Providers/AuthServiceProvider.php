@@ -31,7 +31,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::guessPolicyNamesUsing(function ($model) {
-            return 'App\\Policies\\Api\\v1\\'. Pluralizer::plural(class_basename($model)).'Policy';
+            return 'App\\Policies\\Api\\v1\\'. Pluralizer::singular(class_basename($model)).'Policy';
         });
 
         AuthService::RemoveExpiredTokensAction();

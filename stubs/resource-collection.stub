@@ -6,7 +6,7 @@ use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class {{ class }} extends ResourceCollection
 {
-    public $collects = ExampleResource::class;
+    //public $collects = ExampleResource::class;
 
     public function toArray($request): array
     {

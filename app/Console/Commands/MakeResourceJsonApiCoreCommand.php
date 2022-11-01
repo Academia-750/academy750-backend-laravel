@@ -31,7 +31,7 @@ class MakeResourceJsonApiCoreCommand extends Command
         $argNamePlural = $this->getPluralClassName($argName);
 
         //Create Controller
-        Artisan::call('make:json-api:controller', ['name' => "v1/{$argNamePlural}"]);
+        Artisan::call('make:json-api:controller', ['name' => $argNamePlural]);
         $this->info("Controller created successfully!");
 
         //Create Events Realtime
