@@ -92,7 +92,7 @@ class MakeResourceJsonApiCoreCommand extends Command
         //Create Requests
         Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/Create'.$argNameSingular.'Request']);
         Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/Update'.$argNameSingular.'Request']);
-        /*Artisan::call('make:request',['name' => 'Api/v1'.$argNamePlural.'/Export'.$argNamePlural.'Request']);*/
+        Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/Export'.$argNamePlural.'Request']);
         Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/ActionForMassiveSelection'.$argNamePlural.'Request']);
         Artisan::call('make:request',['name' => 'Api/v1/'.$argNamePlural.'/Import'.$argNamePlural.'Request']);
         $this->info("Requests created successfully.");
