@@ -9,13 +9,14 @@ use Illuminate\Support\Str;
 
 class SchemaJson implements StudentsInterface
 {
-    protected $eventApp;
+    protected EventApp $eventApp;
 
     public function __construct(\App\Core\Resources\Students\v1\EventApp $eventApp ){
         $this->eventApp = $eventApp;
     }
 
-    public function index(){
+    public function index(): StudentCollection
+    {
         return StudentCollection::make(
             $this->eventApp->index()
         );

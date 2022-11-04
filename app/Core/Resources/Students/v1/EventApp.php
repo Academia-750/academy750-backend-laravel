@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 class EventApp implements StudentsInterface
 {
-    protected $cacheApp;
+    protected CacheApp $cacheApp;
 
     public function __construct(\App\Core\Resources\Students\v1\CacheApp $cacheApp ){
         $this->cacheApp = $cacheApp;

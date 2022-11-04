@@ -21,10 +21,11 @@ class CreateUsersTable extends Migration
             $table->string('last_name', 70);
             $table->string('phone', 25)->unique()->comment('Numero de telefono');
             $table->timestamp('last_session')->nullable()->comment('Fecha de ultimo login');
-            $table->smallInteger('state')->default(1)->comment('0=disabled, 1=enabled');
+            $table->enum('state', ['enable', 'disable'])->default('enable')->comment('Cuenta -> enable=Habilitada, disabled=Deshabilitada');
             $table->string('email', 120)->unique();
             $table->timestamp('email_verified_at')->nullable()->comment('Está el correo verificado?');
             $table->string('password', 80);
+            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });

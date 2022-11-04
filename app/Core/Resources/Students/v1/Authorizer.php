@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Gate;
 
 class Authorizer implements StudentsInterface
 {
-    protected $schemaJson;
+    protected SchemaJson $schemaJson;
 
     public function __construct(\App\Core\Resources\Students\v1\SchemaJson $schemaJson ){
         $this->schemaJson = $schemaJson;

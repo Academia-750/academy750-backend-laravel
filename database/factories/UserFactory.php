@@ -25,7 +25,7 @@ class UserFactory extends Factory
             'email' => $this->faker->unique()->safeEmail(),
             'dni' => $this->generateDNIUnique(),
             'phone' => $this->getNumberPhoneSpain(),
-            'state' => 1,
+            'state' => 'enable',
             'password' => Hash::make('academia750'),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),

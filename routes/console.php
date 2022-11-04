@@ -20,6 +20,7 @@ Artisan::command('inspire', function () {
 
 Artisan::command('bomberos750:clear', function () {
     $this->call('cache:clear');
+    $this->call('cache:clear', ['store' => 'redis']);
     $this->call('config:clear');
     $this->call('event:clear');
     /*$this->call('queue:clear');*/

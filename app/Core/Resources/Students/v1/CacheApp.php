@@ -8,17 +8,20 @@ use Illuminate\Support\Facades\Cache;
 
 class CacheApp implements StudentsInterface
 {
-    protected $dbApp;
+    protected DBApp $dbApp;
 
     public function __construct(\App\Core\Resources\Students\v1\DBApp $dbApp ){
         $this->dbApp = $dbApp;
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function index(){
 
         $nameCache = '';
 
-        ( empty(request()->query()) ) ? $nameCache = 'student.get.all' : $nameCache = json_encode( request()->query() );
+        ( empty(request()->query()) ) ? $nameCache = 'student.get.all' : $nameCache = json_encode(request()->query(), JSON_THROW_ON_ERROR);
 
         return Cache::store('redis')->tags('student')->rememberForever($nameCache, function () {
             return $this->dbApp->index();

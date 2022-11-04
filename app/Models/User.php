@@ -7,6 +7,7 @@ use App\Core\Services\UUIDTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -37,6 +38,7 @@ class User extends Authenticatable
     use Notifiable;
     use HasFactory;
     use HasRoles;
+    use SoftDeletes;
 
     public $keyType = "string";
     public $incrementing = false;
@@ -76,7 +78,6 @@ class User extends Authenticatable
      */
     protected $casts = [
         'id' => 'string',
-        'state' => 'integer',
         'last_session' => 'datetime',
         'created_at' => 'datetime',
         'email_verified_at' => 'datetime',
@@ -119,6 +120,7 @@ class User extends Authenticatable
         'email',
         'email_verified_at',
         "search",
+        "role",
         "day",
         "month",
         "year",
@@ -136,6 +138,7 @@ class User extends Authenticatable
         'email' => 'Email',
         'email_verified_at' => 'EmailVerifiedAt',
         "search" => "Search",
+        "role" => "Role",
         "day" => "Day",
         "month" => "Month",
         "year" => "Year",
@@ -208,7 +211,7 @@ class User extends Authenticatable
         $query->whereDate('last_session',$value);
     }
     public function filterState (Builder $query, $value): void {
-        $query->where('state', 'LIKE', $value);
+        $query->where('state', $value);
     }
     public function filterEmail (Builder $query, $value): void {
         $query->where('email', 'LIKE', "%{$value}%");
@@ -234,6 +237,12 @@ class User extends Authenticatable
         $query->orWhere(function($query) use ($value) {
             $query->where('field', 'LIKE' , "%{$value}%")
                 ->orWhere('other_field', 'LIKE' , "%{$value}%");
+        });
+    }
+
+    public function filterRole(Builder $query, $value): void{
+        $query->with("roles")->whereHas("roles", function($q) use ($value) {
+            $q->whereIn("name", explode(',', $value));
         });
     }
 

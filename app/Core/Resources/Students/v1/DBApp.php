@@ -1,7 +1,7 @@
 <?php
 namespace App\Core\Resources\Students\v1;
 
-use App\Models\Student;
+use App\Models\User;
 use App\Core\Resources\Students\v1\Interfaces\StudentsInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -14,13 +14,13 @@ use App\Exports\Api\Students\v1\StudentsExport;
 
 class DBApp implements StudentsInterface
 {
-    protected $model;
+    protected User $model;
 
-    public function __construct(Student $student ){
+    public function __construct(User $student ){
         $this->model = $student;
     }
 
-    public function index(): \Illuminate\Pagination\LengthAwarePaginator{
+    public function index(){
         return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 

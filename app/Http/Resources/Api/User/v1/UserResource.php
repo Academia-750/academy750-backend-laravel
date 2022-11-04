@@ -18,7 +18,7 @@ class UserResource extends JsonResource
                 'first_name' => $this->resource->first_name,
                 'last_name' => $this->resource->last_name,
                 'phone' => $this->resource->phone,
-                'state_account' => $this->resource->state === 1 ? 'enable': 'disabled',
+                'state_account' => $this->resource->state,
                 'email' => $this->resource->email,
                 "email_verified_at" => ($this->resource->email_verified_at !== null) ? $this->resource->email_verified_at->format('Y-m-d h:m:s') : null ,
                 "last_session" => ($this->resource->last_session !== null) ? $this->resource->last_session->format('Y-m-d h:m:s') : null ,

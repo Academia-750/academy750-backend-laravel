@@ -11,12 +11,15 @@ class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        Permission::create(['name' => 'list-students-system']);
+        Permission::create(['name' => 'list-students']);
+        Permission::create(['name' => 'see-a-student']);
         Permission::create(['name' => 'create-student']);
         Permission::create(['name' => 'edit-student']);
         Permission::create(['name' => 'delete-student']);
-        Permission::create(['name' => 'ban-student']); // Dar de baja
-        Permission::create(['name' => 'unban-student']); // reactivar alumno al sistema
+        Permission::create(['name' => 'export-students']);
+        Permission::create(['name' => 'import-students']);
+        Permission::create(['name' => 'enable-account-student']); // Dar de baja
+        Permission::create(['name' => 'disable-account-student']); // reactivar alumno al sistema
 
         // Permisos: Gestion de Oposiciones
         Permission::create(['name' => 'list-oppositions']);
@@ -66,12 +69,14 @@ class PermissionSeeder extends Seeder
             ->first();
 
         $role_admin->givePermissionTo([
-            'list-students-system',
+            'list-students',
             'create-student',
             'edit-student',
             'delete-student',
-            'ban-student',
-            'unban-student',
+            'export-students',
+            'import-students',
+            'enable-account-student',
+            'disable-account-student',
             'list-oppositions',
             'create-opposition',
             'edit-opposition',

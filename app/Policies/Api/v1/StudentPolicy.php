@@ -12,53 +12,40 @@ class StudentPolicy
 
     public function index(User $user): bool
     {
-        return true;
+        return $user->can('list-students');
     }
 
     public function read(User $user, Student $student): bool
     {
-        return true;
+        return $user->can('see-a-student');
     }
 
     public function create(User $user): bool
     {
-        return true;
+        return $user->can('create-student');
     }
 
     public function update(User $user, Student $student): bool
     {
-        return true;
+        return $user->can('edit-student');
     }
 
     public function delete(User $user, Student $student): bool
     {
-        return true;
+        return $user->can('delete-student');
     }
 
     public function mass_selection_for_action(User $user): bool
     {
-        return true;
+        return $user->can('ban-student');
     }
 
     public function export_records(User $user): bool
     {
-        return true;
+        return $user->can('export-students');
     }
     public function import_records(User $user): bool
     {
-        return true;
-    }
-
-    public function get_companies_archived(User $user): bool
-    {
-        return true;
-    }
-    public function restore_archived(User $user, $student): bool
-    {
-        return true;
-    }
-    public function force_delete_archived(User $user, $student): bool
-    {
-        return true;
+        return $user->can('import-students');
     }
 }
