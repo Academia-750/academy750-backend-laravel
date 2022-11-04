@@ -24,6 +24,8 @@ class UserSeeder extends Seeder
 
     public function run(): void
     {
+        app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
         /*Admin*/
         $adminAdolfo = User::query()->create([
             'id' => $this->getUUIDUnique(),
@@ -65,11 +67,14 @@ class UserSeeder extends Seeder
             'password' => bcrypt('student'),
         ]);
 
-        /*Assign Role*/
-        $adminAdolfo->assignRole('admin');
-        $adminRaul->assignRole('admin');
+        $roleAdmin = Role::query()->where('name', '=', 'admin')->first();
+        $roleStudent = Role::query()->where('name', '=', 'student')->first();
 
-        $studentAdolfo->assignRole('student');
-        $studentRaul->assignRole('student');
+        /*Assign Role*/
+        $adminAdolfo->assignRole($roleAdmin);
+        $adminRaul->assignRole($roleAdmin);
+
+        $studentAdolfo->assignRole($roleStudent);
+        $studentRaul->assignRole($roleStudent);
     }
 }
