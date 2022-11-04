@@ -17,8 +17,8 @@ class DBApp implements UsersInterface
 {
     protected User $model;
 
-    public function __construct(User $student ){
-        $this->model = $student;
+    public function __construct(User $user ){
+        $this->model = $user;
     }
 
     public function index(){
@@ -29,12 +29,12 @@ class DBApp implements UsersInterface
         try {
 
             DB::beginTransaction();
-                $studentCreated = $this->model->query()->create([
+                $userCreated = $this->model->query()->create([
                     '' => '',
                 ]);
             DB::commit();
 
-            return $this->model->applyIncludes()->find($studentCreated->id);
+            return $this->model->applyIncludes()->find($userCreated->id);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -43,19 +43,20 @@ class DBApp implements UsersInterface
 
     }
 
-    public function read( $student ): \App\Models\Student{
-        return $this->model->applyIncludes()->find($student->getRouteKey());
+    public function read( $user ){
+        //dump($user->id);
+        return $this->model->applyIncludes()->find($user->getRouteKey());
     }
 
-    public function update( $request, $student ): \App\Models\Student{
+    public function update( $request, $user ): \App\Models\Student{
         try {
 
             DB::beginTransaction();
-                $student->name = $request->get('name');
-                $student->save();
+                $user->name = $request->get('name');
+                $user->save();
             DB::commit();
 
-            return $this->model->applyIncludes()->find($student->getRouteKey());
+            return $this->model->applyIncludes()->find($user->getRouteKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -64,11 +65,11 @@ class DBApp implements UsersInterface
 
     }
 
-    public function delete( $student ): void{
+    public function delete( $user ): void{
         try {
 
             DB::beginTransaction();
-                $student->delete();
+                $user->delete();
             DB::commit();
 
         } catch (\Exception $e) {
@@ -84,9 +85,9 @@ class DBApp implements UsersInterface
             DB::beginTransaction();
                 $message = null;
                 if( $request->get('action') === 'delete' ){
-                    foreach ($request->get('students') as $student){
-                        $studentDelete = $this->model->firstWhere('id',$student);
-                        $studentDelete->delete();
+                    foreach ($request->get('students') as $user){
+                        $userDelete = $this->model->firstWhere('id',$user);
+                        $userDelete->delete();
                     }
                     $process = true;
                     $message = "Los registros seleccionados han sido eliminados.";
@@ -109,7 +110,7 @@ class DBApp implements UsersInterface
     public function export_records( $request ): \Symfony\Component\HttpFoundation\BinaryFileResponse{
         if ($request->get('type') === 'pdf') {
             $domPDF = App::make('dompdf.wrapper');
-            $students = $this->model->query()->whereIn('id', $request->get('students'))->get();
+            $users = $this->model->query()->whereIn('id', $request->get('students'))->get();
             $domPDF->loadView('resources.export.templates.pdf.students', compact('students'))->setPaper('a4', 'landscape')->setWarnings(false);
             return $domPDF->download('report-students.pdf');
         }

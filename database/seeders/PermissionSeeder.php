@@ -305,6 +305,7 @@ class PermissionSeeder extends Seeder
 
         $role_admin->givePermissionTo([
             'list-students',
+            'see-a-student',
             'create-student',
             'edit-student',
             'delete-student',

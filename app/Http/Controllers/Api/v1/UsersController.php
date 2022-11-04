@@ -15,42 +15,42 @@ use App\Http\Requests\Api\v1\Users\ImportUsersRequest;
 
 class UsersController extends Controller
 {
-    protected UsersInterface $UsersInterface;
+    protected UsersInterface $usersInterface;
 
-    public function __construct(UsersInterface $UsersInterface ){
-        $this->UsersInterface = $UsersInterface;
+    public function __construct(UsersInterface $usersInterface ){
+        $this->usersInterface = $usersInterface;
     }
 
     public function index(){
-        return $this->UsersInterface->index();
+        return $this->usersInterface->index();
     }
 
     public function create(CreateUserRequest $request){
-        return $this->UsersInterface->create($request);
+        return $this->usersInterface->create($request);
     }
 
-    public function read(User $User){
-        return $this->UsersInterface->read( $User );
+    public function read(User $user){
+        return $this->usersInterface->read( $user );
     }
 
-    public function update(UpdateUserRequest $request, User $User){
-        return $this->UsersInterface->update( $request, $User );
+    public function update(UpdateUserRequest $request, User $user){
+        return $this->usersInterface->update( $request, $user );
     }
 
-    public function delete(User $User){
-        return $this->UsersInterface->delete( $User );
+    public function delete(User $user){
+        return $this->usersInterface->delete( $user );
     }
 
     public function mass_selection_for_action(ActionForMassiveSelectionUsersRequest $request): string{
-        return $this->UsersInterface->mass_selection_for_action( $request );
+        return $this->usersInterface->mass_selection_for_action( $request );
     }
 
     public function export_records(ExportUsersRequest $request){
-        return $this->UsersInterface->export_records( $request );
+        return $this->usersInterface->export_records( $request );
     }
 
     public function import_records(ImportUsersRequest $request){
-        return $this->UsersInterface->import_records( $request );
+        return $this->usersInterface->import_records( $request );
     }
 
     public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {

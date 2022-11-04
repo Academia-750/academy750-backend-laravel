@@ -297,4 +297,44 @@ class ListStudentsTest extends TestCase
             ]
         ]);
     }
+
+    /** @test */
+    public function can_fetch_a_student(): void
+    {
+        $user = User::factory()->create([
+            'first_name' => 'Adolfo'
+        ]);
+        $user->assignRole($this->roleStudent);
+
+        $url = route('api.v1.users.read', ['user' => $user->getRouteKey()]);
+
+        $response = $this->getJson($url);
+
+        //dump($response);
+
+        // asserts...
+
+        $response->assertOk();
+
+        //$response->assertJsonCount(1, 'data');
+
+        $response->assertExactJson([
+            'data' => [
+                'type' => 'users',
+                'id' => (string) $user->getRouteKey(),
+                'attributes' => [
+                    'dni' => $user->dni,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'phone' => $user->phone,
+                    'state_account' => $user->state,
+                    'email' => $user->email,
+                    "email_verified_at" => ($user->email_verified_at !== null) ? $user->email_verified_at->format('Y-m-d h:m:s') : null ,
+                    "last_session" => ($user->last_session !== null) ? $user->last_session->format('Y-m-d h:m:s') : null ,
+                    "created_at" => $user->created_at->format('Y-m-d h:m:s')
+                ],
+                'relationships' => []
+            ]
+        ]);
+    }
 }
