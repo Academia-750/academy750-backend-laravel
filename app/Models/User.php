@@ -78,47 +78,47 @@ class User extends Authenticatable
      */
     protected $casts = [
         'id' => 'string',
-        'last_session' => 'datetime',
-        'created_at' => 'datetime',
-        'email_verified_at' => 'datetime',
+        'last_session' => 'date',
+        'created_at' => 'date',
+        'email_verified_at' => 'date',
     ];
 
     public array $allowedSorts = [
         'id',
         'dni',
-        'first_name',
-        'last_name',
+        'first-name',
+        'last-name',
         'phone',
-        'last_session',
-        'state',
+        'last-session',
+        'state-account',
         'email',
-        'email_verified_at',
+        'email-verified-at',
         "created-at"
     ];
 
     public array $adapterSorts = [
         'id' => 'ID',
         'dni' => 'DNI',
-        'first_name' => 'FirstName',
-        'last_name' => 'LastName',
+        'first-name' => 'FirstName',
+        'last-name' => 'LastName',
         'phone' => 'Phone',
-        'last_session' => 'LastSession',
-        'state' => 'State',
+        'last-session' => 'LastSession',
+        'state-account' => 'StateAccount',
         'email' => 'Email',
-        'email_verified_at' => 'EmailVerifiedAt',
+        'email-verified-at' => 'EmailVerifiedAt',
         "created-at" => "CreatedAt",
     ];
 
     public array $allowedFilters = [
         'id',
         'dni',
-        'first_name',
-        'last_name',
+        'first-name',
+        'last-name',
         'phone',
-        'last_session',
-        'state',
+        'last-session',
+        'state-account',
         'email',
-        'email_verified_at',
+        'email-verified-at',
         "search",
         "role",
         "day",
@@ -130,13 +130,13 @@ class User extends Authenticatable
     public array $adapterFilters = [
         'id' => 'ID',
         'dni' => 'DNI',
-        'first_name' => 'FirstName',
-        'last_name' => 'LastName',
+        'first-name' => 'FirstName',
+        'last-name' => 'LastName',
         'phone' => 'Phone',
-        'last_session' => 'LastSession',
-        'state' => 'State',
+        'last-session' => 'LastSession',
+        'state-account' => 'StateAccount',
         'email' => 'Email',
-        'email_verified_at' => 'EmailVerifiedAt',
+        'email-verified-at' => 'EmailVerifiedAt',
         "search" => "Search",
         "role" => "Role",
         "day" => "Day",
@@ -175,7 +175,7 @@ class User extends Authenticatable
     public function sortLastSession (Builder $query, $direction): void {
         $query->orderBy('last_session', $direction);
     }
-    public function sortState (Builder $query, $direction): void {
+    public function sortStateAccount (Builder $query, $direction): void {
         $query->orderBy('state', $direction);
     }
     public function sortEmail (Builder $query, $direction): void {
@@ -210,7 +210,7 @@ class User extends Authenticatable
     public function filterLastSession (Builder $query, $value): void {
         $query->whereDate('last_session',$value);
     }
-    public function filterState (Builder $query, $value): void {
+    public function filterStateAccount (Builder $query, $value): void {
         $query->where('state', $value);
     }
     public function filterEmail (Builder $query, $value): void {

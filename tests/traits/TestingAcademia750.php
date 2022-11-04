@@ -20,7 +20,6 @@ trait TestingAcademia750
 
     public function clearCacheApp (): void {
         Artisan::call('cache:clear', ['store' => 'redis']);
-        Artisan::call('cache:clear');
     }
 
 }

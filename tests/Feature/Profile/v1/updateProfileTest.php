@@ -51,7 +51,7 @@ class updateProfileTest extends TestCase
                     'first_name' => $user->first_name,
                     'last_name' => $user->last_name,
                     'phone' => $user->phone,
-                    'state_account' => $user->state === 1 ? 'enable': 'disabled',
+                    'state_account' => 'enable',
                     'email' => $user->email,
                     "email_verified_at" => ($user->email_verified_at !== null) ? $user->email_verified_at->format('Y-m-d h:m:s') : null ,
                     "last_session" => ($user->last_session !== null) ? $user->last_session->format('Y-m-d h:m:s') : null ,

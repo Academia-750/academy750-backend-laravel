@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use App\Core\Services\UserServiceTrait;
+use App\Core\Services\UuidGeneratorService;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -19,7 +21,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => $this->getUUIDUnique(),
+            'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => $this->faker->firstName(),
             'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),

@@ -8,18 +8,16 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use Tests\traits\AuthServiceTraitTest;
 
 class getProfileTest extends TestCase
 {
     use RefreshDatabase;
+    use AuthServiceTraitTest;
 
     /** @test */
     public function can_fetch_data_simple_of_my_profile(): void
     {
-        $user = User::factory()->create();
-
-        Sanctum::actingAs($user);
-
         $url = route('api.v1.my-profile-auth');
 
         $response = $this->getJson($url);
@@ -30,17 +28,17 @@ class getProfileTest extends TestCase
         $response->assertExactJson([
             'data' => [
                 'type' => 'users',
-                'id' => (string) $user->getRouteKey(),
+                'id' => (string) $this->userAuth->getRouteKey(),
                 'attributes' => [
-                    'dni' => $user->dni,
-                    'first_name' => $user->first_name,
-                    'last_name' => $user->last_name,
-                    'phone' => $user->phone,
-                    'state_account' => $user->state === 1 ? 'enable': 'disabled',
-                    'email' => $user->email,
-                    "email_verified_at" => ($user->email_verified_at !== null) ? $user->email_verified_at->format('Y-m-d h:m:s') : null ,
-                    "last_session" => ($user->last_session !== null) ? $user->last_session->format('Y-m-d h:m:s') : null ,
-                    "created_at" => $user->created_at->format('Y-m-d h:m:s')
+                    'dni' => $this->userAuth->dni,
+                    'first_name' => $this->userAuth->first_name,
+                    'last_name' => $this->userAuth->last_name,
+                    'phone' => $this->userAuth->phone,
+                    'state_account' => 'enable',
+                    'email' => $this->userAuth->email,
+                    "email_verified_at" => ($this->userAuth->email_verified_at !== null) ? $this->userAuth->email_verified_at->format('Y-m-d h:m:s') : null ,
+                    "last_session" => ($this->userAuth->last_session !== null) ? $this->userAuth->last_session->format('Y-m-d h:m:s') : null ,
+                    "created_at" => $this->userAuth->created_at->format('Y-m-d h:m:s')
                 ],
                 'relationships' => []
             ]
@@ -50,13 +48,8 @@ class getProfileTest extends TestCase
     /** @test */
     public function can_fetch_data_of_my_profile_with_roles_and_permissions_relationships(): void
     {
-        $user = User::factory()->create();
         $role = Role::where('name', '=', 'admin')->first();
         $permissions = $role->permissions;
-
-        $user->assignRole('admin');
-
-        Sanctum::actingAs($user);
 
         $url = route('api.v1.my-profile-auth'). '?include=roles,roles-permissions';
 
@@ -65,7 +58,7 @@ class getProfileTest extends TestCase
         // asserts...
         $response->assertOk();
 
-        $this->assertTrue($user->hasRole('admin'));
+        $this->assertTrue($this->userAuth->hasRole('admin'));
         $this->assertNotNull($role);
 
         $response->assertSee($role->name);

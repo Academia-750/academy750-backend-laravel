@@ -7,27 +7,27 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
+use Tests\traits\AuthServiceTraitTest;
 
 class ListStudentsTest extends TestCase
 {
     use RefreshDatabase;
+    use AuthServiceTraitTest;
 
     /** @test */
     public function can_fetch_all_students(): void
     {
-        $userAuth = User::factory()->create([
-            'first_name' => 'Raul Alberto'
+        $user1 = User::factory()->create([
+            'first_name' => 'Adolfo'
         ]);
-        $userAuth->assignRole('admin');
-        Sanctum::actingAs($userAuth);
+        $user1->assignRole($this->roleStudent);
 
-        $user1 = User::factory()->create();
-        $user1->assignRole('student');
+        $user2 = User::factory()->create([
+            'first_name' => 'Raul'
+        ]);
+        $user2->assignRole($this->roleStudent);
 
-        $user2 = User::factory()->create();
-        $user2->assignRole('student');
-
-        $url = route('api.v1.students.index'). '?filter[role]=student';
+        $url = route('api.v1.students.index'). '?filter[role]=student&sort=first-name';
 
         $response = $this->getJson($url);
 
@@ -60,11 +60,11 @@ class ListStudentsTest extends TestCase
                             'data' => [
                                 [
                                     "type" => "roles",
-                                    "id" => "2",
+                                    "id" => $this->roleStudent->getRouteKey(),
                                     "attributes" => [
                                         "roleName" => "student",
-                                        "roleAliasName" => "student",
-                                        "createdAt" => $user1->roles[0]->created_at->format('Y-m-d h:m:s'),
+                                        "roleAliasName" => "Estudiante",
+                                        "createdAt" => $this->roleStudent->created_at->format('Y-m-d h:m:s'),
                                     ],
                                     'relationships' => []
                                 ]
@@ -91,11 +91,11 @@ class ListStudentsTest extends TestCase
                             'data' => [
                                 [
                                     "type" => "roles",
-                                    "id" => "2",
+                                    "id" => $this->roleStudent->getRouteKey(),
                                     "attributes" => [
                                         "roleName" => "student",
-                                        "roleAliasName" => "student",
-                                        "createdAt" => $user2->roles[0]->created_at->format('Y-m-d h:m:s'),
+                                        "roleAliasName" => "Estudiante",
+                                        "createdAt" => $this->roleStudent->created_at->format('Y-m-d h:m:s'),
                                     ],
                                     'relationships' => []
                                 ]
@@ -108,26 +108,25 @@ class ListStudentsTest extends TestCase
     }
 
     /** @test */
-    public function can_fetch_students_with_enable_account(): void {
-        $userAuth = User::factory()->create([
-            'first_name' => 'Raul Albert',
-            'last_name' => 'Moheno Zavaleta',
+    public function can_fetch_students_with_enable_account(): void
+    {
+        $user1 = User::factory()->create([
+            'first_name' => 'Adolfo'
         ]);
-        $userAuth->assignRole('admin');
-        Sanctum::actingAs($userAuth);
+        $user1->assignRole($this->roleStudent);
 
-        $user1 = User::factory()->create();
-        $user1->assignRole('student');
-
-        $user2 = User::factory()->create();
-        $user2->assignRole('student');
+        $user2 = User::factory()->create([
+            'first_name' => 'Carlos'
+        ]);
+        $user2->assignRole($this->roleStudent);
 
         $user3 = User::factory()->create([
+            'first_name' => 'Raul',
             'state' => 'disable'
         ]);
-        $user3->assignRole('student');
+        $user3->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). '?filter[role]=student&filter[state]=enable';
+        $url = route('api.v1.students.index'). '?filter[role]=student&filter[state-account]=enable&sort=first-name';
 
         $response = $this->getJson($url);
 
@@ -156,11 +155,11 @@ class ListStudentsTest extends TestCase
                             'data' => [
                                 [
                                     "type" => "roles",
-                                    "id" => (string) $user1->roles[0]->id,
+                                    "id" => (string) $this->roleStudent->getRouteKey(),
                                     "attributes" => [
                                         "roleName" => "student",
-                                        "roleAliasName" => "student",
-                                        "createdAt" => $user1->roles[0]->created_at->format('Y-m-d h:m:s'),
+                                        "roleAliasName" => "Estudiante",
+                                        "createdAt" => $this->roleStudent->created_at->format('Y-m-d h:m:s'),
                                     ],
                                     'relationships' => []
                                 ]
@@ -187,11 +186,11 @@ class ListStudentsTest extends TestCase
                             'data' => [
                                 [
                                     "type" => "roles",
-                                    "id" => (string) $user2->roles[0]->id,
+                                    "id" => (string) $this->roleStudent->getRouteKey(),
                                     "attributes" => [
                                         "roleName" => "student",
-                                        "roleAliasName" => "student",
-                                        "createdAt" => $user2->roles[0]->created_at->format('Y-m-d h:m:s'),
+                                        "roleAliasName" => "Estudiante",
+                                        "createdAt" => $this->roleStudent->created_at->format('Y-m-d h:m:s'),
                                     ],
                                     'relationships' => []
                                 ]
@@ -204,28 +203,26 @@ class ListStudentsTest extends TestCase
     }
 
     /** @test */
-    public function can_fetch_students_with_disable_account(): void {
-        $userAuth = User::factory()->create([
-            'first_name' => 'Raul Alberto',
-            'last_name' => 'Moheno Zavaleta',
-        ]);
-        $userAuth->assignRole('admin');
-        Sanctum::actingAs($userAuth);
-
+    public function can_fetch_students_with_disable_account(): void
+    {
         $user1 = User::factory()->create([
+            'first_name' => 'Adolfo',
             'state' => 'disable'
         ]);
-        $user1->assignRole('student');
+        $user1->assignRole($this->roleStudent);
 
-        $user2 = User::factory()->create();
-        $user2->assignRole('student');
+        $user2 = User::factory()->create([
+            'first_name' => 'Carlos'
+        ]);
+        $user2->assignRole($this->roleStudent);
 
         $user3 = User::factory()->create([
+            'first_name' => 'Raul',
             'state' => 'disable'
         ]);
-        $user3->assignRole('student');
+        $user3->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). '?filter[role]=student&filter[state]=disable';
+        $url = route('api.v1.students.index'). '?filter[role]=student&filter[state-account]=disable&sort=first-name';
 
         $response = $this->getJson($url);
 
@@ -254,11 +251,11 @@ class ListStudentsTest extends TestCase
                             'data' => [
                                 [
                                     "type" => "roles",
-                                    "id" => (string) $user1->roles[0]->id,
+                                    "id" => (string) $this->roleStudent->getRouteKey(),
                                     "attributes" => [
                                         "roleName" => "student",
-                                        "roleAliasName" => "student",
-                                        "createdAt" => $user1->roles[0]->created_at->format('Y-m-d h:m:s'),
+                                        "roleAliasName" => "Estudiante",
+                                        "createdAt" => $this->roleStudent->created_at->format('Y-m-d h:m:s'),
                                     ],
                                     'relationships' => []
                                 ]
@@ -285,11 +282,11 @@ class ListStudentsTest extends TestCase
                             'data' => [
                                 [
                                     "type" => "roles",
-                                    "id" => (string) $user3->roles[0]->id,
+                                    "id" => (string) $this->roleStudent->getRouteKey(),
                                     "attributes" => [
                                         "roleName" => "student",
-                                        "roleAliasName" => "student",
-                                        "createdAt" => $user3->roles[0]->created_at->format('Y-m-d h:m:s'),
+                                        "roleAliasName" => "Estudiante",
+                                        "createdAt" => $this->roleStudent->created_at->format('Y-m-d h:m:s'),
                                     ],
                                     'relationships' => []
                                 ]
