@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Core\Services\UserServiceTrait;
 use App\Core\Services\UUIDTrait;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,8 +10,7 @@ use Spatie\Permission\Models\Permission as PermissionSpatieModel;
 
 class Permission extends PermissionSpatieModel
 {
-    /*use UUIDTrait;
-    use UserServiceTrait;*/
+    use UUIDTrait;
 
     public $keyType = "string";
     protected $primaryKey = 'id';

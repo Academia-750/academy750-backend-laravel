@@ -2,6 +2,8 @@
 
 namespace App\Core\Services;
 
+use App\Models\User;
+
 trait UUIDTrait
 {
     public static function bootUuidTrait(): void
@@ -10,7 +12,7 @@ trait UUIDTrait
             $model->keyType = 'string';
             $model->incrementing = false;
 
-            $model->{$model->getKeyName()} = $model->getUUIDUnique();
+            $model->{$model->getKeyName()} = UuidGeneratorService::getUUIDUnique(User::class);
         });
     }
 

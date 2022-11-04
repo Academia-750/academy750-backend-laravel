@@ -2,14 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Core\Services\UserServiceTrait;
+use App\Core\Services\UuidGeneratorService;
+use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
 
 class RoleSeeder extends Seeder
 {
-    use UserServiceTrait;
     /**
      * Run the database seeds.
      *
@@ -19,14 +18,14 @@ class RoleSeeder extends Seeder
     {
         Role::query()->create(
             [
-                'id' => $this->getUUIDUnique(),
+                'id' => UuidGeneratorService::getUUIDUnique(Role::class),
                 'name' => 'admin',
                 'alias_name' => 'Administrador',
             ]
         );
         Role::query()->create(
             [
-                'id' => $this->getUUIDUnique(),
+                'id' => UuidGeneratorService::getUUIDUnique(Role::class),
                 'name' => 'student',
                 'alias_name' => 'Estudiante',
             ]

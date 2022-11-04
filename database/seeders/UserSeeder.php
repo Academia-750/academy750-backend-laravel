@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Core\Services\UserServiceTrait;
+use App\Core\Services\UuidGeneratorService;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -28,7 +29,7 @@ class UserSeeder extends Seeder
 
         /*Admin*/
         $adminAdolfo = User::query()->create([
-            'id' => $this->getUUIDUnique(),
+            'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Adolfo Feria',
             'email' => 'adolfoferia.admin@academia750.com',
             'last_name' => $this->factory->lastName(),
@@ -38,7 +39,7 @@ class UserSeeder extends Seeder
         ]);
 
         $adminRaul = User::query()->create([
-            'id' => $this->getUUIDUnique(),
+            'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Raul Moheno',
             'email' => 'raulmoheno.admin@academia750.com',
             'last_name' => $this->factory->lastName(),
@@ -49,7 +50,7 @@ class UserSeeder extends Seeder
 
         /*Editor*/
         $studentAdolfo = User::query()->create([
-            'id' => $this->getUUIDUnique(),
+            'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Adolfo Feria',
             'email' => 'adolfoferia.student@academia750.com',
             'last_name' => $this->factory->lastName(),
@@ -58,7 +59,7 @@ class UserSeeder extends Seeder
             'password' => bcrypt('student'),
         ]);
         $studentRaul = User::query()->create([
-            'id' => $this->getUUIDUnique(),
+            'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Raul Moheno',
             'email' => 'raulmoheno.student@academia750.com',
             'last_name' => $this->factory->lastName(),
