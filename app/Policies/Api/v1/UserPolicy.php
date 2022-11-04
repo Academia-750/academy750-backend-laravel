@@ -3,10 +3,9 @@
 namespace App\Policies\Api\v1;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use App\Models\Student;
 use App\Models\User;
 
-class StudentPolicy
+class UserPolicy
 {
     use HandlesAuthorization;
 
@@ -15,7 +14,7 @@ class StudentPolicy
         return $user->can('list-students');
     }
 
-    public function read(User $user, Student $student): bool
+    public function read(User $user, User $userResource): bool
     {
         return $user->can('see-a-student');
     }
@@ -25,12 +24,12 @@ class StudentPolicy
         return $user->can('create-student');
     }
 
-    public function update(User $user, Student $student): bool
+    public function update(User $user, User $userResource): bool
     {
         return $user->can('edit-student');
     }
 
-    public function delete(User $user, Student $student): bool
+    public function delete(User $user, User $userResource): bool
     {
         return $user->can('delete-student');
     }

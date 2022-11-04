@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class UserResource extends JsonResource
 {
-    #[ArrayShape(['type' => "string", 'id' => "mixed", 'attributes' => "array", 'relationships' => "array"])] public function toArray($request): array
+    #[ArrayShape(['type' => "string", 'id' => "string", 'attributes' => "array", 'relationships' => "array"])] public function toArray($request): array
     {
         return [
             'type' => 'users',
@@ -28,8 +28,8 @@ class UserResource extends JsonResource
                 //'roles' => \App\Http\Resources\Api\Role\RoleCollection::make($this->whenLoaded('roles'))
                 'roles' => $this->when(collect($this->resource)->has('roles'),
                     function () {
-                    return RoleCollection::make($this->resource->roles);
-                })
+                        return RoleCollection::make($this->resource->roles);
+                    })
             ]
         ];
     }

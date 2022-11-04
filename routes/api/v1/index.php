@@ -5,7 +5,7 @@ Route::prefix('v1')->group(static function(){
 
     Route::middleware(['auth:sanctum'])->group(static function () {
         require __DIR__ . '/routes/profile.php';
-        require __DIR__ . '/routes/students.routes.php';
+        require __DIR__ . '/routes/users.routes.php';
     // [EndOfLineMethodRegister]
     });
 });

@@ -33,7 +33,7 @@ class SortStudentsTest extends TestCase
         $user3->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=dni";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=dni";
 
         $response = $this->getJson($url);
 
@@ -66,7 +66,7 @@ class SortStudentsTest extends TestCase
         $user3->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=-dni";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=-dni";
 
         $response = $this->getJson($url);
 
@@ -99,7 +99,7 @@ class SortStudentsTest extends TestCase
         $user3->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=first-name";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=first-name";
 
         $response = $this->getJson($url);
 
@@ -132,7 +132,7 @@ class SortStudentsTest extends TestCase
         $user3->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=-first-name";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=-first-name";
 
         $response = $this->getJson($url);
 
@@ -165,7 +165,7 @@ class SortStudentsTest extends TestCase
         $user3->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=last-name";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=last-name";
 
         $response = $this->getJson($url);
 
@@ -198,7 +198,7 @@ class SortStudentsTest extends TestCase
         $user3->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=-last-name";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=-last-name";
 
         $response = $this->getJson($url);
 
@@ -236,7 +236,7 @@ class SortStudentsTest extends TestCase
         $user4->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=phone";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=phone";
 
         $response = $this->getJson($url);
 
@@ -275,7 +275,7 @@ class SortStudentsTest extends TestCase
         $user4->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=-phone";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=-phone";
 
         $response = $this->getJson($url);
 
@@ -319,7 +319,7 @@ class SortStudentsTest extends TestCase
         $user4->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=last-session";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=last-session";
 
         $response = $this->getJson($url);
 
@@ -363,7 +363,7 @@ class SortStudentsTest extends TestCase
         $user4->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=-last-session";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=-last-session";
 
         $response = $this->getJson($url);
 
@@ -407,7 +407,7 @@ class SortStudentsTest extends TestCase
         $user4->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=created-at";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=created-at";
 
         $response = $this->getJson($url);
 
@@ -451,7 +451,7 @@ class SortStudentsTest extends TestCase
         $user4->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=-created-at";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=-created-at";
 
         $response = $this->getJson($url);
 
@@ -485,7 +485,7 @@ class SortStudentsTest extends TestCase
         $user3->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=email";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=email";
 
         $response = $this->getJson($url);
 
@@ -518,7 +518,7 @@ class SortStudentsTest extends TestCase
         $user3->assignRole($this->roleStudent);
 
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=-email";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=-email";
 
         $response = $this->getJson($url);
 

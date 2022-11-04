@@ -27,7 +27,7 @@ class ListStudentsTest extends TestCase
         ]);
         $user2->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). '?filter[role]=student&sort=first-name';
+        $url = route('api.v1.users.index'). '?filter[role]=student&sort=first-name';
 
         $response = $this->getJson($url);
 
@@ -42,7 +42,7 @@ class ListStudentsTest extends TestCase
         $response->assertExactJson([
             'data' => [
                 [
-                    'type' => 'students',
+                    'type' => 'users',
                     'id' => (string) $user1->getRouteKey(),
                     'attributes' => [
                         'dni' => $user1->dni,
@@ -73,7 +73,7 @@ class ListStudentsTest extends TestCase
                     ]
                 ],
                 [
-                    'type' => 'students',
+                    'type' => 'users',
                     'id' => (string) $user2->getRouteKey(),
                     'attributes' => [
                         'dni' => $user2->dni,
@@ -126,7 +126,7 @@ class ListStudentsTest extends TestCase
         ]);
         $user3->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). '?filter[role]=student&filter[state-account]=enable&sort=first-name';
+        $url = route('api.v1.users.index'). '?filter[role]=student&filter[state-account]=enable&sort=first-name';
 
         $response = $this->getJson($url);
 
@@ -137,7 +137,7 @@ class ListStudentsTest extends TestCase
         $response->assertExactJson([
             'data' => [
                 [
-                    'type' => 'students',
+                    'type' => 'users',
                     'id' => (string) $user1->getRouteKey(),
                     'attributes' => [
                         'dni' => $user1->dni,
@@ -168,7 +168,7 @@ class ListStudentsTest extends TestCase
                     ]
                 ],
                 [
-                    'type' => 'students',
+                    'type' => 'users',
                     'id' => (string) $user2->getRouteKey(),
                     'attributes' => [
                         'dni' => $user2->dni,
@@ -222,7 +222,7 @@ class ListStudentsTest extends TestCase
         ]);
         $user3->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). '?filter[role]=student&filter[state-account]=disable&sort=first-name';
+        $url = route('api.v1.users.index'). '?filter[role]=student&filter[state-account]=disable&sort=first-name';
 
         $response = $this->getJson($url);
 
@@ -233,7 +233,7 @@ class ListStudentsTest extends TestCase
         $response->assertExactJson([
             'data' => [
                 [
-                    'type' => 'students',
+                    'type' => 'users',
                     'id' => (string) $user1->getRouteKey(),
                     'attributes' => [
                         'dni' => $user1->dni,
@@ -264,7 +264,7 @@ class ListStudentsTest extends TestCase
                     ]
                 ],
                 [
-                    'type' => 'students',
+                    'type' => 'users',
                     'id' => (string) $user3->getRouteKey(),
                     'attributes' => [
                         'dni' => $user3->dni,

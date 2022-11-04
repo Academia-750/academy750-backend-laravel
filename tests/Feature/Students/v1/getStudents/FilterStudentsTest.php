@@ -38,7 +38,7 @@ class FilterStudentsTest extends TestCase
         ]);
         $user3->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[dni]={$dni1}";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[dni]={$dni1}";
 
         $response = $this->getJson($url);
 
@@ -74,7 +74,7 @@ class FilterStudentsTest extends TestCase
         ]);
         $user4->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[first-name]=Alber";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[first-name]=Alber";
 
         $response = $this->getJson($url);
 
@@ -87,7 +87,7 @@ class FilterStudentsTest extends TestCase
             ->assertDontSee('Carlos')
             ->assertDontSee('Adolfo');
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[first-name]=Carlos";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[first-name]=Carlos";
 
         $response = $this->getJson($url);
 
@@ -124,7 +124,7 @@ class FilterStudentsTest extends TestCase
         ]);
         $user4->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[last-name]=M";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[last-name]=M";
 
         $response = $this->getJson($url);
 
@@ -137,7 +137,7 @@ class FilterStudentsTest extends TestCase
             ->assertDontSee('Feria')
             ->assertDontSee('Herrera');
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[last-name]=Feria";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[last-name]=Feria";
 
         $response = $this->getJson($url);
 
@@ -180,7 +180,7 @@ class FilterStudentsTest extends TestCase
         ]);
         $user4->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[phone]={$phone2}";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[phone]={$phone2}";
 
         $response = $this->getJson($url);
 
@@ -223,7 +223,7 @@ class FilterStudentsTest extends TestCase
         ]);
         $user4->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[last-session]={$lastSession3->format('Y-m-d')}";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[last-session]={$lastSession3->format('Y-m-d')}";
 
         $response = $this->getJson($url);
 
@@ -266,7 +266,7 @@ class FilterStudentsTest extends TestCase
         ]);
         $user4->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[created-at]={$createdAt2->format('Y-m-d')}";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[created-at]={$createdAt2->format('Y-m-d')}";
 
         $response = $this->getJson($url);
 
@@ -295,7 +295,7 @@ class FilterStudentsTest extends TestCase
         ]);
         $user3->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[state-account]=enable";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[state-account]=enable";
 
         $response = $this->getJson($url);
 
@@ -307,7 +307,7 @@ class FilterStudentsTest extends TestCase
             ->assertSee($user2->name)
             ->assertDontSee($user3->name);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[state-account]=disable";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[state-account]=disable";
 
         $response = $this->getJson($url);
 
@@ -339,7 +339,7 @@ class FilterStudentsTest extends TestCase
         ]);
         $user3->assignRole($this->roleStudent);
 
-        $url = route('api.v1.students.index'). "?filter[role]=student&filter[email]=raul.moheno.webmaster@gmail.com";
+        $url = route('api.v1.users.index'). "?filter[role]=student&filter[email]=raul.moheno.webmaster@gmail.com";
 
         $response = $this->getJson($url);
 

@@ -16,7 +16,7 @@ class InstanceInterfaceAppProvider extends ServiceProvider
     public function register()
     {
         app()->bind(ProfileInterface::class, Authorizer::class);
-        app()->bind(\App\Core\Resources\Students\v1\Interfaces\StudentsInterface::class, \App\Core\Resources\Students\v1\Authorizer::class);
+        app()->bind(\App\Core\Resources\Users\v1\Interfaces\UsersInterface::class, \App\Core\Resources\Users\v1\Authorizer::class);
         // [EndOfLineMethodRegister]
     }
 

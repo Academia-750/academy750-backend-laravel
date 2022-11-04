@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api\v1\Students;
+namespace App\Http\Requests\Api\v1\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class ActionForMassiveSelectionStudentsRequest extends FormRequest
+class UpdateUserRequest extends FormRequest
 {
     public function authorize(): bool
     {

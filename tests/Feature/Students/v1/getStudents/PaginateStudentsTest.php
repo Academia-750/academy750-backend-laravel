@@ -49,7 +49,7 @@ class PaginateStudentsTest extends TestCase
         $user6->assignRole($this->roleStudent);
 
         // articles?page[size]=2&page[number]=2
-        $url = route('api.v1.students.index'). "?filter[role]=student&sort=first-name&page[size]=2&page[number]=2";
+        $url = route('api.v1.users.index'). "?filter[role]=student&sort=first-name&page[size]=2&page[number]=2";
 
         $response = $this->getJson($url);
 

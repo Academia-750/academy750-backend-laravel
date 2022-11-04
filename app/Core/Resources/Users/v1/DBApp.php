@@ -1,18 +1,19 @@
 <?php
-namespace App\Core\Resources\Students\v1;
+namespace App\Core\Resources\Users\v1;
 
+use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
+use App\Exports\Api\Users\v1\UsersExport;
 use App\Models\User;
-use App\Core\Resources\Students\v1\Interfaces\StudentsInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-//use App\Imports\Api\Students\v1\StudentsImport;
-use App\Exports\Api\Students\v1\StudentsExport;
+//use App\Imports\Api\Users\v1\UserImport;
 
 
-class DBApp implements StudentsInterface
+
+class DBApp implements UsersInterface
 {
     protected User $model;
 
@@ -112,12 +113,12 @@ class DBApp implements StudentsInterface
             $domPDF->loadView('resources.export.templates.pdf.students', compact('students'))->setPaper('a4', 'landscape')->setWarnings(false);
             return $domPDF->download('report-students.pdf');
         }
-        return Excel::download(new StudentsExport($request->get('students')), 'students.'. $request->get('type'));
+        return Excel::download(new UsersExport($request->get('students')), 'students.'. $request->get('type'));
     }
 
     public function import_records( $request ): string{
         //Proceso de importacion con Queues - El archivo debe tener
-        //(new StudentsImport(Auth::user()))->import($request->file('students'));
+        //(new UserImport(Auth::user()))->import($request->file('students'));
 
          /*
          // Lanzamiento de errores en caso de validacion sin uso de Queues
