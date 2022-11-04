@@ -116,6 +116,7 @@ class User extends Authenticatable
         'last-name',
         'phone',
         'last-session',
+        'created-at',
         'state-account',
         'email',
         'email-verified-at',
@@ -134,6 +135,7 @@ class User extends Authenticatable
         'last-name' => 'LastName',
         'phone' => 'Phone',
         'last-session' => 'LastSession',
+        'created-at' => 'CreatedAt',
         'state-account' => 'StateAccount',
         'email' => 'Email',
         'email-verified-at' => 'EmailVerifiedAt',
@@ -209,6 +211,9 @@ class User extends Authenticatable
     }
     public function filterLastSession (Builder $query, $value): void {
         $query->whereDate('last_session',$value);
+    }
+    public function filterCreatedAt (Builder $query, $value): void {
+        $query->whereDate('created_at',$value);
     }
     public function filterStateAccount (Builder $query, $value): void {
         $query->where('state', $value);

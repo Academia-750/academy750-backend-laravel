@@ -238,6 +238,49 @@ class FilterStudentsTest extends TestCase
     }
 
     /** @test */
+    public function can_filter_students_by_created_at(): void
+    {
+
+        $createdAt1 = Carbon::now()->addDay();
+        $createdAt4 = Carbon::now()->addDays(3);
+        $createdAt3 = Carbon::now()->addDays(12);
+        $createdAt2 = Carbon::now()->addDays(25);
+
+        $user1 = User::factory()->create([
+            'created_at' => $createdAt1
+        ]);
+        $user1->assignRole($this->roleStudent);
+
+        $user2 = User::factory()->create([
+            'created_at' => $createdAt2
+        ]);
+        $user2->assignRole($this->roleStudent);
+
+        $user3 = User::factory()->create([
+            'created_at' => $createdAt3
+        ]);
+        $user3->assignRole($this->roleStudent);
+
+        $user4 = User::factory()->create([
+            'created_at' => $createdAt4
+        ]);
+        $user4->assignRole($this->roleStudent);
+
+        $url = route('api.v1.students.index'). "?filter[role]=student&filter[created-at]={$createdAt2->format('Y-m-d')}";
+
+        $response = $this->getJson($url);
+
+        // asserts...
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'data')
+            ->assertSee($user2->created_at->format('Y-m-d h:m:s'))
+            ->assertDontSee($user1->created_at->format('Y-m-d h:m:s'))
+            ->assertDontSee($user3->created_at->format('Y-m-d h:m:s'))
+            ->assertDontSee($user4->created_at->format('Y-m-d h:m:s'));
+    }
+
+    /** @test */
     public function can_filter_students_by_state_account(): void
     {
 
