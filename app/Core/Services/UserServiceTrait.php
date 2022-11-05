@@ -23,4 +23,11 @@ trait UserServiceTrait
         return UserService::getNumberPhoneSpain();
     }
 
+    /**
+     * @throws \Exception
+     */
+    public function generateSecureRandomPasswordUser (): string {
+        return UserService::generateSecureRandomPassword();
+    }
+
 }

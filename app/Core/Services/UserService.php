@@ -4,6 +4,7 @@ namespace App\Core\Services;
 
 use App\Models\User;
 use Faker\Provider\es_ES\Person;
+use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
 
 class UserService
 {
@@ -45,5 +46,22 @@ class UserService
         }
 
         return $numberPhone;
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public static function generateSecureRandomPassword (): string
+    {
+        $generator = new ComputerPasswordGenerator();
+
+        $generator
+            ->setOptionValue(ComputerPasswordGenerator::OPTION_UPPER_CASE, true)
+            ->setOptionValue(ComputerPasswordGenerator::OPTION_LOWER_CASE, true)
+            ->setOptionValue(ComputerPasswordGenerator::OPTION_NUMBERS, true)
+            ->setOptionValue(ComputerPasswordGenerator::OPTION_SYMBOLS, true)
+            ->setLength(random_int(8,15));
+
+        return $generator->generatePassword();
     }
 }

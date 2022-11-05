@@ -2,6 +2,7 @@
 namespace App\Core\Resources\Users\v1;
 
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
+use App\Core\Services\UserService;
 use App\Exports\Api\Users\v1\UsersExport;
 use App\Models\Role;
 use App\Models\User;
@@ -29,6 +30,7 @@ class DBApp implements UsersInterface
 
     public function create( $request ): \App\Models\User{
         try {
+            $secureRandomPassword = UserService::generateSecureRandomPassword();
 
             DB::beginTransaction();
                 $userCreated = $this->model->query()->create([
@@ -37,7 +39,7 @@ class DBApp implements UsersInterface
                     'last_name' => $request->get('last-name'),
                     'phone' => $request->get('phone'),
                     'email' => $request->get('email'),
-                    'password' => Hash::make('academia750')
+                    'password' => Hash::make($secureRandomPassword)
                 ]);
 
                 $roles = [];
