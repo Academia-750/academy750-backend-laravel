@@ -35,11 +35,13 @@ trait UserServiceTrait
         return $existsDNI !== null;
     }
 
-    public function generateNewDNI () {
+    public function generateNewDNI (): string
+    {
         return Person::dni();
     }
 
-    public function generateDNIUnique () {
+    public function generateDNIUnique (): string
+    {
         $DNIGenerated = $this->generateNewDNI();
 
         while ($this->existsDNIInTableUser($DNIGenerated)) {

@@ -3,6 +3,7 @@ namespace App\Core\Resources\Users\v1;
 
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Exports\Api\Users\v1\UsersExport;
+use App\Models\Role;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -22,19 +23,33 @@ class DBApp implements UsersInterface
     }
 
     public function index(){
-        return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function create( $request ): \App\Models\Student{
+    public function create( $request ): \App\Models\User{
         try {
 
             DB::beginTransaction();
                 $userCreated = $this->model->query()->create([
-                    '' => '',
+                    'dni' => $request->get('dni'),
+                    'first_name' => $request->get('first-name'),
+                    'last_name' => $request->get('last-name'),
+                    'phone' => $request->get('phone'),
+                    'email' => $request->get('email'),
+                    'password' => ''
                 ]);
+
+                $roles = [];
+
+                foreach ($request->get('roles') as $role_id) {
+                    $roles[] = Role::query()->find($role_id);
+                }
+
+                $userCreated->assignRole($roles);
+
             DB::commit();
 
-            return $this->model->applyIncludes()->find($userCreated->id);
+            return $this->model::applyIncludes()->find($userCreated->id);
 
         } catch (\Exception $e) {
             DB::rollback();

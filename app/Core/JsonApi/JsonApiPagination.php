@@ -2,13 +2,22 @@
 
 namespace App\Core\JsonApi;
 
+use Illuminate\Database\Eloquent\Builder;
+
 class JsonApiPagination
 {
+    /**
+     * Class JsonApiPagination
+     *
+     * @package App
+     * @mixin Builder
+     */
+
     public function jsonPaginate()
     {
         return function () {
 
-            if(! is_null( request('page') )){
+            if(request('page') !== null){
                 abort_unless(
                     is_array(request('page')),
                     400, __('exceptions.pagination.bad_request_invalid_parameter_{page}_must_be_an_array')
@@ -25,7 +34,7 @@ class JsonApiPagination
 
             }
 
-            if( is_null(request('page')) && is_null(request('page.size')) && is_null(request('page.number')) ){
+            if( request('page') === null && request('page.size') === null && request('page.number') === null){
                 return $this->get();
             }
 

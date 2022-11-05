@@ -16,9 +16,9 @@ class ValidateCorrectDNISpain implements Rule
     {
         if (preg_match('/^\d{8}[a-zA-Z]$/', $value)) {
             return $this->validateDNI($value);
-        } else {
-            return $this->validateNIE($value);
         }
+
+        return $this->validateNIE($value);
     }
 
     private function validateDNI($value): bool
@@ -62,6 +62,6 @@ class ValidateCorrectDNISpain implements Rule
 
     public function message(): string
     {
-        return __('validation.error');
+        return 'Este no es un DNI válido para Ciudadano de España';
     }
 }

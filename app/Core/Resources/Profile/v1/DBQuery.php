@@ -29,7 +29,6 @@ class DBQuery implements ProfileInterface
 
                 //$user->dni = $request->get('dni');
                 $user->first_name = $request->get('first-name') ?? $user->first_name;
-                $user->first_name = $request->get('first-name') ?? $user->first_name;
                 $user->last_name = $request->get('last-name') ?? $user->last_name;
                 $user->phone = $request->get('phone') ?? $user->phone;
                 $user->email = $request->get('email') ?? $user->email;
