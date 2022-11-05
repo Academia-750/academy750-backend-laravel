@@ -13,41 +13,14 @@ trait UserServiceTrait
         return UuidGeneratorService::getUUIDUnique($instanceModel, $fieldUnique);
     }
 
-    public function getNumberPhoneSpain (): string
-    {
-        return $this->generateNumberPhoneSpain();
-    }
-
-    public function generateNumberPhoneSpain (): string
-    {
-        $numberPhone = (string) random_int(6,9);
-        for ($i = 0; $i < 8; $i++) {
-            $numberPhone.= random_int(1,9);
-        }
-
-        return $numberPhone;
-    }
-
-    public function existsDNIInTableUser ($dni): bool {
-        $existsDNI = User::query()->where("dni","=", $dni)
-            ->first();
-
-        return $existsDNI !== null;
-    }
-
-    public function generateNewDNI (): string
-    {
-        return Person::dni();
-    }
-
     public function generateDNIUnique (): string
     {
-        $DNIGenerated = $this->generateNewDNI();
-
-        while ($this->existsDNIInTableUser($DNIGenerated)) {
-            $DNIGenerated = $this->generateNewDNI();
-        }
-
-        return $DNIGenerated;
+        return UserService::generateDNIUnique();
     }
+
+    public function getNumberPhoneSpain (): string
+    {
+        return UserService::getNumberPhoneSpain();
+    }
+
 }

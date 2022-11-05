@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 //use App\Imports\Api\Users\v1\UserImport;
@@ -36,7 +37,7 @@ class DBApp implements UsersInterface
                     'last_name' => $request->get('last-name'),
                     'phone' => $request->get('phone'),
                     'email' => $request->get('email'),
-                    'password' => ''
+                    'password' => Hash::make('academia750')
                 ]);
 
                 $roles = [];
@@ -49,7 +50,7 @@ class DBApp implements UsersInterface
 
             DB::commit();
 
-            return $this->model::applyIncludes()->find($userCreated->id);
+            return $this->model->applyIncludes()->find($userCreated->id);
 
         } catch (\Exception $e) {
             DB::rollback();

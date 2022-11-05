@@ -31,7 +31,7 @@ class StudentsCreateTest extends TestCase
 
         $url = route('api.v1.users.create');
 
-        $response = $this->postJson($url, $data)->dump();
+        $response = $this->postJson($url, $data);
 
         // asserts...
 
