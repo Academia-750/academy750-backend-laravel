@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\v1\Profile;
 
+use App\Rules\Api\v1\MustBeASecurePasswordRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -17,7 +18,7 @@ class ChangeMyPasswordRequest extends FormRequest
     {
         return [
             'current-password' => ['required', 'current_password'],
-            'password' => ['required', 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&#^)(])([A-Za-z\d$@$!%*?&#)(^]|[^ ]){8,15}$/', 'confirmed']
+            'password' => ['required', new MustBeASecurePasswordRule, 'confirmed']
         ];
     }
 
