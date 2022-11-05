@@ -2,6 +2,7 @@
 
 namespace App\Core\Services;
 
+use App\Models\Role;
 use App\Models\User;
 use Faker\Provider\es_ES\Person;
 use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
@@ -63,5 +64,18 @@ class UserService
             ->setLength(random_int(8,15));
 
         return $generator->generatePassword();
+    }
+
+    public static function syncRolesToUser ($roles_id, $user): array
+    {
+        $roles = [];
+
+        foreach ($roles_id as $role_id) {
+            $roles[] = Role::query()->find($role_id);
+        }
+
+        $user->syncRoles($roles);
+
+        return $roles;
     }
 }

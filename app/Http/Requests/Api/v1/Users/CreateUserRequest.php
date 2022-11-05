@@ -71,6 +71,7 @@ class CreateUserRequest extends FormRequest
             'last-name' => 'Apellidos',
             'phone' => 'Numero de teléfono',
             'email' => 'Correo electrónico',
+            'roles' => 'Roles',
         ];
     }
 

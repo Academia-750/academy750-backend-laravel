@@ -42,13 +42,10 @@ class DBApp implements UsersInterface
                     'password' => Hash::make($secureRandomPassword)
                 ]);
 
-                $roles = [];
-
-                foreach ($request->get('roles') as $role_id) {
-                    $roles[] = Role::query()->find($role_id);
-                }
-
-                $userCreated->assignRole($roles);
+                UserService::syncRolesToUser(
+                    $request->get('roles'),
+                    $userCreated
+                );
 
             DB::commit();
 
@@ -129,7 +126,7 @@ class DBApp implements UsersInterface
         if ($request->get('type') === 'pdf') {
             $domPDF = App::make('dompdf.wrapper');
             $users = $this->model->query()->whereIn('id', $request->get('students'))->get();
-            $domPDF->loadView('resources.export.templates.pdf.students', compact('students'))->setPaper('a4', 'landscape')->setWarnings(false);
+            $domPDF->loadView('resources.export.templates.pdf.students', compact('users'))->setPaper('a4', 'landscape')->setWarnings(false);
             return $domPDF->download('report-students.pdf');
         }
         return Excel::download(new UsersExport($request->get('students')), 'students.'. $request->get('type'));

@@ -38,6 +38,7 @@ class StudentsCreateTest extends TestCase
         $response->assertCreated();
 
         $this->assertDatabaseHas('users', [
+            'dni' => $data['dni'],
             'first_name' => $data['first-name'],
             'last_name' => $data['last-name'],
             'phone' => $data['phone'],
