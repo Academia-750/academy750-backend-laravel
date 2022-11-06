@@ -68,6 +68,10 @@ class UserService
 
     public static function syncRolesToUser ($roles_id, $user): array
     {
+        if ($roles_id === null) {
+            return [];
+        }
+
         $roles = [];
 
         foreach ($roles_id as $role_id) {

@@ -50,6 +50,27 @@ class PermissionSeeder extends Seeder
         Permission::create(
             [
                 'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
+                'name' => 'action-for-multiple-users',
+                'alias_name' => 'Realizar acciones sobre múltiples Usuarios',
+            ]
+        );
+        Permission::create(
+            [
+                'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
+                'name' => 'lock-account-a-user',
+                'alias_name' => 'Deshabilitar la cuenta de un usuario',
+            ]
+        );
+        Permission::create(
+            [
+                'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
+                'name' => 'unlock-account-a-user',
+                'alias_name' => 'Habilitar la cuenta de un usuario',
+            ]
+        );
+        Permission::create(
+            [
+                'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
                 'name' => 'export-students',
                 'alias_name' => 'export-students',
             ]
@@ -309,6 +330,7 @@ class PermissionSeeder extends Seeder
             'create-student',
             'edit-student',
             'delete-student',
+            'action-for-multiple-users',
             'export-students',
             'import-students',
             'enable-account-student',

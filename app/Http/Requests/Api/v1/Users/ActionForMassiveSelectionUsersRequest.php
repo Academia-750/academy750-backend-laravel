@@ -16,13 +16,13 @@ class ActionForMassiveSelectionUsersRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-        ];
-    }
-
-    public function messages(): array {
-        return [
-            //
+            "action" => [
+                'required',
+                'string',
+                Rule::in(['delete', 'lock-account', 'unlock-account'])
+            ],
+            "users" => ['required', 'array', 'min:2'],
+            "users.*" => ['uuid', 'distinct:strict', 'exists:users,id']
         ];
     }
 
@@ -30,7 +30,8 @@ class ActionForMassiveSelectionUsersRequest extends FormRequest
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'action' => 'Accion sobre múltiples registros',
+            'users' => 'Los usuarios'
         ];
     }
 

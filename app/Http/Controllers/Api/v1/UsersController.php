@@ -45,6 +45,14 @@ class UsersController extends Controller
         return $this->usersInterface->mass_selection_for_action( $request );
     }
 
+    public function lock_account($request, User $user){
+        return $this->usersInterface->lock_account( $request, $user );
+    }
+
+    public function unlock_account($request, User $user){
+        return $this->usersInterface->unlock_account( $request, $user );
+    }
+
     public function export_records(ExportUsersRequest $request){
         return $this->usersInterface->export_records( $request );
     }

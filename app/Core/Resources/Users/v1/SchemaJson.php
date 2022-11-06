@@ -45,10 +45,11 @@ class SchemaJson implements UsersInterface
         return response()->noContent();
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ): \Illuminate\Http\JsonResponse
+    {
         return response()->json([
-            'message' => $this->eventApp->mass_selection_for_action( $request )
-        ], 200);
+            'information' => $this->eventApp->mass_selection_for_action( $request )
+        ]);
     }
 
     public function export_records( $request ){
@@ -59,4 +60,13 @@ class SchemaJson implements UsersInterface
         return $this->eventApp->import_records( $request );
     }
 
+    public function lock_account($request, $user)
+    {
+        return $this->eventApp->lock_account($request, $user);
+    }
+
+    public function unlock_account($request, $user)
+    {
+        return $this->eventApp->unlock_account($request, $user);
+    }
 }

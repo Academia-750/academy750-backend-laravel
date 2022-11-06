@@ -39,7 +39,7 @@ class EventApp implements UsersInterface
         $this->cacheApp->delete( $user );
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ): array{
 
         /* $records = User::whereIn('id', $request->get('students'));
 
@@ -58,4 +58,13 @@ class EventApp implements UsersInterface
         $this->cacheApp->import_records( $request );
     }
 
+    public function lock_account($request, $user)
+    {
+        return $this->cacheApp->lock_account( $request, $user );
+    }
+
+    public function unlock_account($request, $user)
+    {
+        return $this->cacheApp->unlock_account( $request, $user );
+    }
 }

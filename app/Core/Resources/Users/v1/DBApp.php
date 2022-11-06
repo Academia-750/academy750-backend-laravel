@@ -2,6 +2,8 @@
 namespace App\Core\Resources\Users\v1;
 
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
+use App\Core\Resources\Users\v1\Services\ActionForMultipleRecordsService;
+use App\Core\Resources\Users\v1\Services\ActionsAccountUser;
 use App\Core\Services\UserService;
 use App\Exports\Api\Users\v1\UsersExport;
 use App\Models\Role;
@@ -74,12 +76,11 @@ class DBApp implements UsersInterface
                 $user->email = $request->get('email') ?? $user->email;
                 $user->save();
 
-                if ($request->get('roles') !== null) {
-                    UserService::syncRolesToUser(
-                        $request->get('roles'),
-                        $user
-                    );
-                }
+                UserService::syncRolesToUser(
+                    $request->get('roles'),
+                    $user
+                );
+
 
             DB::commit();
 
@@ -96,7 +97,7 @@ class DBApp implements UsersInterface
         try {
 
             DB::beginTransaction();
-                $user->forceDelete();
+                ActionsAccountUser::deleteUser($user);
             DB::commit();
 
         } catch (\Exception $e) {
@@ -106,26 +107,20 @@ class DBApp implements UsersInterface
 
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ): array{
         try {
 
             DB::beginTransaction();
-                $message = null;
-                if( $request->get('action') === 'delete' ){
-                    foreach ($request->get('students') as $user){
-                        $userDelete = $this->model->firstWhere('id',$user);
-                        $userDelete->delete();
-                    }
-                    $process = true;
-                    $message = "Los registros seleccionados han sido eliminados.";
-                }
+
+                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('users'));
+
             DB::commit();
 
-            if ($process) {
-                return $message;
-            }else {
-                return "No se ha realizado ninguna acción";
+            if (count($information) === 0) {
+                $information[] = "No hay registros afectados";
             }
+
+            return $information;
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -160,4 +155,13 @@ class DBApp implements UsersInterface
         return "Proceso de importación iniciado";
     }
 
+    public function lock_account($request, $user)
+    {
+        return ActionsAccountUser::lockAccountUser($user);
+    }
+
+    public function unlock_account($request, $user)
+    {
+        return ActionsAccountUser::unlockAccountUser($user);
+    }
 }

@@ -36,7 +36,17 @@ class UserPolicy
 
     public function mass_selection_for_action(User $user): bool
     {
-        return $user->can('ban-student');
+        return $user->can('action-for-multiple-users');
+    }
+
+    public function lock_account(User $user, User $userResource): bool
+    {
+        return $user->can('lock-account-a-user');
+    }
+
+    public function unlock_account(User $user, User $userResource): bool
+    {
+        return $user->can('unlock-account-a-user');
     }
 
     public function export_records(User $user): bool

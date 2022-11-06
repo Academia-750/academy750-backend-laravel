@@ -56,7 +56,7 @@ class CacheApp implements UsersInterface
         $this->dbApp->delete( $user );
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ): array{
 
         Cache::store('redis')->tags('user')->flush();
 
@@ -73,4 +73,13 @@ class CacheApp implements UsersInterface
         return $this->dbApp->import_records( $request );
     }
 
+    public function lock_account($request, $user)
+    {
+        return $this->dbApp->lock_account( $request, $user );
+    }
+
+    public function unlock_account($request, $user)
+    {
+        return $this->dbApp->unlock_account( $request, $user );
+    }
 }
