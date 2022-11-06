@@ -15,7 +15,7 @@ class ActionsAccountUser
 
         return $user;
     }
-    public static function lockAccountUser ($user) {
+    public static function disableAccountUser ($user) {
 
         if ( !($user instanceof User) ) {
             $user = User::query()->find($user);
@@ -30,7 +30,7 @@ class ActionsAccountUser
 
         return $user;
     }
-    public static function unlockAccountUser ($user) {
+    public static function enableAccountUser ($user) {
 
         if ( !($user instanceof User) ) {
             $user = User::query()->onlyTrashed()->find($user);

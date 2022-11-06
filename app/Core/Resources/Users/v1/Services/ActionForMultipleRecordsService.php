@@ -12,11 +12,11 @@ class ActionForMultipleRecordsService
         }
 
         if ($action === 'lock-account') {
-            return self::lockAccountMultipleUsers($users);
+            return self::disableAccountMultipleUsers($users);
         }
 
         if ($action === 'unlock-account') {
-            return self::unlockAccountMultipleUsers($users);
+            return self::enableAccountMultipleUsers($users);
         }
 
         return [];
@@ -35,11 +35,11 @@ class ActionForMultipleRecordsService
 
 
 
-    public static function lockAccountMultipleUsers ($users): array {
+    public static function disableAccountMultipleUsers ($users): array {
         $information = [];
 
         foreach ($users as $user_id) {
-            $user = ActionsAccountUser::lockAccountUser($user_id);
+            $user = ActionsAccountUser::disableAccountUser($user_id);
             $information[] = "La cuenta del 'Usuario {$user->getRouteKey()}' ha sido deshabilitada.";
         }
 
@@ -48,11 +48,11 @@ class ActionForMultipleRecordsService
 
 
 
-    public static function unlockAccountMultipleUsers ($users): array {
+    public static function enableAccountMultipleUsers ($users): array {
         $information = [];
 
         foreach ($users as $user_id) {
-            $user = ActionsAccountUser::unlockAccountUser($user_id);
+            $user = ActionsAccountUser::enableAccountUser($user_id);
             $information[] = "La cuenta del 'Usuario {$user->getRouteKey()}' ha sido habilitada.";
         }
 

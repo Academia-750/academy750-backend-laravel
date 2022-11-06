@@ -60,13 +60,17 @@ class SchemaJson implements UsersInterface
         return $this->eventApp->import_records( $request );
     }
 
-    public function lock_account($request, $user)
+    public function disable_account($request, $user)
     {
-        return $this->eventApp->lock_account($request, $user);
+        return UserResource::make(
+            $this->eventApp->disable_account($request, $user)
+        );
     }
 
-    public function unlock_account($request, $user)
+    public function enable_account($request, $user)
     {
-        return $this->eventApp->unlock_account($request, $user);
+        return UserResource::make(
+            $this->eventApp->enable_account($request, $user)
+        );
     }
 }

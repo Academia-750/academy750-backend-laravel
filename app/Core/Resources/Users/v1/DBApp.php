@@ -155,13 +155,13 @@ class DBApp implements UsersInterface
         return "Proceso de importación iniciado";
     }
 
-    public function lock_account($request, $user)
+    public function disable_account($request, $user)
     {
-        return ActionsAccountUser::lockAccountUser($user);
+        return ActionsAccountUser::disableAccountUser($user);
     }
 
-    public function unlock_account($request, $user)
+    public function enable_account($request, $user)
     {
-        return ActionsAccountUser::unlockAccountUser($user);
+        return ActionsAccountUser::enableAccountUser($user);
     }
 }

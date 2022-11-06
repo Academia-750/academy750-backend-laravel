@@ -58,13 +58,13 @@ class EventApp implements UsersInterface
         $this->cacheApp->import_records( $request );
     }
 
-    public function lock_account($request, $user)
+    public function enable_account($request, $user)
     {
-        return $this->cacheApp->lock_account( $request, $user );
+        return $this->cacheApp->enable_account( $request, $user );
     }
 
-    public function unlock_account($request, $user)
+    public function disable_account($request, $user)
     {
-        return $this->cacheApp->unlock_account( $request, $user );
+        return $this->cacheApp->disable_account( $request, $user );
     }
 }

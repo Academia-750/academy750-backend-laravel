@@ -39,14 +39,14 @@ class UserPolicy
         return $user->can('action-for-multiple-users');
     }
 
-    public function lock_account(User $user, User $userResource): bool
+    public function enable_account(User $user, User $userResource): bool
     {
-        return $user->can('lock-account-a-user');
+        return $user->can('disable-account-student');
     }
 
-    public function unlock_account(User $user, User $userResource): bool
+    public function disable_account(User $user, User $userResource): bool
     {
-        return $user->can('unlock-account-a-user');
+        return $user->can('enable-account-student');
     }
 
     public function export_records(User $user): bool

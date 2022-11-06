@@ -73,13 +73,13 @@ class CacheApp implements UsersInterface
         return $this->dbApp->import_records( $request );
     }
 
-    public function lock_account($request, $user)
+    public function disable_account($request, $user)
     {
-        return $this->dbApp->lock_account( $request, $user );
+        return $this->dbApp->disable_account( $request, $user );
     }
 
-    public function unlock_account($request, $user)
+    public function enable_account($request, $user)
     {
-        return $this->dbApp->unlock_account( $request, $user );
+        return $this->dbApp->enable_account( $request, $user );
     }
 }

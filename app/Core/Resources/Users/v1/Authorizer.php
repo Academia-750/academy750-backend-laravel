@@ -46,16 +46,16 @@ class Authorizer implements UsersInterface
         return $this->schemaJson->mass_selection_for_action( $request );
     }
 
-    public function lock_account( $request, $user )
+    public function disable_account( $request, $user )
     {
-        Gate::authorize('lock_account', $user );
-        return $this->schemaJson->lock_account( $request, $user );
+        Gate::authorize('disable_account', $user );
+        return $this->schemaJson->disable_account( $request, $user );
     }
 
-    public function unlock_account( $request, $user )
+    public function enable_account( $request, $user )
     {
-        Gate::authorize('unlock_account', $user );
-        return $this->schemaJson->unlock_account( $request, $user );
+        Gate::authorize('enable_account', $user );
+        return $this->schemaJson->enable_account( $request, $user );
     }
 
     public function export_records( $request ){

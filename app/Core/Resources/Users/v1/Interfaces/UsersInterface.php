@@ -9,8 +9,8 @@ interface UsersInterface
     public function update($request, $user );
     public function delete( $user );
     public function mass_selection_for_action( $request );
-    public function lock_account( $request, $user );
-    public function unlock_account( $request, $user );
+    public function disable_account( $request, $user );
+    public function enable_account( $request, $user );
     public function export_records( $request );
     public function import_records( $request );
 }
