@@ -62,7 +62,7 @@ class CreateUserRequest extends FormRequest
         ];
     }
 
-    #[ArrayShape(['dni' => "string", 'first-name' => "string", 'last-name' => "string", 'phone' => "string", 'email' => "string"])] public function attributes():array
+    #[ArrayShape(['dni' => "string", 'first-name' => "string", 'last-name' => "string", 'phone' => "string", 'email' => "string", 'roles' => "string"])] public function attributes():array
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [

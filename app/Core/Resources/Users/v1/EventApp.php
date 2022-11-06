@@ -29,9 +29,9 @@ class EventApp implements UsersInterface
     }
 
     public function update( $request, $user ){
-        $itemUpdatedInstance = $this->cacheApp->update( $request );
+        $itemUpdatedInstance = $this->cacheApp->update( $request, $user );
         /* broadcast(new UpdateUserEvent($itemUpdatedInstance)); */
-        return $this->cacheApp->update( $request, $user );
+        return $itemUpdatedInstance;
     }
 
     public function delete( $user ){

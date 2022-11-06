@@ -63,12 +63,24 @@ class DBApp implements UsersInterface
         return $this->model->applyIncludes()->find($user->getRouteKey());
     }
 
-    public function update( $request, $user ): \App\Models\Student{
+    public function update( $request, $user ): \App\Models\User{
         try {
 
             DB::beginTransaction();
-                $user->name = $request->get('name');
+                $user->dni = $request->get('dni') ?? $user->dni;
+                $user->first_name = $request->get('first-name') ?? $user->first_name;
+                $user->last_name = $request->get('last-name') ?? $user->last_name;
+                $user->phone = $request->get('phone') ?? $user->phone;
+                $user->email = $request->get('email') ?? $user->email;
                 $user->save();
+
+                if ($request->get('roles') !== null) {
+                    UserService::syncRolesToUser(
+                        $request->get('roles'),
+                        $user
+                    );
+                }
+
             DB::commit();
 
             return $this->model->applyIncludes()->find($user->getRouteKey());
