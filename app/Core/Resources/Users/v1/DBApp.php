@@ -96,7 +96,7 @@ class DBApp implements UsersInterface
         try {
 
             DB::beginTransaction();
-                $user->delete();
+                $user->forceDelete();
             DB::commit();
 
         } catch (\Exception $e) {

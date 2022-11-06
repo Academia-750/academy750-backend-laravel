@@ -9,7 +9,7 @@ Route::get('users', [UsersController::class, 'index'])->name('api.v1.users.index
 Route::get('users/{user}', [UsersController::class, 'read'])->name('api.v1.users.read');
 Route::post('users/create', [UsersController::class, 'create'])->name('api.v1.users.create');
 Route::patch('users/update/{user}', [UsersController::class, 'update'])->name('api.v1.users.update');
-Route::delete('users/delete/{user}', [UsersController::class, 'delete'])->name('api.v1.users.soft-delete');
+Route::delete('users/delete/{user}', [UsersController::class, 'delete'])->name('api.v1.users.delete');
 Route::post('users/mass-selection-action', [UsersController::class, 'mass_selection_for_action'])->name('api.v1.users.massSelectionForAction');
 Route::post('users/export', [UsersController::class, 'export_records'])->name('api.v1.users.export');
 Route::post('users/import', [UsersController::class, 'import_records'])->name('api.v1.users.import');

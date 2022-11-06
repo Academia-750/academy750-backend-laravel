@@ -34,7 +34,8 @@ class Authorizer implements UsersInterface
         return $this->schemaJson->update( $request, $user );
     }
 
-    public function delete( $user ){
+    public function delete( $user ): \Illuminate\Http\Response
+    {
         Gate::authorize('delete', $user );
         return $this->schemaJson->delete( $user );
     }

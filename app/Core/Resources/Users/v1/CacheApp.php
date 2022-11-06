@@ -50,11 +50,10 @@ class CacheApp implements UsersInterface
         return $this->dbApp->update( $request, $user );
     }
 
-    public function delete( $user ){
+    public function delete( $user ): void{
 
         Cache::store('redis')->tags('user')->flush();
-
-        return $this->dbApp->delete( $user );
+        $this->dbApp->delete( $user );
     }
 
     public function mass_selection_for_action( $request ): string{

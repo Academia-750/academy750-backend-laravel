@@ -12,7 +12,7 @@ trait AuthServiceTraitTest
     public function authenticateUser ($modelRole) {
         $userAuth = User::factory()->create([
             'first_name' => 'Raul Alberto',
-            'last_name' => 'Moheno Zavaleta'
+            'last_name' => 'Moheno Zavaleta',
         ]);
         $userAuth->assignRole($modelRole);
         Sanctum::actingAs($userAuth);

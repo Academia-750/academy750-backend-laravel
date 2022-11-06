@@ -41,7 +41,8 @@ class SchemaJson implements UsersInterface
     }
 
     public function delete( $user ){
-        return response()->json($this->eventApp->delete( $user ), 204);
+        $this->eventApp->delete( $user );
+        return response()->noContent();
     }
 
     public function mass_selection_for_action( $request ): string{

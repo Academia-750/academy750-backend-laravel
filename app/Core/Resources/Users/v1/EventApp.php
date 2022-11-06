@@ -34,10 +34,9 @@ class EventApp implements UsersInterface
         return $itemUpdatedInstance;
     }
 
-    public function delete( $user ){
+    public function delete( $user ): void{
         /* broadcast(new DeleteUserEvent($user)); */
-
-        return $this->cacheApp->delete( $user );
+        $this->cacheApp->delete( $user );
     }
 
     public function mass_selection_for_action( $request ): string{
