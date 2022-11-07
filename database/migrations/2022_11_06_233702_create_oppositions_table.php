@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('oppositions', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->string('period', 50)->nullable()->default(null);
+            $table->string('period', 100)->nullable()->default(null);
             $table->enum('is_visible', [ 'yes', 'no' ])->default('yes');
             $table->softDeletes();
 
