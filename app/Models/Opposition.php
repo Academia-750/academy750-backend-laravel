@@ -23,11 +23,13 @@ class Opposition extends Model
 
     public array $allowedSorts = [
         'name',
+        'period',
         "created-at"
     ];
 
     public array $adapterSorts = [
         'name' => "Name",
+        'period' => "Period",
         "created-at" => "CreatedAt",
     ];
 
@@ -60,6 +62,10 @@ class Opposition extends Model
 
     public function sortName(Builder $query, $direction): void{
         $query->orderBy('name', $direction);
+    }
+
+    public function sortPeriod(Builder $query, $direction): void{
+        $query->orderBy('period', $direction);
     }
 
     public function sortCreatedAt(Builder $query, $direction): void{
