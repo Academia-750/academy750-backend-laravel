@@ -9,20 +9,15 @@ class OppositionResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'type' => 'users',
+            'type' => 'oppositions',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-
+                'name' => $this->resource->name,
+                'period' => $this->resource->period,
+                'is_visible' => $this->resource->is_visible,
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
-            'relationships' => [
-
-            ],
-            'links' => [
-                'self' => route('api.v1.example.read', $this->resource->getRouteKey()),
-                'related' => [
-                    'example' => route('api.v1.example.read', $this->resource->getRouteKey()) . '?include=example-relation',
-                ]
-            ]
+            'relationships' => []
         ];
     }
 }

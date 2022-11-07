@@ -94,6 +94,13 @@ class PermissionSeeder extends Seeder
         Permission::create(
             [
                 'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
+                'name' => 'see-a-opposition',
+                'alias_name' => 'see-a-opposition',
+            ]
+        );
+        Permission::create(
+            [
+                'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
                 'name' => 'create-opposition',
                 'alias_name' => 'create-opposition',
             ]
@@ -110,6 +117,13 @@ class PermissionSeeder extends Seeder
                 'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
                 'name' => 'delete-opposition',
                 'alias_name' => 'delete-opposition',
+            ]
+        );
+        Permission::create(
+            [
+                'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
+                'name' => 'action-for-multiple-oppositions',
+                'alias_name' => 'action-for-multiple-oppositions',
             ]
         );
         Permission::create(
@@ -322,9 +336,11 @@ class PermissionSeeder extends Seeder
             'enable-account-student',
             'disable-account-student',
             'list-oppositions',
+            'see-a-opposition',
             'create-opposition',
             'edit-opposition',
             'delete-opposition',
+            'action-for-multiple-oppositions',
             'see-syllabus',
             'add-topic-to-opposition',
             'remove-topic-of-opposition',

@@ -20,7 +20,7 @@ class DBApp implements OppositionsInterface
         $this->model = $opposition;
     }
 
-    public function index(): \Illuminate\Pagination\LengthAwarePaginator{
+    public function index(){
         return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 

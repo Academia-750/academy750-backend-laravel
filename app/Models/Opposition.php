@@ -11,15 +11,23 @@ class Opposition extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = [
+    public $keyType = "string";
+    public $incrementing = false;
 
+    protected $fillable = [
+        'id',
+        'name',
+        'period',
+        'is_visible'
     ];
 
     public array $allowedSorts = [
+        'name',
         "created-at"
     ];
 
     public array $adapterSorts = [
+        'name' => "Name",
         "created-at" => "CreatedAt",
     ];
 
@@ -43,10 +51,16 @@ class Opposition extends Model
 
     public array $adapterIncludes = [];
 
-     protected $casts = [];
+     protected $casts = [
+         'id' => 'string'
+     ];
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
+
+    public function sortName(Builder $query, $direction): void{
+        $query->orderBy('name', $direction);
+    }
 
     public function sortCreatedAt(Builder $query, $direction): void{
         $query->orderBy('created_at', $direction);

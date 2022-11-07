@@ -11,13 +11,7 @@ class OppositionCollection extends ResourceCollection
     public function toArray($request): array
     {
         return [
-            'data' => $this->collection,
-            'links' => [
-                'self' => route('api.v1.example.index'),
-            ],
-            'utilities' => [
-
-            ]
+            'data' => $this->collection
         ];
     }
 }
