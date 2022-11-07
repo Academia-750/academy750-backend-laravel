@@ -132,7 +132,7 @@ class SortOppositionsTest extends TestCase
 
 
     /** @test */
-    public function can_sort_students_by_created_at_ascending(): void
+    public function can_sort_oppositions_by_created_at_ascending(): void
     {
         $createdAt1 = Carbon::now()->addDay();
         $createdAt2 = Carbon::now()->addDays(20);
@@ -172,7 +172,7 @@ class SortOppositionsTest extends TestCase
     }
 
     /** @test */
-    public function can_sort_students_by_created_at_descending(): void
+    public function can_sort_oppositions_by_created_at_descending(): void
     {
         $createdAt1 = Carbon::now()->addDay();
         $createdAt2 = Carbon::now()->addDays(20);

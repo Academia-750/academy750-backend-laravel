@@ -34,6 +34,9 @@ class Opposition extends Model
     ];
 
     public array $allowedFilters = [
+        "name",
+        "period",
+        "created-at",
         "search",
         "day",
         "month",
@@ -42,6 +45,9 @@ class Opposition extends Model
     ];
 
     public array $adapterFilters = [
+        "name" => "Name",
+        "period" => "Period",
+        "created-at" => "CreatedAt",
         "search" => "Search",
         "day" => "Day",
         "month" => "Month",
@@ -75,6 +81,15 @@ class Opposition extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
     // Filters functions
 
+    public function filterName(Builder $query, $value): void{
+        $query->where('name', 'LIKE', "%{$value}%");
+    }
+    public function filterPeriod(Builder $query, $value): void{
+        $query->where('period', 'LIKE', "%{$value}%");
+    }
+    public function filterCreatedAt (Builder $query, $value): void {
+        $query->whereDate('created_at',$value);
+    }
     public function filterYear(Builder $query, $value): void{
         $query->whereYear('created_at', $value);
     }
@@ -90,8 +105,8 @@ class Opposition extends Model
 
     public function filterSearch(Builder $query, $value): void{
         $query->orWhere(function($query) use ($value) {
-            $query->where('field', 'LIKE' , "%{$value}%")
-                ->orWhere('other_field', 'LIKE' , "%{$value}%");
+            $query->where('name', 'LIKE' , "%{$value}%")
+                ->orWhere('period', 'LIKE' , "%{$value}%");
         });
     }
 
