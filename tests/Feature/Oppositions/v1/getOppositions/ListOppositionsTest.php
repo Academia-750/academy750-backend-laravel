@@ -16,9 +16,17 @@ class ListOppositionsTest extends TestCase
     /** @test */
     public function can_fetch_all_oppositions(): void
     {
-        $oppositions = Opposition::factory()->count(3)->create();
+        $opposition1 = Opposition::factory()->create([
+            'name' => 'A'
+        ]);
+        $opposition2 = Opposition::factory()->create([
+            'name' => 'B'
+        ]);
+        $opposition3 = Opposition::factory()->create([
+            'name' => 'C'
+        ]);
 
-        $url = route('api.v1.oppositions.index');
+        $url = route('api.v1.oppositions.index'). '?sort=name';
 
         $response = $this->getJson($url);
 
@@ -28,38 +36,38 @@ class ListOppositionsTest extends TestCase
 
         $response->assertJsonCount(3, 'data');
 
-        $response->assertJson([
+        $response->assertExactJson([
             'data' => [
                 [
                     'type' => 'oppositions',
-                    'id' => (string) $oppositions[0]->getRouteKey(),
+                    'id' => (string) $opposition1->getRouteKey(),
                     'attributes' => [
-                        'name' => $oppositions[0]->name,
-                        'period' => $oppositions[0]->period,
-                        'is_visible' => $oppositions[0]->is_visible,
-                        "created_at" => $oppositions[0]->created_at->format('Y-m-d h:m:s')
+                        'name' => $opposition1->name,
+                        'period' => $opposition1->period,
+                        'is_visible' => $opposition1->is_visible,
+                        "created_at" => $opposition1->created_at->format('Y-m-d h:m:s')
                     ],
                     'relationships' => []
                 ],
                 [
                     'type' => 'oppositions',
-                    'id' => (string) $oppositions[1]->getRouteKey(),
+                    'id' => (string) $opposition2->getRouteKey(),
                     'attributes' => [
-                        'name' => $oppositions[1]->name,
-                        'period' => $oppositions[1]->period,
-                        'is_visible' => $oppositions[1]->is_visible,
-                        "created_at" => $oppositions[1]->created_at->format('Y-m-d h:m:s')
+                        'name' => $opposition2->name,
+                        'period' => $opposition2->period,
+                        'is_visible' => $opposition2->is_visible,
+                        "created_at" => $opposition2->created_at->format('Y-m-d h:m:s')
                     ],
                     'relationships' => []
                 ],
                 [
                     'type' => 'oppositions',
-                    'id' => (string) $oppositions[2]->getRouteKey(),
+                    'id' => (string) $opposition3->getRouteKey(),
                     'attributes' => [
-                        'name' => $oppositions[2]->name,
-                        'period' => $oppositions[2]->period,
-                        'is_visible' => $oppositions[2]->is_visible,
-                        "created_at" => $oppositions[2]->created_at->format('Y-m-d h:m:s')
+                        'name' => $opposition3->name,
+                        'period' => $opposition3->period,
+                        'is_visible' => $opposition3->is_visible,
+                        "created_at" => $opposition3->created_at->format('Y-m-d h:m:s')
                     ],
                     'relationships' => []
                 ],
