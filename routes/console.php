@@ -37,6 +37,13 @@ Artisan::command('bomberos750:install', function () {
     $this->call('bomberos750:migrate');
 })->purpose('Hace las configuraciones necesarias cuando se descarga el proyecto');
 
+Artisan::command('bomberos750:test', function () {
+    $this->call('bomberos750:clear');
+    $this->call('cache:clear', ['store' => 'redis']);
+    $this->call('cache:clear');
+    $this->call('test',[ '--stop-on-failure' ]);
+})->purpose('Ejecuta los tests del proyecto de forma eficiente');
+
 Artisan::command('bomberos750:migrate', function () {
     $this->call('bomberos750:clear');
     $this->call('migrate:fresh');
