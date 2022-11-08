@@ -29,7 +29,6 @@ class EventApp implements OppositionsInterface
     }
 
     public function update( $request, $opposition ){
-        $itemUpdatedInstance = $this->cacheApp->update( $request );
         /* broadcast(new UpdateOppositionEvent($itemUpdatedInstance)); */
         return $this->cacheApp->update( $request, $opposition );
     }

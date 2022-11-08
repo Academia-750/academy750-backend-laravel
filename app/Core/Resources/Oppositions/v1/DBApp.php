@@ -52,7 +52,8 @@ class DBApp implements OppositionsInterface
         try {
 
             DB::beginTransaction();
-                $opposition->name = $request->get('name');
+                $opposition->name = $request->get('name') ?? $opposition->name;
+                $opposition->period = $request->get('period') ?? $opposition->period;
                 $opposition->save();
             DB::commit();
 

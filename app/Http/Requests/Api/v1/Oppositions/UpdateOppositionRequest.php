@@ -16,7 +16,23 @@ class UpdateOppositionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'nullable',
+                Rule::when( $this->get('name') !== null ,
+                    [
+                        'max:100',
+                        Rule::unique('oppositions', 'name')->ignore($this->route('opposition')?->getRouteKey())
+                    ]
+                )
+            ],
+            'period' => [
+                'nullable',
+                Rule::when( $this->get('period') !== null ,
+                    [
+                        'max:100'
+                    ]
+                )
+            ],
         ];
     }
 
