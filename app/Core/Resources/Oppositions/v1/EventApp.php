@@ -39,7 +39,7 @@ class EventApp implements OppositionsInterface
         return $this->cacheApp->delete( $opposition );
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ): array{
 
         /* $records = Opposition::whereIn('id', $request->get('oppositions'));
 

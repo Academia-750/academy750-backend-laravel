@@ -54,7 +54,7 @@ class CacheApp implements OppositionsInterface
         return $this->dbApp->delete( $opposition );
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ): array{
 
         Cache::store('redis')->tags('opposition')->flush();
 

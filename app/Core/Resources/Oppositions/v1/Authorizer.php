@@ -39,7 +39,7 @@ class Authorizer implements OppositionsInterface
         return $this->schemaJson->delete( $opposition );
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ){
         Gate::authorize('mass_selection_for_action', Opposition::class );
         return $this->schemaJson->mass_selection_for_action( $request );
     }

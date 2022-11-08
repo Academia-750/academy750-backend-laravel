@@ -43,10 +43,11 @@ class SchemaJson implements OppositionsInterface
         return response()->json($this->eventApp->delete( $opposition ), 204);
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ): \Illuminate\Http\JsonResponse
+    {
         return response()->json([
-            'message' => $this->eventApp->mass_selection_for_action( $request )
-        ], 200);
+            'information' => $this->eventApp->mass_selection_for_action( $request )
+        ]);
     }
 
     public function export_records( $request ){

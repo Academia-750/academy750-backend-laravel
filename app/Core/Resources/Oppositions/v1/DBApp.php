@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Oppositions\v1;
 
+use App\Core\Resources\Oppositions\v1\Services\ActionForMultipleRecordsService;
 use App\Core\Resources\Oppositions\v1\Services\ActionsOppositionsRecords;
 use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
@@ -81,26 +82,20 @@ class DBApp implements OppositionsInterface
 
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function mass_selection_for_action( $request ): array{
         try {
 
             DB::beginTransaction();
-                $message = null;
-                if( $request->get('action') === 'delete' ){
-                    foreach ($request->get('oppositions') as $opposition){
-                        $oppositionDelete = $this->model->firstWhere('id',$opposition);
-                        $oppositionDelete->delete();
-                    }
-                    $process = true;
-                    $message = "Los registros seleccionados han sido eliminados.";
-                }
+
+            $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('oppositions'));
+
             DB::commit();
 
-            if ($process) {
-                return $message;
-            }else {
-                return "No se ha realizado ninguna acción";
+            if (count($information) === 0) {
+                $information[] = "No hay registros afectados";
             }
+
+            return $information;
 
         } catch (\Exception $e) {
             DB::rollback();
