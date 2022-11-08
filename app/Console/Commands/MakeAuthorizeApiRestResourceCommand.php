@@ -71,7 +71,8 @@ class MakeAuthorizeApiRestResourceCommand extends Command
             "schemaNameVariable" => 'schemaJson',
             "modelVariable" => Str::snake($this->getSingularClassName(Str::camel($this->argument('name')))), // process_time
             "namespacedInterface" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural.'\\v1\\Interfaces\\' . $pascalCaseNameResourcePlural . 'Interface', // App\Core\Resources\Users\Interfaces\UsersInterface
-            "modelInstanceClass" => $this->getSingularClassName(Str::camel($this->argument('name'))) . '::class', // ProcessTime::class
+            "modelInstanceClass" => $this->getSingularClassName(Str::camel($this->argument('name'))) . '::class', // ProcessTime::class,
+            "modelVariableSingularForApiResourceReturned" => $this->getSingularClassName(Str::camel($this->argument('name'))),
         ];
     }
 

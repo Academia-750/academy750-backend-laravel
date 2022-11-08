@@ -3,6 +3,8 @@ namespace {{ namespace }};
 
 use {{ namespacedModel }};
 use {{ namespacedInterface }};
+use App\Http\Resources\Api\{{ modelVariableSingularForApiResourceReturned }}\v1\{{ modelVariableSingularForApiResourceReturned }}Collection;
+use App\Http\Resources\Api\{{ modelVariableSingularForApiResourceReturned }}\v1\{{ modelVariableSingularForApiResourceReturned }}Resource;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
 
@@ -14,34 +16,40 @@ class {{ class }} implements {{ interfaceName }}
         $this->{{ schemaNameVariable }} = ${{ schemaNameVariable }};
     }
 
-    public function index(){
+    public function index(): {{ modelVariableSingularForApiResourceReturned }}Collection
+    {
         Gate::authorize('index', {{ modelInstanceClass }} );
         return $this->{{ schemaNameVariable }}->index();
     }
 
-    public function create( $request ){
+    public function create( $request ): \Illuminate\Http\JsonResponse
+    {
         Gate::authorize('create', {{ modelInstanceClass }} );
         return $this->{{ schemaNameVariable }}->create($request);
     }
 
-    public function read( ${{ modelVariable }} ){
+    public function read( ${{ modelVariable }} ): {{ modelVariableSingularForApiResourceReturned }}Resource
+    {
         Gate::authorize('read', ${{ modelVariable }} );
         return $this->{{ schemaNameVariable }}->read( ${{ modelVariable }} );
     }
 
-    public function update( $request, ${{ modelVariable }} ){
+    public function update( $request, ${{ modelVariable }} ): {{ modelVariableSingularForApiResourceReturned }}Resource
+    {
         Gate::authorize('update', ${{ modelVariable }} );
         return $this->{{ schemaNameVariable }}->update( $request, ${{ modelVariable }} );
     }
 
-    public function delete( ${{ modelVariable }} ){
+    public function delete( ${{ modelVariable }} ): \Illuminate\Http\JsonResponse
+    {
         Gate::authorize('delete', ${{ modelVariable }} );
         return $this->{{ schemaNameVariable }}->delete( ${{ modelVariable }} );
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function action_for_multiple_records( $request ): \Illuminate\Http\JsonResponse
+    {
         Gate::authorize('mass_selection_for_action', {{ modelInstanceClass }} );
-        return $this->{{ schemaNameVariable }}->mass_selection_for_action( $request );
+        return $this->{{ schemaNameVariable }}->action_for_multiple_records( $request );
     }
 
     public function export_records( $request ){

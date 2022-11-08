@@ -40,7 +40,7 @@ class {{ class }} implements {{ interfaceName }}
         return $this->{{ cacheNameVariable }}->delete( ${{ modelVariable }} );
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function action_for_multiple_records( $request ): string{
 
         /* $records = {{ resourceNameSingular }}::whereIn('id', $request->get('{{ resourceNamePluralSnakeCase }}'));
 
@@ -48,7 +48,7 @@ class {{ class }} implements {{ interfaceName }}
             new ActionForMassiveSelection{{ resourceNameSingular }}Event( $request->get('action'), $records )
         ); */
 
-        return $this->{{ cacheNameVariable }}->mass_selection_for_action( $request );
+        return $this->{{ cacheNameVariable }}->action_for_multiple_records( $request );
     }
 
     public function export_records( $request ){

@@ -22,25 +22,29 @@ class SchemaJson implements UsersInterface
         );
     }
 
-    public function create( $request ){
+    public function create( $request ): \Illuminate\Http\JsonResponse
+    {
         return UserResource::make($this->eventApp->create($request))
                     ->response()
                     ->setStatusCode(201);
     }
 
-    public function read( $user ){
+    public function read( $user ): UserResource
+    {
         return UserResource::make(
             $this->eventApp->read( $user )
         );
     }
 
-    public function update( $request, $user ){
+    public function update( $request, $user ): UserResource
+    {
         return UserResource::make(
             $this->eventApp->update( $request, $user )
         );
     }
 
-    public function delete( $user ){
+    public function delete( $user ): \Illuminate\Http\Response
+    {
         $this->eventApp->delete( $user );
         return response()->noContent();
     }
@@ -60,14 +64,14 @@ class SchemaJson implements UsersInterface
         return $this->eventApp->import_records( $request );
     }
 
-    public function disable_account($request, $user)
+    public function disable_account($request, $user): UserResource
     {
         return UserResource::make(
             $this->eventApp->disable_account($request, $user)
         );
     }
 
-    public function enable_account($request, $user)
+    public function enable_account($request, $user): UserResource
     {
         return UserResource::make(
             $this->eventApp->enable_account($request, $user)

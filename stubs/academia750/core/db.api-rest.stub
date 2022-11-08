@@ -20,7 +20,7 @@ class {{ class }} implements {{ interfaceName }}
         $this->model = ${{ modelVariable }};
     }
 
-    public function index(): \Illuminate\Pagination\LengthAwarePaginator{
+    public function index(){
         return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
@@ -77,7 +77,7 @@ class {{ class }} implements {{ interfaceName }}
 
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function action_for_multiple_records( $request ): string{
         try {
 
             DB::beginTransaction();

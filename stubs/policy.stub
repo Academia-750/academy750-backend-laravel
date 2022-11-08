@@ -48,17 +48,4 @@ class {{ class }}
     {
         return true;
     }
-
-    public function get_companies_archived(User $user): bool
-    {
-        return true;
-    }
-    public function restore_archived(User $user, ${{ modelVariable }}): bool
-    {
-        return true;
-    }
-    public function force_delete_archived(User $user, ${{ modelVariable }}): bool
-    {
-        return true;
-    }
 }

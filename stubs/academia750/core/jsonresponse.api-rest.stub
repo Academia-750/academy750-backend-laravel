@@ -15,37 +15,43 @@ class {{ class }} implements {{ interfaceName }}
         $this->{{ eventNameVariable }} = ${{ eventNameVariable }};
     }
 
-    public function index(){
+    public function index(): {{ modelVariableSingularForFiles }}Collection
+    {
         return {{ modelVariableSingularForFiles }}Collection::make(
             $this->{{ eventNameVariable }}->index()
         );
     }
 
-    public function create( $request ){
+    public function create( $request ): \Illuminate\Http\JsonResponse
+    {
         return {{ modelVariableSingularForFiles }}Resource::make($this->{{ eventNameVariable }}->create($request))
                     ->response()
                     ->setStatusCode(201);
     }
 
-    public function read( ${{ modelVariable }} ){
+    public function read( ${{ modelVariable }} ): {{ modelVariableSingularForFiles }}Resource
+    {
         return {{ modelVariableSingularForFiles }}Resource::make(
             $this->{{ eventNameVariable }}->read( ${{ modelVariable }} )
         );
     }
 
-    public function update( $request, ${{ modelVariable }} ){
+    public function update( $request, ${{ modelVariable }} ): {{ modelVariableSingularForFiles }}Resource
+    {
         return {{ modelVariableSingularForFiles }}Resource::make(
             $this->{{ eventNameVariable }}->update( $request, ${{ modelVariable }} )
         );
     }
 
-    public function delete( ${{ modelVariable }} ){
+    public function delete( ${{ modelVariable }} ): \Illuminate\Http\JsonResponse
+    {
         return response()->json($this->{{ eventNameVariable }}->delete( ${{ modelVariable }} ), 204);
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function action_for_multiple_records( $request ): \Illuminate\Http\JsonResponse
+    {
         return response()->json([
-            'message' => $this->{{ eventNameVariable }}->mass_selection_for_action( $request )
+            'information' => $this->{{ eventNameVariable }}->action_for_multiple_records( $request )
         ], 200);
     }
 

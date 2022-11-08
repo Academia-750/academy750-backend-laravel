@@ -54,11 +54,11 @@ class {{ class }} implements {{ interfaceName }}
         return $this->{{ dbNameVariable }}->delete( ${{ modelVariable }} );
     }
 
-    public function mass_selection_for_action( $request ): string{
+    public function action_for_multiple_records( $request ): string{
 
         Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
 
-        return $this->{{ dbNameVariable }}->mass_selection_for_action( $request );
+        return $this->{{ dbNameVariable }}->action_for_multiple_records( $request );
     }
 
     public function export_records( $request ){

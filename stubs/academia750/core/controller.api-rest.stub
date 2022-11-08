@@ -41,7 +41,7 @@ class {{ class }} extends Controller
         return $this->{{ interfaceNameVariable }}->delete( ${{ modelVariable }} );
     }
 
-    public function mass_selection_for_action(ActionForMassiveSelection{{ modelPlural }}Request $request): string{
+    public function action_for_multiple_records(ActionForMassiveSelection{{ modelPlural }}Request $request): string{
         return $this->{{ interfaceNameVariable }}->mass_selection_for_action( $request );
     }
 

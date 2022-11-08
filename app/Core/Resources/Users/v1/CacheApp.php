@@ -14,9 +14,6 @@ class CacheApp implements UsersInterface
         $this->dbApp = $dbApp;
     }
 
-    /**
-     * @throws \JsonException
-     */
     public function index(){
 
         $nameCache = '';

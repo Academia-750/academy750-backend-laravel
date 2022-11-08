@@ -14,22 +14,26 @@ class Authorizer implements UsersInterface
         $this->schemaJson = $schemaJson;
     }
 
-    public function index(){
+    public function index(): \App\Http\Resources\Api\User\v1\UserCollection
+    {
         Gate::authorize('index', User::class );
         return $this->schemaJson->index();
     }
 
-    public function create( $request ){
+    public function create( $request ): \Illuminate\Http\JsonResponse
+    {
         Gate::authorize('create', User::class );
         return $this->schemaJson->create($request);
     }
 
-    public function read( $user ){
+    public function read( $user ): \App\Http\Resources\Api\User\v1\UserResource
+    {
         Gate::authorize('read', $user );
         return $this->schemaJson->read( $user );
     }
 
-    public function update( $request, $user ){
+    public function update( $request, $user ): \App\Http\Resources\Api\User\v1\UserResource
+    {
         Gate::authorize('update', $user );
         return $this->schemaJson->update( $request, $user );
     }
@@ -46,13 +50,13 @@ class Authorizer implements UsersInterface
         return $this->schemaJson->mass_selection_for_action( $request );
     }
 
-    public function disable_account( $request, $user )
+    public function disable_account( $request, $user ): \App\Http\Resources\Api\User\v1\UserResource
     {
         Gate::authorize('disable_account', $user );
         return $this->schemaJson->disable_account( $request, $user );
     }
 
-    public function enable_account( $request, $user )
+    public function enable_account( $request, $user ): \App\Http\Resources\Api\User\v1\UserResource
     {
         Gate::authorize('enable_account', $user );
         return $this->schemaJson->enable_account( $request, $user );
