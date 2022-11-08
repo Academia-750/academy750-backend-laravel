@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Oppositions\v1;
 
+use App\Core\Resources\Oppositions\v1\Services\ActionsOppositionsRecords;
 use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
 use Illuminate\Support\Facades\DB;
@@ -70,7 +71,7 @@ class DBApp implements OppositionsInterface
         try {
 
             DB::beginTransaction();
-                $opposition->delete();
+                ActionsOppositionsRecords::deleteOpposition($opposition);
             DB::commit();
 
         } catch (\Exception $e) {
