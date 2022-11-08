@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Core\Services\UUIDTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -9,7 +10,8 @@ use Illuminate\Database\Eloquent\Builder;
 
 class Opposition extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    use UUIDTrait;
 
     public $keyType = "string";
     public $incrementing = false;

@@ -19,7 +19,7 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'dni' => [
-                'required', 'alpha_num', Rule::unique('users', 'dni')->ignore(auth()->user()->id), new ValidateCorrectDNISpain()
+                'required', 'alpha_num', Rule::unique('users', 'dni'), new ValidateCorrectDNISpain()
             ],
             'first-name' => [
                 'required', 'min:3', 'max:25', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
@@ -28,10 +28,10 @@ class CreateUserRequest extends FormRequest
                 'required', 'min:3', 'max:25', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
             ],
             'phone' => [
-                'required', 'numeric', 'regex:/^[6789]\d{8}$/', Rule::unique('users', 'phone')->ignore(auth()->user()->id)
+                'required', 'numeric', 'regex:/^[6789]\d{8}$/', Rule::unique('users', 'phone')
             ],
             'email' => [
-                'required', 'email', Rule::unique('users', 'email')->ignore(auth()->user()->id)
+                'required', 'email', Rule::unique('users', 'email')
             ],
             'roles' => ['required', 'array', 'min:1'],
             'roles.*' => ['string','distinct:strict','exists:roles,id'],

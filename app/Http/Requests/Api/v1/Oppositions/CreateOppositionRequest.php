@@ -16,7 +16,15 @@ class CreateOppositionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'required',
+                'max:100',
+                Rule::unique('oppositions', 'name')
+            ],
+            'period' =>[
+                'required',
+                'max:100'
+            ]
         ];
     }
 
@@ -30,7 +38,8 @@ class CreateOppositionRequest extends FormRequest
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'name' => 'Nombre de la oposición',
+            'period' => 'Periodo de la oposición'
         ];
     }
 

@@ -12,7 +12,7 @@ trait UUIDTrait
             $model->keyType = 'string';
             $model->incrementing = false;
 
-            $model->{$model->getKeyName()} = UuidGeneratorService::getUUIDUnique(User::class);
+            $model->{$model->getKeyName()} = UuidGeneratorService::getUUIDUnique($model);
         });
     }
 

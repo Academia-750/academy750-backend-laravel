@@ -29,7 +29,9 @@ class DBApp implements OppositionsInterface
 
             DB::beginTransaction();
                 $oppositionCreated = $this->model->query()->create([
-                    '' => '',
+                    'name' => $request->get('name'),
+                    'period' => $request->get('period'),
+                    'is_visible' => 'yes'
                 ]);
             DB::commit();
 

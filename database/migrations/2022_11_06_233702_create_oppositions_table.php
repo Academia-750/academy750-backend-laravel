@@ -15,10 +15,9 @@ return new class extends Migration
     {
         Schema::create('oppositions', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
-            $table->string('name', 100);
+            $table->string('name', 100)->unique();
             $table->string('period', 100)->nullable()->default(null);
             $table->enum('is_visible', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
-            $table->softDeletes();
 
             $table->timestamps();
         });
