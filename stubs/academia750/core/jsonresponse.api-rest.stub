@@ -44,7 +44,7 @@ class {{ class }} implements {{ interfaceName }}
         );
     }
 
-    public function delete( ${{ modelVariable }} ): \Illuminate\Http\JsonResponse
+    public function delete( ${{ modelVariable }} ): \Illuminate\Http\Response
     {
         $this->{{ eventNameVariable }}->delete( ${{ modelVariable }} );
         return response()->noContent();

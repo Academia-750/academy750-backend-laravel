@@ -40,7 +40,7 @@ class {{ class }} implements {{ interfaceName }}
         return $this->{{ schemaNameVariable }}->update( $request, ${{ modelVariable }} );
     }
 
-    public function delete( ${{ modelVariable }} ): \Illuminate\Http\JsonResponse
+    public function delete( ${{ modelVariable }} ): \Illuminate\Http\Response
     {
         Gate::authorize('delete', ${{ modelVariable }} );
         return $this->{{ schemaNameVariable }}->delete( ${{ modelVariable }} );
