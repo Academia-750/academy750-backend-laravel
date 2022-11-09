@@ -14,9 +14,6 @@ class {{ class }} extends Model
     //use SoftDeletes;
     use UUIDTrait;
 
-    public $keyType = "string";
-    public $incrementing = false;
-
     protected $fillable = [
 
     ];
@@ -49,7 +46,9 @@ class {{ class }} extends Model
 
     public array $adapterIncludes = [];
 
-     protected $casts = [];
+     protected $casts = [
+        'id' => 'string'
+     ];
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions

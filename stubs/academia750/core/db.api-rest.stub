@@ -112,20 +112,9 @@ class {{ class }} implements {{ interfaceName }}
         return Excel::download(new {{ modelNamePlural }}Export($request->get('{{ modelVariablePlural }}')), '{{ modelVariablePlural }}.'. $request->get('type'));
     }
 
-    public function import_records( $request ): string{
+    public function import_records( $request ): void{
         //Proceso de importacion con Queues - El archivo debe tener
         //(new {{ modelNamePlural }}Import(Auth::user()))->import($request->file('{{ modelVariablePlural }}'));
-
-         /*
-         // Lanzamiento de errores en caso de validacion sin uso de Queues
-         if ($importInstance->failures()->isNotEmpty()) {
-             throw ValidationException::withMessages([
-                 'errors' => [
-                     $importInstance->failures()
-                 ]
-             ]);
-         }*/
-        return "Proceso de importación iniciado";
     }
 
 }

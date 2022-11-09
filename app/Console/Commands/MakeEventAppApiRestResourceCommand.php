@@ -68,7 +68,7 @@ class MakeEventAppApiRestResourceCommand extends Command
             "namespacedEventNotifyUpdateItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\v1\\' . 'Update' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
             "namespacedEventNotifyDeleteOrCancelItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\v1\\' . 'Delete' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
             "namespacedEventNotifyActionForMassiveSelectionItem" => $prefixNamespacedEvents . $pascalCaseNameResourcePlural . '\\v1\\' . 'ActionForMassiveSelection' . $this->getSingularClassName(Str::camel($this->argument('name'))) . 'Event',
-            "namespacedCache" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\CacheApp', // App\Core\Resources\Users\EventApp
+            "namespacedCache" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\CacheApp', // App\Core\Resources\Users\EventApp
             'resourceNameSingular' => $this->getSingularClassName(Str::camel($this->argument('name'))),
             'resourceNamePluralSnakeCase' => Str::snake($this->getPluralClassName(Str::camel($this->argument('name')))),
             "class" => 'EventApp',

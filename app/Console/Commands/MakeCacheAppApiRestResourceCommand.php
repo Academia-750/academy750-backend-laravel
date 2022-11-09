@@ -65,7 +65,7 @@ class MakeCacheAppApiRestResourceCommand extends Command
         return [
             "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural. '\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\ProcessTime
-            "namespacedDB" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\DBApp', // App\Core\Resources\ProcessTimes\DBApp
+            "namespacedDB" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\DBApp', // App\Core\Resources\ProcessTimes\DBApp
             "class" => 'CacheApp',
             "interfaceName" => $pascalCaseNameResourcePlural . 'Interface', // ProcessTimesInterface
             "dbName" => 'DBApp',

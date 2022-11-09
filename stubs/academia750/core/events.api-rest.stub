@@ -5,12 +5,12 @@ use {{ namespacedModel }};
 use {{ namespacedInterface }};
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
+use {{ namespacedCache }};
 class {{ class }} implements {{ interfaceName }}
 {
-    protected {{ namespacedCache }} ${{ cacheNameVariable }};
+    protected CacheApp ${{ cacheNameVariable }};
 
-    public function __construct({{ namespacedCache }} ${{ cacheNameVariable }} ){
+    public function __construct(CacheApp ${{ cacheNameVariable }} ){
         $this->{{ cacheNameVariable }} = ${{ cacheNameVariable }};
     }
 
@@ -31,13 +31,12 @@ class {{ class }} implements {{ interfaceName }}
     public function update( $request, ${{ modelVariable }} ){
         $itemUpdatedInstance = $this->{{ cacheNameVariable }}->update( $request, ${{ modelVariable }} );
         /* broadcast(new Update{{ resourceNameSingular }}Event($itemUpdatedInstance)); */
-        return $this->{{ cacheNameVariable }}->update( $request, ${{ modelVariable }} );
+        return $itemUpdatedInstance;
     }
 
-    public function delete( ${{ modelVariable }} ){
+    public function delete( ${{ modelVariable }} ): void{
         /* broadcast(new Delete{{ resourceNameSingular }}Event(${{ modelVariable }})); */
-
-        return $this->{{ cacheNameVariable }}->delete( ${{ modelVariable }} );
+        $this->{{ cacheNameVariable }}->delete( ${{ modelVariable }} );
     }
 
     public function action_for_multiple_records( $request ): array{
@@ -55,7 +54,7 @@ class {{ class }} implements {{ interfaceName }}
         return $this->{{ cacheNameVariable }}->export_records( $request );
     }
 
-    public function import_records( $request ){
+    public function import_records( $request ): void{
         $this->{{ cacheNameVariable }}->import_records( $request );
     }
 

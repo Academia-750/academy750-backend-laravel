@@ -63,7 +63,7 @@ class MakeSchemaJsonAppApiRestResourceCommand extends Command
         return [
             "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural. '\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\User
-            "namespacedEvent" => '\\App\\Core\\Resources\\'. $pascalCaseNameResourcePlural . '\\v1\\EventApp', // App\Core\Resources\Users\EventApp
+            "namespacedEvent" => 'App\\Core\\Resources\\'. $pascalCaseNameResourcePlural . '\\v1\\EventApp', // App\Core\Resources\Users\EventApp
             "class" => 'SchemaJson',
             "interfaceName" => $pascalCaseNameResourcePlural. 'Interface', // UsersInterface
             "eventName" => 'EventApp',

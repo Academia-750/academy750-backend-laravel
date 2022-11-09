@@ -5,12 +5,12 @@ use {{ namespacedModel }};
 use {{ namespacedInterface }};
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Cache;
-
+use {{ namespacedDB }};
 class {{ class }} implements {{ interfaceName }}
 {
-    protected {{ namespacedDB }} ${{ dbNameVariable }};
+    protected DBApp ${{ dbNameVariable }};
 
-    public function __construct({{ namespacedDB }} ${{ dbNameVariable }} ){
+    public function __construct(DBApp ${{ dbNameVariable }} ){
         $this->{{ dbNameVariable }} = ${{ dbNameVariable }};
     }
 
@@ -47,11 +47,10 @@ class {{ class }} implements {{ interfaceName }}
         return $this->{{ dbNameVariable }}->update( $request, ${{ modelVariable }} );
     }
 
-    public function delete( ${{ modelVariable }} ){
+    public function delete( ${{ modelVariable }} ): void{
 
         Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
-
-        return $this->{{ dbNameVariable }}->delete( ${{ modelVariable }} );
+        $this->{{ dbNameVariable }}->delete( ${{ modelVariable }} );
     }
 
     public function action_for_multiple_records( $request ): array{
@@ -62,13 +61,12 @@ class {{ class }} implements {{ interfaceName }}
     }
 
     public function export_records( $request ){
-        return $this->{{ dbNameVariable }}->export_records( $request );
+        $this->{{ dbNameVariable }}->export_records( $request );
     }
 
-    public function import_records( $request ){
+    public function import_records( $request ): void{
         Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
-
-        return $this->{{ dbNameVariable }}->import_records( $request );
+        $this->{{ dbNameVariable }}->import_records( $request );
     }
 
 }

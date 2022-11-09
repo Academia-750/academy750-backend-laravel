@@ -7,12 +7,12 @@ use App\Http\Resources\Api\{{ modelVariableSingularForApiResourceReturned }}\v1\
 use App\Http\Resources\Api\{{ modelVariableSingularForApiResourceReturned }}\v1\{{ modelVariableSingularForApiResourceReturned }}Resource;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
-
+use {{ namespacedSchema }};
 class {{ class }} implements {{ interfaceName }}
 {
-    protected {{ namespacedSchema }} ${{ schemaNameVariable }};
+    protected SchemaJson ${{ schemaNameVariable }};
 
-    public function __construct({{ namespacedSchema }} ${{ schemaNameVariable }} ){
+    public function __construct(SchemaJson ${{ schemaNameVariable }} ){
         $this->{{ schemaNameVariable }} = ${{ schemaNameVariable }};
     }
 
@@ -52,12 +52,14 @@ class {{ class }} implements {{ interfaceName }}
         return $this->{{ schemaNameVariable }}->action_for_multiple_records( $request );
     }
 
-    public function export_records( $request ){
+    public function export_records( $request ): \Illuminate\Http\JsonResponse
+    {
         Gate::authorize('export_records', {{ modelInstanceClass }} );
         return $this->{{ schemaNameVariable }}->export_records( $request );
     }
 
-    public function import_records( $request ){
+    public function import_records( $request ): \Illuminate\Http\JsonResponse
+    {
         Gate::authorize('import_records', {{ modelInstanceClass }} );
         return $this->{{ schemaNameVariable }}->import_records( $request );
     }

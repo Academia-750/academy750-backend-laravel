@@ -64,7 +64,7 @@ class MakeAuthorizeApiRestResourceCommand extends Command
         return [
             "namespace" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural. '\\v1',
             "namespacedModel" => 'App\\Models\\' . $this->getSingularClassName(Str::camel($this->argument('name'))), // App\Models\User
-            "namespacedSchema" => '\\App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\SchemaJson', // App\Core\Resources\Users\SchemaJson
+            "namespacedSchema" => 'App\\Core\\Resources\\'.$pascalCaseNameResourcePlural . '\\v1\\SchemaJson', // App\Core\Resources\Users\SchemaJson
             "class" => 'Authorizer', //class Authorizer
             "interfaceName" => $pascalCaseNameResourcePlural. 'Interface', // UsersInterface
             "schemaName" => 'SchemaJson',

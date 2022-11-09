@@ -5,13 +5,14 @@ use {{ namespacedModel }};
 use {{ namespacedInterface }};
 use App\Http\Resources\Api\{{ modelVariableSingularForFiles }}\v1\{{ modelVariableSingularForFiles }}Collection;
 use App\Http\Resources\Api\{{ modelVariableSingularForFiles }}\v1\{{ modelVariableSingularForFiles }}Resource;
+use {{ namespacedEvent }};
 use Illuminate\Support\Str;
 
 class {{ class }} implements {{ interfaceName }}
 {
-    protected {{ namespacedEvent }} ${{ eventNameVariable }};
+    protected EventApp ${{ eventNameVariable }};
 
-    public function __construct({{ namespacedEvent }} ${{ eventNameVariable }} ){
+    public function __construct(EventApp ${{ eventNameVariable }} ){
         $this->{{ eventNameVariable }} = ${{ eventNameVariable }};
     }
 
@@ -45,7 +46,8 @@ class {{ class }} implements {{ interfaceName }}
 
     public function delete( ${{ modelVariable }} ): \Illuminate\Http\JsonResponse
     {
-        return response()->json($this->{{ eventNameVariable }}->delete( ${{ modelVariable }} ), 204);
+        $this->{{ eventNameVariable }}->delete( ${{ modelVariable }} );
+        return response()->noContent();
     }
 
     public function action_for_multiple_records( $request ): \Illuminate\Http\JsonResponse
@@ -67,6 +69,7 @@ class {{ class }} implements {{ interfaceName }}
     public function import_records( $request ): \Illuminate\Http\JsonResponse
     {
         $this->{{ eventNameVariable }}->import_records( $request );
+
         return response()->json([
             'message' => "Proceso de importación iniciada"
         ], 200);
