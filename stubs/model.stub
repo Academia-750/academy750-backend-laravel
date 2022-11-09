@@ -4,12 +4,18 @@ namespace {{ namespace }};
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Core\Services\UUIDTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 
 class {{ class }} extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
+    //use SoftDeletes;
+    use UUIDTrait;
+
+    public $keyType = "string";
+    public $incrementing = false;
 
     protected $fillable = [
 

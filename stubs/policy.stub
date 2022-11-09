@@ -10,41 +10,41 @@ class {{ class }}
 {
     use HandlesAuthorization;
 
-    public function index({{ user }} $user): bool
+    public function index(User $user): bool
     {
-        return true;
+        return $user->can('list-resources');
     }
 
-    public function read({{ user }} $user, {{ model }} ${{ modelVariable }}): bool
+    public function read(User $user, Opposition $opposition): bool
     {
-        return true;
+        return $user->can('see-a-resource');
     }
 
-    public function create({{ user }} $user): bool
+    public function create(User $user): bool
     {
-        return true;
+        return $user->can('create-resource');
     }
 
-    public function update({{ user }} $user, {{ model }} ${{ modelVariable }}): bool
+    public function update(User $user, Opposition $opposition): bool
     {
-        return true;
+        return $user->can('edit-resource');
     }
 
-    public function delete({{ user }} $user, {{ model }} ${{ modelVariable }}): bool
+    public function delete(User $user, Opposition $opposition): bool
     {
-        return true;
+        return $user->can('delete-resource');
     }
 
-    public function mass_selection_for_action({{ user }} $user): bool
+    public function mass_selection_for_action(User $user): bool
     {
-        return true;
+        return $user->can('action-for-multiple-resources');
     }
 
-    public function export_records({{ user }} $user): bool
+    public function export_records(User $user): bool
     {
         return true;
     }
-    public function import_records({{ user }} $user): bool
+    public function import_records(User $user): bool
     {
         return true;
     }

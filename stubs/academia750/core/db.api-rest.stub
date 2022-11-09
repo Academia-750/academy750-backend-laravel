@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Core\Resources\{{ modelNamePlural }}\v1\Services\ActionForMultipleRecordsService;
+use App\Core\Resources\{{ modelNamePlural }}\v1\Services\Actions{{ modelNamePlural }}Records;
 //use App\Imports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Import;
 use App\Exports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Export;
 
@@ -68,7 +69,8 @@ class {{ class }} implements {{ interfaceName }}
         try {
 
             DB::beginTransaction();
-                ${{ modelVariable }}->delete();
+                //${{ modelVariable }}->delete();
+                Actions{{ modelName }}Records::delete{{ modelName }}( ${{ modelVariable }} );
             DB::commit();
 
         } catch (\Exception $e) {

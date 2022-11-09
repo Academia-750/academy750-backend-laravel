@@ -9,6 +9,7 @@ use Tests\TestCase;
 class {{ class }} extends TestCase
 {
     use RefreshDatabase;
+
     /** @test */
     public function it_can(): void
     {

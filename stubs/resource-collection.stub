@@ -12,12 +12,7 @@ class {{ class }} extends ResourceCollection
     {
         return [
             'data' => $this->collection,
-            'links' => [
-                'self' => route('api.v1.example.index'),
-            ],
-            'utilities' => [
-
-            ]
+            'utilities' => []
         ];
     }
 }

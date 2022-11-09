@@ -33,12 +33,4 @@ class {{ class }} extends FormRequest
             //'email' => 'Correo Electrónico',
         ];
     }
-
-    /*public function withValidator($validator)
-        {
-            // formatear errores
-            $validator->after(function ($validator) {
-                $validator->errors()->add('field', 'Something is wrong with this field!');
-            });
-        }*/
 }

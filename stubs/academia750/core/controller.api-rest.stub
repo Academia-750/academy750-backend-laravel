@@ -15,7 +15,7 @@ use App\Http\Requests\Api\v1\{{ modelPlural }}\Import{{ modelPlural }}Request;
 
 class {{ class }} extends Controller
 {
-    protected ${{ interfaceNameVariable }};
+    protected {{ interfaceName }} ${{ interfaceNameVariable }};
 
     public function __construct({{ interfaceName }} ${{ interfaceNameVariable }} ){
         $this->{{ interfaceNameVariable }} = ${{ interfaceNameVariable }};

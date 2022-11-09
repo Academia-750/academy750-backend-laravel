@@ -9,19 +9,13 @@ class {{ class }} extends JsonResource
     public function toArray($request): array
     {
         return [
-            'type' => 'users',
+            'type' => 'resources',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
 
             ],
             'relationships' => [
 
-            ],
-            'links' => [
-                'self' => route('api.v1.example.read', $this->resource->getRouteKey()),
-                'related' => [
-                    'example' => route('api.v1.example.read', $this->resource->getRouteKey()) . '?include=example-relation',
-                ]
             ]
         ];
     }
