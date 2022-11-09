@@ -8,13 +8,14 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Core\Resources\{{ modelNamePlural }}\v1\Services\ActionForMultipleRecordsService;
 //use App\Imports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Import;
 use App\Exports\Api\{{ modelNamePlural }}\v1\{{ modelNamePlural }}Export;
 
 
 class {{ class }} implements {{ interfaceName }}
 {
-    protected $model;
+    protected {{ modelName }} $model;
 
     public function __construct({{ modelName }} ${{ modelVariable }} ){
         $this->model = ${{ modelVariable }};
@@ -77,26 +78,20 @@ class {{ class }} implements {{ interfaceName }}
 
     }
 
-    public function action_for_multiple_records( $request ): string{
+    public function action_for_multiple_records( $request ): array{
         try {
 
             DB::beginTransaction();
-                $message = null;
-                if( $request->get('action') === 'delete' ){
-                    foreach ($request->get('{{ modelVariablePlural }}') as ${{ modelVariable }}){
-                        ${{ modelVariable }}Delete = $this->model->firstWhere('id',${{ modelVariable }});
-                        ${{ modelVariable }}Delete->delete();
-                    }
-                    $process = true;
-                    $message = "Los registros seleccionados han sido eliminados.";
-                }
+
+                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('${{ modelVariable }}s'));
+
             DB::commit();
 
-            if ($process) {
-                return $message;
-            }else {
-                return "No se ha realizado ninguna acción";
+            if (count($information) === 0) {
+                $information[] = "No hay registros afectados";
             }
+
+            return $information;
 
         } catch (\Exception $e) {
             DB::rollback();

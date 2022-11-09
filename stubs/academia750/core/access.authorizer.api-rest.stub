@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Gate;
 
 class {{ class }} implements {{ interfaceName }}
 {
-    protected ${{ schemaNameVariable }};
+    protected {{ namespacedSchema }} ${{ schemaNameVariable }};
 
     public function __construct({{ namespacedSchema }} ${{ schemaNameVariable }} ){
         $this->{{ schemaNameVariable }} = ${{ schemaNameVariable }};

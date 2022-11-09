@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Cache;
 
 class {{ class }} implements {{ interfaceName }}
 {
-    protected ${{ dbNameVariable }};
+    protected {{ namespacedDB }} ${{ dbNameVariable }};
 
     public function __construct({{ namespacedDB }} ${{ dbNameVariable }} ){
         $this->{{ dbNameVariable }} = ${{ dbNameVariable }};
@@ -54,7 +54,7 @@ class {{ class }} implements {{ interfaceName }}
         return $this->{{ dbNameVariable }}->delete( ${{ modelVariable }} );
     }
 
-    public function action_for_multiple_records( $request ): string{
+    public function action_for_multiple_records( $request ): array{
 
         Cache::store('redis')->tags('{{ modelVariableTagCache }}')->flush();
 

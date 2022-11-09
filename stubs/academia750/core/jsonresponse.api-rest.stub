@@ -9,7 +9,7 @@ use Illuminate\Support\Str;
 
 class {{ class }} implements {{ interfaceName }}
 {
-    protected ${{ eventNameVariable }};
+    protected {{ namespacedEvent }} ${{ eventNameVariable }};
 
     public function __construct({{ namespacedEvent }} ${{ eventNameVariable }} ){
         $this->{{ eventNameVariable }} = ${{ eventNameVariable }};
@@ -55,12 +55,21 @@ class {{ class }} implements {{ interfaceName }}
         ], 200);
     }
 
-    public function export_records( $request ){
-        return $this->{{ eventNameVariable }}->export_records( $request );
+    public function export_records( $request ): \Illuminate\Http\JsonResponse
+    {
+        $this->{{ eventNameVariable }}->export_records( $request );
+
+        return response()->json([
+            'message' => "Proceso de exportación iniciada"
+        ], 200);
     }
 
-    public function import_records( $request ){
-        return $this->{{ eventNameVariable }}->import_records( $request );
+    public function import_records( $request ): \Illuminate\Http\JsonResponse
+    {
+        $this->{{ eventNameVariable }}->import_records( $request );
+        return response()->json([
+            'message' => "Proceso de importación iniciada"
+        ], 200);
     }
 
 }

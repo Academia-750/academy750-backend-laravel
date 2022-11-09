@@ -42,7 +42,7 @@ class {{ class }} extends Controller
     }
 
     public function action_for_multiple_records(ActionForMassiveSelection{{ modelPlural }}Request $request): string{
-        return $this->{{ interfaceNameVariable }}->mass_selection_for_action( $request );
+        return $this->{{ interfaceNameVariable }}->action_for_multiple_records( $request );
     }
 
     public function export_records(Export{{ modelPlural }}Request $request){
