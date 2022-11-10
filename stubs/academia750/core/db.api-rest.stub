@@ -70,7 +70,7 @@ class {{ class }} implements {{ interfaceName }}
 
             DB::beginTransaction();
                 //${{ modelVariable }}->delete();
-                Actions{{ modelName }}Records::delete{{ modelName }}( ${{ modelVariable }} );
+                Actions{{ modelName }}sRecords::deleteRecord( ${{ modelVariable }} );
             DB::commit();
 
         } catch (\Exception $e) {
@@ -85,7 +85,7 @@ class {{ class }} implements {{ interfaceName }}
 
             DB::beginTransaction();
 
-                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('${{ modelVariable }}s'));
+                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('{{ modelVariable }}s'));
 
             DB::commit();
 
