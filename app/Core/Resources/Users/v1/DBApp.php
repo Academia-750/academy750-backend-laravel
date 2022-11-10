@@ -3,7 +3,7 @@ namespace App\Core\Resources\Users\v1;
 
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Core\Resources\Users\v1\Services\ActionForMultipleRecordsService;
-use App\Core\Resources\Users\v1\Services\ActionsAccountUser;
+use App\Core\Resources\Users\v1\Services\ActionsTopicsRecords;
 use App\Core\Services\UserService;
 use App\Exports\Api\Users\v1\UsersExport;
 use App\Models\Role;
@@ -97,7 +97,7 @@ class DBApp implements UsersInterface
         try {
 
             DB::beginTransaction();
-                ActionsAccountUser::deleteUser($user);
+                ActionsTopicsRecords::deleteUser($user);
             DB::commit();
 
         } catch (\Exception $e) {
@@ -157,11 +157,11 @@ class DBApp implements UsersInterface
 
     public function disable_account($request, $user)
     {
-        return ActionsAccountUser::disableAccountUser($user);
+        return ActionsTopicsRecords::disableAccountUser($user);
     }
 
     public function enable_account($request, $user)
     {
-        return ActionsAccountUser::enableAccountUser($user);
+        return ActionsTopicsRecords::enableAccountUser($user);
     }
 }

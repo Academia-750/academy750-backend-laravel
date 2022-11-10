@@ -26,7 +26,7 @@ class ActionForMultipleRecordsService
         $information = [];
 
         foreach ($users as $user_id) {
-            $user = ActionsAccountUser::deleteUser($user_id);
+            $user = ActionsTopicsRecords::deleteUser($user_id);
             $information[] = "'Usuario {$user->getRouteKey()}' ha sido eliminado con éxito";
         }
 
@@ -39,7 +39,7 @@ class ActionForMultipleRecordsService
         $information = [];
 
         foreach ($users as $user_id) {
-            $user = ActionsAccountUser::disableAccountUser($user_id);
+            $user = ActionsTopicsRecords::disableAccountUser($user_id);
             $information[] = "La cuenta del 'Usuario {$user->getRouteKey()}' ha sido deshabilitada.";
         }
 
@@ -52,7 +52,7 @@ class ActionForMultipleRecordsService
         $information = [];
 
         foreach ($users as $user_id) {
-            $user = ActionsAccountUser::enableAccountUser($user_id);
+            $user = ActionsTopicsRecords::enableAccountUser($user_id);
             $information[] = "La cuenta del 'Usuario {$user->getRouteKey()}' ha sido habilitada.";
         }
 

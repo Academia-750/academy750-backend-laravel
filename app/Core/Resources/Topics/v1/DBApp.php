@@ -70,7 +70,7 @@ class DBApp implements TopicsInterface
 
             DB::beginTransaction();
                 //$topic->delete();
-                ActionsTopicRecords::deleteTopic( $topic );
+                ActionsTopicsRecords::deleteRecord( $topic );
             DB::commit();
 
         } catch (\Exception $e) {
@@ -85,7 +85,7 @@ class DBApp implements TopicsInterface
 
             DB::beginTransaction();
 
-                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('$topics'));
+                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('topics'));
 
             DB::commit();
 
