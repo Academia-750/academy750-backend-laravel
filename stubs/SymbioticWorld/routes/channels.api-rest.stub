@@ -1,9 +1,0 @@
-<?php
-
-Broadcast::channel('resource.{{ resourceNamePlural }}', function ($user) {
-    return $user !== null && $user->can('{{ permission }}');
-}, ['guards' => ['sanctum']]);
-
-Broadcast::channel('App.Models.{{ resourceNamePascalCase }}.Import.{id}', function ($user, $id) {
-    return (int) $user->getRouteKey() === (int) $id;
-});
