@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(QuestionSeeder::class);
         $this->call(TestSeeder::class);
         $this->call(AnswerSeeder::class);
+        $this->call(TestTypeSeeder::class);
         // [EndOfLineMethodRegister]
     }
 }
