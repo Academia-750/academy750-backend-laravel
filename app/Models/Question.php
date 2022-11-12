@@ -15,7 +15,10 @@ class Question extends Model
     use UUIDTrait;
 
     protected $fillable = [
-
+        "id",
+        "question",
+        "reason",
+        "is_available",
     ];
 
     public array $allowedSorts = [
@@ -83,5 +86,9 @@ class Question extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
+    public function questionable (): \Illuminate\Database\Eloquent\Relations\MorphTo
+    {
+        return $this->morphTo();
+    }
 
 }

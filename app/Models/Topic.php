@@ -106,4 +106,10 @@ class Topic extends Model
         return $this->belongsTo(TopicGroup::class);
     }
 
+    public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Question::class, 'questionable')
+            /*->withPivot('is_available')*/
+            ->withTimestamps();
+    }
 }

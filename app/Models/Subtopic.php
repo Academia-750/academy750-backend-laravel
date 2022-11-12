@@ -96,7 +96,15 @@ class Subtopic extends Model
     {
         return $this->morphToMany(Opposition::class, 'oppositionable')
             ->withPivot('is_visible')
-            ->withTimestamps();;
+            ->withTimestamps();
+    }
+
+
+    public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
+    {
+        return $this->morphMany(Question::class, 'questionable')
+            /*->withPivot('is_available')*/
+            ->withTimestamps();
     }
 
 }

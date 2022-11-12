@@ -15,8 +15,11 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
-            //$table->softDeletes();
+            $table->string("question")->comment("La pregunta");
+            $table->string("reason")->comment("La explicacion");
+            $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
+            $table->uuidMorphs('questionable');
             $table->timestamps();
         });
     }
