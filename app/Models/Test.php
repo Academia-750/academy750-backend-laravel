@@ -103,4 +103,9 @@ class Test extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function questions (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Question::class);
+    }
+
 }

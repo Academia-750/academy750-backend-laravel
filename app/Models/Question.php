@@ -96,4 +96,9 @@ class Question extends Model
         return $this->hasMany(Answer::class);
     }
 
+    public function tests (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Test::class);
+    }
+
 }
