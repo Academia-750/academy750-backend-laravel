@@ -21,6 +21,9 @@ class InstanceInterfaceAppProvider extends ServiceProvider
         app()->bind(\App\Core\Resources\Topics\v1\Interfaces\TopicsInterface::class, \App\Core\Resources\Topics\v1\Authorizer::class);
         app()->bind(\App\Core\Resources\Subtopics\v1\Interfaces\SubtopicsInterface::class, \App\Core\Resources\Subtopics\v1\Authorizer::class);
         app()->bind(\App\Core\Resources\TopicGroups\v1\Interfaces\TopicGroupsInterface::class, \App\Core\Resources\TopicGroups\v1\Authorizer::class);
+        app()->bind(\App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface::class, \App\Core\Resources\Questions\v1\Authorizer::class);
+        app()->bind(\App\Core\Resources\Tests\v1\Interfaces\TestsInterface::class, \App\Core\Resources\Tests\v1\Authorizer::class);
+        app()->bind(\App\Core\Resources\Answers\v1\Interfaces\AnswersInterface::class, \App\Core\Resources\Answers\v1\Authorizer::class);
         // [EndOfLineMethodRegister]
     }
 

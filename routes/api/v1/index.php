@@ -10,6 +10,9 @@ Route::prefix('v1')->group(static function(){
     require __DIR__ . '/routes/topics.routes.php';
     require __DIR__ . '/routes/subtopics.routes.php';
     require __DIR__ . '/routes/topic-groups.routes.php';
+    require __DIR__ . '/routes/questions.routes.php';
+    require __DIR__ . '/routes/tests.routes.php';
+    require __DIR__ . '/routes/answers.routes.php';
     // [EndOfLineMethodRegister]
     });
 });

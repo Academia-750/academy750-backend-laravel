@@ -23,6 +23,9 @@ class DatabaseSeeder extends Seeder
         $this->call(TopicSeeder::class);
         $this->call(SubtopicSeeder::class);
         $this->call(TopicGroupSeeder::class);
+        $this->call(QuestionSeeder::class);
+        $this->call(TestSeeder::class);
+        $this->call(AnswerSeeder::class);
         // [EndOfLineMethodRegister]
     }
 }
