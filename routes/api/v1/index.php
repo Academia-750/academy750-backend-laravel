@@ -9,6 +9,7 @@ Route::prefix('v1')->group(static function(){
     require __DIR__ . '/routes/oppositions.routes.php';
     require __DIR__ . '/routes/topics.routes.php';
     require __DIR__ . '/routes/subtopics.routes.php';
+    require __DIR__ . '/routes/topic-groups.routes.php';
     // [EndOfLineMethodRegister]
     });
 });

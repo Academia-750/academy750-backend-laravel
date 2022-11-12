@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(OppositionSeeder::class);
         $this->call(TopicSeeder::class);
         $this->call(SubtopicSeeder::class);
+        $this->call(TopicGroupSeeder::class);
         // [EndOfLineMethodRegister]
     }
 }
