@@ -15,7 +15,26 @@ return new class extends Migration
     {
         Schema::create('tests', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
-            //$table->softDeletes();
+
+            $table->string("number_of_questions")->comment('Numero total de preguntas');
+
+            $table->string("test_result")->comment('Calificación final de la Prueba');
+            $table->enum("is_solved_test", ['yes', 'no'])->default('no')->comment('Ha sido completado la prueba?');
+
+            $table->foreignUuid("test_type_id")
+                ->constrained()
+                ->cascadeOnDelete();
+
+            $table->foreignUuid("opposition_id")
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
+
+            $table->foreignUuid("user_id")
+                ->comment("El alumno que resolverá la prueba")
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
             $table->timestamps();
         });

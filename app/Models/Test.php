@@ -15,7 +15,12 @@ class Test extends Model
     use UUIDTrait;
 
     protected $fillable = [
-
+        "number_of_questions",
+        "test_result",
+        "is_solved_test",
+        "test_type_id",
+        "opposition_id",
+        "user_id"
     ];
 
     public array $allowedSorts = [
@@ -83,5 +88,19 @@ class Test extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
+    public function test_type (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(TestType::class);
+    }
+
+    public function opposition (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Opposition::class);
+    }
+
+    public function user (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
 }

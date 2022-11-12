@@ -15,7 +15,7 @@ class TestType extends Model
     use UUIDTrait;
 
     protected $fillable = [
-
+        "name"
     ];
 
     public array $allowedSorts = [
@@ -83,5 +83,9 @@ class TestType extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
+    public function tests (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Test::class);
+    }
 
 }
