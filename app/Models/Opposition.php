@@ -115,5 +115,13 @@ class Opposition extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
+    public function topics (): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    {
+        return $this->morphedByMany(Topic::class, 'oppositionable');
+    }
 
+    public function subtopics (): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    {
+        return $this->morphedByMany(Subtopic::class, 'oppositionable');
+    }
 }

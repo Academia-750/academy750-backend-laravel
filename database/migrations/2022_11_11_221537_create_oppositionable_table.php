@@ -11,20 +11,17 @@ return new class extends Migration
      *
      * @return void
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('subtopic_topic', static function (Blueprint $table) {
-            $table->id();
+        Schema::create('oppositionable', function (Blueprint $table) {
+            $table->uuid('id')->primary()->comment('Identificador UUID');
 
-            $table->foreignUuid('subtopic_id')
+            $table->foreignUuid("opposition_id")
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('topic_id')
-                ->constrained()
-                ->cascadeOnUpdate()
-                ->cascadeOnDelete();
+            $table->uuidMorphs("oppositionable");
 
             $table->enum('is_visible', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
@@ -37,8 +34,8 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('subtopic_topic');
+        Schema::dropIfExists('oppositionable');
     }
 };

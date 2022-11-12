@@ -88,4 +88,10 @@ class Subtopic extends Model
         return $this->belongsToMany(Topic::class);
     }
 
+
+    public function oppositions (): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    {
+        return $this->morphToMany(Opposition::class, 'oppositionable');
+    }
+
 }
