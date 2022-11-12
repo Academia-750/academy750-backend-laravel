@@ -15,7 +15,11 @@ class Answer extends Model
     use UUIDTrait;
 
     protected $fillable = [
-
+        "id",
+        "answer",
+        "is_grouper_answer",
+        "is_correct_answer",
+        "question_id",
     ];
 
     public array $allowedSorts = [
@@ -83,5 +87,8 @@ class Answer extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
-
+    public function question (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Question::class);
+    }
 }

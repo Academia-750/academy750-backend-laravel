@@ -15,7 +15,16 @@ return new class extends Migration
     {
         Schema::create('answers', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
-            //$table->softDeletes();
+
+            $table->string("answer")->comment('El texto de la respuesta');
+            $table->enum("is_grouper_answer", [ 'yes', 'no' ])->default('no')->comment('Es respuesta agrupadora?');
+
+            $table->enum("is_correct_answer", ['yes', 'no'])->default('no')->comment('Esta es la respuesta correcta de una pregunta?');
+
+            $table->foreignUuid('question_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
             $table->timestamps();
         });

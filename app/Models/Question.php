@@ -91,4 +91,9 @@ class Question extends Model
         return $this->morphTo();
     }
 
+    public function answers (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Answer::class);
+    }
+
 }
