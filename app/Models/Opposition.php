@@ -117,11 +117,15 @@ class Opposition extends Model
 
     public function topics (): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
-        return $this->morphedByMany(Topic::class, 'oppositionable');
+        return $this->morphedByMany(Topic::class, 'oppositionable')
+            ->withPivot('is_visible')
+            ->withTimestamps();
     }
 
     public function subtopics (): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
-        return $this->morphedByMany(Subtopic::class, 'oppositionable');
+        return $this->morphedByMany(Subtopic::class, 'oppositionable')
+            ->withPivot('is_visible')
+            ->withTimestamps();
     }
 }

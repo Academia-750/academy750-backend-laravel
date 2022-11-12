@@ -86,13 +86,17 @@ class Subtopic extends Model
      // Relationships methods
     public function topics (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Topic::class);
+        return $this->belongsToMany(Topic::class)
+            ->withPivot('is_visible')
+            ->withTimestamps();
     }
 
 
     public function oppositions (): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
-        return $this->morphToMany(Opposition::class, 'oppositionable');
+        return $this->morphToMany(Opposition::class, 'oppositionable')
+            ->withPivot('is_visible')
+            ->withTimestamps();;
     }
 
 }
