@@ -15,7 +15,9 @@ class TopicGroup extends Model
     use UUIDTrait;
 
     protected $fillable = [
-
+        "id",
+        "name",
+        "description"
     ];
 
     public array $allowedSorts = [
@@ -83,5 +85,9 @@ class TopicGroup extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
+    public function topics (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Topic::class);
+    }
 
 }

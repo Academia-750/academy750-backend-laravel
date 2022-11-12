@@ -15,6 +15,7 @@ class Topic extends Model
     use UUIDTrait;
 
     protected $fillable = [
+        "id",
         "name",
         "topic_group_id",
         "is_visible"
@@ -93,6 +94,12 @@ class Topic extends Model
     public function oppositions (): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
         return $this->morphToMany(Opposition::class, 'oppositionable');
+    }
+
+
+    public function topic_group (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(TopicGroup::class);
     }
 
 }

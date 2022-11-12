@@ -18,6 +18,10 @@ return new class extends Migration
 
             $table->string("name");
             // Relationship for group of topics
+            $table->foreignUuid("topic_group_id")
+                ->nullable()
+                ->constrained();
+
             $table->enum('is_visible', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
             $table->timestamps();

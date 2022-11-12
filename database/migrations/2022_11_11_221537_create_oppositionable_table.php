@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('oppositionable', function (Blueprint $table) {
-            $table->uuid('id')->primary()->comment('Identificador UUID');
+            $table->id();
 
             $table->foreignUuid("opposition_id")
                 ->constrained()

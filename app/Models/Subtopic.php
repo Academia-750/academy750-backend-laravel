@@ -15,6 +15,7 @@ class Subtopic extends Model
     use UUIDTrait;
 
     protected $fillable = [
+        "id",
         "name",
         "is_visible"
     ];
