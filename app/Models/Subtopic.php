@@ -15,7 +15,8 @@ class Subtopic extends Model
     use UUIDTrait;
 
     protected $fillable = [
-
+        "name",
+        "is_visible"
     ];
 
     public array $allowedSorts = [
@@ -82,6 +83,9 @@ class Subtopic extends Model
 
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
-
+    public function topics (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Topic::class);
+    }
 
 }

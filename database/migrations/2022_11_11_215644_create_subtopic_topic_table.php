@@ -13,12 +13,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('topics', static function (Blueprint $table) {
-            $table->uuid('id')->primary()->comment('Identificador UUID');
+        Schema::create('subtopic_topic', static function (Blueprint $table) {
+            $table->id();
 
-            $table->string("name");
-            // Relationship for group of topics
-            $table->enum('is_visible', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
+            $table->foreignUuid('subtopic_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+
+            $table->foreignUuid('topic_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
             $table->timestamps();
         });
@@ -31,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('topics');
+        Schema::dropIfExists('subtopic_topic');
     }
 };

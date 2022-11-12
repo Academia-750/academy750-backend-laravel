@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('subtopics', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
-            //$table->softDeletes();
+
+            $table->string("name");
+            $table->enum('is_visible', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
             $table->timestamps();
         });
