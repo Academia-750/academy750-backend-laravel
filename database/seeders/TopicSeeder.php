@@ -12,7 +12,7 @@ class TopicSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach ( range(0,100) as $number) {
+        foreach ( range(1,50) as $number) {
             Topic::query()->create([
                 'id' => UuidGeneratorService::getUUIDUnique(Topic::class),
                 'name' => "Topic {$number}",

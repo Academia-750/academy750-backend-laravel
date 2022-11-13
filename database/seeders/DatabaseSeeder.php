@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TopicGroupSeeder::class);
         $this->call(TopicSeeder::class);
         $this->call(SubtopicSeeder::class);
+        $this->call(SubtopicTopicSeeder::class);
         $this->call(QuestionSeeder::class);
         $this->call(TestSeeder::class);
         $this->call(AnswerSeeder::class);

@@ -11,7 +11,7 @@ class SubtopicSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach ( range(0, 350) as $number) {
+        foreach ( range(1, 180) as $number) {
             Subtopic::query()->create([
                 'id' => UuidGeneratorService::getUUIDUnique(Subtopic::class),
                 'name' => "Subtema {$number}",
