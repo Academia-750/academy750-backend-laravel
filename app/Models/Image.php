@@ -8,7 +8,7 @@ use App\Core\Services\UUIDTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 
-class Question extends Model
+class Image extends Model
 {
     use HasFactory;
     //use SoftDeletes;
@@ -16,9 +16,7 @@ class Question extends Model
 
     protected $fillable = [
         "id",
-        "question",
-        "reason",
-        "is_available",
+        "path"
     ];
 
     public array $allowedSorts = [
@@ -86,23 +84,8 @@ class Question extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
-    public function questionable (): \Illuminate\Database\Eloquent\Relations\MorphTo
+    public function imageable (): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
         return $this->morphTo();
-    }
-
-    public function answers (): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Answer::class);
-    }
-
-    public function tests (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(Test::class);
-    }
-
-    public function image (): \Illuminate\Database\Eloquent\Relations\MorphOne
-    {
-        return $this->morphOne(Image::class, 'imageable');
     }
 }
