@@ -20,8 +20,11 @@ class TestSeeder extends Seeder
         $students = Role::query()->firstWhere('name', '=', 'student')->users;
 
         foreach ( range(1, 25) as $n ) {
+            $questionsGenerated = $numberOfQuestions[ random_int(0,3) ];
+
             Test::query()->create([
-                'number_of_questions' => $numberOfQuestions[ random_int(0,3) ],
+                'number_of_questions_requested' => $questionsGenerated,
+                'number_of_questions_generated' => $questionsGenerated,
                 'test_result' => random_int(0.0, 10.0),
                 'is_solved_test' => 'no',
                 'test_type_id' => $testTypes->random()->getRouteKey(),

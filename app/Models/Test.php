@@ -15,7 +15,8 @@ class Test extends Model
     use UUIDTrait;
 
     protected $fillable = [
-        "number_of_questions",
+        "number_of_questions_requested",
+        "number_of_questions_generated",
         "test_result",
         "is_solved_test",
         "test_type_id",
