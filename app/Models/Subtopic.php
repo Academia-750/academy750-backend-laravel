@@ -102,9 +102,7 @@ class Subtopic extends Model
 
     public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        return $this->morphMany(Question::class, 'questionable')
-            /*->withPivot('is_available')*/
-            ->withTimestamps();
+        return $this->morphMany(Question::class, 'questionable');
     }
 
 }
