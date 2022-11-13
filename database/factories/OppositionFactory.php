@@ -24,7 +24,7 @@ class OppositionFactory extends Factory
             'id' => UuidGeneratorService::getUUIDUnique(Opposition::class),
             'name' => $nameOpposition,
             'period' => "202{$random_number}-EXAM-{$nameOpposition}-{$this->faker->numerify('####')}",
-            'is_visible' => 'yes'
+            'is_available' => 'yes'
         ];
     }
 }

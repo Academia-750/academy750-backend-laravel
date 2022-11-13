@@ -14,7 +14,7 @@ class OppositionResource extends JsonResource
             'attributes' => [
                 'name' => $this->resource->name,
                 'period' => $this->resource->period,
-                'is_visible' => $this->resource->is_visible,
+                'is_available' => $this->resource->is_available,
                 "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => []

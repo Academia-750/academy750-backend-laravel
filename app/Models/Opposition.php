@@ -20,7 +20,7 @@ class Opposition extends Model
         'id',
         'name',
         'period',
-        'is_visible'
+        'is_available'
     ];
 
     public array $allowedSorts = [
@@ -118,14 +118,14 @@ class Opposition extends Model
     public function topics (): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
         return $this->morphedByMany(Topic::class, 'oppositionable')
-            ->withPivot('is_visible')
+            ->withPivot('is_available')
             ->withTimestamps();
     }
 
     public function subtopics (): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
         return $this->morphedByMany(Subtopic::class, 'oppositionable')
-            ->withPivot('is_visible')
+            ->withPivot('is_available')
             ->withTimestamps();
     }
 }

@@ -33,7 +33,7 @@ class DBApp implements OppositionsInterface
                 $oppositionCreated = $this->model->query()->create([
                     'name' => $request->get('name'),
                     'period' => $request->get('period'),
-                    'is_visible' => 'yes'
+                    'is_available' => 'yes'
                 ]);
             DB::commit();
 

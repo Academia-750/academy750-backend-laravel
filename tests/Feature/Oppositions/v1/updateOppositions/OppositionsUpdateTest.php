@@ -43,7 +43,7 @@ class OppositionsUpdateTest extends TestCase
                 'attributes' => [
                     'name' => $data['name'],
                     'period' => $data['period'],
-                    'is_visible' => $opposition->is_visible,
+                    'is_available' => $opposition->is_available,
                     "created_at" => $opposition->created_at->format('Y-m-d h:m:s')
                 ],
                 'relationships' => []
@@ -80,7 +80,7 @@ class OppositionsUpdateTest extends TestCase
                 'attributes' => [
                     'name' => $data['name'],
                     'period' => $opposition->period,
-                    'is_visible' => $opposition->is_visible,
+                    'is_available' => $opposition->is_available,
                     "created_at" => $opposition->created_at->format('Y-m-d h:m:s')
                 ],
                 'relationships' => []
@@ -117,7 +117,7 @@ class OppositionsUpdateTest extends TestCase
                 'attributes' => [
                     'name' => $opposition->name,
                     'period' => $data['period'],
-                    'is_visible' => $opposition->is_visible,
+                    'is_available' => $opposition->is_available,
                     "created_at" => $opposition->created_at->format('Y-m-d h:m:s')
                 ],
                 'relationships' => []

@@ -44,7 +44,7 @@ class ListOppositionsTest extends TestCase
                     'attributes' => [
                         'name' => $opposition1->name,
                         'period' => $opposition1->period,
-                        'is_visible' => $opposition1->is_visible,
+                        'is_available' => $opposition1->is_available,
                         "created_at" => $opposition1->created_at->format('Y-m-d h:m:s')
                     ],
                     'relationships' => []
@@ -55,7 +55,7 @@ class ListOppositionsTest extends TestCase
                     'attributes' => [
                         'name' => $opposition2->name,
                         'period' => $opposition2->period,
-                        'is_visible' => $opposition2->is_visible,
+                        'is_available' => $opposition2->is_available,
                         "created_at" => $opposition2->created_at->format('Y-m-d h:m:s')
                     ],
                     'relationships' => []
@@ -66,7 +66,7 @@ class ListOppositionsTest extends TestCase
                     'attributes' => [
                         'name' => $opposition3->name,
                         'period' => $opposition3->period,
-                        'is_visible' => $opposition3->is_visible,
+                        'is_available' => $opposition3->is_available,
                         "created_at" => $opposition3->created_at->format('Y-m-d h:m:s')
                     ],
                     'relationships' => []
@@ -95,7 +95,7 @@ class ListOppositionsTest extends TestCase
                 'attributes' => [
                     'name' => $opposition->name,
                     'period' => $opposition->period,
-                    'is_visible' => $opposition->is_visible,
+                    'is_available' => $opposition->is_available,
                     "created_at" => $opposition->created_at->format('Y-m-d h:m:s')
                 ],
                 'relationships' => []

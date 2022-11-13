@@ -23,7 +23,7 @@ return new class extends Migration
 
             $table->uuidMorphs("oppositionable");
 
-            $table->enum('is_visible', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
+            $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
             $table->timestamps();
         });

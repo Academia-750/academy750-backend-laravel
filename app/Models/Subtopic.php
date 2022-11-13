@@ -17,7 +17,7 @@ class Subtopic extends Model
     protected $fillable = [
         "id",
         "name",
-        "is_visible"
+        "is_available"
     ];
 
     public array $allowedSorts = [
@@ -87,7 +87,7 @@ class Subtopic extends Model
     public function topics (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Topic::class)
-            ->withPivot('is_visible')
+            ->withPivot('is_available')
             ->withTimestamps();
     }
 
@@ -95,7 +95,7 @@ class Subtopic extends Model
     public function oppositions (): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
         return $this->morphToMany(Opposition::class, 'oppositionable')
-            ->withPivot('is_visible')
+            ->withPivot('is_available')
             ->withTimestamps();
     }
 
