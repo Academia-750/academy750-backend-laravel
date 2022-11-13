@@ -4,19 +4,28 @@ namespace Database\Seeders;
 
 use App\Core\Services\UuidGeneratorService;
 use App\Models\Subtopic;
+use Database\Seeders\trait\QuestionsHelpersTrait;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
 class SubtopicSeeder extends Seeder
 {
+    use QuestionsHelpersTrait;
+
+    public $faker;
     public function run(): void
     {
-        foreach ( range(1, 180) as $number) {
-            Subtopic::query()->create([
+        $this->faker = Factory::create();
+
+        foreach ( range(1, 40) as $number) {
+            $subtopic = Subtopic::query()->create([
                 'id' => UuidGeneratorService::getUUIDUnique(Subtopic::class),
                 'name' => "Subtema {$number}",
                 'is_available' => 'yes'
             ]);
+
+            $this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
         }
     }
 }

@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run(): void
     {
         // \App\Models\User::factory(10)->create();
         $this->call(RoleSeeder::class);
@@ -24,9 +24,9 @@ class DatabaseSeeder extends Seeder
         $this->call(SubtopicSeeder::class);
         $this->call(SubtopicTopicSeeder::class);
         $this->call(QuestionSeeder::class);
-        $this->call(TestSeeder::class);
-        $this->call(AnswerSeeder::class);
         $this->call(TestTypeSeeder::class);
+        $this->call(TestSeeder::class);
+        //$this->call(AnswerSeeder::class);
         $this->call(ImageSeeder::class);
         // [EndOfLineMethodRegister]
     }

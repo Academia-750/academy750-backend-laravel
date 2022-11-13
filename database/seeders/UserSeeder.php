@@ -77,5 +77,28 @@ class UserSeeder extends Seeder
 
         $studentAdolfo->assignRole($roleStudent);
         $studentRaul->assignRole($roleStudent);
+
+        $adminAdolfo->image()->create([
+            'path' => 'https://via.placeholder.com/128.webp',
+            'type_path' => 'url'
+        ]);
+
+        $adminAdolfo->image()->create([
+            'path' => 'https://via.placeholder.com/128.webp?text=Adolfo+Feria+Admin',
+            'type_path' => 'url'
+        ]);
+        $adminRaul->image()->create([
+            'path' => 'https://via.placeholder.com/128.webp?text=Raul+Moheno+Admin',
+            'type_path' => 'url'
+        ]);
+
+        $studentAdolfo->image()->create([
+            'path' => 'https://via.placeholder.com/128.webp?text=Adolfo+Feria+Student',
+            'type_path' => 'url'
+        ]);
+        $studentRaul->image()->create([
+            'path' => 'https://via.placeholder.com/128.webp?text=Raul+Moheno+Student',
+            'type_path' => 'url'
+        ]);
     }
 }

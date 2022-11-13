@@ -13,13 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('images', function (Blueprint $table) {
+        Schema::create('test_topic', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
 
-            $table->text("path")->comment('La dirección en la que está almacenada la imagen');
-            $table->enum("type_path", [ 'local', 'url' ])->default('url')->comment('Es una imagen guardada en Storage o una URL externa?');
+            $table->foreignUuid('test_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
-            $table->uuidMorphs('imageable');
+            $table->foreignUuid('topic_id')
+                ->nullable()
+                ->constrained()
+                ->nullOnDelete();
 
             $table->timestamps();
         });
@@ -32,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('images');
+        Schema::dropIfExists('test_topic');
     }
 };

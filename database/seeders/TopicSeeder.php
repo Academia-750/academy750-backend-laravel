@@ -20,7 +20,7 @@ class TopicSeeder extends Seeder
     {
         $this->faker = Factory::create();
 
-        foreach ( range(1,50) as $number) {
+        foreach ( range(1,20) as $number) {
             $topic = Topic::query()->create([
                 'id' => UuidGeneratorService::getUUIDUnique(Topic::class),
                 'name' => "Topic {$number}",

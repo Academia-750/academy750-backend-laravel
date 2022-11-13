@@ -110,4 +110,10 @@ class Topic extends Model
     {
         return $this->morphMany(Question::class, 'questionable');
     }
+
+    public function tests (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Test::class)
+            ->withTimestamps();
+    }
 }
