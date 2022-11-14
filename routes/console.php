@@ -41,7 +41,8 @@ Artisan::command('bomberos750:test', function () {
     $this->call('bomberos750:clear');
     $this->call('cache:clear', ['store' => 'redis']);
     $this->call('cache:clear');
-    $this->call('test --stop-on-failure');
+    $this->call('test', ['--stop-on-failure' => true]);
+    //Artisan::call('test', ['--stop-on-failure']);
 })->purpose('Ejecuta los tests del proyecto de forma eficiente');
 
 Artisan::command('bomberos750:migrate', function () {
