@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('oppositionable', function (Blueprint $table) {
+        Schema::create('oppositionables', function (Blueprint $table) {
             $table->id();
 
             $table->foreignUuid("opposition_id")

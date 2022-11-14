@@ -12,7 +12,7 @@ class QuestionSeeder extends Seeder
     {
         foreach ( Question::query()->cursor() as $question ) {
             $question->image()->create([
-                'path' => "https://via.placeholder.com/128.webp?text={$question->question}",
+                'path' => "https://via.placeholder.com/128.webp?text=Question+{$question->getRouteKey()}",
                 'type_path' => 'url'
             ]);
         }

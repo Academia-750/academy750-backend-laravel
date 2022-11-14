@@ -14,6 +14,10 @@ class TestSeeder extends Seeder
 {
     public function run(): void
     {
+        //$this->generateTestsFaker();
+    }
+
+    public function generateTestsFaker (): void {
         $numberOfQuestions = [10, 25, 50, 100];
         $testTypes = TestType::all();
         $oppositions = Opposition::all();

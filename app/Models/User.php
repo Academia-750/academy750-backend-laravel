@@ -262,4 +262,9 @@ class User extends Authenticatable
     {
         return $this->morphOne(Image::class, 'imageable');
     }
+
+    public function tests (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Test::class);
+    }
 }

@@ -128,4 +128,9 @@ class Opposition extends Model
             ->withPivot('is_available')
             ->withTimestamps();
     }
+
+    public function tests (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Test::class);
+    }
 }
