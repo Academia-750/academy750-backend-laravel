@@ -50,3 +50,10 @@ Artisan::command('bomberos750:migrate', function () {
     $this->call('db:seed');
     $this->call('bomberos750:clear');
 })->purpose('Borra tablas, realiza la migracion, ejecuta los seeders y optimiza la cache de la app');
+
+Artisan::command('bomberos750:no-seeder:migrate', function () {
+    $this->call('bomberos750:clear');
+    $this->call('migrate:fresh');
+    //$this->call('db:seed');
+    $this->call('bomberos750:clear');
+})->purpose('Borra tablas, realiza la migracion, ejecuta los seeders y optimiza la cache de la app');
