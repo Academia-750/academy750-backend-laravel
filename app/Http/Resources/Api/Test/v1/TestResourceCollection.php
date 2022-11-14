@@ -4,7 +4,7 @@ namespace App\Http\Resources\Api\Test\v1;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class TestCollection extends ResourceCollection
+class TestResourceCollection extends ResourceCollection
 {
     //public $collects = ExampleResource::class;
 

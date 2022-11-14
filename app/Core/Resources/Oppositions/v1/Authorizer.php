@@ -54,4 +54,13 @@ class Authorizer implements OppositionsInterface
         return $this->schemaJson->import_records( $request );
     }
 
+    public function get_relationship_topics($opposition)
+    {
+        return $this->schemaJson->get_relationship_topics($opposition);
+    }
+
+    public function get_relationship_subtopics($opposition)
+    {
+        return $this->schemaJson->get_relationship_subtopics($opposition);
+    }
 }

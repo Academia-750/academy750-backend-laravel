@@ -130,4 +130,13 @@ class DBApp implements OppositionsInterface
         return "Proceso de importación iniciado";
     }
 
+    public function get_relationship_topics($opposition)
+    {
+        return $opposition->topics;
+    }
+
+    public function get_relationship_subtopics($opposition)
+    {
+        return $opposition->subtopics;
+    }
 }

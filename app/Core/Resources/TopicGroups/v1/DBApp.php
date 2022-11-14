@@ -105,7 +105,7 @@ class DBApp implements TopicGroupsInterface
     public function export_records( $request ): \Symfony\Component\HttpFoundation\BinaryFileResponse{
         if ($request->get('type') === 'pdf') {
             $domPDF = App::make('dompdf.wrapper');
-            $topic-groups = $this->model->query()->whereIn('id', $request->get('topic-groups'))->get();
+            $topic_groups = $this->model->query()->whereIn('id', $request->get('topic-groups'))->get();
             $domPDF->loadView('resources.export.templates.pdf.topic-groups', compact('topic-groups'))->setPaper('a4', 'landscape')->setWarnings(false);
             return $domPDF->download('report-topic-groups.pdf');
         }

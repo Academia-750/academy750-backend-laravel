@@ -2,6 +2,11 @@
 
 namespace App\Http\Resources\Api\Topic\v1;
 
+use App\Http\Resources\Api\Question\v1\QuestionCollection;
+use App\Http\Resources\Api\Subtopic\v1\SubtopicCollection;
+//use App\Http\Resources\Api\Test\v1\TestResourceCollection as TestResourceCollection;
+use App\Http\Resources\Api\Test\v1\TestResourceCollection;
+use App\Http\Resources\Api\TopicGroup\v1\TopicGroupResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TopicResource extends JsonResource
@@ -9,13 +14,31 @@ class TopicResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'type' => 'resources',
+            'type' => 'topics',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-
+                'name' => $this->resource->name,
+                'is_available' => $this->resource->is_available,
+                'is_available_bool' => $this->resource->is_available === 'yes',
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
-
+                'topic_group' => $this->when(collect($this->resource)->has('topic_group'),
+                    function () {
+                        return TopicGroupResource::make($this->resource->topic_group);
+                    }),
+                'subtopics' => $this->when(collect($this->resource)->has('subtopics'),
+                    function () {
+                        return SubtopicCollection::make($this->resource->subtopics);
+                    }),
+                'questions' => $this->when(collect($this->resource)->has('questions'),
+                    function () {
+                        return QuestionCollection::make($this->resource->questions);
+                    }),
+                'tests' => $this->when(collect($this->resource)->has('tests'),
+                    function () {
+                        return TestResourceCollection::make($this->resource->tests);
+                    })
             ]
         ];
     }

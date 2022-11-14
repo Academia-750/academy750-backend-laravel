@@ -58,4 +58,13 @@ class EventApp implements OppositionsInterface
         $this->cacheApp->import_records( $request );
     }
 
+    public function get_relationship_topics($opposition)
+    {
+        $this->cacheApp->get_relationship_topics($opposition);
+    }
+
+    public function get_relationship_subtopics($opposition)
+    {
+        $this->cacheApp->get_relationship_subtopics($opposition);
+    }
 }

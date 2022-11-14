@@ -13,4 +13,6 @@ interface OppositionsInterface
     public function mass_selection_for_action( $request );
     public function export_records( $request );
     public function import_records( $request );
+    public function get_relationship_topics( $opposition );
+    public function get_relationship_subtopics( $opposition );
 }

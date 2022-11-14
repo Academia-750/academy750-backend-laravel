@@ -1,6 +1,8 @@
 <?php
 namespace App\Core\Resources\Oppositions\v1;
 
+use App\Http\Resources\Api\Subtopic\v1\SubtopicCollection;
+use App\Http\Resources\Api\Topic\v1\TopicCollection;
 use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
 use App\Http\Resources\Api\Opposition\v1\OppositionCollection;
@@ -56,6 +58,20 @@ class SchemaJson implements OppositionsInterface
 
     public function import_records( $request ){
         return $this->eventApp->import_records( $request );
+    }
+
+    public function get_relationship_topics($opposition): TopicCollection
+    {
+        return TopicCollection::make(
+            $this->eventApp->get_relationship_topics($opposition)
+        );
+    }
+
+    public function get_relationship_subtopics($opposition): SubtopicCollection
+    {
+        return SubtopicCollection::make(
+            $this->eventApp->get_relationship_subtopics($opposition)
+        );
     }
 
 }

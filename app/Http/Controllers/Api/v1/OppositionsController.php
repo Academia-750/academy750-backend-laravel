@@ -56,4 +56,12 @@ class OppositionsController extends Controller
     public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
         return Storage::disk('public')->download('templates_import/opposition.csv', 'template_import_opposition');
     }
+
+    public function get_relationship_topics (Opposition $opposition) {
+        return $this->oppositionsInterface->get_relationship_topics( $opposition );
+    }
+
+    public function get_relationship_subtopics (Opposition $opposition) {
+        return $this->oppositionsInterface->get_relationship_subtopics( $opposition );
+    }
 }

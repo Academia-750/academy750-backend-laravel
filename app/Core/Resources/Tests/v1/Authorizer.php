@@ -3,8 +3,8 @@ namespace App\Core\Resources\Tests\v1;
 
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
-use App\Http\Resources\Api\Test\v1\TestCollection;
-use App\Http\Resources\Api\Test\v1\TestResource;
+use App\Http\Resources\Api\Test\v1\TestResourceCollection;
+use App\Http\Resources\Api\Test\v1\TestModelResource;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
 use App\Core\Resources\Tests\v1\SchemaJson;
@@ -16,7 +16,7 @@ class Authorizer implements TestsInterface
         $this->schemaJson = $schemaJson;
     }
 
-    public function index(): TestCollection
+    public function index(): TestResourceCollection
     {
         Gate::authorize('index', Test::class );
         return $this->schemaJson->index();
@@ -28,13 +28,13 @@ class Authorizer implements TestsInterface
         return $this->schemaJson->create($request);
     }
 
-    public function read( $test ): TestResource
+    public function read( $test ): TestModelResource
     {
         Gate::authorize('read', $test );
         return $this->schemaJson->read( $test );
     }
 
-    public function update( $request, $test ): TestResource
+    public function update( $request, $test ): TestModelResource
     {
         Gate::authorize('update', $test );
         return $this->schemaJson->update( $request, $test );

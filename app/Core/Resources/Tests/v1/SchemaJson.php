@@ -3,8 +3,8 @@ namespace App\Core\Resources\Tests\v1;
 
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
-use App\Http\Resources\Api\Test\v1\TestCollection;
-use App\Http\Resources\Api\Test\v1\TestResource;
+use App\Http\Resources\Api\Test\v1\TestResourceCollection;
+use App\Http\Resources\Api\Test\v1\TestModelResource;
 use App\Core\Resources\Tests\v1\EventApp;
 use Illuminate\Support\Str;
 
@@ -16,30 +16,30 @@ class SchemaJson implements TestsInterface
         $this->eventApp = $eventApp;
     }
 
-    public function index(): TestCollection
+    public function index(): TestResourceCollection
     {
-        return TestCollection::make(
+        return TestResourceCollection::make(
             $this->eventApp->index()
         );
     }
 
     public function create( $request ): \Illuminate\Http\JsonResponse
     {
-        return TestResource::make($this->eventApp->create($request))
+        return TestModelResource::make($this->eventApp->create($request))
                     ->response()
                     ->setStatusCode(201);
     }
 
-    public function read( $test ): TestResource
+    public function read( $test ): TestModelResource
     {
-        return TestResource::make(
+        return TestModelResource::make(
             $this->eventApp->read( $test )
         );
     }
 
-    public function update( $request, $test ): TestResource
+    public function update( $request, $test ): TestModelResource
     {
-        return TestResource::make(
+        return TestModelResource::make(
             $this->eventApp->update( $request, $test )
         );
     }

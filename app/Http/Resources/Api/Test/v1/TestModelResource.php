@@ -4,7 +4,7 @@ namespace App\Http\Resources\Api\Test\v1;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class TestResource extends JsonResource
+class TestModelResource extends JsonResource
 {
     public function toArray($request): array
     {
