@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1;
 use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
 use App\Http\Controllers\Controller;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -61,7 +62,7 @@ class OppositionsController extends Controller
         return $this->oppositionsInterface->get_relationship_topics( $opposition );
     }
 
-    public function get_relationship_subtopics (Opposition $opposition) {
-        return $this->oppositionsInterface->get_relationship_subtopics( $opposition );
+    public function get_relationship_subtopics (Topic $topic, Opposition $opposition) {
+        return $this->oppositionsInterface->get_relationship_subtopics( $topic, $opposition );
     }
 }

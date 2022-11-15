@@ -67,10 +67,10 @@ class SchemaJson implements OppositionsInterface
         );
     }
 
-    public function get_relationship_subtopics($opposition): SubtopicCollection
+    public function get_relationship_subtopics($topic, $opposition): SubtopicCollection
     {
         return SubtopicCollection::make(
-            $this->eventApp->get_relationship_subtopics($opposition)
+            $this->eventApp->get_relationship_subtopics($topic, $opposition)
         );
     }
 

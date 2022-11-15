@@ -12,7 +12,7 @@ Route::patch('oppositions/update/{opposition}', [OppositionsController::class, '
 Route::delete('oppositions/delete/{opposition}', [OppositionsController::class, 'delete'])->name('api.v1.oppositions.delete');
 Route::post('oppositions/mass-selection-action', [OppositionsController::class, 'mass_selection_for_action'])->name('api.v1.oppositions.actions-on-multiple-records');
 Route::get("oppositions/{opposition}/relationship/topics", [OppositionsController::class, 'get_relationship_topics'])->name('api.v1.oppositions.relationships.topics');
-Route::get("oppositions/{opposition}/relationship/subtopics", [OppositionsController::class, 'get_relationship_subtopics'])->name('api.v1.oppositions.relationships.subtopics');
+Route::get("oppositions/{opposition}/topic/{topic}/relationship/subtopics", [OppositionsController::class, 'get_relationship_subtopics'])->name('api.v1.oppositions.relationships.subtopics');
 /*Route::post('oppositions/export', [OppositionsController::class, 'export_records'])->name('api.v1.oppositions.export');
 Route::post('oppositions/import', [OppositionsController::class, 'import_records'])->name('api.v1.oppositions.import');*/
 Route::get('oppositions/import/template', [OppositionsController::class, 'download_template_import_records'])->name('api.v1.oppositions.import.template');

@@ -5,6 +5,7 @@ use App\Core\Resources\Oppositions\v1\Services\ActionForMultipleRecordsService;
 use App\Core\Resources\Oppositions\v1\Services\ActionsOppositionsRecords;
 use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
+use App\Models\Subtopic;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -135,8 +136,18 @@ class DBApp implements OppositionsInterface
         return $opposition->topics;
     }
 
-    public function get_relationship_subtopics($opposition)
+    public function get_relationship_subtopics($topic, $opposition)
     {
-        return $opposition->subtopics;
+        $subtopics_id = [];
+
+        $opposition->subtopics->each( static function ($subtopic) use ($topic, $subtopics_id) {
+            $topics = $subtopic->topics;
+
+            if ($topics->contains($topic->getRouteKey())) {
+                $subtopics_id[] = ($subtopic->getRouteKey());
+            }
+        });
+
+        return Subtopic::query()->whereIn('id', $subtopics_id)->get();
     }
 }

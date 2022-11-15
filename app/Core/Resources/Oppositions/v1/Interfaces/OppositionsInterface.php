@@ -14,5 +14,5 @@ interface OppositionsInterface
     public function export_records( $request );
     public function import_records( $request );
     public function get_relationship_topics( $opposition );
-    public function get_relationship_subtopics( $opposition );
+    public function get_relationship_subtopics( $topic, $opposition );
 }

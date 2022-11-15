@@ -63,7 +63,7 @@ class LoginController
     #[ArrayShape(['attempt' => "bool", 'user' => "mixed"])] public function attemptAuthentication ($access_key, $password): array
     {
         $user = User::query()->orWhere('dni','=', $access_key)
-            ->where('state', '=', true)
+            ->where('state', '=', 'enable')
             /*->orWhere('email', '=', $access_key)
             ->orWhere('username', '=', $access_key)*/
             ->first();
