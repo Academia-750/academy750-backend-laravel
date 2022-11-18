@@ -61,8 +61,4 @@ class OppositionsController extends Controller
     public function get_relationship_syllabus (Opposition $opposition) {
         return $this->oppositionsInterface->get_relationship_syllabus( $opposition );
     }
-
-    public function get_relationship_subtopics (Topic $topic, Opposition $opposition) {
-        return $this->oppositionsInterface->get_relationship_subtopics( $topic, $opposition );
-    }
 }
