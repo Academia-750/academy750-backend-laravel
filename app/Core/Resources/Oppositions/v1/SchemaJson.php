@@ -60,17 +60,11 @@ class SchemaJson implements OppositionsInterface
         return $this->eventApp->import_records( $request );
     }
 
-    public function get_relationship_topics($opposition): TopicCollection
+    public function get_relationship_syllabus($opposition): \Illuminate\Http\JsonResponse
     {
-        return TopicCollection::make(
-            $this->eventApp->get_relationship_topics($opposition)
-        );
-    }
 
-    public function get_relationship_subtopics($topic, $opposition): SubtopicCollection
-    {
-        return SubtopicCollection::make(
-            $this->eventApp->get_relationship_subtopics($topic, $opposition)
+        return response()->json(
+            $this->eventApp->get_relationship_syllabus($opposition)
         );
     }
 

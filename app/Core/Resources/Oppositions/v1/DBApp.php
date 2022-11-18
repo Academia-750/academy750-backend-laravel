@@ -131,23 +131,40 @@ class DBApp implements OppositionsInterface
         return "Proceso de importación iniciado";
     }
 
-    public function get_relationship_topics($opposition)
+    public function get_relationship_syllabus($opposition)
     {
-        return $opposition->topics;
-    }
+        $syllabus = [
+            'opposition' => [
+                'data' => $opposition,
+                'items' => []
+            ]
+        ];
 
-    public function get_relationship_subtopics($topic, $opposition)
-    {
-        $subtopics_id = [];
+        foreach ($opposition->topics as $opposition_topic) {
+            $subtopics = [];
 
-        $opposition->subtopics->each( static function ($subtopic) use ($topic, $subtopics_id) {
-            $topics = $subtopic->topics;
+            foreach ($opposition->subtopics as $opposition_subtopic) {
+                $subtopics_id_by_topic = $opposition_topic->subtopics->pluck('id')->toArray();
 
-            if ($topics->contains($topic->getRouteKey())) {
-                $subtopics_id[] = ($subtopic->getRouteKey());
+                if (in_array($opposition_subtopic->getRouteKey(), $subtopics_id_by_topic, true)) {
+                    $subtopics[] = $opposition_subtopic;
+                }
             }
-        });
 
-        return Subtopic::query()->whereIn('id', $subtopics_id)->get();
+            $syllabus['opposition']['items'][] = [
+                'topic' => $opposition_topic,
+                'subtopics' => $subtopics
+            ];
+        }
+        return $syllabus;
+
+        /*return [
+            'oppositions' => [
+                'topics' => [
+                    'data' => $opposition->topics
+                ],
+                'subtopics' => $opposition->subtopics
+            ],
+        ];*/
     }
 }

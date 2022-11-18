@@ -58,8 +58,8 @@ class OppositionsController extends Controller
         return Storage::disk('public')->download('templates_import/opposition.csv', 'template_import_opposition');
     }
 
-    public function get_relationship_topics (Opposition $opposition) {
-        return $this->oppositionsInterface->get_relationship_topics( $opposition );
+    public function get_relationship_syllabus (Opposition $opposition) {
+        return $this->oppositionsInterface->get_relationship_syllabus( $opposition );
     }
 
     public function get_relationship_subtopics (Topic $topic, Opposition $opposition) {

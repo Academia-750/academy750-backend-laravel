@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Core\Services\UuidGeneratorService;
 use App\Models\Subtopic;
+use Database\Seeders\trait\OppositionsHelpersTrait;
 use Database\Seeders\trait\QuestionsHelpersTrait;
 use Faker\Factory;
 use Illuminate\Database\Seeder;
@@ -12,6 +13,7 @@ use Illuminate\Support\Str;
 class SubtopicSeeder extends Seeder
 {
     use QuestionsHelpersTrait;
+    use OppositionsHelpersTrait;
 
     public $faker;
     public function run(): void
@@ -26,6 +28,7 @@ class SubtopicSeeder extends Seeder
             ]);
 
             $this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
+            $this->syncOppositions($subtopic);
         }
     }
 }

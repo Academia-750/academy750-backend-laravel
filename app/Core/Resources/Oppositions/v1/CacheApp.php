@@ -71,17 +71,10 @@ class CacheApp implements OppositionsInterface
         return $this->dbApp->import_records( $request );
     }
 
-    public function get_relationship_topics($opposition)
+    public function get_relationship_syllabus($opposition)
     {
         return Cache::store('redis')->tags('topics')->rememberForever("opposition.relationship.topics.".$opposition->getRouteKey(), function () use ( $opposition ) {
-            return $this->dbApp->get_relationship_topics( $opposition );
-        });
-    }
-
-    public function get_relationship_subtopics($topic, $opposition)
-    {
-        return Cache::store('redis')->tags('subtopics')->rememberForever("opposition.relationship.subtopics.".$opposition->getRouteKey(), function () use ( $topic, $opposition ) {
-            return $this->dbApp->get_relationship_subtopics( $topic, $opposition );
+            return $this->dbApp->get_relationship_syllabus( $opposition );
         });
     }
 }
