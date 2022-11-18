@@ -18,8 +18,8 @@ class ActionForMultipleRecordsService
         $information = [];
 
         foreach ($records as $topic_id) {
-            $user = ActionsSubtopicsRecords::deleteRecord($topic_id);
-            $information[] = "'Tema {$user->getRouteKey()}' ha sido eliminado con éxito";
+            $subtopic = ActionsSubtopicsRecords::deleteRecord($topic_id);
+            $information[] = "'Subtema {$subtopic->getRouteKey()}' ha sido eliminado con éxito";
         }
 
         return $information;

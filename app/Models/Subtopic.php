@@ -21,10 +21,12 @@ class Subtopic extends Model
     ];
 
     public array $allowedSorts = [
+        "name",
         "created-at"
     ];
 
     public array $adapterSorts = [
+        "name" => "Name",
         "created-at" => "CreatedAt",
     ];
 
@@ -44,7 +46,11 @@ class Subtopic extends Model
         "date" => "Date",
     ];
 
-    public array $allowedIncludes = [];
+    public array $allowedIncludes = [
+        'topics',
+        'oppositions',
+        'questions',
+    ];
 
     public array $adapterIncludes = [];
 
@@ -54,6 +60,10 @@ class Subtopic extends Model
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
+
+    public function sortName(Builder $query, $direction): void{
+        $query->orderBy('name', $direction);
+    }
 
     public function sortCreatedAt(Builder $query, $direction): void{
         $query->orderBy('created_at', $direction);
@@ -76,9 +86,9 @@ class Subtopic extends Model
     }
 
     public function filterSearch(Builder $query, $value): void{
-        $query->orWhere(function($query) use ($value) {
-            $query->where('field', 'LIKE' , "%{$value}%")
-                ->orWhere('other_field', 'LIKE' , "%{$value}%");
+        $query->orWhere(static function($query) use ($value) {
+            $query->where('name', 'LIKE' , "%{$value}%")
+                ->orWhere('is_available', 'LIKE' , "%{$value}%");
         });
     }
 

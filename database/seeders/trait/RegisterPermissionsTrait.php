@@ -13,14 +13,12 @@ trait RegisterPermissionsTrait
     public function registerPermission ($permissionKey, $aliasName)
     {
         if (!$this->existsPermission($permissionKey)) {
-            $permission = Permission::query()->create([
+            Permission::query()->create([
                 'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
                 'name' => $permissionKey,
                 'alias_name' => $aliasName,
             ]);
         }
-
-        return $permission;
     }
 
     public function permissionsUsersByRoleStudent (): void {

@@ -2,18 +2,18 @@
 
 namespace App\Core\Resources\Subtopics\v1\Services;
 
-use App\Models\Topic;
+use App\Models\Subtopic;
 use App\Models\User;
 
 class ActionsSubtopicsRecords
 {
-    public static function deleteRecord ($topic) {
-        if ( !($topic instanceof Topic) ) {
-            $topic = Topic::query()->find($topic);
+    public static function deleteRecord ($subtopic) {
+        if ( !($subtopic instanceof Subtopic) ) {
+            $subtopic = Subtopic::query()->find($subtopic);
         }
 
-        $topic->delete();
+        $subtopic->delete();
 
-        return $topic;
+        return $subtopic;
     }
 }

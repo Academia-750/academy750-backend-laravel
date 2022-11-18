@@ -16,7 +16,12 @@ class UpdateSubtopicRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'nullable',
+                Rule::when($this->get('dni') !== null, [
+                    'max:100'
+                ])
+            ]
         ];
     }
 
@@ -30,7 +35,7 @@ class UpdateSubtopicRequest extends FormRequest
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'name' => 'Nombre de Subtema'
         ];
     }
 }

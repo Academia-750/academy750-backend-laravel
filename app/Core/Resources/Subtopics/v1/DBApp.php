@@ -31,7 +31,8 @@ class DBApp implements SubtopicsInterface
 
             DB::beginTransaction();
                 $subtopicCreated = $this->model->query()->create([
-                    '' => '',
+                    'name' => $request->get('name'),
+                    'is_available' => 'yes'
                 ]);
             DB::commit();
 
@@ -52,7 +53,7 @@ class DBApp implements SubtopicsInterface
         try {
 
             DB::beginTransaction();
-                $subtopic->name = $request->get('name');
+                $subtopic->name = $request->get('name') ?? $subtopic->name;
                 $subtopic->save();
             DB::commit();
 

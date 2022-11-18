@@ -15,7 +15,7 @@ class SubtopicPolicy
         return $user->can('list-subtopics');
     }
 
-    public function read(User $user, Opposition $opposition): bool
+    public function read(User $user, Subtopic $subtopic): bool
     {
         return $user->can('see-a-subtopic');
     }
@@ -25,12 +25,12 @@ class SubtopicPolicy
         return $user->can('create-subtopic');
     }
 
-    public function update(User $user, Opposition $opposition): bool
+    public function update(User $user, Subtopic $subtopic): bool
     {
         return $user->can('edit-subtopic');
     }
 
-    public function delete(User $user, Opposition $opposition): bool
+    public function delete(User $user, Subtopic $subtopic): bool
     {
         return $user->can('delete-subtopic');
     }
