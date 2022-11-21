@@ -38,6 +38,9 @@ class TopicResource extends JsonResource
                     function () {
                         return TestResourceCollection::make($this->resource->tests);
                     })*/
+            ],
+            'meta' => [
+                'has_subtopics' => $this->resource->subtopics->count() > 0
             ]
         ];
     }

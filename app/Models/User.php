@@ -38,7 +38,6 @@ class User extends Authenticatable
     use Notifiable;
     use HasFactory;
     use HasRoles;
-    use SoftDeletes;
 
     public $keyType = "string";
     public $incrementing = false;

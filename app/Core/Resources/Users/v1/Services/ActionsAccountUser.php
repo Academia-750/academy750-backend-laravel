@@ -11,7 +11,8 @@ class ActionsAccountUser
             $user = User::query()->find($user);
         }
 
-        $user->forceDelete();
+        //$user->forceDelete();
+        $user->delete();
 
         return $user;
     }
@@ -25,8 +26,8 @@ class ActionsAccountUser
         $user->save();
         $user->refresh();
 
-        $user->delete(); // Soft Delete
-        $user->refresh();
+        /*$user->delete(); // Soft Delete
+        $user->refresh();*/
 
         return $user;
     }
@@ -40,8 +41,8 @@ class ActionsAccountUser
         $user->save();
         $user->refresh();
 
-        $user->restore(); // Soft Delete
-        $user->refresh();
+        /*$user->restore(); // Soft Delete
+        $user->refresh();*/
 
         return $user;
     }

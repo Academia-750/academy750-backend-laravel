@@ -25,7 +25,6 @@ class CreateUsersTable extends Migration
             $table->string('email', 120)->unique();
             $table->timestamp('email_verified_at')->nullable()->comment('Está el correo verificado?');
             $table->string('password', 80);
-            $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();
         });
