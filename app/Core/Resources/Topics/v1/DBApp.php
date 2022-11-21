@@ -31,7 +31,8 @@ class DBApp implements TopicsInterface
 
             DB::beginTransaction();
                 $topicCreated = $this->model->query()->create([
-                    '' => '',
+                    'name' => $request->get('name'),
+                    'topic_group_id' => $request->get('topic-group-id')
                 ]);
             DB::commit();
 
@@ -52,7 +53,8 @@ class DBApp implements TopicsInterface
         try {
 
             DB::beginTransaction();
-                $topic->name = $request->get('name');
+                $topic->name = $request->get('name') ?? $topic->name;
+                $topic->topic_group_id = $request->get('topic-group-id') ?? $topic->topic_group_id;
                 $topic->save();
             DB::commit();
 

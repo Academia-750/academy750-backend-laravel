@@ -18,8 +18,8 @@ class UpdateSubtopicRequest extends FormRequest
         return [
             'name' => [
                 'nullable',
-                Rule::when($this->get('dni') !== null, [
-                    'max:100'
+                Rule::when($this->get('name') !== null, [
+                    'max:255'
                 ])
             ]
         ];

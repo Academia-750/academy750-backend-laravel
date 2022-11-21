@@ -16,7 +16,8 @@ class CreateTopicRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required', 'max:255'],
+            'topic-group-id' => ['required', 'uuid', 'exists:topic_groups,id']
         ];
     }
 
@@ -30,7 +31,8 @@ class CreateTopicRequest extends FormRequest
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'name' => 'Nombre del tema',
+            'topic-group-id' => 'Grupo de tema'
         ];
     }
 }

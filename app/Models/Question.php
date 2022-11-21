@@ -105,4 +105,9 @@ class Question extends Model
     {
         return $this->morphOne(Image::class, 'imageable');
     }
+
+    public function subtopics (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Subtopic::class);
+    }
 }

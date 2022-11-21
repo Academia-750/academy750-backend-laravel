@@ -16,7 +16,18 @@ class UpdateTopicRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => [
+                'nullable',
+                Rule::when($this->get('name') !== null, [
+                    'max:255'
+                ])
+            ],
+            'topic-group-id' => [
+                'nullable',
+                Rule::when($this->get('topic-group-id') !== null, [
+                    'max:255', 'uuid', 'exists:topic_groups,id'
+                ])
+            ]
         ];
     }
 
@@ -30,7 +41,8 @@ class UpdateTopicRequest extends FormRequest
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'name' => 'Nombre del tema',
+            'topic-group-id' => 'Grupo de tema'
         ];
     }
 }

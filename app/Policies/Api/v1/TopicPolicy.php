@@ -12,32 +12,32 @@ class TopicPolicy
 
     public function index(User $user): bool
     {
-        return $user->can('list-resources');
+        return $user->can('list-topics');
     }
 
-    public function read(User $user, Opposition $opposition): bool
+    public function read(User $user, Topic $topic): bool
     {
-        return $user->can('see-a-resource');
+        return $user->can('see-a-topic');
     }
 
     public function create(User $user): bool
     {
-        return $user->can('create-resource');
+        return $user->can('create-topic');
     }
 
-    public function update(User $user, Opposition $opposition): bool
+    public function update(User $user, Topic $topic): bool
     {
-        return $user->can('edit-resource');
+        return $user->can('edit-topic');
     }
 
-    public function delete(User $user, Opposition $opposition): bool
+    public function delete(User $user, Topic $topic): bool
     {
-        return $user->can('delete-resource');
+        return $user->can('delete-topic');
     }
 
     public function mass_selection_for_action(User $user): bool
     {
-        return $user->can('action-for-multiple-resources');
+        return $user->can('action-for-multiple-topics');
     }
 
     public function export_records(User $user): bool

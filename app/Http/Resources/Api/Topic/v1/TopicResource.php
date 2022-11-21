@@ -5,7 +5,6 @@ namespace App\Http\Resources\Api\Topic\v1;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Subtopic\v1\SubtopicCollection;
 //use App\Http\Resources\Api\Test\v1\TestResourceCollection as TestResourceCollection;
-use App\Http\Resources\Api\Test\v1\TestResourceCollection;
 use App\Http\Resources\Api\TopicGroup\v1\TopicGroupResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -34,11 +33,11 @@ class TopicResource extends JsonResource
                 'questions' => $this->when(collect($this->resource)->has('questions'),
                     function () {
                         return QuestionCollection::make($this->resource->questions);
-                    }),
+                    })/*,
                 'tests' => $this->when(collect($this->resource)->has('tests'),
                     function () {
                         return TestResourceCollection::make($this->resource->tests);
-                    })
+                    })*/
             ]
         ];
     }

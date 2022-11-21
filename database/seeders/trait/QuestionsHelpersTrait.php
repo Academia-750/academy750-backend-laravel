@@ -8,7 +8,7 @@ trait QuestionsHelpersTrait
             $model->questions()->create([
                 'question' => "Question of {$fieldTextQuestion} - {$number}",
                 'reason' => "Reason {$number} - {$fakerText}",
-                'is_available' => "yes"
+                'is_available' => "yes",
             ]);
         }
 

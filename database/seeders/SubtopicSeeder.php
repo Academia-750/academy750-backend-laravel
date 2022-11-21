@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Core\Services\UuidGeneratorService;
 use App\Models\Subtopic;
+use App\Models\Topic;
 use Database\Seeders\trait\OppositionsHelpersTrait;
 use Database\Seeders\trait\QuestionsHelpersTrait;
 use Faker\Factory;
@@ -27,7 +28,7 @@ class SubtopicSeeder extends Seeder
                 'is_available' => 'yes'
             ]);
 
-            $this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
+            //$this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
             $this->syncOppositions($subtopic);
         }
     }

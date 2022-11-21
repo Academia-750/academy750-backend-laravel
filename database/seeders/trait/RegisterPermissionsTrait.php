@@ -73,12 +73,15 @@ trait RegisterPermissionsTrait
     public function permissionsTopics (): void {
         $this->admin->refresh();
         $permissions = [
+            'list-topic-groups' => 'list-topic-groups',
             'add-topic-to-opposition' => 'add-topic-to-opposition',
             'remove-topic-of-opposition' => 'remove-topic-of-opposition',
             'list-topics' => 'list-topics',
+            'see-a-topic' => 'see-a-topic',
             'create-topic' => 'create-topic',
             'edit-topic' => 'edit-topic',
             'delete-topic' => 'delete-topic',
+            'action-for-multiple-topics' => 'action-for-multiple-topics',
             'import-topics' => 'import-topics',
         ];
 

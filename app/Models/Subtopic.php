@@ -110,9 +110,10 @@ class Subtopic extends Model
     }
 
 
-    public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function questions (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->morphMany(Question::class, 'questionable');
+        //return $this->morphMany(Question::class, 'questionable');
+        return $this->hasMany(Question::class);
     }
 
 }

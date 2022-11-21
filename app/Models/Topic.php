@@ -22,10 +22,12 @@ class Topic extends Model
     ];
 
     public array $allowedSorts = [
+        "name",
         "created-at"
     ];
 
     public array $adapterSorts = [
+        "name" => "Name",
         "created-at" => "CreatedAt",
     ];
 
@@ -45,9 +47,13 @@ class Topic extends Model
         "date" => "Date",
     ];
 
-    public array $allowedIncludes = [];
+    public array $allowedIncludes = [
+        'topic-group'
+    ];
 
-    public array $adapterIncludes = [];
+    public array $adapterIncludes = [
+        'topic-group' => 'topic_group'
+    ];
 
      protected $casts = [
         'id' => 'string'
@@ -55,6 +61,10 @@ class Topic extends Model
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
+
+    public function sortName(Builder $query, $direction): void{
+        $query->orderBy('name', $direction);
+    }
 
     public function sortCreatedAt(Builder $query, $direction): void{
         $query->orderBy('created_at', $direction);
@@ -77,9 +87,9 @@ class Topic extends Model
     }
 
     public function filterSearch(Builder $query, $value): void{
-        $query->orWhere(function($query) use ($value) {
-            $query->where('field', 'LIKE' , "%{$value}%")
-                ->orWhere('other_field', 'LIKE' , "%{$value}%");
+        $query->orWhere(static function($query) use ($value) {
+            $query->where('name', 'LIKE' , "%{$value}%")
+                ->orWhere('is_available', 'LIKE' , "%{$value}%");
         });
     }
 
@@ -106,8 +116,18 @@ class Topic extends Model
         return $this->belongsTo(TopicGroup::class);
     }
 
-    public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function questions ()
     {
+        /*return $this->morphOne(Question::class, 'questionable')->ofMany([
+            'id',
+            'question',
+            'reason',
+            'is_available',
+            'subtopic_id'
+        ], static function ($query) {
+            $query->whereNull('subtopic_id');
+        });*/
+
         return $this->morphMany(Question::class, 'questionable');
     }
 
