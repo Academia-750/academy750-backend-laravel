@@ -68,12 +68,12 @@ class UpdateUserRequest extends FormRequest
             ],
             'roles' => ['nullable',
                 Rule::when(
-                    $this->get('roles'),
+                    $this->get('roles') !== null,
                     ['array', 'min:1']
                 )
             ],
             'roles.*' => [
-                Rule::when($this->get('roles'), [
+                Rule::when($this->get('roles') !== null, [
                     'string','distinct:strict','exists:roles,id'
                 ])
             ],

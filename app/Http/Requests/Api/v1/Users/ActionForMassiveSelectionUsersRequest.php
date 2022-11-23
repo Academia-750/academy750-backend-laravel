@@ -21,7 +21,7 @@ class ActionForMassiveSelectionUsersRequest extends FormRequest
                 'string',
                 Rule::in(['delete', 'lock-account', 'unlock-account'])
             ],
-            "users" => ['required', 'array', 'min:2'],
+            "users" => ['required', 'array'],
             "users.*" => ['uuid', 'distinct:strict', 'exists:users,id']
         ];
     }

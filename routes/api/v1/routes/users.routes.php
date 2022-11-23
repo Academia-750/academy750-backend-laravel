@@ -20,3 +20,13 @@ Route::get('users/import/template', [UsersController::class, 'download_template_
 /*Route::get('/students/records/archived', [UsersController::class, 'get_records_archived'])->name('api.v1.students.archived.get');
 Route::get('/students/records/archived/restore/{company}', [UsersController::class, 'restore_archived'])->name('api.v1.students.archived.restore');
 Route::delete('/students/records/archived/force-delete/{company}', [UsersController::class, 'force_delete_archived'])->name('api.v1.students.archived.force-delete');*/
+
+Route::get('roles/get-data/student', static function () {
+    if (!auth()->user()?->hasRole('admin')) {
+        abort(404);
+    }
+
+    return \App\Http\Resources\Api\Role\v1\RoleResource::make(
+        \App\Models\Role::query()->firstWhere('name', '=', 'student')
+    );
+});

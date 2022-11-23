@@ -100,5 +100,22 @@ class UserSeeder extends Seeder
             'path' => 'https://via.placeholder.com/128.webp?text=Raul+Moheno+Student',
             'type_path' => 'url'
         ]);
+
+        User::factory()->count(10)->create()->each(static function ($itemModel) use ($roleStudent) {
+            $itemModel->assignRole($roleStudent);
+            $itemModel->image()->create([
+                'path' => 'https://via.placeholder.com/128.webp?text=ExampleUser',
+                'type_path' => 'url'
+            ]);
+        });
+        User::factory()->count(10)->create()->each(static function ($itemModel) use ($roleStudent) {
+            $itemModel->assignRole($roleStudent);
+            $itemModel->state = 'disable';
+            $itemModel->save();
+            $itemModel->image()->create([
+                'path' => 'https://via.placeholder.com/128.webp?text=ExampleUser',
+                'type_path' => 'url'
+            ]);
+        });
     }
 }

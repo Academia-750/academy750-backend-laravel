@@ -215,7 +215,8 @@ class User extends Authenticatable
         $query->whereDate('created_at',$value);
     }
     public function filterStateAccount (Builder $query, $value): void {
-        $query->where('state', $value);
+        $query->where('state', 'LIKE', "%{$value}%");
+        //$query->where('state', $value);
     }
     public function filterEmail (Builder $query, $value): void {
         $query->where('email', 'LIKE', "%{$value}%");

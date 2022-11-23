@@ -34,7 +34,7 @@ class ActionsAccountUser
     public static function enableAccountUser ($user) {
 
         if ( !($user instanceof User) ) {
-            $user = User::query()->onlyTrashed()->find($user);
+            $user = User::query()->find($user);
         }
 
         $user->state = 'enable';

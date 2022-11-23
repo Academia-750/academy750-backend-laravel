@@ -53,7 +53,7 @@ class SchemaJson implements UsersInterface
     {
         return response()->json([
             'information' => $this->eventApp->mass_selection_for_action( $request )
-        ]);
+        ], 200);
     }
 
     public function export_records( $request ){
