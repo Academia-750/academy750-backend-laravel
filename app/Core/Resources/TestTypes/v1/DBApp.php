@@ -105,8 +105,8 @@ class DBApp implements TestTypesInterface
     public function export_records( $request ): \Symfony\Component\HttpFoundation\BinaryFileResponse{
         if ($request->get('type') === 'pdf') {
             $domPDF = App::make('dompdf.wrapper');
-            $test-types = $this->model->query()->whereIn('id', $request->get('test-types'))->get();
-            $domPDF->loadView('resources.export.templates.pdf.test-types', compact('test-types'))->setPaper('a4', 'landscape')->setWarnings(false);
+            $test_types = $this->model->query()->whereIn('id', $request->get('test-types'))->get();
+            $domPDF->loadView('resources.export.templates.pdf.test-types', compact('test_types'))->setPaper('a4', 'landscape')->setWarnings(false);
             return $domPDF->download('report-test-types.pdf');
         }
         return Excel::download(new TestTypesExport($request->get('test-types')), 'test-types.'. $request->get('type'));

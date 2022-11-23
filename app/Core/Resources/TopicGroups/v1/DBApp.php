@@ -106,7 +106,7 @@ class DBApp implements TopicGroupsInterface
         if ($request->get('type') === 'pdf') {
             $domPDF = App::make('dompdf.wrapper');
             $topic_groups = $this->model->query()->whereIn('id', $request->get('topic-groups'))->get();
-            $domPDF->loadView('resources.export.templates.pdf.topic-groups', compact('topic-groups'))->setPaper('a4', 'landscape')->setWarnings(false);
+            $domPDF->loadView('resources.export.templates.pdf.topic-groups', compact('topic_groups'))->setPaper('a4', 'landscape')->setWarnings(false);
             return $domPDF->download('report-topic-groups.pdf');
         }
         return Excel::download(new TopicGroupsExport($request->get('topic-groups')), 'topic-groups.'. $request->get('type'));
