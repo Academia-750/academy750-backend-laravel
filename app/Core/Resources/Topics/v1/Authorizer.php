@@ -64,4 +64,9 @@ class Authorizer implements TopicsInterface
         return $this->schemaJson->import_records( $request );
     }
 
+    public function get_relationship_subtopics($topic)
+    {
+        Gate::authorize('get_relationship_subtopics', $topic );
+        return $this->schemaJson->get_relationship_subtopics($topic);
+    }
 }

@@ -40,6 +40,10 @@ class TopicPolicy
         return $user->can('action-for-multiple-topics');
     }
 
+    public function get_relationship_subtopics (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
     public function export_records(User $user): bool
     {
         return true;

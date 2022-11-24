@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Http\Resources\Api\Subtopic\v1\SubtopicCollection;
 use App\Models\Topic;
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
 use App\Http\Resources\Api\Topic\v1\TopicCollection;
@@ -75,4 +76,10 @@ class SchemaJson implements TopicsInterface
         ], 200);
     }
 
+    public function get_relationship_subtopics($topic)
+    {
+        return SubtopicCollection::make(
+            $this->eventApp->get_relationship_subtopics($topic)
+        );
+    }
 }

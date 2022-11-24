@@ -119,4 +119,8 @@ class DBApp implements TopicsInterface
         //(new TopicsImport(Auth::user()))->import($request->file('topics'));
     }
 
+    public function get_relationship_subtopics($topic)
+    {
+        return $topic->subtopics;
+    }
 }
