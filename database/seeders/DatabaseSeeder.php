@@ -20,9 +20,9 @@ class DatabaseSeeder extends Seeder
         //$this->call(StudentSeeder::class);
         $this->call(OppositionSeeder::class);
         $this->call(TopicGroupSeeder::class);
-        //$this->call(TopicSeeder::class);
+        $this->call(TopicSeeder::class);
         $this->call(SubtopicSeeder::class);
-        $this->call(SubtopicTopicSeeder::class);
+        //$this->call(SubtopicTopicSeeder::class);
         /*$this->call(QuestionSeeder::class);*/
         $this->call(TestTypeSeeder::class);
         /*$this->call(TestSeeder::class);*/

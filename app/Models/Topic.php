@@ -96,11 +96,9 @@ class Topic extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
-    public function subtopics (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function subtopics (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->belongsToMany(Subtopic::class)
-            ->withPivot('is_available')
-            ->withTimestamps();
+        return $this->hasMany(Subtopic::class);
     }
 
     public function oppositions (): \Illuminate\Database\Eloquent\Relations\MorphToMany
@@ -116,7 +114,7 @@ class Topic extends Model
         return $this->belongsTo(TopicGroup::class);
     }
 
-    public function questions ()
+    public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
         /*return $this->morphOne(Question::class, 'questionable')->ofMany([
             'id',

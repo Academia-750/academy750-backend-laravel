@@ -10,7 +10,7 @@ trait OppositionsHelpersTrait
 
         $oppositionsRandom = [];
 
-        foreach ( range(3, random_int(5,10)) as $n) {
+        foreach ( range(3, random_int(5,15)) as $n) {
             $oppositionsRandom[] = $oppositions->random()->getRouteKey();
         }
 

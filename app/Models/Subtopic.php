@@ -94,11 +94,9 @@ class Subtopic extends Model
 
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
-    public function topics (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function topic (): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsToMany(Topic::class)
-            ->withPivot('is_available')
-            ->withTimestamps();
+        return $this->belongsTo(Topic::class);
     }
 
 
@@ -110,10 +108,10 @@ class Subtopic extends Model
     }
 
 
-    public function questions (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        //return $this->morphMany(Question::class, 'questionable');
-        return $this->hasMany(Question::class);
+        return $this->morphMany(Question::class, 'questionable');
+        //return $this->hasMany(Question::class);
     }
 
 }

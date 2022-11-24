@@ -17,7 +17,13 @@ return new class extends Migration
             $table->uuid('id')->primary()->comment('Identificador UUID');
 
             $table->string("name");
+
             $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
+
+            $table->foreignUuid('topic_id')
+                ->constrained()
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
 
             $table->timestamps();
         });
