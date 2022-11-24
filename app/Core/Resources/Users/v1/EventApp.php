@@ -3,6 +3,7 @@ namespace App\Core\Resources\Users\v1;
 
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
+use App\Notifications\Api\SendCredentialsUserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -20,8 +21,10 @@ class EventApp implements UsersInterface
 
     public function create( $request ){
         $itemCreatedInstance = $this->cacheApp->create( $request );
-        /* broadcast(new CreateUserEvent($itemCreatedInstance)); */
-        return $itemCreatedInstance;
+
+        $itemCreatedInstance["user"]->notify(new SendCredentialsUserNotification());
+
+        return $itemCreatedInstance["user"];
     }
 
     public function read( $user ){

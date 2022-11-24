@@ -30,7 +30,7 @@ class DBApp implements UsersInterface
         return $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function create( $request ): \App\Models\User{
+    public function create( $request ): array{
         try {
             $secureRandomPassword = UserService::generateSecureRandomPassword();
 
@@ -51,7 +51,10 @@ class DBApp implements UsersInterface
 
             DB::commit();
 
-            return $this->model->applyIncludes()->find($userCreated->id);
+            return [
+                'user' => $this->model->applyIncludes()->find($userCreated->id),
+                'password_generated' => $secureRandomPassword
+            ];
 
         } catch (\Exception $e) {
             DB::rollback();
