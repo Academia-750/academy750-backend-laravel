@@ -13,7 +13,7 @@ class OnlyUsersWithAccountEnable
     {
 
         if(Auth::user()?->state !== 'enable'){
-            abort(401);
+            abort(404);
 
         }
 

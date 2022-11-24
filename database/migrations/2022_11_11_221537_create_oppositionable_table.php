@@ -25,6 +25,11 @@ return new class extends Migration
 
             $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
+            $table->foreignUuid('subtopic_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnDelete();
+
             $table->timestamps();
         });
     }

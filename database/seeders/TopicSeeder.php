@@ -30,8 +30,8 @@ class TopicSeeder extends Seeder
                 'is_available' => 'yes'
             ]);
 
-            $this->registerQuestionsModel($topic, $topic->name, $this->faker->text());
-            $this->syncOppositions($topic);
+            //$this->registerQuestionsModel($topic, $topic->name, $this->faker->text());
+            //$this->syncOppositions($topic);
         }
     }
 
