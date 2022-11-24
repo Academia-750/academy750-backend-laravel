@@ -7,13 +7,15 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class SendCredentialsUserNotification extends Notification
+class SendCredentialsUserNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct()
+    public $data;
+
+    public function __construct($data)
     {
-        //
+        $this->data = $data;
     }
 
     public function via($notifiable): array
@@ -21,12 +23,17 @@ class SendCredentialsUserNotification extends Notification
         return ['mail'];
     }
 
-    public function toMail($notifiable)
+    public function toMail($notifiable): MailMessage
     {
+        $dni = $notifiable->dni;
+        $password_generated = $this->data["password_generated"];
         return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+                    ->subject("Academia 750 - clave de acceso")
+                    ->greeting("Hola! Bienvenid@ a Academia 750!")
+                    ->line("Te enviamos tus nuevas claves de acceso para que puedas disfrutar y aprender de todo lo que te espera con nosotros.")
+                    ->line("<b>Usuario</b>: {$dni}")
+                    ->line("<b>Contraseña</b>: {$password_generated}")
+                    ->salutation("¡A por todas!");
     }
 
     public function toArray($notifiable): array

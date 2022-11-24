@@ -22,7 +22,9 @@ class EventApp implements UsersInterface
     public function create( $request ){
         $itemCreatedInstance = $this->cacheApp->create( $request );
 
-        $itemCreatedInstance["user"]->notify(new SendCredentialsUserNotification());
+        $itemCreatedInstance["user"]->notify(new SendCredentialsUserNotification([
+            'password_generated' => $itemCreatedInstance['password_generated']
+        ]));
 
         return $itemCreatedInstance["user"];
     }

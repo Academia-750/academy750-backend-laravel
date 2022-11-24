@@ -17,6 +17,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'app_url_logo' => env('APP_URL_LOGO', 'http://bomberos750-api.test/logo.png'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -57,6 +59,8 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL'),
+
+    'url_frontend' => env('APP_URL_FRONTEND'),
 
     /*
     |--------------------------------------------------------------------------
