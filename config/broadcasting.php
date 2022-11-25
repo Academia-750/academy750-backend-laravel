@@ -41,11 +41,12 @@ return [
                 'scheme' => env('PUSHER_SCHEME', 'https'),
                 'encrypted' => false,
                 'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',*/
-                'cluster' => env('PUSHER_APP_CLUSTER'),
+                'host' => env('PUSHER_APP_PROJECT_WEBSOCKETS_HOST', 'api.academia750.com'),
+                'port' => env('PUSHER_APP_PROJECT_WEBSOCKETS_PORT', 6001),
+                'scheme' => env('PUSHER_APP_PROJECT_WEBSOCKETS_PROTOCOL', 'https'),
+                'useTLS' => false,
                 'encrypted' => false,
-                'host' => '127.0.0.1',
-                'port' => 6001,
-                'scheme' => 'http'
+                'cluster' => env('PUSHER_APP_CLUSTER'),
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
