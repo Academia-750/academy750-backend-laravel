@@ -59,7 +59,7 @@ return [
     /*
      * This path will be used to register the necessary routes for the package.
      */
-    'path' => 'laravel-websockets',
+    'path' => 'academia-websockets-statistics',
 
     /*
      * Dashboard Routes Middleware
@@ -90,7 +90,7 @@ return [
         /*
          * Here you can specify the interval in seconds at which statistics should be logged.
          */
-        'interval_in_seconds' => 60,
+        'interval_in_seconds' => 20,
 
         /*
          * When the clean-command is executed, all recorded statistics older than

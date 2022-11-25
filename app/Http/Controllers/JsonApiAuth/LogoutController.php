@@ -2,15 +2,23 @@
 
 namespace App\Http\Controllers\JsonApiAuth;
 
+use App\Events\Api\ActionUserLogoutEvent;
 use App\Http\Controllers\JsonApiAuth\Revokers\RevokerFactory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class LogoutController
 {
     public function __invoke(Request $request): Response
     {
+        /*broadcast(
+            new ActionUserLogoutEvent(Auth::user())
+        )*/
+        //ActionUserLogoutEvent::dispatch(Auth::user());
+        //broadcast(new ActionUserLogoutEvent(Auth::user()));
+
         (new RevokerFactory)->make()->{$this->applyRevokeStrategy()}();
 
         return response([

@@ -47,6 +47,10 @@ return [
                 'useTLS' => false,
                 'encrypted' => false,
                 'cluster' => env('PUSHER_APP_CLUSTER'),
+                'curl_options' => [
+                    CURLOPT_SSL_VERIFYHOST => 0,
+                    CURLOPT_SSL_VERIFYPEER => 0,
+                ]
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
