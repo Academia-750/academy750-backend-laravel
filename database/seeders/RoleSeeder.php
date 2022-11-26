@@ -19,6 +19,13 @@ class RoleSeeder extends Seeder
         Role::query()->create(
             [
                 'id' => UuidGeneratorService::getUUIDUnique(Role::class),
+                'name' => 'super-admin',
+                'alias_name' => 'Super Admin',
+            ]
+        );
+        Role::query()->create(
+            [
+                'id' => UuidGeneratorService::getUUIDUnique(Role::class),
                 'name' => 'admin',
                 'alias_name' => 'Administrador',
             ]

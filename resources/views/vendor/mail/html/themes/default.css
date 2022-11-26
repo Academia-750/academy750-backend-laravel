@@ -1,4 +1,112 @@
-/* Base */
+/*------------ Custom Styles App ------------ */
+
+.greeting-text-default-mailable {
+    box-sizing: border-box;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    position: relative;
+    color: #3d4852;
+    margin-top: 0;
+}
+
+.typography-greeting-text {
+    font-weight: bold;
+    text-align: left;
+}
+
+.linear-divisor-salutation {
+    border-bottom: 1px solid rgba(45, 55, 72, 0.2)
+}
+
+.mt-1 {
+    margin-top: 1px;
+}
+
+.mt-2 {
+    margin-top: 2px;
+}
+
+.mt-3 {
+    margin-top: 3px;
+}
+
+.mb-1 {
+    margin-bottom: 1px;
+}
+
+.mb-2 {
+    margin-bottom: 2px;
+}
+
+.mb-3 {
+    margin-bottom: 3px;
+}
+
+.font-italic {
+    font-style: italic;
+}
+
+.text-size-14 {
+    font-size: 14px;
+}
+
+.text-size-15 {
+    font-size: 15px;
+}
+
+.text-size-16 {
+    font-size: 16px;
+}
+
+.text-size-17 {
+    font-size: 17px;
+}
+
+.text-size-18 {
+    font-size: 18px;
+}
+
+.text-size-19 {
+    font-size: 19px;
+}
+
+.text-size-20 {
+    font-size: 20px;
+}
+
+.text-size-24 {
+    font-size: 24px;
+}
+
+.text-size-25 {
+    font-size: 25px;
+}
+
+.text-size-28 {
+    font-size: 28px;
+}
+
+.text-size-29 {
+    font-size: 29px;
+}
+
+.text-size-30 {
+    font-size: 30px;
+}
+
+.center-text {
+    text-align: center;
+}
+
+.title-mailable-app {
+    font-size: 2.125rem;
+    line-height: 2.5rem;
+    letter-spacing: .0073529412em;
+    font-weight: 600;
+    font-family: Roboto,sans-serif;
+}
+
+
+/* ------------ Base ------------ */
 
 body,
 body *:not(html):not(style):not(br):not(tr):not(code) {
@@ -25,6 +133,10 @@ ol,
 blockquote {
     line-height: 1.4;
     text-align: left;
+}
+
+span {
+    margin-top: 0 !important;
 }
 
 a {

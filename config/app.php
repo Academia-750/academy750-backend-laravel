@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Academia 750'),
 
     'app_url_logo' => env('APP_URL_LOGO', 'http://bomberos750-api.test/logo.png'),
 

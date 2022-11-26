@@ -15,11 +15,15 @@ class PermissionSeeder extends Seeder
 
     public Role $student;
     public Role $admin;
+    public Role $superAdmin;
+
     public function __construct()
     {
         $this->student = Role::query()->where('name', '=', 'student')
             ->first();
         $this->admin = Role::query()->where('name', '=', 'admin')
+            ->first();
+        $this->superAdmin = Role::query()->where('name', '=', 'super-admin')
             ->first();
     }
 
@@ -46,5 +50,7 @@ class PermissionSeeder extends Seeder
         /* ----------------------- CUESTIONARIOS ------------------------*/
 
         $this->permissionsTestsStudent();
+
+        $this->superAdmin->syncPermissions(Permission::all());
     }
 }

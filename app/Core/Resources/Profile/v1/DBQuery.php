@@ -4,6 +4,7 @@ namespace App\Core\Resources\Profile\v1;
 
 use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
 use App\Models\User;
+use App\Notifications\Api\StudentHasBeenRemovedFromTheSystemNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -47,17 +48,19 @@ class DBQuery implements ProfileInterface
     {
         try {
 
-            DB::beginTransaction();
-
                 $user = Auth::user();
 
-                $user->delete();
+                if (!$user) {
+                    abort(404);
+                }
 
-            DB::commit();
+                //$user->delete();
+                $user->notify(new StudentHasBeenRemovedFromTheSystemNotification());
+
 
             return "Se ha dado de baja del sistema con éxito";
         } catch (\Exception $e) {
-            DB::rollback();
+            //DB::rollback();
             abort(500,$e->getMessage());
         }
     }

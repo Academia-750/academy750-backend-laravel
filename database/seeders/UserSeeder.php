@@ -27,6 +27,17 @@ class UserSeeder extends Seeder
     {
         app()->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
 
+        /* Super Admin */
+        $AcademiaAccount = User::query()->create([
+            'id' => UuidGeneratorService::getUUIDUnique(User::class),
+            'first_name' => 'Academia',
+            'last_name' => 'Bomberos',
+            'email' => config('mail.from.address'),
+            'dni' => '16788280M',
+            'phone' => $this->getNumberPhoneSpain(),
+            'password' => bcrypt('GZVX4B)5PbD^aR'),
+        ]);
+
         /*Admin*/
         $adminAdolfo = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
@@ -70,6 +81,7 @@ class UserSeeder extends Seeder
 
         $roleAdmin = Role::query()->where('name', '=', 'admin')->first();
         $roleStudent = Role::query()->where('name', '=', 'student')->first();
+        $roleSuperAdmin = Role::query()->where('name', '=', 'super-admin')->first();
 
         /*Assign Role*/
         $adminAdolfo->assignRole($roleAdmin);
@@ -77,6 +89,8 @@ class UserSeeder extends Seeder
 
         $studentAdolfo->assignRole($roleStudent);
         $studentRaul->assignRole($roleStudent);
+
+        $AcademiaAccount->assignRole($roleSuperAdmin);
 
         $adminAdolfo->image()->create([
             'path' => 'https://via.placeholder.com/128.webp',
@@ -98,6 +112,11 @@ class UserSeeder extends Seeder
         ]);
         $studentRaul->image()->create([
             'path' => 'https://via.placeholder.com/128.webp?text=Raul+Moheno+Student',
+            'type_path' => 'url'
+        ]);
+
+        $AcademiaAccount->image()->create([
+            'path' => 'https://via.placeholder.com/128.webp?text=Academia750',
             'type_path' => 'url'
         ]);
 

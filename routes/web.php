@@ -1,6 +1,8 @@
 <?php
 
+use App\Core\Services\UserService;
 use App\Models\Opposition;
+use App\Models\User;
 use App\Notifications\Api\SendCredentialsUserNotification;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +22,4 @@ Route::get('/', static function () {
 
     return redirect(config('app.url_frontend'));
 });
+

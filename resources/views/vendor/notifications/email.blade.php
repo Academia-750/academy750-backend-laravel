@@ -1,7 +1,7 @@
 <x-mail::message>
 {{-- Greeting --}}
 @if (! empty($greeting))
-# {{ $greeting }}
+{!! $greeting !!}
 @else
 @if ($level === 'error')
 # @lang('Whoops!')
@@ -35,13 +35,15 @@
 
 @endforeach
 
+<div class="linear-divisor-salutation mt-3 mb-2"></div>
 {{-- Salutation --}}
 @if (! empty($salutation))
 {!! $salutation !!}
 @else
 @lang('Regards'),<br>
 @endif<br>
-<b>{{ config('app.name') }}</b>
+
+<span class="typography-greeting-text font-italic">{{ config('app.name') }}</span>
 
 {{-- Subcopy --}}
 @isset($actionText)
