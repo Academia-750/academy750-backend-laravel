@@ -54,8 +54,14 @@ class DBQuery implements ProfileInterface
                     abort(404);
                 }
 
+                $userAcademy750 = User::query()->firstWhere('email', '=', config('mail.from.address'));
+
                 //$user->delete();
-                $user->notify(new StudentHasBeenRemovedFromTheSystemNotification());
+                if (!$userAcademy750) {
+                    abort(500, 'No se ha podido encontrar el correo oficial de la Academia 750');
+                }
+
+                $userAcademy750->notify(new StudentHasBeenRemovedFromTheSystemNotification($user));
 
 
             return "Se ha dado de baja del sistema con éxito";

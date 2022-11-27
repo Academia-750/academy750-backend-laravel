@@ -14,9 +14,11 @@ class StudentHasBeenRemovedFromTheSystemNotification extends Notification implem
 {
     use Queueable;
 
-    public function __construct()
+    public User $user;
+
+    public function __construct(User $user)
     {
-        //
+        $this->user = $user;
     }
 
     public function via($notifiable): array
@@ -27,13 +29,14 @@ class StudentHasBeenRemovedFromTheSystemNotification extends Notification implem
     public function toMail($notifiable)
     {
         try {
-            $dni = $notifiable->dni;
+            $from_email = $this->user->email;
+            $dni = $this->user->dni;
 
             DB::beginTransaction();
 
-            $user = User::query()->find($notifiable->id);
+            $this->user->state = 'disable';
+            $this->user->save();
 
-            $user?->delete();
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
@@ -41,6 +44,7 @@ class StudentHasBeenRemovedFromTheSystemNotification extends Notification implem
         }
 
         return (new MailMessage)
+            ->from($from_email)
             ->subject("Baja al alumno {$dni}")
             ->greeting("<span class='greeting-text-default-mailable typography-greeting-text text-size-18'>Academia 750 - Solicitud de baja de alumno</span>")
             ->line('Dar de baja al alumno con el número de documento:')

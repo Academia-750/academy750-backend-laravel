@@ -48,7 +48,10 @@ class ProfileController extends Controller
         $invalidCredentials = true;
         $thereIsAlreadyAPreviousSession = false;
 
-        $user = User::query()->where('dni', '=', $request->get($accessKey))->first();
+        $user = User::query()
+            ->where('dni', '=', $request->get($accessKey))
+            ->where('state', '=', 'enable')
+            ->first();
         $password = $request->get('password');
 
         if ($user && Hash::check($password, $user->password)) {
