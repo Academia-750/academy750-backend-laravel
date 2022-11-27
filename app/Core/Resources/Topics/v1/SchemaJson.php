@@ -80,6 +80,10 @@ class SchemaJson implements TopicsInterface
     {
         return SubtopicCollection::make(
             $this->eventApp->get_relationship_subtopics($topic)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 }

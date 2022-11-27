@@ -121,6 +121,6 @@ class DBApp implements TopicsInterface
 
     public function get_relationship_subtopics($topic)
     {
-        return $topic->subtopics;
+        return $topic->subtopics()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 }
