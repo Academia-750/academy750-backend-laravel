@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Models\Subtopic;
 use App\Models\Topic;
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
 use Illuminate\Support\Facades\DB;
@@ -122,5 +123,138 @@ class DBApp implements TopicsInterface
     public function get_relationship_subtopics($topic)
     {
         return $topic->subtopics()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
+    public function get_relationship_oppositions($topic)
+    {
+        return $topic->oppositions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
+    public function get_relationship_a_opposition($topic, $opposition)
+    {
+        $subtopics_id = [];
+
+        foreach ($opposition->subtopics as $opposition_subtopic) {
+            $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
+            if (in_array($subtopics_id_of_topic, $opposition_subtopic->id, true)) {
+                $subtopics_id[] = $opposition_subtopic->id;
+            }
+
+        }
+        return Subtopic::query()->whereIn('id', $subtopics_id)->get();
+    }
+
+    public function get_relationship_a_subtopic($topic, $subtopic)
+    {
+        $subtopicRecord = $topic->subtopics()->firstWhere('id', '=', $subtopic->getRouteKey());
+
+        if (!$subtopicRecord) {
+            abort(404);
+        }
+
+        return $subtopicRecord;
+    }
+
+    public function get_relationship_questions($topic)
+    {
+        return $topic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
+    public function get_relationship_a_question($topic, $question)
+    {
+        $question = $topic->questions()->firstWhere('id', '=', $question->getRouteKey());
+
+        if (!$question) {
+            abort(404);
+        }
+
+        return $question;
+    }
+
+    public function subtopics_get_relationship_questions($topic, $subtopic)
+    {
+        return $subtopic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
+    public function subtopics_get_relationship_a_question($topic, $subtopic, $question)
+    {
+        $questionRecord = $subtopic->questions()->firstWhere('id', '=', $question->getRouteKey());
+
+        if (!$questionRecord) {
+            abort(404);
+        }
+
+        return $questionRecord;
+    }
+
+    public function create_relationship_subtopic($request, $topic)
+    {
+        try {
+
+            DB::beginTransaction();
+
+                $subtopicCreated = Subtopic::query()->create([
+                    'name' => $request->get('name'),
+                    'topic_id' => $topic->getRouteKey()
+                ]);
+
+            DB::commit();
+
+            return (new Subtopic)->applyIncludes()->find($subtopicCreated->id);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500, $e->getMessage());
+        }
+    }
+
+    public function update_relationship_subtopic($request, $topic, $subtopic)
+    {
+        try {
+
+            $subtopicRecord = $topic->subtopics()->firstWhere('id', '=', $subtopic->getRouteKey());
+
+            if (!$subtopicRecord) {
+                abort(404);
+            }
+
+            DB::beginTransaction();
+
+            $subtopic->name = $request->get('name') ?? $subtopic->name;
+            $subtopic->save();
+
+            DB::commit();
+
+            return (new Subtopic)->applyIncludes()->find($subtopic->getRouteKey());
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500, $e->getMessage());
+        }
+    }
+
+    public function delete_relationship_subtopic($topic, $subtopic): void
+    {
+        try {
+
+            $subtopicRecord = $topic->subtopics()->firstWhere('id', '=', $subtopic->getRouteKey());
+
+            if (!$subtopicRecord) {
+                abort(404);
+            }
+
+            DB::beginTransaction();
+
+            \Log::debug($subtopic);
+            $subtopic->delete();
+
+            DB::commit();
+
+            return;
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500, $e->getMessage());
+        }
     }
 }

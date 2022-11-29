@@ -14,4 +14,15 @@ interface TopicsInterface
     public function export_records( $request );
     public function import_records( $request );
     public function get_relationship_subtopics( $topic );
+    public function get_relationship_oppositions( $topic );
+    public function get_relationship_a_subtopic( $topic, $subtopic );
+    public function get_relationship_a_opposition( $topic, $opposition );
+    public function get_relationship_questions( $topic );
+    public function get_relationship_a_question( $topic, $question );
+    public function subtopics_get_relationship_questions($topic, $subtopic);
+    public function subtopics_get_relationship_a_question($topic, $subtopic, $question);
+    public function create_relationship_subtopic($request, $topic);
+    public function update_relationship_subtopic($request, $topic, $subtopic);
+    public function delete_relationship_subtopic($topic, $subtopic);
+
 }

@@ -17,6 +17,7 @@ class Subtopic extends Model
     protected $fillable = [
         "id",
         "name",
+        "topic_id",
         "is_available"
     ];
 
@@ -86,7 +87,7 @@ class Subtopic extends Model
     }
 
     public function filterSearch(Builder $query, $value): void{
-        $query->orWhere(static function($query) use ($value) {
+        $query->where(static function($query) use ($value) {
             $query->where('name', 'LIKE' , "%{$value}%")
                 ->orWhere('is_available', 'LIKE' , "%{$value}%");
         });

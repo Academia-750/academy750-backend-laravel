@@ -69,4 +69,64 @@ class Authorizer implements TopicsInterface
         Gate::authorize('get_relationship_subtopics', $topic );
         return $this->schemaJson->get_relationship_subtopics($topic);
     }
+
+    public function get_relationship_oppositions($topic)
+    {
+        Gate::authorize('get_relationship_oppositions', $topic );
+        return $this->schemaJson->get_relationship_oppositions($topic);
+    }
+
+    public function get_relationship_a_subtopic($topic, $subtopic)
+    {
+        Gate::authorize('get_relationship_a_subtopic', $topic );
+        return $this->schemaJson->get_relationship_a_subtopic($topic, $subtopic);
+    }
+
+    public function get_relationship_a_opposition($topic, $opposition)
+    {
+        Gate::authorize('get_relationship_a_opposition', $topic );
+        return $this->schemaJson->get_relationship_a_opposition($topic, $opposition);
+    }
+
+    public function get_relationship_questions($topic)
+    {
+        Gate::authorize('get_relationship_questions', $topic );
+        return $this->schemaJson->get_relationship_questions($topic);
+    }
+
+    public function get_relationship_a_question($topic, $question)
+    {
+        Gate::authorize('get_relationship_a_question', $topic );
+        return $this->schemaJson->get_relationship_a_question($topic, $question);
+    }
+
+    public function subtopics_get_relationship_questions($topic, $subtopic)
+    {
+        Gate::authorize('subtopics_get_relationship_questions', $topic );
+        return $this->schemaJson->subtopics_get_relationship_questions($topic, $subtopic);
+    }
+
+    public function subtopics_get_relationship_a_question($topic, $subtopic, $question)
+    {
+        Gate::authorize('subtopics_get_relationship_a_question', $topic );
+        return $this->schemaJson->subtopics_get_relationship_a_question($topic, $subtopic, $question);
+    }
+
+    public function create_relationship_subtopic($request, $topic)
+    {
+        Gate::authorize('create_relationship_subtopic', $topic );
+        return $this->schemaJson->create_relationship_subtopic($request, $topic);
+    }
+
+    public function update_relationship_subtopic($request, $topic, $subtopic)
+    {
+        Gate::authorize('update_relationship_subtopic', $topic );
+        return $this->schemaJson->update_relationship_subtopic($request, $topic, $subtopic);
+    }
+
+    public function delete_relationship_subtopic($topic, $subtopic)
+    {
+        Gate::authorize('delete_relationship_subtopic', $topic );
+        return $this->schemaJson->delete_relationship_subtopic($topic, $subtopic);
+    }
 }

@@ -1,6 +1,11 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Requests\Api\v1\Topics\CreateSubtopicRelationshipTopicRequest;
+use App\Http\Requests\Api\v1\Topics\UpdateSubtopicRelationshipTopicRequest;
+use App\Models\Opposition;
+use App\Models\Question;
+use App\Models\Subtopic;
 use App\Models\Topic;
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
 use App\Http\Controllers\Controller;
@@ -59,5 +64,44 @@ class TopicsController extends Controller
 
     public function get_relationship_subtopics (Topic $topic) {
         return $this->topicsInterface->get_relationship_subtopics($topic);
+    }
+
+    public function get_relationship_oppositions (Topic $topic) {
+        return $this->topicsInterface->get_relationship_oppositions($topic);
+    }
+
+    public function get_relationship_a_subtopic (Topic $topic, Subtopic $subtopic) {
+        return $this->topicsInterface->get_relationship_a_subtopic($topic, $subtopic);
+    }
+    public function get_relationship_a_opposition (Topic $topic, Opposition $opposition) {
+        return $this->topicsInterface->get_relationship_a_opposition($topic, $opposition);
+    }
+
+    public function get_relationship_questions (Topic $topic) {
+        return $this->topicsInterface->get_relationship_questions($topic);
+    }
+
+    public function get_relationship_a_question (Topic $topic, Question $question) {
+        return $this->topicsInterface->get_relationship_a_question($topic, $question);
+    }
+
+    public function subtopics_get_relationship_questions (Topic $topic, Subtopic $subtopic) {
+        return $this->topicsInterface->subtopics_get_relationship_questions($topic, $subtopic);
+    }
+
+    public function subtopics_get_relationship_a_question (Topic $topic, Subtopic $subtopic, Question $question) {
+        return $this->topicsInterface->subtopics_get_relationship_a_question($topic, $subtopic, $question);
+    }
+
+    public function create_relationship_subtopic (CreateSubtopicRelationshipTopicRequest $request,Topic $topic) {
+        return $this->topicsInterface->create_relationship_subtopic($request, $topic);
+    }
+
+    public function update_relationship_subtopic (UpdateSubtopicRelationshipTopicRequest $request,Topic $topic, Subtopic $subtopic) {
+        return $this->topicsInterface->update_relationship_subtopic($request, $topic, $subtopic);
+    }
+
+    public function delete_relationship_subtopic (Topic $topic, Subtopic $subtopic) {
+        return $this->topicsInterface->delete_relationship_subtopic($topic, $subtopic);
     }
 }

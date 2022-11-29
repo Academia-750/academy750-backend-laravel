@@ -96,6 +96,8 @@ return [
         'name' => env('MAIL_FROM_NAME', config('app.name')),
     ],
 
+    'mail_impugnaciones' => env('APP_MAIL_ADDRESS_IMPUGNACIONES', 'impugnaciones@academia750.es'),
+
     /*
     |--------------------------------------------------------------------------
     | Markdown Mail Settings

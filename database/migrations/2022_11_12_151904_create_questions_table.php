@@ -21,11 +21,6 @@ return new class extends Migration
 
             $table->uuidMorphs('questionable');
 
-            $table->foreignUuid('subtopic_id')
-                ->nullable()
-                ->constrained()
-                ->cascadeOnDelete();
-
             $table->timestamps();
         });
     }

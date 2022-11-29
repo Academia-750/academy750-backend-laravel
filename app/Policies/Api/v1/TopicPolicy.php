@@ -44,6 +44,46 @@ class TopicPolicy
         return $user->can("see-a-topic");
     }
 
+
+    public function get_relationship_oppositions (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function get_relationship_a_subtopic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+    public function get_relationship_a_opposition (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function get_relationship_questions (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function get_relationship_a_question (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function subtopics_get_relationship_questions (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function subtopics_get_relationship_a_question (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function create_relationship_subtopic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function update_relationship_subtopic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function delete_relationship_subtopic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
     public function export_records(User $user): bool
     {
         return true;

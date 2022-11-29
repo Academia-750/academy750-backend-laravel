@@ -73,4 +73,58 @@ class CacheApp implements TopicsInterface
     {
         return $this->dbApp->get_relationship_subtopics( $topic );
     }
+
+    public function get_relationship_oppositions($topic)
+    {
+        return $this->dbApp->get_relationship_oppositions( $topic );
+    }
+
+    public function get_relationship_a_subtopic($topic, $subtopic)
+    {
+        return $this->dbApp->get_relationship_a_subtopic($topic, $subtopic);
+    }
+
+    public function get_relationship_a_opposition($topic, $opposition)
+    {
+        return $this->dbApp->get_relationship_a_opposition( $topic, $opposition );
+    }
+
+    public function get_relationship_questions($topic)
+    {
+        return $this->dbApp->get_relationship_questions($topic);
+    }
+
+    public function get_relationship_a_question($topic, $question)
+    {
+        return $this->dbApp->get_relationship_a_question($topic, $question);
+    }
+
+    public function subtopics_get_relationship_questions($topic, $subtopic)
+    {
+        return $this->dbApp->subtopics_get_relationship_questions($topic, $subtopic);
+    }
+
+    public function subtopics_get_relationship_a_question($topic, $subtopic, $question)
+    {
+        return $this->dbApp->subtopics_get_relationship_a_question($topic, $subtopic, $question);
+    }
+
+    public function create_relationship_subtopic($request, $topic)
+    {
+        return $this->dbApp->create_relationship_subtopic($request, $topic);
+    }
+
+    public function update_relationship_subtopic($request, $topic, $subtopic)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        return $this->dbApp->update_relationship_subtopic($request, $topic, $subtopic);
+    }
+
+    public function delete_relationship_subtopic($topic, $subtopic)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        return $this->dbApp->delete_relationship_subtopic($topic, $subtopic);
+    }
 }

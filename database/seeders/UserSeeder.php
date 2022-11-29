@@ -31,9 +31,18 @@ class UserSeeder extends Seeder
         $AcademiaAccount = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Academia',
-            'last_name' => 'Bomberos',
+            'last_name' => 'Bomberos Principal',
             'email' => config('mail.from.address'),
-            'dni' => '16788280M',
+            //'dni' => '16788280M',
+            'phone' => $this->getNumberPhoneSpain(),
+            'password' => bcrypt('GZVX4B)5PbD^aR'),
+        ]);
+        $AcademiaImpugnaciones = User::query()->create([
+            'id' => UuidGeneratorService::getUUIDUnique(User::class),
+            'first_name' => 'Academia',
+            'last_name' => 'Bomberos Impugnaciones',
+            'email' => config('mail.mail_impugnaciones'),
+            //'dni' => '73314025F',
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('GZVX4B)5PbD^aR'),
         ]);
@@ -91,6 +100,7 @@ class UserSeeder extends Seeder
         $studentRaul->assignRole($roleStudent);
 
         $AcademiaAccount->assignRole($roleSuperAdmin);
+        $AcademiaImpugnaciones->assignRole($roleSuperAdmin);
 
         $adminAdolfo->image()->create([
             'path' => 'https://via.placeholder.com/128.webp',
@@ -117,6 +127,10 @@ class UserSeeder extends Seeder
 
         $AcademiaAccount->image()->create([
             'path' => 'https://via.placeholder.com/128.webp?text=Academia750',
+            'type_path' => 'url'
+        ]);
+        $AcademiaImpugnaciones->image()->create([
+            'path' => 'https://via.placeholder.com/128.webp?text=Academia750+Impugnaciones',
             'type_path' => 'url'
         ]);
 

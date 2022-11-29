@@ -1,7 +1,12 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Http\Resources\Api\Opposition\v1\OppositionCollection;
+use App\Http\Resources\Api\Opposition\v1\OppositionResource;
+use App\Http\Resources\Api\Question\v1\QuestionCollection;
+use App\Http\Resources\Api\Question\v1\QuestionResource;
 use App\Http\Resources\Api\Subtopic\v1\SubtopicCollection;
+use App\Http\Resources\Api\Subtopic\v1\SubtopicResource;
 use App\Models\Topic;
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
 use App\Http\Resources\Api\Topic\v1\TopicCollection;
@@ -85,5 +90,103 @@ class SchemaJson implements TopicsInterface
                 'topic' => TopicResource::make($topic)
             ]
         ]);
+    }
+
+    public function get_relationship_oppositions($topic)
+    {
+
+        return OppositionCollection::make(
+            $this->eventApp->get_relationship_oppositions($topic)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
+    }
+
+    public function get_relationship_a_subtopic($topic, $subtopic)
+    {
+        return SubtopicResource::make(
+            $this->eventApp->get_relationship_a_subtopic($topic, $subtopic)
+        );
+    }
+
+    public function get_relationship_a_opposition($topic, $opposition)
+    {
+        return OppositionResource::make(
+            $this->eventApp->get_relationship_a_opposition($topic, $opposition)
+        );
+    }
+
+    public function get_relationship_questions($topic)
+    {
+        return QuestionCollection::make(
+            $this->eventApp->get_relationship_questions($topic)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
+    }
+
+    public function get_relationship_a_question($topic, $question)
+    {
+        return QuestionResource::make(
+            $this->eventApp->get_relationship_a_question($topic, $question)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
+    }
+
+    public function subtopics_get_relationship_questions($topic, $subtopic)
+    {
+        return QuestionCollection::make(
+            $this->eventApp->subtopics_get_relationship_questions($topic, $subtopic)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
+    }
+
+    public function subtopics_get_relationship_a_question($topic, $subtopic, $question)
+    {
+        return QuestionResource::make(
+            $this->eventApp->subtopics_get_relationship_a_question($topic, $subtopic, $question)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
+    }
+
+    public function create_relationship_subtopic($request, $topic)
+    {
+        return SubtopicResource::make(
+            $this->eventApp->create_relationship_subtopic($request, $topic)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
+    }
+
+    public function update_relationship_subtopic($request, $topic, $subtopic)
+    {
+        return SubtopicResource::make(
+            $this->eventApp->update_relationship_subtopic($request, $topic, $subtopic)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
+    }
+
+    public function delete_relationship_subtopic($topic, $subtopic)
+    {
+        $this->eventApp->delete_relationship_subtopic($topic, $subtopic);
+        return response()->noContent();
     }
 }
