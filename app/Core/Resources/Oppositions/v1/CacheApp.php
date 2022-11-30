@@ -73,7 +73,7 @@ class CacheApp implements OppositionsInterface
 
     public function get_relationship_syllabus($opposition)
     {
-        return Cache::store('redis')->tags('topics')->rememberForever("opposition.relationship.topics.".$opposition->getRouteKey(), function () use ( $opposition ) {
+        return Cache::store('redis')->tags('topic')->rememberForever("opposition.relationship.topics.".$opposition->getRouteKey(), function () use ( $opposition ) {
             return $this->dbApp->get_relationship_syllabus( $opposition );
         });
     }

@@ -1,22 +1,21 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
+use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\Topics\ActionForMassiveSelectionTopicsRequest;
 use App\Http\Requests\Api\v1\Topics\CreateSubtopicRelationshipTopicRequest;
+use App\Http\Requests\Api\v1\Topics\CreateTopicRequest;
+use App\Http\Requests\Api\v1\Topics\ExportTopicsRequest;
+use App\Http\Requests\Api\v1\Topics\ImportTopicsRequest;
 use App\Http\Requests\Api\v1\Topics\UpdateSubtopicRelationshipTopicRequest;
+use App\Http\Requests\Api\v1\Topics\UpdateSubtopicsOfOppositionByTopicRequest;
+use App\Http\Requests\Api\v1\Topics\UpdateTopicRequest;
 use App\Models\Opposition;
 use App\Models\Question;
 use App\Models\Subtopic;
 use App\Models\Topic;
-use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\Api\v1\Topics\CreateTopicRequest;
-use App\Http\Requests\Api\v1\Topics\UpdateTopicRequest;
-use App\Http\Requests\Api\v1\Topics\ActionForMassiveSelectionTopicsRequest;
-use App\Http\Requests\Api\v1\Topics\ExportTopicsRequest;
-use App\Http\Requests\Api\v1\Topics\ImportTopicsRequest;
 
 class TopicsController extends Controller
 {
@@ -103,5 +102,17 @@ class TopicsController extends Controller
 
     public function delete_relationship_subtopic (Topic $topic, Subtopic $subtopic) {
         return $this->topicsInterface->delete_relationship_subtopic($topic, $subtopic);
+    }
+
+    public function get_oppositions_available_of_topic (Topic $topic) {
+        return $this->topicsInterface->get_oppositions_available_of_topic($topic);
+    }
+
+    public function assign_opposition_with_subtopics_to_topic (\App\Http\Requests\Api\v1\Topics\AssignOppositionWithSubtopicsToTopicRequest $request , Topic $topic) {
+        return $this->topicsInterface->assign_opposition_with_subtopics_to_topic($request, $topic);
+    }
+
+    public function update_subtopics_opposition_by_topic (UpdateSubtopicsOfOppositionByTopicRequest $request , Topic $topic, Opposition $opposition) {
+        return $this->topicsInterface->update_subtopics_opposition_by_topic($request, $topic, $opposition);
     }
 }

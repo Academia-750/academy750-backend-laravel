@@ -84,6 +84,18 @@ class TopicPolicy
         return $user->can("see-a-topic");
     }
 
+    public function get_oppositions_available_of_topic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function assign_opposition_with_subtopics_to_topic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
+    public function update_subtopics_opposition_by_topic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
     public function export_records(User $user): bool
     {
         return true;

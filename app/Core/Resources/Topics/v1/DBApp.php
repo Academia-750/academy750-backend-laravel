@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Models\Opposition;
 use App\Models\Subtopic;
 use App\Models\Topic;
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
@@ -127,7 +128,9 @@ class DBApp implements TopicsInterface
 
     public function get_relationship_oppositions($topic)
     {
-        return $topic->oppositions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        $oppositions_id = $topic->oppositions->pluck("id");
+
+        return (new Opposition)->whereIn("id", $oppositions_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function get_relationship_a_opposition($topic, $opposition)
@@ -136,12 +139,12 @@ class DBApp implements TopicsInterface
 
         foreach ($opposition->subtopics as $opposition_subtopic) {
             $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
-            if (in_array($subtopics_id_of_topic, $opposition_subtopic->id, true)) {
+            if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
                 $subtopics_id[] = $opposition_subtopic->id;
             }
 
         }
-        return Subtopic::query()->whereIn('id', $subtopics_id)->get();
+        return Subtopic::query()->whereIn('id', $subtopics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function get_relationship_a_subtopic($topic, $subtopic)
@@ -256,5 +259,94 @@ class DBApp implements TopicsInterface
             DB::rollback();
             abort(500, $e->getMessage());
         }
+    }
+
+    public function get_oppositions_available_of_topic($topic)
+    {
+        $oppositions_id = $topic->oppositions->pluck('id');
+
+        return (new Opposition)->whereNotIn('id', $oppositions_id->toArray())->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
+    public function assign_opposition_with_subtopics_to_topic($request, $topic)
+    {
+        $opposition = Opposition::query()->findOrFail($request->get('opposition-id'));
+
+        $topics_id_by_opposition = $opposition->topics->pluck("id");
+
+        if (!in_array($topic->getRouteKey(), $topics_id_by_opposition->toArray(), true)) {
+            $opposition->topics()->attach($topic->getRouteKey());
+        }
+
+        $subtopics_id = $request->get('subtopics');
+        $subtopics_id_by_topic = $topic->subtopics->pluck("id");
+        $subtopics_id_by_opposition = $opposition->subtopics->pluck("id");
+
+        if (is_array($subtopics_id)) {
+            foreach ($subtopics_id as $subtopic_id) {
+                if (!in_array($subtopic_id, $subtopics_id_by_topic->toArray(), true)) {
+                    abort(404);
+                }
+
+                if (!in_array($subtopic_id, $subtopics_id_by_opposition->toArray(), true)) {
+                    $opposition->subtopics()->attach($subtopic_id);
+                }
+            }
+        }
+
+        return $this->model->applyIncludes()->find($topic->getRouteKey());
+
+    }
+
+    public function update_subtopics_opposition_by_topic ($request, $topic, $opposition) {
+
+        $topics_id_by_opposition = $opposition->topics->pluck("id");
+
+        if (!in_array($topic->getRouteKey(), $topics_id_by_opposition->toArray(), true)) {
+            $opposition->topics()->attach($topic->getRouteKey());
+        }
+
+        $subtopics_id_by_opposition = $opposition->subtopics->pluck("id");
+        $subtopics_id_by_topic = $topic->subtopics->pluck("id");
+        $subtopics_id = $request->get('subtopics');
+
+        if (is_array($subtopics_id)) {
+            foreach ($subtopics_id as $subtopic_id) {
+                // Validamos que los subtemas enviados pertenezcan al tema actual
+                if (!in_array($subtopic_id, $subtopics_id_by_topic->toArray(), true)) {
+                    abort(404);
+                }
+
+                // Si mandamos un subtema que no está agregado en la oposición, lo agregamos
+                if (!in_array($subtopic_id, $subtopics_id_by_opposition->toArray(), true)) {
+                    $opposition->subtopics()->attach($subtopic_id);
+                }
+            }
+
+            $opposition->refresh();
+            $subtopics_id_by_opposition = $opposition->subtopics->pluck("id");
+
+            $subtopics_id_of_this_topic = collect([]);
+
+            foreach ($opposition->subtopics as $opposition_subtopic) {
+                $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
+                if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
+                    $subtopics_id_of_this_topic->push($opposition_subtopic->id);
+                }
+            }
+            // Vamos a comparar directamente aquellos subtemas que mandamos vs los subtemas que tiene la oposicion
+            // Aquellos subtemas de la oposicion que no se encuentren en los subtemas que mandamos en la Request, se irán desvinculando los subtemas de su oposicion
+
+            $subtopics_id_for_detach = $subtopics_id_of_this_topic->diff($subtopics_id)->all();
+
+
+            //foreach ($subtopics_id_for_detach as $subtopic_id) {
+            if (is_array($subtopics_id_for_detach) && count($subtopics_id_for_detach) > 0) {
+                $opposition->subtopics()->detach($subtopics_id_for_detach);
+            }
+            //}
+        }
+
+        return $this->model->applyIncludes()->find($topic->getRouteKey());
     }
 }

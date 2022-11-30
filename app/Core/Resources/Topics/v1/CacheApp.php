@@ -127,4 +127,24 @@ class CacheApp implements TopicsInterface
         Cache::store('redis')->tags('subtopic')->flush();
         return $this->dbApp->delete_relationship_subtopic($topic, $subtopic);
     }
+
+    public function get_oppositions_available_of_topic($topic)
+    {
+        return $this->dbApp->get_oppositions_available_of_topic($topic);
+    }
+
+    public function assign_opposition_with_subtopics_to_topic($request, $topic)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        Cache::store('redis')->tags('opposition')->flush();
+        return $this->dbApp->assign_opposition_with_subtopics_to_topic($request, $topic);
+    }
+    public function update_subtopics_opposition_by_topic($request, $topic, $opposition)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        Cache::store('redis')->tags('opposition')->flush();
+        return $this->dbApp->update_subtopics_opposition_by_topic($request, $topic, $opposition);
+    }
 }
