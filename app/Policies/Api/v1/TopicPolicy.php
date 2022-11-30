@@ -32,7 +32,7 @@ class TopicPolicy
 
     public function delete(User $user, Topic $topic): bool
     {
-        return $user->can('delete-topic');
+        return $user->can('delete-topic') && $topic->subtopics->count() === 0;
     }
 
     public function mass_selection_for_action(User $user): bool
