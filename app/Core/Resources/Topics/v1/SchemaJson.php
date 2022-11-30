@@ -214,4 +214,10 @@ class SchemaJson implements TopicsInterface
             $this->eventApp->update_subtopics_opposition_by_topic($request, $topic, $opposition)
         );
     }
+
+    public function delete_opposition_by_topic($topic, $opposition)
+    {
+        $this->eventApp->delete_opposition_by_topic($topic, $opposition);
+        return response()->noContent();
+    }
 }

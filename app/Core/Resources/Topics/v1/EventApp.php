@@ -127,4 +127,9 @@ class EventApp implements TopicsInterface
     {
         return $this->cacheApp->update_subtopics_opposition_by_topic($request, $topic, $opposition);
     }
+
+    public function delete_opposition_by_topic($topic, $opposition)
+    {
+        $this->cacheApp->delete_opposition_by_topic($topic, $opposition);
+    }
 }

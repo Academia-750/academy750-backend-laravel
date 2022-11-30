@@ -115,4 +115,8 @@ class TopicsController extends Controller
     public function update_subtopics_opposition_by_topic (UpdateSubtopicsOfOppositionByTopicRequest $request , Topic $topic, Opposition $opposition) {
         return $this->topicsInterface->update_subtopics_opposition_by_topic($request, $topic, $opposition);
     }
+
+    public function delete_opposition_by_topic (Topic $topic, Opposition $opposition) {
+        return $this->topicsInterface->delete_opposition_by_topic($topic, $opposition);
+    }
 }

@@ -324,7 +324,6 @@ class DBApp implements TopicsInterface
             }
 
             $opposition->refresh();
-            $subtopics_id_by_opposition = $opposition->subtopics->pluck("id");
 
             $subtopics_id_of_this_topic = collect([]);
 
@@ -348,5 +347,27 @@ class DBApp implements TopicsInterface
         }
 
         return $this->model->applyIncludes()->find($topic->getRouteKey());
+    }
+
+    public function delete_opposition_by_topic($topic, $opposition): void
+    {
+        // Obtener los subtemas
+        $subtopics_id_of_this_topic = collect([]);
+
+        foreach ($opposition->subtopics as $opposition_subtopic) {
+            $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
+            if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
+                $subtopics_id_of_this_topic->push($opposition_subtopic->id);
+            }
+        }
+
+        $opposition->subtopics()->detach($subtopics_id_of_this_topic->toArray());
+
+        $topics_id_by_opposition = $opposition->topics->pluck("id");
+
+        if (in_array($topic->getRouteKey(), $topics_id_by_opposition->toArray(), true)) {
+            $opposition->topics()->detach($topic->getRouteKey());
+        }
+
     }
 }

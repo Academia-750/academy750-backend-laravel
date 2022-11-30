@@ -147,4 +147,10 @@ class Authorizer implements TopicsInterface
         Gate::authorize('update_subtopics_opposition_by_topic', $topic );
         return $this->schemaJson->update_subtopics_opposition_by_topic($request, $topic, $opposition);
     }
+
+    public function delete_opposition_by_topic($topic, $opposition)
+    {
+        Gate::authorize('delete_opposition_by_topic', $topic );
+        return $this->schemaJson->delete_opposition_by_topic($topic, $opposition);
+    }
 }

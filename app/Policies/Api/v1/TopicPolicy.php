@@ -96,6 +96,10 @@ class TopicPolicy
         return $user->can("see-a-topic");
     }
 
+    public function delete_opposition_by_topic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic");
+    }
+
     public function export_records(User $user): bool
     {
         return true;

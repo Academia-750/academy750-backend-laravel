@@ -27,6 +27,7 @@ Route::get("topics/{topic}/relationship/oppositions", [TopicsController::class, 
 Route::get("topics/{topic}/relationship/oppositions/{opposition}/subtopics", [TopicsController::class, 'get_relationship_a_opposition'])->name('api.v1.topics.relationships.oppositions.record.subtopics');
 Route::post("topics/{topic}/relationship/oppositions/assign", [TopicsController::class, 'assign_opposition_with_subtopics_to_topic'])->name('api.v1.topics.relationships.oppositions.assign');
 Route::patch("topics/{topic}/relationship/oppositions/{opposition}/update/subtopics", [TopicsController::class, 'update_subtopics_opposition_by_topic'])->name('api.v1.topics.relationships.oppositions.update.subtopics');
+Route::delete("topics/{topic}/relationship/oppositions/{opposition}/delete", [TopicsController::class, 'delete_opposition_by_topic'])->name('api.v1.topics.relationships.oppositions.delete');
 
 
 Route::get("topics/{topic}/relationship/questions", [TopicsController::class, 'get_relationship_questions'])->name('api.v1.topics.relationships.questions');

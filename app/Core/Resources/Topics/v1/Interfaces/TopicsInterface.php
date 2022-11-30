@@ -27,5 +27,6 @@ interface TopicsInterface
     public function get_oppositions_available_of_topic($topic);
     public function assign_opposition_with_subtopics_to_topic($request, $topic);
     public function update_subtopics_opposition_by_topic($request, $topic, $opposition);
+    public function delete_opposition_by_topic($topic, $opposition);
 
 }
