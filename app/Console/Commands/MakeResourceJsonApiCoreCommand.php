@@ -115,15 +115,15 @@ class MakeResourceJsonApiCoreCommand extends Command
         Artisan::call('make:json-api:export', ['name' => $argName]);
         $this->info("Export and Import files - Laravel Excel");
 
-        //Create Test
+        //Create TestModel
         Artisan::call('make:test', ['name' => $argNamePlural.'/v1/create'.$argNamePlural.'/'.$argNamePlural.'CreateTest']);
         Artisan::call('make:test', ['name' => $argNamePlural.'/v1/create'.$argNamePlural.'/'.$argNamePlural.'CreateValidationTest']);
-        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/delete'.$argNamePlural.'/Delete'.$argNamePlural.'Test']);
-        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/Filter'.$argNamePlural.'Test']);
-        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/IncludeRelationships'.$argNamePlural.'Test']);
-        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/List'.$argNamePlural.'Test']);
-        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/Paginate'.$argNamePlural.'Test']);
-        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/Sort'.$argNamePlural.'Test']);
+        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/delete'.$argNamePlural.'/Delete'.$argNamePlural.'TestModel']);
+        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/Filter'.$argNamePlural.'TestModel']);
+        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/IncludeRelationships'.$argNamePlural.'TestModel']);
+        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/List'.$argNamePlural.'TestModel']);
+        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/Paginate'.$argNamePlural.'TestModel']);
+        Artisan::call('make:test', ['name' => $argNamePlural.'/v1/get'.$argNamePlural.'/Sort'.$argNamePlural.'TestModel']);
         Artisan::call('make:test', ['name' => $argNamePlural.'/v1/update'.$argNamePlural.'/'.$argNamePlural.'UpdateTest']);
         Artisan::call('make:test', ['name' => $argNamePlural.'/v1/update'.$argNamePlural.'/'.$argNamePlural.'UpdateValidationTest']);
         $this->info("Tests created successfully.");

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->comment('Identificador UUID');
             $table->string("question")->comment("La pregunta");
             $table->string("reason")->comment("La explicacion");
-            $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
+            $table->enum('is_visible', [ 'yes', 'no' ])->comment('Está visible?')->default('yes');
 
             $table->uuidMorphs('questionable');
 

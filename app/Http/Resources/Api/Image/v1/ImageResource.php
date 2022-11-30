@@ -9,14 +9,13 @@ class ImageResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'type' => 'resources',
+            'type' => 'images',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-
+                "path" => $this->resource->path,
+                "type_path" => $this->resource->type_path,
             ],
-            'relationships' => [
-
-            ]
+            'relationships' => []
         ];
     }
 }

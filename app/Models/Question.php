@@ -45,7 +45,11 @@ class Question extends Model
         "date" => "Date",
     ];
 
-    public array $allowedIncludes = [];
+    public array $allowedIncludes = [
+        'answers',
+        'tests',
+        'image'
+    ];
 
     public array $adapterIncludes = [];
 

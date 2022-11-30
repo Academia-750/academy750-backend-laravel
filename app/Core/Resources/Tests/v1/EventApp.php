@@ -41,7 +41,7 @@ class EventApp implements TestsInterface
 
     public function action_for_multiple_records( $request ): array{
 
-        /* $records = Test::whereIn('id', $request->get('tests'));
+        /* $records = TestModel::whereIn('id', $request->get('tests'));
 
         broadcast(
             new ActionForMassiveSelectionTestEvent( $request->get('action'), $records )

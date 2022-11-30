@@ -46,7 +46,9 @@ class Answer extends Model
         "date" => "Date",
     ];
 
-    public array $allowedIncludes = [];
+    public array $allowedIncludes = [
+        'question'
+    ];
 
     public array $adapterIncludes = [];
 

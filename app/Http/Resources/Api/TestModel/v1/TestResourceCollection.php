@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Api\Test\v1;
+namespace App\Http\Resources\Api\TestModel\v1;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
