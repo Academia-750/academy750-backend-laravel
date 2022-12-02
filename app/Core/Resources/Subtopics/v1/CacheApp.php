@@ -69,4 +69,28 @@ class CacheApp implements SubtopicsInterface
         $this->dbApp->import_records( $request );
     }
 
+    public function subtopic_get_relationship_questions($subtopic)
+    {
+        return $this->dbApp->subtopic_get_relationship_questions( $subtopic );
+    }
+
+    public function subtopic_get_a_question($subtopic, $question)
+    {
+        return $this->dbApp->subtopic_get_a_question( $subtopic, $question );
+    }
+
+    public function subtopic_create_a_question($request, $subtopic)
+    {
+        return $this->dbApp->subtopic_create_a_question($request, $subtopic);
+    }
+
+    public function subtopic_update_a_question($request, $subtopic, $question)
+    {
+        return $this->dbApp->subtopic_update_a_question($request, $subtopic, $question);
+    }
+
+    public function subtopic_delete_a_question($subtopic, $question)
+    {
+        return $this->dbApp->subtopic_delete_a_question($subtopic, $question);
+    }
 }

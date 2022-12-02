@@ -153,4 +153,34 @@ class Authorizer implements TopicsInterface
         Gate::authorize('delete_opposition_by_topic', $topic );
         return $this->schemaJson->delete_opposition_by_topic($topic, $opposition);
     }
+
+    public function topic_get_relationship_questions($topic)
+    {
+        Gate::authorize('topic_get_relationship_questions', $topic );
+        return $this->schemaJson->topic_get_relationship_questions($topic);
+    }
+
+    public function topic_get_a_question($topic, $question)
+    {
+        Gate::authorize('topic_get_a_question', [$topic, $question] );
+        return $this->schemaJson->topic_get_a_question($topic, $question);
+    }
+
+    public function topic_create_a_question($request, $topic)
+    {
+        Gate::authorize('topic_create_a_question', $topic );
+        return $this->schemaJson->topic_create_a_question($request, $topic);
+    }
+
+    public function topic_update_a_question($request, $topic, $question)
+    {
+        Gate::authorize('topic_update_a_question', [$topic, $question] );
+        return $this->schemaJson->topic_update_a_question($request, $topic, $question);
+    }
+
+    public function topic_delete_a_question($topic, $question)
+    {
+        Gate::authorize('topic_delete_a_question', [$topic, $question] );
+        return $this->schemaJson->topic_delete_a_question($topic, $question);
+    }
 }

@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
             $table->string("question")->comment("La pregunta");
-            $table->string("reason")->comment("La explicacion");
+            $table->string("reason")->nullable()->comment("La explicacion");
             $table->enum('is_visible', [ 'yes', 'no' ])->comment('Está visible?')->default('yes');
 
             $table->uuidMorphs('questionable');

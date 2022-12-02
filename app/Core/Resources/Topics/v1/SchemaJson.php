@@ -115,7 +115,12 @@ class SchemaJson implements TopicsInterface
     {
         return SubtopicCollection::make(
             $this->eventApp->get_relationship_a_opposition($topic, $opposition)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic),
+                'opposition' => OppositionResource::make($opposition)
+            ]
+        ]);
     }
 
     public function get_relationship_questions($topic)
@@ -219,5 +224,40 @@ class SchemaJson implements TopicsInterface
     {
         $this->eventApp->delete_opposition_by_topic($topic, $opposition);
         return response()->noContent();
+    }
+
+    public function topic_get_relationship_questions($topic)
+    {
+        return TopicResource::make(
+            $this->eventApp->topic_get_relationship_questions($topic)
+        );
+    }
+
+    public function topic_get_a_question($topic, $question)
+    {
+        return TopicResource::make(
+            $this->eventApp->topic_get_a_question($topic, $question)
+        );
+    }
+
+    public function topic_create_a_question($request, $topic)
+    {
+        return TopicResource::make(
+            $this->eventApp->topic_create_a_question($request, $topic)
+        );
+    }
+
+    public function topic_update_a_question($request, $topic, $question)
+    {
+        return TopicResource::make(
+            $this->eventApp->topic_update_a_question($request, $topic, $question)
+        );
+    }
+
+    public function topic_delete_a_question($topic, $question)
+    {
+        return TopicResource::make(
+            $this->eventApp->topic_delete_a_question($topic, $question)
+        );
     }
 }

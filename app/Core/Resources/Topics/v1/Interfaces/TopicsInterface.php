@@ -28,5 +28,10 @@ interface TopicsInterface
     public function assign_opposition_with_subtopics_to_topic($request, $topic);
     public function update_subtopics_opposition_by_topic($request, $topic, $opposition);
     public function delete_opposition_by_topic($topic, $opposition);
+    public function topic_get_relationship_questions( $topic );
+    public function topic_get_a_question( $topic, $question );
+    public function topic_create_a_question( $request, $topic );
+    public function topic_update_a_question( $request, $topic, $question );
+    public function topic_delete_a_question( $topic, $question );
 
 }

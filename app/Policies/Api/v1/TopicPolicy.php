@@ -2,6 +2,7 @@
 
 namespace App\Policies\Api\v1;
 
+use App\Models\Question;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Topic;
 use App\Models\User;
@@ -98,6 +99,35 @@ class TopicPolicy
 
     public function delete_opposition_by_topic (User $user, Topic $topic): bool {
         return $user->can("see-a-topic");
+    }
+
+    public function topic_get_relationship_questions(User $user, Topic $topic): bool
+    {
+        return $user->can('see-a-topic');
+    }
+
+    public function topic_get_a_question(User $user, Topic $topic, Question $question): bool
+    {
+        if (!in_array($question->getRouteKey(), $topic->questions->pluck('id')->toArray(), true)) {
+            abort(404);
+        }
+
+        return $user->can('see-a-topic');
+    }
+
+    public function topic_create_a_question(User $user, Topic $topic): bool
+    {
+        return $user->can('see-a-topic');
+    }
+
+    public function topic_update_a_question(User $user, Topic $topic, Question $question): bool
+    {
+        return $user->can('see-a-topic');
+    }
+
+    public function topic_delete_a_question(User $user, Topic $topic, Question $question): bool
+    {
+        return $user->can('see-a-topic');
     }
 
     public function export_records(User $user): bool

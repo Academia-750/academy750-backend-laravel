@@ -64,4 +64,33 @@ class Authorizer implements SubtopicsInterface
         return $this->schemaJson->import_records( $request );
     }
 
+    public function subtopic_get_relationship_questions($subtopic)
+    {
+        Gate::authorize('subtopic_get_relationship_questions', $subtopic );
+        return $this->schemaJson->subtopic_get_relationship_questions( $subtopic );
+    }
+
+    public function subtopic_get_a_question($subtopic, $question)
+    {
+        Gate::authorize('subtopic_get_a_question', [$subtopic, $question] );
+        return $this->schemaJson->subtopic_get_a_question($subtopic, $question);
+    }
+
+    public function subtopic_create_a_question($request, $subtopic)
+    {
+        Gate::authorize('subtopic_create_a_question', $subtopic );
+        return $this->schemaJson->subtopic_create_a_question($request, $subtopic);
+    }
+
+    public function subtopic_update_a_question($request, $subtopic, $question)
+    {
+        Gate::authorize('subtopic_update_a_question', [$subtopic, $question] );
+        return $this->schemaJson->subtopic_update_a_question($request, $subtopic, $question);
+    }
+
+    public function subtopic_delete_a_question($subtopic, $question)
+    {
+        Gate::authorize('subtopic_delete_a_question', [$subtopic, $question] );
+        return $this->schemaJson->subtopic_delete_a_question($subtopic, $question);
+    }
 }

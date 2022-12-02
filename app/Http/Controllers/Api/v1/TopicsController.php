@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\Subtopics\CreateRelationshipQuestionRequest;
 use App\Http\Requests\Api\v1\Topics\ActionForMassiveSelectionTopicsRequest;
 use App\Http\Requests\Api\v1\Topics\CreateSubtopicRelationshipTopicRequest;
 use App\Http\Requests\Api\v1\Topics\CreateTopicRequest;
@@ -114,6 +115,27 @@ class TopicsController extends Controller
 
     public function update_subtopics_opposition_by_topic (UpdateSubtopicsOfOppositionByTopicRequest $request , Topic $topic, Opposition $opposition) {
         return $this->topicsInterface->update_subtopics_opposition_by_topic($request, $topic, $opposition);
+    }
+
+
+    public function topic_get_relationship_questions ( Topic $topic ) {
+        return $this->topicsInterface->topic_get_relationship_questions( $topic );
+    }
+
+    public function topic_get_a_question ( Topic $topic, Question $question ) {
+        return $this->topicsInterface->topic_get_a_question( $topic, $question );
+    }
+
+    public function topic_create_a_question ( CreateRelationshipQuestionRequest $request, Topic $topic ) {
+        return $this->topicsInterface->topic_create_a_question( $request, $topic );
+    }
+
+    public function topic_update_a_question ( CreateRelationshipQuestionRequest $request, Topic $topic, Question $question ) {
+        return $this->topicsInterface->topic_update_a_question( $request, $topic, $question );
+    }
+
+    public function topic_delete_a_question ( Topic $topic, Question $question ) {
+        return $this->topicsInterface->topic_delete_a_question( $topic, $question );
     }
 
     public function delete_opposition_by_topic (Topic $topic, Opposition $opposition) {

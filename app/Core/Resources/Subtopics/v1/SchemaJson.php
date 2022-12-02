@@ -1,6 +1,8 @@
 <?php
 namespace App\Core\Resources\Subtopics\v1;
 
+use App\Http\Resources\Api\Question\v1\QuestionCollection;
+use App\Http\Resources\Api\Question\v1\QuestionResource;
 use App\Models\Subtopic;
 use App\Core\Resources\Subtopics\v1\Interfaces\SubtopicsInterface;
 use App\Http\Resources\Api\Subtopic\v1\SubtopicCollection;
@@ -75,4 +77,54 @@ class SchemaJson implements SubtopicsInterface
         ], 200);
     }
 
+    public function subtopic_get_relationship_questions($subtopic)
+    {
+        return QuestionCollection::make(
+            $this->eventApp->subtopic_get_relationship_questions($subtopic)
+        );
+    }
+
+    public function subtopic_get_a_question($subtopic, $question)
+    {
+        return QuestionResource::make(
+            $this->eventApp->subtopic_get_a_question($subtopic, $question)
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
+    }
+
+    public function subtopic_create_a_question($request, $subtopic)
+    {
+        return QuestionResource::make(
+            $this->eventApp->subtopic_create_a_question($request, $subtopic)
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
+    }
+
+    public function subtopic_update_a_question($request, $subtopic, $question)
+    {
+        return QuestionResource::make(
+            $this->eventApp->subtopic_update_a_question($request, $subtopic, $question)
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
+    }
+
+    public function subtopic_delete_a_question($subtopic, $question)
+    {
+        return QuestionResource::make(
+            $this->eventApp->subtopic_delete_a_question($subtopic, $question)
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
+    }
 }

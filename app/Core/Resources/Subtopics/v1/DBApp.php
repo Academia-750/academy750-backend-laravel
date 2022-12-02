@@ -1,6 +1,8 @@
 <?php
 namespace App\Core\Resources\Subtopics\v1;
 
+use App\Models\Answer;
+use App\Models\Question;
 use App\Models\Subtopic;
 use App\Core\Resources\Subtopics\v1\Interfaces\SubtopicsInterface;
 use Illuminate\Support\Facades\DB;
@@ -118,4 +120,103 @@ class DBApp implements SubtopicsInterface
         //(new SubtopicsImport(Auth::user()))->import($request->file('subtopics'));
     }
 
+    public function subtopic_get_relationship_questions($subtopic)
+    {
+        return $subtopic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
+    public function subtopic_get_a_question($subtopic, $question)
+    {
+        return Question::query()->applyIncludes()->find($question->getRouteKey());
+    }
+
+    public function subtopic_create_a_question($request, $subtopic)
+    {
+        try {
+            DB::beginTransaction();
+            $questionCreated = $subtopic->questions()->create([
+                'question' => $request->get('question-text'),
+                'reason' => $request->get('reason'),
+                'is_visible' => $request->get('is_visible')
+            ]);
+
+            foreach ( $request->get('answers') as $answer) {
+                Answer::query()->create([
+                    "answer" => $answer["answer-text"],
+                    "is_grouper_answer" => $answer["is_grouper_answer"],
+                    "is_correct_answer" => $answer["is_correct_answer"],
+                    "question_id" => $questionCreated->id,
+                ]);
+            }
+            DB::commit();
+
+            return $this->model->applyIncludes()->find($subtopic->id);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
+
+    public function subtopic_update_a_question($request, $subtopic, $question)
+    {
+        try {
+            DB::beginTransaction();
+
+            $question->update([
+                'question' => $request->get('question-text') ?? $question->question,
+                'reason' => $request->get('reason') ?? $question->reason,
+                'is_visible' => $request->get('is_visible') ?? $question->is_visible
+            ]);
+
+            foreach ( $request->get('answers') as $answer) {
+                $answer = Answer::query()->findOrFail($answer["id"]);
+
+                $answer->answer = $answer["answer-text"];
+                $answer->is_grouper_answer = $answer["is_grouper_answer"];
+                $answer->is_correct_answer = $answer["is_correct_answer"];
+                $answer->save();
+
+            }
+
+            DB::commit();
+
+            return $this->model->applyIncludes()->find($subtopic->id);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
+
+    public function subtopic_delete_a_question($subtopic, $question)
+    {
+        try {
+            DB::beginTransaction();
+
+            /*$questionCreated = $subtopic->questions()->create([
+                'question' => $request->get('question-text'),
+                'reason' => $request->get('reason'),
+                'is_visible' => $request->get('is_visible')
+            ]);
+
+            foreach ( $request->get('answers') as $answer) {
+                Answer::query()->create([
+                    "answer" => $answer["answer-text"],
+                    "is_grouper_answer" => $answer["is_grouper_answer"],
+                    "is_correct_answer" => $answer["is_correct_answer"],
+                    "question_id" => $questionCreated->id,
+                ]);
+            }*/
+
+                $question->delete();
+            DB::commit();
+
+            return $this->model->applyIncludes()->find($subtopic->id);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
 }

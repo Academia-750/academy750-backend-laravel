@@ -1,7 +1,9 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Models\Answer;
 use App\Models\Opposition;
+use App\Models\Question;
 use App\Models\Subtopic;
 use App\Models\Topic;
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
@@ -29,13 +31,14 @@ class DBApp implements TopicsInterface
     }
 
     public function create( $request ): \App\Models\Topic{
+
         try {
 
             DB::beginTransaction();
-                $topicCreated = $this->model->query()->create([
-                    'name' => $request->get('name'),
-                    'topic_group_id' => $request->get('topic-group-id')
-                ]);
+            $topicCreated = $this->model->query()->create([
+                'name' => $request->get('name'),
+                'topic_group_id' => $request->get('topic-group-id')
+            ]);
             DB::commit();
 
             return $this->model->applyIncludes()->find($topicCreated->id);
@@ -44,7 +47,6 @@ class DBApp implements TopicsInterface
             DB::rollback();
             abort(500,$e->getMessage());
         }
-
     }
 
     public function read( $topic ): \App\Models\Topic{
@@ -369,5 +371,80 @@ class DBApp implements TopicsInterface
             $opposition->topics()->detach($topic->getRouteKey());
         }
 
+    }
+
+    public function topic_get_relationship_questions($topic)
+    {
+        return $topic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
+    public function topic_get_a_question($topic, $question)
+    {
+        return (new Question)->applyIncludes()->find($question->getRouteKey());
+    }
+
+    public function topic_create_a_question($request, $topic)
+    {
+        try {
+
+            DB::beginTransaction();
+                $questionCreated = $topic->questions()->create([
+                    'question' => $request->get('question-text'),
+                    'reason' => $request->get('reason'),
+                    'is_visible' => $request->get('is_visible')
+                ]);
+
+                foreach ( $request->get('answers') as $answer) {
+                    Answer::query()->create([
+                        "answer" => $answer["answer-text"],
+                        "is_grouper_answer" => $answer["is_grouper_answer"],
+                        "is_correct_answer" => $answer["is_correct_answer"],
+                        "question_id" => $questionCreated->id,
+                    ]);
+                }
+            DB::commit();
+
+            return $this->model->applyIncludes()->find($topic->id);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
+
+    public function topic_update_a_question($request, $topic, $question)
+    {
+        try {
+            DB::beginTransaction();
+
+            $question->update([
+                'question' => $request->get('question-text') ?? $question->question,
+                'reason' => $request->get('reason') ?? $question->reason,
+                'is_visible' => $request->get('is_visible') ?? $question->is_visible
+            ]);
+
+            foreach ( $request->get('answers') as $answer) {
+                $answer = Answer::query()->findOrFail($answer["id"]);
+
+                $answer->answer = $answer["answer-text"];
+                $answer->is_grouper_answer = $answer["is_grouper_answer"];
+                $answer->is_correct_answer = $answer["is_correct_answer"];
+                $answer->save();
+
+            }
+
+            DB::commit();
+
+            return $this->model->applyIncludes()->find($topic->id);
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
+
+    public function topic_delete_a_question($topic, $question)
+    {
+        // TODO: Implement topic_delete_a_question() method.
     }
 }

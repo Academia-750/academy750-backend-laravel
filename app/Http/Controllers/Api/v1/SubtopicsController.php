@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Requests\Api\v1\Subtopics\CreateRelationshipQuestionRequest;
+use App\Models\Question;
 use App\Models\Subtopic;
 use App\Core\Resources\Subtopics\v1\Interfaces\SubtopicsInterface;
 use App\Http\Controllers\Controller;
@@ -51,6 +53,26 @@ class SubtopicsController extends Controller
 
     public function import_records(ImportSubtopicsRequest $request){
         return $this->subtopicsInterface->import_records( $request );
+    }
+
+    public function subtopic_get_relationship_questions ( Subtopic $subtopic ) {
+        return $this->subtopicsInterface->subtopic_get_relationship_questions( $subtopic );
+    }
+
+    public function subtopic_get_a_question ( Subtopic $subtopic, Question $question ) {
+        return $this->subtopicsInterface->subtopic_get_a_question( $subtopic, $question );
+    }
+
+    public function subtopic_create_a_question ( CreateRelationshipQuestionRequest $request, Subtopic $subtopic ) {
+        return $this->subtopicsInterface->subtopic_create_a_question( $request, $subtopic );
+    }
+
+    public function subtopic_update_a_question ( CreateRelationshipQuestionRequest $request, Subtopic $subtopic, Question $question ) {
+        return $this->subtopicsInterface->subtopic_update_a_question( $request, $subtopic, $question );
+    }
+
+    public function subtopic_delete_a_question ( Subtopic $subtopic, Question $question ) {
+        return $this->subtopicsInterface->subtopic_delete_a_question( $subtopic, $question );
     }
 
     public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {

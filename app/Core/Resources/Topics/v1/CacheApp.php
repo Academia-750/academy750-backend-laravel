@@ -155,4 +155,44 @@ class CacheApp implements TopicsInterface
         Cache::store('redis')->tags('opposition')->flush();
         $this->dbApp->delete_opposition_by_topic($topic, $opposition);
     }
+
+    public function topic_get_relationship_questions($topic)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        Cache::store('redis')->tags('opposition')->flush();
+        $this->dbApp->topic_get_relationship_questions($topic);
+    }
+
+    public function topic_get_a_question($topic, $question)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        Cache::store('redis')->tags('opposition')->flush();
+        $this->dbApp->topic_get_a_question($topic, $question);
+    }
+
+    public function topic_create_a_question($request, $topic)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        Cache::store('redis')->tags('opposition')->flush();
+        $this->dbApp->topic_create_a_question($request, $topic);
+    }
+
+    public function topic_update_a_question($request, $topic, $question)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        Cache::store('redis')->tags('opposition')->flush();
+        $this->dbApp->topic_update_a_question($request, $topic, $question);
+    }
+
+    public function topic_delete_a_question($topic, $question)
+    {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('subtopic')->flush();
+        Cache::store('redis')->tags('opposition')->flush();
+        $this->dbApp->topic_delete_a_question($topic, $question);
+    }
 }
