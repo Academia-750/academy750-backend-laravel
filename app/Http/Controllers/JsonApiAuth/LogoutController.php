@@ -17,7 +17,7 @@ class LogoutController
             new ActionUserLogoutEvent(Auth::user())
         )*/
         //ActionUserLogoutEvent::dispatch(Auth::user());
-        //broadcast(new ActionUserLogoutEvent(Auth::user()));
+        broadcast(new ActionUserLogoutEvent(Auth::user()));
 
         (new RevokerFactory)->make()->{$this->applyRevokeStrategy()}();
 

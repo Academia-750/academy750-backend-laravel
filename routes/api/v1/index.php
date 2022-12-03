@@ -2,6 +2,25 @@
 
 Route::prefix('v1')->group(static function(){
     require __DIR__ . '/routes/json-api-auth.php';
+    Route::post('/test/errors-validation/manually', static function (\Illuminate\Http\Request $request) {
+        $validator = Validator::make($request->all(), [
+            'dni' => 'required|string|max:10',
+            'age' => 'required|integer|max:100',
+        ]);
+
+        $errors = [];
+
+        if ($validator->fails()) {
+            $errors[] = $validator->errors();
+        }
+
+        return response()->json([
+            'request' => $request->all(),
+            'errors' => $errors,
+            'fails' => $validator->fails()
+        ]);
+    });
+
 
     Route::middleware(['auth:sanctum', 'only_users_with_account_enable'])->group(static function () {
         require __DIR__ . '/routes/profile.php';
