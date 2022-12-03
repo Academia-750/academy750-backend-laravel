@@ -81,7 +81,11 @@ class SchemaJson implements SubtopicsInterface
     {
         return QuestionCollection::make(
             $this->eventApp->subtopic_get_relationship_questions($subtopic)
-        );
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
     }
 
     public function subtopic_get_a_question($subtopic, $question)

@@ -22,10 +22,12 @@ class Question extends Model
     ];
 
     public array $allowedSorts = [
+        "question-text",
         "created-at"
     ];
 
     public array $adapterSorts = [
+        "question-text" => "QuestionText",
         "created-at" => "CreatedAt",
     ];
 
@@ -64,6 +66,10 @@ class Question extends Model
         $query->orderBy('created_at', $direction);
     }
 
+    public function sortQuestionText (Builder $query, $direction): void {
+        $query->orderBy('question', $direction);
+    }
+
     /* -------------------------------------------------------------------------------------------------------------- */
     // Filters functions
 
@@ -81,7 +87,7 @@ class Question extends Model
     }
 
     public function filterSearch(Builder $query, $value): void{
-        $query->orWhere(function($query) use ($value) {
+        $query->where(function($query) use ($value) {
             $query->where('field', 'LIKE' , "%{$value}%")
                 ->orWhere('other_field', 'LIKE' , "%{$value}%");
         });

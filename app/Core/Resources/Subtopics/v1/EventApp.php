@@ -60,7 +60,7 @@ class EventApp implements SubtopicsInterface
 
     public function subtopic_get_relationship_questions($subtopic)
     {
-        return $this->cacheApp->import_records( $subtopic );
+        return $this->cacheApp->subtopic_get_relationship_questions($subtopic);
     }
 
     public function subtopic_get_a_question($subtopic, $question)
