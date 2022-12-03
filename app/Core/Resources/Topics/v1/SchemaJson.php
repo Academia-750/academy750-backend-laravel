@@ -210,14 +210,22 @@ class SchemaJson implements TopicsInterface
     {
         return TopicResource::make(
             $this->eventApp->assign_opposition_with_subtopics_to_topic($request, $topic)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
     public function update_subtopics_opposition_by_topic($request, $topic, $opposition)
     {
         return TopicResource::make(
             $this->eventApp->update_subtopics_opposition_by_topic($request, $topic, $opposition)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
     public function delete_opposition_by_topic($topic, $opposition)
@@ -228,36 +236,56 @@ class SchemaJson implements TopicsInterface
 
     public function topic_get_relationship_questions($topic)
     {
-        return TopicResource::make(
+        return QuestionCollection::make(
             $this->eventApp->topic_get_relationship_questions($topic)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
     public function topic_get_a_question($topic, $question)
     {
         return TopicResource::make(
             $this->eventApp->topic_get_a_question($topic, $question)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
     public function topic_create_a_question($request, $topic)
     {
         return TopicResource::make(
             $this->eventApp->topic_create_a_question($request, $topic)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
     public function topic_update_a_question($request, $topic, $question)
     {
         return TopicResource::make(
             $this->eventApp->topic_update_a_question($request, $topic, $question)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
     public function topic_delete_a_question($topic, $question)
     {
         return TopicResource::make(
             $this->eventApp->topic_delete_a_question($topic, $question)
-        );
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 }
