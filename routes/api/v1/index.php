@@ -34,6 +34,7 @@ Route::prefix('v1')->group(static function(){
         require __DIR__ . '/routes/answers.routes.php';
         require __DIR__ . '/routes/test-types.routes.php';
         require __DIR__ . '/routes/images.routes.php';
+        require __DIR__ . '/routes/import-processes.routes.php';
     // [EndOfLineMethodRegister]
     });
 });

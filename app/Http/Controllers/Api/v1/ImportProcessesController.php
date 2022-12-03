@@ -1,0 +1,25 @@
+<?php
+
+namespace App\Http\Controllers\Api\v1;
+
+use App\Core\Resources\ImportProcesses\v1\Interfaces\ImportProcessesInterface;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+
+class ImportProcessesController extends Controller
+{
+    protected ImportProcessesInterface $importProcessesInterface;
+
+    public function __construct(ImportProcessesInterface $importProcessesInterface ){
+        $this->importProcessesInterface = $importProcessesInterface;
+    }
+
+    public function index () {
+        return $this->importProcessesInterface->index();
+    }
+
+    public function get_relationship_import_records( $import_process ) {
+        return $this->importProcessesInterface->get_relationship_import_records( $import_process );
+    }
+}

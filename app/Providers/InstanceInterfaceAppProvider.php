@@ -26,6 +26,8 @@ class InstanceInterfaceAppProvider extends ServiceProvider
         app()->bind(\App\Core\Resources\Answers\v1\Interfaces\AnswersInterface::class, \App\Core\Resources\Answers\v1\Authorizer::class);
         app()->bind(\App\Core\Resources\TestTypes\v1\Interfaces\TestTypesInterface::class, \App\Core\Resources\TestTypes\v1\Authorizer::class);
         app()->bind(\App\Core\Resources\Images\v1\Interfaces\ImagesInterface::class, \App\Core\Resources\Images\v1\Authorizer::class);
+        app()->bind(\App\Core\Resources\ImportProcesses\v1\Interfaces\ImportProcessesInterface::class, \App\Core\Resources\ImportProcesses\v1\Authorizer::class);
+        app()->bind(\App\Core\Resources\ImportRecords\v1\Interfaces\ImportRecordsInterface::class, \App\Core\Resources\ImportRecords\v1\Authorizer::class);
         // [EndOfLineMethodRegister]
     }
 

@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\v1\Topics;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use JetBrains\PhpStorm\ArrayShape;
 
 class ImportTopicsRequest extends FormRequest
 {
@@ -13,24 +14,21 @@ class ImportTopicsRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
+    #[ArrayShape(['filesTopics.*' => "string[]"])] public function rules(): array
     {
         return [
-            //
+            'filesTopics.*' => [
+                'required',
+                'mimes:csv,txt'
+            ]
         ];
     }
 
-    public function messages(): array {
-        return [
-            //
-        ];
-    }
-
-    public function attributes():array
+    #[ArrayShape(['filesTopics' => "string"])] public function attributes(): array
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'filesTopics' => 'Archivos CSV de los temas a importar',
         ];
     }
 }
