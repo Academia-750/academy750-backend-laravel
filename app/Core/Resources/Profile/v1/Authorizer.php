@@ -32,4 +32,14 @@ class Authorizer implements ProfileInterface
     {
         return $this->schemaJson->changePasswordAuth($request);
     }
+
+    public function getNotificationsUser()
+    {
+        return $this->schemaJson->getNotificationsUser();
+    }
+
+    public function read_notification_user($notification_id)
+    {
+        return $this->schemaJson->read_notification_user($notification_id);
+    }
 }

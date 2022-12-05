@@ -27,7 +27,11 @@ class SchemaJson implements ImportProcessesInterface
     {
         return ImportRecordCollection::make(
             $this->cacheApp->get_relationship_import_records( $import_process )
-        );
+        )->additional([
+            'meta' => [
+                'import_process' => ImportProcessResource::make($import_process)
+            ]
+        ]);
     }
 
 }

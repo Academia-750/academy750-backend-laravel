@@ -2,37 +2,45 @@
 
 namespace App\Notifications\Api;
 
+use App\Models\ImportProcess;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class ImportProcessFileFinishedNotification extends Notification
 {
     use Queueable;
 
-    public function __construct()
+    public $data;
+    public function __construct(array $data)
     {
-        //
+        $this->data = $data;
     }
 
     public function via($notifiable): array
     {
-        return ['mail'];
+        return ['database', 'broadcast'];
     }
 
-    public function toMail($notifiable)
+    public function toDatabase($notifiable): array
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
-    }
+        \Log::debug("--------Notification importacion finalizada---------");
+        //$urlFrontend = config('app.url_frontend');
+        $importProcessesRecord = ImportProcess::query()->find($this->data["import-processes-id"]);
 
-    public function toArray($notifiable): array
-    {
         return [
-            //
+            'route' => "/imports/files/{$importProcessesRecord->getRouteKey()}/records",
+            "icon" => "mdi-database-import",
+            "color-icon" => "success",
+            "title-notification" => "Importación finalizada - Temas",
+            "message-notification" => "Archivo {$importProcessesRecord->name_file}",
+            'message' => "Importacion de temas finalizado del archivo {$importProcessesRecord->name_file}"
         ];
+    }
+
+    public function toBroadcast ($notifiable) {
+        return new BroadcastMessage([]);
     }
 }

@@ -89,4 +89,17 @@ class DBQuery implements ProfileInterface
             abort(500,$e->getMessage());
         }
     }
+
+    public function getNotificationsUser()
+    {
+        return Auth::user()?->notifications()->orderBy('created_at', 'asc')->jsonPaginate();
+    }
+
+    public function read_notification_user($notification_id)
+    {
+        $notificationUser = Auth::user()?->notifications()?->findOrFail($notification_id);
+        $notificationUser?->markAsRead();
+
+        return Auth::user()?->notifications()->jsonPaginate();
+    }
 }

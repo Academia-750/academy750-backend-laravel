@@ -67,4 +67,12 @@ class ProfileController extends Controller
 
         return response()->json(compact('invalidCredentials', 'thereIsAlreadyAPreviousSession'));
     }
+
+    public function getNotificationsUser () {
+        return $this->profileInterface->getNotificationsUser();
+    }
+
+    public function read_notification_user ($notification_id) {
+        return $this->profileInterface->read_notification_user($notification_id);
+    }
 }

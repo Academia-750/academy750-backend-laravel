@@ -19,10 +19,13 @@ trait HelpersLaravelImportCSVTrait
             "name_file" => $nameFile,
             "user_id" => $userAuth->getRouteKey(),
             "total_number_of_records" => '0',
+            "total_number_failed_records" => '0',
+            "total_number_successful_records" => '0',
             "status_process_file" => 'pending',
         ]);
 
         $this->importProcessRecord = $importProcessRecord;
+        $this->userAuth = $userAuth;
 
         return $importProcessRecord;
     }

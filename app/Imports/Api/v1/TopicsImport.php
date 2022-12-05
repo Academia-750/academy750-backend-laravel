@@ -7,6 +7,8 @@ use App\Events\Api\v1\HelloEvent;
 use App\Models\ImportProcess;
 use App\Models\ImportRecord;
 use App\Models\Topic;
+use App\Models\User;
+use App\Notifications\Api\ImportProcessFileFinishedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -27,7 +29,7 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
 
     public function __construct($userAuth, $nameFile) {
         //$this->userAuth = $userAuth;
-        \Log::debug("---------------INICIO----------------");
+
         $this->registerImportProcessHistory( $userAuth, $nameFile );
     }
 
@@ -53,10 +55,12 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
                         }
 
                     DB::beginTransaction();
-                        \Log::debug("Num. Fila actual: {$current_row}");
 
                         if (!$hasErrors) {
                             $this->registerTopic($row["tema"], $row["grupo_tema_id"]);
+                            $this->count_rows_successfully++;
+                        } else {
+                            $this->count_rows_failed++;
                         }
 
                         $this->registerImportRecordHistory([
@@ -67,12 +71,13 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
                             'import-process-id' => $this->importProcessRecord->id
                         ]);
 
+
                     DB::commit();
+
                 } catch (\Exception $e) {
                     DB::rollback();
 
-                    \Log::debug("Excepción: {$e->getMessage()}");
-                    \Log::debug("Excepción Fila: {$current_row}");
+                    $this->count_rows_failed++;
 
                     $this->registerImportRecordHistory([
                         "current-row" => $current_row,
@@ -97,7 +102,7 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
 
     public function chunkSize(): int
     {
-        return 5;
+        return 1000;
     }
 
     /*
@@ -122,13 +127,24 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
         ]);
     }
 
+    public function updateTotalFailedRecords ($count): void {
+        $importProcess = ImportProcess::query()->find($this->importProcessRecord->id);
+        $importProcess->total_number_failed_records = (int) $importProcess->total_number_failed_records + (int) $count;
+        $importProcess->save();
+    }
+    public function updateTotalSuccessfulRecords ($count): void {
+        $importProcess = ImportProcess::query()->find($this->importProcessRecord->id);
+        $importProcess->total_number_successful_records = (int) $importProcess->total_number_failed_records + (int) $count;
+        $importProcess->save();
+    }
+
     public static function afterSheet(AfterSheet $event): void
     {
 
-        \Log::debug("--------Evento: AfterSheet---------");
-
         $importProcess = ImportProcess::query()->find($event->getConcernable()->importProcessRecord->id);
         $importProcess->total_number_of_records = (int) $importProcess->total_number_of_records + (int) $event->getConcernable()->count_row_current_sheet;
+        $importProcess->total_number_successful_records = (int) $importProcess->total_number_successful_records + (int) $event->getConcernable()->count_rows_successfully;
+        $importProcess->total_number_failed_records = (int) $importProcess->total_number_failed_records + (int) $event->getConcernable()->count_rows_failed;
         $importProcess->status_process_file = "pending";
         $importProcess->save();
 
@@ -141,7 +157,11 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
         $importProcess->status_process_file = "complete";
         $importProcess->save();
 
-        \Log::debug("--------Evento: AfterImport---------");
-        \Log::debug("-----------------FIN----------------");
+        $user = User::query()->find($event->getConcernable()->userAuth->id);
+
+        $user?->notify(new ImportProcessFileFinishedNotification([
+            "import-processes-id" => $event->getConcernable()->importProcessRecord->id
+        ]));
+
     }
 }

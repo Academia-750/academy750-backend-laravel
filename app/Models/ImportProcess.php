@@ -19,18 +19,24 @@ class ImportProcess extends Model
         'name_file',
         'user_id',
         'total_number_of_records',
+        'total_number_failed_records',
+        'total_number_successful_records',
         'status_process_file'
     ];
 
     public array $allowedSorts = [
         'name-file',
         'total-number-of-records',
+        'total-number-failed-records',
+        'total-number-successful-records',
         "created-at"
     ];
 
     public array $adapterSorts = [
         'name-file' => 'NameFile',
         'total-number-of-records' => 'TotalNumberOfRecords',
+        'total-number-failed-records' => 'TotalNumberFailedRecords',
+        'total-number-successful-records' => 'TotalNumberSuccessfulRecords',
         "created-at" => "CreatedAt",
     ];
 
@@ -74,6 +80,14 @@ class ImportProcess extends Model
         $query->orderBy('total_number_of_records', $direction);
     }
 
+    public function TotalNumberFailedRecords(Builder $query, $direction): void{
+        $query->orderBy('total_number_failed_records', $direction);
+    }
+
+    public function TotalNumberSuccessfulRecords(Builder $query, $direction): void{
+        $query->orderBy('total_number_successful_records', $direction);
+    }
+
     public function sortCreatedAt(Builder $query, $direction): void{
         $query->orderBy('created_at', $direction);
     }
@@ -100,8 +114,7 @@ class ImportProcess extends Model
 
     public function filterSearch(Builder $query, $value): void{
         $query->where(static function($query) use ($value) {
-            $query->where('name_file', 'LIKE' , "%{$value}%")
-                ->orWhere('total_number_of_records', 'LIKE' , "%{$value}%");
+            $query->where('name_file', 'LIKE' , "%{$value}%");
         });
     }
 

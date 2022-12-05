@@ -123,16 +123,14 @@ class DBApp implements TopicsInterface
         //Proceso de importacion con Queues - El archivo debe tener
         //(new TopicsImport(Auth::user()))->import($request->file('topics'))
 
-        \Log::debug($request->filesTopics);
-        \Log::debug($request->all());
-
-
         foreach ($request->file('filesTopics') as $file) {
-            \Log::debug($file);
 
             (
             new TopicsImport(Auth::user(), $file->getClientOriginalName())
             )->import($file);
+
+            //sleep(1);
+
         }
 
     }

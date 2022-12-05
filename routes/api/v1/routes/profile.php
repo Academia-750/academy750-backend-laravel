@@ -9,3 +9,6 @@ Route::get('/my-profile', MyProfileAuthController::class)->middleware('auth:sanc
 Route::post('/auth/update-data-my-profile', [ProfileController::class, 'updateDataMyProfile'])->middleware('auth:sanctum')->name('api.v1.update-data-my-profile-auth');
 Route::get('/auth/unsubscribe-from-system', [ProfileController::class, 'unsubscribeFromSystem'])->middleware('auth:sanctum')->name('api.v1.unsubscribe-from-system-auth');
 Route::post('/auth/change-password-my-account', [ProfileController::class, 'changePasswordAuth'])->middleware('auth:sanctum')->name('api.v1.change-password-auth');
+
+Route::get('/notifications/user/', [ProfileController::class, 'getNotificationsUser'])->middleware('auth:sanctum')->name('api.v1.notifications.user');
+Route::post('/read/notification/{notification}/user/', [ProfileController::class, 'read_notification_user'])->middleware('auth:sanctum')->name('api.v1.read.notifications.user');

@@ -8,7 +8,7 @@ use JetBrains\PhpStorm\ArrayShape;
 
 class UserResource extends JsonResource
 {
-    #[ArrayShape(['type' => "string", 'id' => "string", 'attributes' => "array", 'relationships' => "array"])] public function toArray($request): array
+    #[ArrayShape(['type' => "string", 'id' => "string", 'attributes' => "array", 'relationships' => "array", 'meta' => "array"])] public function toArray($request): array
     {
         return [
             'type' => 'users',
@@ -30,6 +30,9 @@ class UserResource extends JsonResource
                     function () {
                         return RoleCollection::make($this->resource->roles);
                     })
+            ],
+            'meta' => [
+                'unread-notifications' => $this->resource->unreadNotifications->count()
             ]
         ];
     }

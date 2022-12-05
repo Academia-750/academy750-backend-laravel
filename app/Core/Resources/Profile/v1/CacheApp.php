@@ -31,4 +31,14 @@ class CacheApp implements ProfileInterface
     {
         return $this->DBQuery->changePasswordAuth($request);
     }
+
+    public function getNotificationsUser()
+    {
+        return $this->DBQuery->getNotificationsUser();
+    }
+
+    public function read_notification_user($notification_id)
+    {
+        return $this->DBQuery->read_notification_user($notification_id);
+    }
 }

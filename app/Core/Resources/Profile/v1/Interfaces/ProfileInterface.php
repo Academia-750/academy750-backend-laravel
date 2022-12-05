@@ -8,4 +8,6 @@ interface ProfileInterface
     public function updateDataMyProfile ($request);
     public function unsubscribeFromSystem ();
     public function changePasswordAuth ($request);
+    public function getNotificationsUser ();
+    public function read_notification_user($notification_id);
 }
