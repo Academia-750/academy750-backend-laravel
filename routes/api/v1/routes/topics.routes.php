@@ -11,6 +11,7 @@ Route::post('topics/create', [TopicsController::class, 'create'])->name('api.v1.
 Route::patch('topics/update/{topic}', [TopicsController::class, 'update'])->name('api.v1.topics.update');
 Route::delete('topics/delete/{topic}', [TopicsController::class, 'delete'])->name('api.v1.topics.soft-delete');
 Route::post('topics/actions-on-multiple-records', [TopicsController::class, 'action_for_multiple_records'])->name('api.v1.topics.actions-on-multiple-records');
+Route::post('topics/import', [TopicsController::class, 'import_records'])->name('api.v1.topics.import');
 
 Route::get("topics/{topic}/oppositions-available", [TopicsController::class, 'get_oppositions_available_of_topic'])->name('api.v1.topics.oppositions-available');
 

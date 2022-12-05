@@ -16,6 +16,7 @@ class ImportRecordResource extends JsonResource
                 "reference_number" => $this->resource->reference_number,
                 "has_errors" => $this->resource->has_errors === 'yes',
                 "errors_validation" => $this->resource->errors_validation,
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
 

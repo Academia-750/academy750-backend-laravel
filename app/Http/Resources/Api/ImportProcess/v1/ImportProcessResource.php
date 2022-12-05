@@ -15,6 +15,7 @@ class ImportProcessResource extends JsonResource
                 "name_file" => $this->resource->name_file,
                 "total_number_of_records" => $this->resource->total_number_of_records,
                 "status_process_file" => $this->resource->status_process_file,
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
 

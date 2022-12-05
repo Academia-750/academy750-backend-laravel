@@ -3,6 +3,7 @@ namespace App\Core\Resources\ImportProcesses\v1;
 
 use App\Models\ImportProcess;
 use App\Core\Resources\ImportProcesses\v1\Interfaces\ImportProcessesInterface;
+use Illuminate\Support\Facades\Auth;
 
 class DBApp implements ImportProcessesInterface
 {
@@ -13,7 +14,14 @@ class DBApp implements ImportProcessesInterface
     }
 
     public function index(){
-        return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return (new ImportProcess)
+            ->query()
+            ->where('user_id', '=', Auth::user()->getRouteKey())
+            ->where('status_process_file', '=', 'complete')
+            ->applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function get_relationship_import_records($import_process)

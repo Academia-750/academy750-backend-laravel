@@ -57,7 +57,7 @@ class ImportRecord extends Model
 
      protected $casts = [
          'id' => 'string',
-         'number_of_row' => 'number',
+         'number_of_row' => 'string',
          'reference_number' => 'string',
          'errors_validation' => 'array',
          'import_process_id' => 'string'

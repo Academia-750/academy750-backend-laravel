@@ -27,9 +27,19 @@ class CacheApp implements ImportProcessesInterface
 
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function get_relationship_import_records($import_process)
     {
-        return Cache::store('redis')->tags('import_process')->rememberForever("{$import_process->getRouteKey()}-import-records", function () use ($import_process) {
+
+        $nameCache = '';
+
+        (empty(request()->query())) ?
+            $nameCache = "import_process.import-records--{$import_process->getRouteKey()}.get.all" :
+            $nameCache = "import_process.import-records--{$import_process->getRouteKey()}.get.all" . json_encode(request()->query(), JSON_THROW_ON_ERROR);
+
+        return Cache::store('redis')->tags('import_process')->rememberForever($nameCache, function () use ($import_process) {
             return $this->dbApp->get_relationship_import_records($import_process);
         });
     }

@@ -66,6 +66,7 @@ class CacheApp implements TopicsInterface
 
     public function import_records( $request ): void{
         Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('import_process')->flush();
         $this->dbApp->import_records( $request );
     }
 

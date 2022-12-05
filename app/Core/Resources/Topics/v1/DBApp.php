@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Imports\Api\v1\TopicsImport;
 use App\Models\Answer;
 use App\Models\Opposition;
 use App\Models\Question;
@@ -120,7 +121,20 @@ class DBApp implements TopicsInterface
 
     public function import_records( $request ): void{
         //Proceso de importacion con Queues - El archivo debe tener
-        //(new TopicsImport(Auth::user()))->import($request->file('topics'));
+        //(new TopicsImport(Auth::user()))->import($request->file('topics'))
+
+        \Log::debug($request->filesTopics);
+        \Log::debug($request->all());
+
+
+        foreach ($request->file('filesTopics') as $file) {
+            \Log::debug($file);
+
+            (
+            new TopicsImport(Auth::user(), $file->getClientOriginalName())
+            )->import($file);
+        }
+
     }
 
     public function get_relationship_subtopics($topic)

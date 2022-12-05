@@ -22,7 +22,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->string("total_number_of_records");
+            $table->string("total_number_of_records")->nullable();
             $table->enum("status_process_file", ['failed', 'pending', 'complete'])->default('pending');
 
             $table->timestamps();

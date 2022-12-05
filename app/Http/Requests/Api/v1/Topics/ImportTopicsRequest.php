@@ -19,7 +19,7 @@ class ImportTopicsRequest extends FormRequest
         return [
             'filesTopics.*' => [
                 'required',
-                'mimes:csv,txt'
+                'mimes:csv'
             ]
         ];
     }
