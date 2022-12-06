@@ -30,7 +30,7 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
     public function __construct($userAuth, $nameFile) {
         //$this->userAuth = $userAuth;
 
-        $this->registerImportProcessHistory( $userAuth, $nameFile );
+        $this->registerImportProcessHistory( $userAuth, $nameFile, "Importar temas" );
     }
 
     public function collection(Collection $collection): void {
@@ -41,8 +41,8 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
             foreach ($collection as $row) {
 
                 try {
-                        $this->count_row_current_sheet++;
-                        $current_row = ($importProcess->total_number_of_records + $this->count_row_current_sheet) + 1;
+
+                        $current_row = $this->getCurrentRow();
 
                         $errors = [];
                         $hasErrors = false;
@@ -84,7 +84,7 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
                         'reference-number' => $row["numero_referencia"],
                         "has-errors" => true,
                         "errors-validation" => [
-                            "topic" => [
+                            "tema" => [
                                 "Ocurrió un error en el proceso.",
                                 $e->getMessage()
                             ]
@@ -127,42 +127,26 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
         ]);
     }
 
-    public function updateTotalFailedRecords ($count): void {
-        $importProcess = ImportProcess::query()->find($this->importProcessRecord->id);
-        $importProcess->total_number_failed_records = (int) $importProcess->total_number_failed_records + (int) $count;
-        $importProcess->save();
-    }
-    public function updateTotalSuccessfulRecords ($count): void {
-        $importProcess = ImportProcess::query()->find($this->importProcessRecord->id);
-        $importProcess->total_number_successful_records = (int) $importProcess->total_number_failed_records + (int) $count;
-        $importProcess->save();
-    }
 
     public static function afterSheet(AfterSheet $event): void
     {
 
-        $importProcess = ImportProcess::query()->find($event->getConcernable()->importProcessRecord->id);
-        $importProcess->total_number_of_records = (int) $importProcess->total_number_of_records + (int) $event->getConcernable()->count_row_current_sheet;
-        $importProcess->total_number_successful_records = (int) $importProcess->total_number_successful_records + (int) $event->getConcernable()->count_rows_successfully;
-        $importProcess->total_number_failed_records = (int) $importProcess->total_number_failed_records + (int) $event->getConcernable()->count_rows_failed;
-        $importProcess->status_process_file = "pending";
-        $importProcess->save();
+        $event->getConcernable()->updateDataImportHistory($event);
 
         //broadcast(new HelloEvent([]));
         //broadcast(new ImportZonesEvent($event->getConcernable()->failuresArray, $event->getConcernable()->userAuth, $event->getConcernable()->failedBoolean));
     }
 
     public static function afterImport (AfterImport $event): void {
-        $importProcess = ImportProcess::query()->find($event->getConcernable()->importProcessRecord->id);
-        $importProcess->status_process_file = "complete";
-        $importProcess->save();
+
+        $importProcessesRecord = $event->getConcernable()->setStatusCompleteImportHistory($event);
 
         $user = User::query()->find($event->getConcernable()->userAuth->id);
 
         $user?->notify(new ImportProcessFileFinishedNotification([
-            "import-processes-id" => $event->getConcernable()->importProcessRecord->id
+            "import-processes-id" => $event->getConcernable()->importProcessRecord->id,
+            "title-notification" => "Importación finalizada - Temas",
+            "description" => "Importacion de temas finalizado del archivo {$importProcessesRecord->name_file}"
         ]));
-
-
     }
 }

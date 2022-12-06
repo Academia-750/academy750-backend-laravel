@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Subtopics\v1;
 
+use App\Imports\Api\v1\SubtopicsImport;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Models\Subtopic;
@@ -116,8 +117,18 @@ class DBApp implements SubtopicsInterface
     }
 
     public function import_records( $request ): void{
-        //Proceso de importacion con Queues - El archivo debe tener
-        //(new SubtopicsImport(Auth::user()))->import($request->file('subtopics'));
+
+        $filesSubtopics = $request->file('filesSubtopics') ?? [];
+
+        foreach ($filesSubtopics as $file) {
+
+            (
+            new SubtopicsImport(Auth::user(), $file->getClientOriginalName())
+            )->import($file);
+
+            //sleep(1);
+
+        }
     }
 
     public function subtopic_get_relationship_questions($subtopic)

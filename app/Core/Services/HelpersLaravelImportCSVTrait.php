@@ -13,12 +13,12 @@ trait HelpersLaravelImportCSVTrait
     private $userAuth;
     private $importProcessRecord;
 
-    public function registerImportProcessHistory ( $userAuth, $nameFile ): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
+    public function registerImportProcessHistory ( $userAuth, $nameFile, $category ): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
     {
          $importProcessRecord = ImportProcess::query()->create([
             "name_file" => $nameFile,
             "user_id" => $userAuth->getRouteKey(),
-            "category" => "Importar temas",
+            "category" => $category,
             "total_number_of_records" => '0',
             "total_number_failed_records" => '0',
             "total_number_successful_records" => '0',
@@ -41,4 +41,37 @@ trait HelpersLaravelImportCSVTrait
             "import_process_id" => $data["import-process-id"],
         ]);
     }
+
+    public function getCurrentRow () {
+        $importProcess = ImportProcess::query()->find($this->importProcessRecord->id);
+
+        if (!$importProcess) {
+            return 0;
+        }
+
+        $this->count_row_current_sheet++;
+        return ($importProcess->total_number_of_records + $this->count_row_current_sheet) + 1;
+    }
+
+    public function updateDataImportHistory ($event): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
+    {
+        $importProcess = ImportProcess::query()->find($event->getConcernable()->importProcessRecord->id);
+        $importProcess->total_number_of_records = (int) $importProcess->total_number_of_records + (int) $event->getConcernable()->count_row_current_sheet;
+        $importProcess->total_number_successful_records = (int) $importProcess->total_number_successful_records + (int) $event->getConcernable()->count_rows_successfully;
+        $importProcess->total_number_failed_records = (int) $importProcess->total_number_failed_records + (int) $event->getConcernable()->count_rows_failed;
+        $importProcess->status_process_file = "pending";
+        $importProcess->save();
+
+        return $importProcess;
+    }
+
+    public function setStatusCompleteImportHistory ($event): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
+    {
+        $importProcess = ImportProcess::query()->find($event->getConcernable()->importProcessRecord->id);
+        $importProcess->status_process_file = "complete";
+        $importProcess->save();
+
+        return $importProcess;
+    }
+
 }

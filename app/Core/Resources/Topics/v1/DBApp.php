@@ -122,8 +122,9 @@ class DBApp implements TopicsInterface
     public function import_records( $request ): void{
         //Proceso de importacion con Queues - El archivo debe tener
         //(new TopicsImport(Auth::user()))->import($request->file('topics'))
+        $filesTopics = $request->file('filesTopics') ?? [];
 
-        foreach ($request->file('filesTopics') as $file) {
+        foreach ($filesTopics as $file) {
 
             (
             new TopicsImport(Auth::user(), $file->getClientOriginalName())

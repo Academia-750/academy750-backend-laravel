@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\v1\Subtopics;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use JetBrains\PhpStorm\ArrayShape;
 
 class ImportSubtopicsRequest extends FormRequest
 {
@@ -13,24 +14,21 @@ class ImportSubtopicsRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
+    #[ArrayShape(['filesSubtopics.*' => "string[]"])] public function rules(): array
     {
         return [
-            //
+            'filesSubtopics.*' => [
+                'required',
+                'mimes:csv'
+            ]
         ];
     }
 
-    public function messages(): array {
-        return [
-            //
-        ];
-    }
-
-    public function attributes():array
+    #[ArrayShape(['filesSubtopics' => "string"])] public function attributes(): array
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'filesSubtopics' => 'Archivos CSV de los subtemas a importar',
         ];
     }
 }

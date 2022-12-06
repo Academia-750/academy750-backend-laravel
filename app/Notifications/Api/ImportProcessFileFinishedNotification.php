@@ -27,17 +27,22 @@ class ImportProcessFileFinishedNotification extends Notification
 
     public function toDatabase($notifiable): array
     {
-        \Log::debug("--------Notification importacion finalizada---------");
         //$urlFrontend = config('app.url_frontend');
         $importProcessesRecord = ImportProcess::query()->find($this->data["import-processes-id"]);
+        $route = $this->data["route"] ?? "/imports/files/{$importProcessesRecord->getRouteKey()}/records";
+        $icon = $this->data["icon"] ?? "mdi-database-import";
+        $colorIcon = $this->data["color-icon"] ?? "success";
+        $titleNotification = $this->data["title-notification"];
+        $messageNotification = $this->data["message-notification"] ?? "Archivo {$importProcessesRecord->name_file}";
+        $description = $this->data["description"];
 
         return [
-            'route' => "/imports/files/{$importProcessesRecord->getRouteKey()}/records",
-            "icon" => "mdi-database-import",
-            "color-icon" => "success",
-            "title-notification" => "Importación finalizada - Temas",
-            "message-notification" => "Archivo {$importProcessesRecord->name_file}",
-            'message' => "Importacion de temas finalizado del archivo {$importProcessesRecord->name_file}"
+            'route' => $route,
+            "icon" => $icon,
+            "color-icon" => $colorIcon,
+            "title-notification" => $titleNotification,
+            "message-notification" => $messageNotification,
+            'description' => $description
         ];
     }
 
