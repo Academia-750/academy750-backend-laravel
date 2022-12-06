@@ -18,6 +18,7 @@ trait HelpersLaravelImportCSVTrait
          $importProcessRecord = ImportProcess::query()->create([
             "name_file" => $nameFile,
             "user_id" => $userAuth->getRouteKey(),
+            "category" => "Importar temas",
             "total_number_of_records" => '0',
             "total_number_failed_records" => '0',
             "total_number_successful_records" => '0',

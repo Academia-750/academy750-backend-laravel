@@ -163,5 +163,6 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
             "import-processes-id" => $event->getConcernable()->importProcessRecord->id
         ]));
 
+
     }
 }

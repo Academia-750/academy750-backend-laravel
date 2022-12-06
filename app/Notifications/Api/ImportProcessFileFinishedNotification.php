@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
+use Illuminate\Support\Facades\Cache;
 
 class ImportProcessFileFinishedNotification extends Notification
 {
@@ -41,6 +42,9 @@ class ImportProcessFileFinishedNotification extends Notification
     }
 
     public function toBroadcast ($notifiable) {
+        Cache::store('redis')->tags('topic')->flush();
+        Cache::store('redis')->tags('import_process')->flush();
+
         return new BroadcastMessage([]);
     }
 }

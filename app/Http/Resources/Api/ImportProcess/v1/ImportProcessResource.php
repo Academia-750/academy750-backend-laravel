@@ -13,6 +13,7 @@ class ImportProcessResource extends JsonResource
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
                 "name_file" => $this->resource->name_file,
+                "category" => $this->resource->category,
                 "total_number_of_records" => $this->resource->total_number_of_records,
                 "total_number_failed_records" => $this->resource->total_number_failed_records,
                 "total_number_successful_records" => $this->resource->total_number_successful_records,

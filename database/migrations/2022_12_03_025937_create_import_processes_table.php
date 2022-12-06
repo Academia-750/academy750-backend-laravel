@@ -22,6 +22,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
+            $table->string("category");
             $table->string("total_number_of_records")->nullable();
             $table->string("total_number_failed_records")->nullable();
             $table->string("total_number_successful_records")->nullable();

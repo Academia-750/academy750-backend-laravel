@@ -21,7 +21,8 @@ class ImportProcess extends Model
         'total_number_of_records',
         'total_number_failed_records',
         'total_number_successful_records',
-        'status_process_file'
+        'status_process_file',
+        'category'
     ];
 
     public array $allowedSorts = [

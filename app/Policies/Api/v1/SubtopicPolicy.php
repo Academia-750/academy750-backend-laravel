@@ -76,6 +76,6 @@ class SubtopicPolicy
     }
     public function import_records(User $user): bool
     {
-        return true;
+        return $user->can('create-subtopic');
     }
 }
