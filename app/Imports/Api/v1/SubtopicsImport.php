@@ -51,7 +51,7 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                 DB::beginTransaction();
 
                 if (!$hasErrors) {
-                    $this->registerSubtopic($row["subtema"], $row["tema_id"]);
+                    $this->registerSubtopic($row["subtema"], $row["tema_uuid"]);
                     $this->count_rows_successfully++;
                 } else {
                     $this->count_rows_failed++;
@@ -108,7 +108,7 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
     {
         return Validator::make($row->toArray(), [
             'subtema' => ['required', 'max:255'],
-            'tema_id' => ['required', 'uuid', 'exists:topics,id'],
+            'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
             'numero_referencia' => ['required']
         ]);
     }

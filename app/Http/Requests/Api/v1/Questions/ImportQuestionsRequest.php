@@ -5,6 +5,7 @@ namespace App\Http\Requests\Api\v1\Questions;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use JetBrains\PhpStorm\ArrayShape;
 
 class ImportQuestionsRequest extends FormRequest
 {
@@ -13,24 +14,21 @@ class ImportQuestionsRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
+    #[ArrayShape(['filesQuestions.*' => "string[]"])] public function rules(): array
     {
         return [
-            //
+            'filesQuestions.*' => [
+                'required',
+                'mimes:csv'
+            ]
         ];
     }
 
-    public function messages(): array {
-        return [
-            //
-        ];
-    }
-
-    public function attributes():array
+    #[ArrayShape(['filesQuestions' => "string"])] public function attributes(): array
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'filesQuestions' => 'Archivos CSV de los temas a importar',
         ];
     }
 }

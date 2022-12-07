@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Questions\v1;
 
+use App\Imports\Api\v1\QuestionsImport;
 use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
 use Illuminate\Support\Facades\DB;
@@ -113,8 +114,17 @@ class DBApp implements QuestionsInterface
     }
 
     public function import_records( $request ): void{
-        //Proceso de importacion con Queues - El archivo debe tener
-        //(new QuestionsImport(Auth::user()))->import($request->file('questions'));
+        $filesQuestions = $request->file('filesQuestions') ?? [];
+
+        foreach ($filesQuestions as $file) {
+
+            (
+            new QuestionsImport(Auth::user(), $file->getClientOriginalName())
+            )->import($file);
+
+            //sleep(1);
+
+        }
     }
 
 }

@@ -57,7 +57,7 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
                     DB::beginTransaction();
 
                         if (!$hasErrors) {
-                            $this->registerTopic($row["tema"], $row["grupo_tema_id"]);
+                            $this->registerTopic($row["tema"], $row["grupo_tema_uuid"]);
                             $this->count_rows_successfully++;
                         } else {
                             $this->count_rows_failed++;
@@ -114,7 +114,7 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
     {
         return Validator::make($row->toArray(), [
             'tema' => ['required', 'max:255'],
-            'grupo_tema_id' => ['required', 'uuid', 'exists:topic_groups,id'],
+            'grupo_tema_uuid' => ['required', 'uuid', 'exists:topic_groups,id'],
             'numero_referencia' => ['required']
         ]);
     }

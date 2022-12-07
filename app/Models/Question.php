@@ -18,7 +18,7 @@ class Question extends Model
         "id",
         "question",
         "reason",
-        "is_available",
+        "is_visible",
     ];
 
     public array $allowedSorts = [
