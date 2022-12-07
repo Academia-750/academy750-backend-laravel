@@ -45,10 +45,11 @@ return [
             'delimiter'              => ',',
             'enclosure'              => '"',
             'line_ending'            => PHP_EOL,
-            'use_bom'                => false,
+            'use_bom'                => true,
             'include_separator_line' => false,
-            'excel_compatibility'    => false,
-            'output_encoding'        => '',
+            'excel_compatibility'    => true,
+            //'output_encoding'        => '',
+            'output_encoding'        => 'iso-8859-1',
         ],
 
         /*
@@ -126,7 +127,8 @@ return [
             'enclosure'        => '"',
             'escape_character' => '\\',
             'contiguous'       => false,
-            'input_encoding'   => 'UTF-8',
+            //'input_encoding'   => 'UTF-8',
+            'input_encoding'   => 'iso-8859-1',
         ],
 
         /*
