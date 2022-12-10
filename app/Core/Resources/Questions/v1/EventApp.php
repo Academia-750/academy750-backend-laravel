@@ -58,4 +58,8 @@ class EventApp implements QuestionsInterface
         $this->cacheApp->import_records( $request );
     }
 
+    public function generate()
+    {
+        return $this->cacheApp->generate();
+    }
 }

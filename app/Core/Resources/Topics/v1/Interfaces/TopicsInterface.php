@@ -33,5 +33,5 @@ interface TopicsInterface
     public function topic_create_a_question( $request, $topic );
     public function topic_update_a_question( $request, $topic, $question );
     public function topic_delete_a_question( $topic, $question );
-
+    public function topic_relationship_questions();
 }

@@ -27,8 +27,8 @@ Artisan::command('bomberos750:clear', function () {
     $this->call('config:cache');
     $this->call('view:cache');
     $this->call('view:clear');
-    $this->call('optimize:clear');
-    $this->call('optimize');
+    // $this->call('optimize:clear');
+    // $this->call('optimize');
 })->purpose('Optimiza la caché de la APP');
 
 Artisan::command('bomberos750:install', function () {

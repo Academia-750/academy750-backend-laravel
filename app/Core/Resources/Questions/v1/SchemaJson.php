@@ -75,4 +75,10 @@ class SchemaJson implements QuestionsInterface
         ], 200);
     }
 
+    public function generate(): QuestionCollection
+    {
+        return QuestionCollection::make(
+            $this->eventApp->generate()
+        );
+    }
 }

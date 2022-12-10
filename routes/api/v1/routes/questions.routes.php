@@ -12,6 +12,10 @@ Route::patch('questions/update/{question}', [QuestionsController::class, 'update
 Route::delete('questions/delete/{question}', [QuestionsController::class, 'delete'])->name('api.v1.questions.soft-delete');
 Route::post('questions/actions-on-multiple-records', [QuestionsController::class, 'action_for_multiple_records'])->name('api.v1.questions.actions-on-multiple-records');
 Route::post('questions/import', [QuestionsController::class, 'import_records'])->name('api.v1.questions.import');
+Route::get('questions/generate/data', [QuestionsController::class, 'generate'])->name('api.v1.questions.data');
+
+
+
 /*
 Route::post('questions/export', [QuestionsController::class, 'export_records'])->name('api.v1.questions.export');
 Route::post('questions/import', [QuestionsController::class, 'import_records'])->name('api.v1.questions.import');

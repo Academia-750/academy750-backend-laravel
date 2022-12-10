@@ -2,6 +2,8 @@
 
 namespace App\Core\JsonApi;
 
+use Illuminate\Support\Str;
+
 class JsonApiFilters
 {
     public function applyFilters(){

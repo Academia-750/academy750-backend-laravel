@@ -48,4 +48,9 @@ class QuestionPolicy
     {
         return true;
     }
+
+    public function generate(): bool
+    {
+        return true;
+    }
 }

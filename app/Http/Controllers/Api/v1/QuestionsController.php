@@ -22,7 +22,7 @@ class QuestionsController extends Controller
     }
 
     public function index(){
-        return $this->questionsInterface->index();
+        return $this->questionsInterface->generate();
     }
 
     public function create(CreateQuestionRequest $request){
@@ -55,5 +55,9 @@ class QuestionsController extends Controller
 
     public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
         return Storage::disk('public')->download('templates_import/question.csv', 'template_import_question');
+    }
+
+    public function generate(){
+        return $this->questionsInterface->generate();
     }
 }

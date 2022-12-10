@@ -288,4 +288,11 @@ class SchemaJson implements TopicsInterface
             ]
         ]);
     }
+
+    public function topic_relationship_questions()
+    {
+        return TopicCollection::make(
+            $this->eventApp->topic_relationship_questions()
+        );
+    }
 }

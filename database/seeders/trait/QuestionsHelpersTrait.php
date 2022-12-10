@@ -8,7 +8,9 @@ trait QuestionsHelpersTrait
             $model->questions()->create([
                 'question' => "Question of {$fieldTextQuestion} - {$number}",
                 'reason' => "Reason {$number} - {$fakerText}",
-                'is_available' => "yes",
+                'is_visible' => "yes",
+                'has_been_used_test' => fake()->randomElement(['yes', 'no']),
+                'has_been_used_card_memory' => fake()->randomElement(['yes', 'no']),
             ]);
         }
 

@@ -141,4 +141,8 @@ class TopicsController extends Controller
     public function delete_opposition_by_topic (Topic $topic, Opposition $opposition) {
         return $this->topicsInterface->delete_opposition_by_topic($topic, $opposition);
     }
+
+    public function topic_relationship_questions(){
+        return $this->topicsInterface->topic_relationship_questions();
+    }
 }

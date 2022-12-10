@@ -29,7 +29,7 @@ class SubtopicSeeder extends Seeder
                 'topic_id' => Topic::all()->random()->getRouteKey()
             ]);
 
-            //$this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
+            $this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
             $this->syncOppositions($subtopic);
         }
     }

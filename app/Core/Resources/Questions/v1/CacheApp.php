@@ -68,5 +68,9 @@ class CacheApp implements QuestionsInterface
         Cache::store('redis')->tags('question')->flush();
         $this->dbApp->import_records( $request );
     }
+    
+    public function generate(){
+        return $this->dbApp->generate();
+    }
 
 }

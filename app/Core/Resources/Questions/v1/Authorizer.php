@@ -64,4 +64,10 @@ class Authorizer implements QuestionsInterface
         return $this->schemaJson->import_records( $request );
     }
 
+    public function generate(): QuestionCollection
+    {
+        Gate::authorize('generate', Question::class );
+        return $this->schemaJson->generate();
+    }
+
 }

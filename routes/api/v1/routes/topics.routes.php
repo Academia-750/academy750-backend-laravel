@@ -39,6 +39,9 @@ Route::get('topics/{topic}/relationship/questions/{question}', [TopicsController
 Route::post('topics/{topic}/relationship/questions/create', [TopicsController::class, 'topic_create_a_question'])->name('api.v1.topics.record.relationship.questions.create');
 Route::patch('topics/{topic}/relationship/questions/{question}/update', [TopicsController::class, 'topic_update_a_question'])->name('api.v1.topics.record.relationship.questions.update.record');
 Route::delete('topics/{topic}/relationship/questions/{question}/delete', [TopicsController::class, 'topic_delete_a_question'])->name('api.v1.topics.record.relationship.questions.delete.record');
+
+Route::get('topics/relationship/questions', [TopicsController::class, 'topic_relationship_questions'])->name('api.v1.topics.relationship.questions');
+
 /*
 Route::post('topics/export', [TopicsController::class, 'export_records'])->name('api.v1.topics.export');
 Route::post('topics/import', [TopicsController::class, 'import_records'])->name('api.v1.topics.import');

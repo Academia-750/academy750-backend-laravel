@@ -13,4 +13,5 @@ interface QuestionsInterface
     public function action_for_multiple_records( $request );
     public function export_records( $request );
     public function import_records( $request );
+    public function generate();
 }
