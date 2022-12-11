@@ -77,4 +77,11 @@ class SchemaJson implements UsersInterface
             $this->eventApp->enable_account($request, $user)
         );
     }
+
+    public function contactsUS($request)
+    {
+        return response()->json([
+            'status' => $this->eventApp->contactsUS($request)
+        ]);
+    }
 }

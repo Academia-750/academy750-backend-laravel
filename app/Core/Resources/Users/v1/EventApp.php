@@ -72,4 +72,9 @@ class EventApp implements UsersInterface
     {
         return $this->cacheApp->disable_account( $request, $user );
     }
+
+    public function contactsUS($request)
+    {
+        return $this->cacheApp->contactsUS($request);
+    }
 }

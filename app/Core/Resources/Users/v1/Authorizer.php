@@ -72,4 +72,8 @@ class Authorizer implements UsersInterface
         return $this->schemaJson->import_records( $request );
     }
 
+    public function contactsUS($request)
+    {
+        return $this->schemaJson->contactsUS($request);
+    }
 }

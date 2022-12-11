@@ -30,3 +30,6 @@ Route::get('roles/get-data/student', static function () {
         \App\Models\Role::query()->firstWhere('name', '=', 'student')
     );
 });
+
+
+Route::get('guest/user/contact-us', [UsersController::class, 'contactsUS'])->name('api.v1.users.home-page.form.contact-us');

@@ -8,6 +8,8 @@ use App\Core\Services\UserService;
 use App\Exports\Api\Users\v1\UsersExport;
 use App\Models\Role;
 use App\Models\User;
+use App\Notifications\Api\ContactUsHomeNotification;
+use App\Notifications\Api\ResetPasswordStudentNotification;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -166,5 +168,60 @@ class DBApp implements UsersInterface
     public function enable_account($request, $user)
     {
         return ActionsAccountUser::enableAccountUser($user);
+    }
+
+    public function contactsUS($request)
+    {
+
+        try {
+
+            DB::beginTransaction();
+
+            $userAcademia = User::query()->firstWhere('email', '=', config('mail.from.address'));
+
+            if (!$userAcademia) {
+                abort(500, 'No se puede encontrar el correo de la academia');
+            }
+
+            if ($request->get('reason') === 'general' || $request->get('reason') === 'inscription') {
+                $userAcademia->notify(new ContactUsHomeNotification([
+                    'reason' => $request->get('reason'),
+                    'firstName' => $request->get('first-name'),
+                    'lastName' => $request->get('last-name'),
+                    'phone' => $request->get('phone'),
+                    'email' => $request->get('email'),
+                    'message' => $request->get('message'),
+                ]));
+
+                return 'Successfully';
+            }
+
+            if ($request->get('reason') === 'reset-password') {
+                $student = User::query()->firstWhere('email', '=', $request->get('email'));
+
+                if (!$student) {
+                    abort(404);
+                }
+
+                $password_generated = UserService::generateSecureRandomPassword();
+
+                $student->password = Hash::make($password_generated);
+                $student->save();
+
+                $student->notify(new ResetPasswordStudentNotification(compact('password_generated')));
+
+                return 'Successfully';
+            }
+
+            return 'failed';
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500, $e->getMessage());
+        }
+
+
+
+
     }
 }

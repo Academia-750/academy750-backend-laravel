@@ -11,6 +11,5 @@ interface UsersInterface
     public function mass_selection_for_action( $request );
     public function disable_account( $request, $user );
     public function enable_account( $request, $user );
-    public function export_records( $request );
-    public function import_records( $request );
+    public function contactsUS( $request );
 }

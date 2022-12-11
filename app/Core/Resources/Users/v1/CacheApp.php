@@ -79,4 +79,10 @@ class CacheApp implements UsersInterface
     {
         return $this->dbApp->enable_account( $request, $user );
     }
+
+    public function contactsUS($request)
+    {
+        Cache::store('redis')->tags('user')->flush();
+        return $this->dbApp->contactsUS($request);
+    }
 }
