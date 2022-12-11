@@ -14,48 +14,53 @@ class EventApp implements QuestionsInterface
         $this->cacheApp = $cacheApp;
     }
 
-    public function index(){
-        return $this->cacheApp->index();
+    public function subtopics_relationship_get_questions($subtopic)
+    {
+        return $this->cacheApp->subtopics_relationship_get_questions($subtopic);
     }
 
-    public function create( $request ){
-        $itemCreatedInstance = $this->cacheApp->create( $request );
-        /* broadcast(new CreateQuestionEvent($itemCreatedInstance)); */
-        return $itemCreatedInstance;
+    public function subtopic_relationship_questions_read($subtopic, $question)
+    {
+        return $this->cacheApp->subtopic_relationship_questions_read($subtopic, $question);
     }
 
-    public function read( $question ){
-        return $this->cacheApp->read( $question );
+    public function subtopic_relationship_questions_create($request, $subtopic)
+    {
+        return $this->cacheApp->subtopic_relationship_questions_create($request, $subtopic);
     }
 
-    public function update( $request, $question ){
-        $itemUpdatedInstance = $this->cacheApp->update( $request, $question );
-        /* broadcast(new UpdateQuestionEvent($itemUpdatedInstance)); */
-        return $itemUpdatedInstance;
+    public function subtopic_relationship_questions_update($request, $subtopic, $question)
+    {
+        return $this->cacheApp->subtopic_relationship_questions_update($request, $subtopic, $question);
     }
 
-    public function delete( $question ): void{
-        /* broadcast(new DeleteQuestionEvent($question)); */
-        $this->cacheApp->delete( $question );
+    public function subtopic_relationship_questions_delete($subtopic, $question)
+    {
+        return $this->cacheApp->subtopic_relationship_questions_delete($subtopic, $question);
     }
 
-    public function action_for_multiple_records( $request ): array{
-
-        /* $records = Question::whereIn('id', $request->get('questions'));
-
-        broadcast(
-            new ActionForMassiveSelectionQuestionEvent( $request->get('action'), $records )
-        ); */
-
-        return $this->cacheApp->action_for_multiple_records( $request );
+    public function topics_relationship_get_questions($topic)
+    {
+        return $this->cacheApp->topics_relationship_get_questions($topic);
     }
 
-    public function export_records( $request ){
-        return $this->cacheApp->export_records( $request );
+    public function topic_relationship_questions_read($topic, $question)
+    {
+        return $this->cacheApp->topic_relationship_questions_read($topic, $question);
     }
 
-    public function import_records( $request ): void{
-        $this->cacheApp->import_records( $request );
+    public function topic_relationship_questions_create($request, $topic)
+    {
+        return $this->cacheApp->topic_relationship_questions_create($request, $topic);
     }
 
+    public function topic_relationship_questions_update($request, $topic, $question)
+    {
+        return $this->cacheApp->topic_relationship_questions_update($request, $topic, $question);
+    }
+
+    public function topic_relationship_questions_delete($topic, $question)
+    {
+        return $this->cacheApp->topic_relationship_questions_delete($topic, $question);
+    }
 }

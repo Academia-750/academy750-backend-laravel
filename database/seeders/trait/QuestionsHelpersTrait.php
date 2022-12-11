@@ -4,11 +4,11 @@ namespace Database\Seeders\trait;
 trait QuestionsHelpersTrait
 {
     public function registerQuestionsModel ($model, $fieldTextQuestion, $fakerText): void {
-        foreach ( range(1, random_int(10,25)) as $number ) {
+        foreach ( range(1, random_int(10,15)) as $number ) {
             $model->questions()->create([
                 'question' => "Question of {$fieldTextQuestion} - {$number}",
                 'reason' => "Reason {$number} - {$fakerText}",
-                'is_available' => "yes",
+                'is_visible' => "yes",
             ]);
         }
 

@@ -10,42 +10,35 @@ class QuestionPolicy
 {
     use HandlesAuthorization;
 
-    public function index(User $user): bool
-    {
-        return $user->can('list-resources');
-    }
-
-    public function read(User $user, Opposition $opposition): bool
-    {
-        return $user->can('see-a-resource');
-    }
-
-    public function create(User $user): bool
-    {
-        return $user->can('create-resource');
-    }
-
-    public function update(User $user, Opposition $opposition): bool
-    {
-        return $user->can('edit-resource');
-    }
-
-    public function delete(User $user, Opposition $opposition): bool
-    {
-        return $user->can('delete-resource');
-    }
-
-    public function mass_selection_for_action(User $user): bool
-    {
-        return $user->can('action-for-multiple-resources');
-    }
-
-    public function export_records(User $user): bool
-    {
+    public function subtopics_relationship_get_questions (User $user, $question, $subtopic): bool {
         return true;
     }
-    public function import_records(User $user): bool
-    {
+    public function subtopic_relationship_questions_read (User $user, $subtopic, $question): bool {
+
+        return $subtopic->questions()->pluck("id")->contains($question->id);
+    }
+    public function subtopic_relationship_questions_create (User $user, $subtopic): bool {
+        return true;
+    }
+    public function subtopic_relationship_questions_update (User $user, $subtopic, $question): bool {
+        return true;
+    }
+    public function subtopic_relationship_questions_delete (User $user, $subtopic, $question): bool {
+        return true;
+    }
+    public function topics_relationship_get_questions (User $user, $question, $topic): bool {
+        return true;
+    }
+    public function topic_relationship_questions_read (User $user, $topic, $question): bool {
+        return $topic->questions()->pluck("id")->contains($question->id);
+    }
+    public function topic_relationship_questions_create (User $user, $topic): bool {
+        return true;
+    }
+    public function topic_relationship_questions_update (User $user, $topic, $question): bool {
+        return true;
+    }
+    public function topic_relationship_questions_delete (User $user, $topic, $question): bool {
         return true;
     }
 }

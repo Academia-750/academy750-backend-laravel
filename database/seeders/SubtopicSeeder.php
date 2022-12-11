@@ -21,16 +21,16 @@ class SubtopicSeeder extends Seeder
     {
         $this->faker = Factory::create();
 
-        foreach ( range(1, 400) as $number) {
+        foreach ( range(1, 80) as $number) {
+            $topic = Topic::all()->random();
             $subtopic = Subtopic::query()->create([
-                'id' => UuidGeneratorService::getUUIDUnique(Subtopic::class),
-                'name' => "Subtema {$number}",
+                'name' => "Subtema {$number} - {$topic->name}",
                 'is_available' => 'yes',
-                'topic_id' => Topic::all()->random()->getRouteKey()
+                'topic_id' => $topic->getRouteKey()
             ]);
 
-            //$this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
-            $this->syncOppositions($subtopic);
+            $this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
+            //$this->syncOppositions($subtopic);
         }
     }
 }

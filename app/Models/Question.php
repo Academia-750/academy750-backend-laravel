@@ -19,6 +19,8 @@ class Question extends Model
         "question",
         "reason",
         "is_visible",
+        "has_been_used_test",
+        "has_been_used_card_memory",
     ];
 
     public array $allowedSorts = [
@@ -87,9 +89,9 @@ class Question extends Model
     }
 
     public function filterSearch(Builder $query, $value): void{
-        $query->where(function($query) use ($value) {
-            $query->where('field', 'LIKE' , "%{$value}%")
-                ->orWhere('other_field', 'LIKE' , "%{$value}%");
+        $query->where(static function($query) use ($value) {
+            $query->where('question', 'LIKE' , "%{$value}%")
+                ->orWhere('reason', 'LIKE' , "%{$value}%");
         });
     }
 

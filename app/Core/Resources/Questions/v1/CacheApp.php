@@ -14,59 +14,75 @@ class CacheApp implements QuestionsInterface
         $this->dbApp = $dbApp;
     }
 
-    public function index(){
-
+    public function subtopics_relationship_get_questions($subtopic)
+    {
         $nameCache = '';
 
-        ( empty(request()->query()) ) ? $nameCache = 'question.get.all' : $nameCache = json_encode( request()->query() );
+        ( empty(request()->query()) ) ? $nameCache = 'subtopics.question.get.all' : $nameCache = "subtopics.question.get.all" . json_encode( request()->query() );
 
-        return Cache::store('redis')->tags('question')->rememberForever($nameCache, function () {
-            return $this->dbApp->index();
-        });
-
-    }
-
-    public function create( $request ){
-
-        Cache::store('redis')->tags('question')->flush();
-
-        return $this->dbApp->create( $request );
-    }
-
-    public function read( $question ){
-
-        return Cache::store('redis')->tags('question')->rememberForever("question.find.".$question->getRouteKey(), function () use ( $question ) {
-            return $this->dbApp->read( $question );
+        return Cache::store('redis')->tags('question')->rememberForever($nameCache, function () use ($subtopic) {
+            return $this->dbApp->subtopics_relationship_get_questions($subtopic);
         });
     }
 
-    public function update( $request, $question ){
+    public function subtopic_relationship_questions_read($subtopic, $question)
+    {
+        return Cache::store('redis')->tags('question')->rememberForever("subtopics.{$subtopic->getRouteKey()}.question.find.{$question->getRouteKey()}", function () use ( $subtopic, $question ) {
+            return $this->dbApp->subtopic_relationship_questions_read($subtopic, $question);
+        });
+    }
 
+    public function subtopic_relationship_questions_create($request, $subtopic)
+    {
         Cache::store('redis')->tags('question')->flush();
-
-        return $this->dbApp->update( $request, $question );
+        return $this->dbApp->subtopic_relationship_questions_create($request, $subtopic);
     }
 
-    public function delete( $question ): void{
-
+    public function subtopic_relationship_questions_update($request, $subtopic, $question)
+    {
         Cache::store('redis')->tags('question')->flush();
-        $this->dbApp->delete( $question );
+        return $this->dbApp->subtopic_relationship_questions_update($request, $subtopic, $question);
     }
 
-    public function action_for_multiple_records( $request ): array{
-
+    public function subtopic_relationship_questions_delete($subtopic, $question)
+    {
         Cache::store('redis')->tags('question')->flush();
-
-        return $this->dbApp->action_for_multiple_records( $request );
+        $this->dbApp->subtopic_relationship_questions_delete($subtopic, $question);
     }
 
-    public function export_records( $request ){
-        $this->dbApp->export_records( $request );
+    public function topics_relationship_get_questions($topic)
+    {
+        $nameCache = '';
+
+        ( empty(request()->query()) ) ? $nameCache = 'topics.question.get.all' : $nameCache = "topics.question.get.all" . json_encode( request()->query() );
+
+        return Cache::store('redis')->tags('question')->rememberForever($nameCache, function () use ($topic) {
+            return $this->dbApp->topics_relationship_get_questions($topic);
+        });
     }
 
-    public function import_records( $request ): void{
+    public function topic_relationship_questions_read($topic, $question)
+    {
+        return Cache::store('redis')->tags('question')->rememberForever("topics.{$topic->getRouteKey()}.question.find.{$question->getRouteKey()}", function () use ( $topic, $question ) {
+            return $this->dbApp->topic_relationship_questions_read($topic, $question);
+        });
+    }
+
+    public function topic_relationship_questions_create($request, $topic)
+    {
         Cache::store('redis')->tags('question')->flush();
-        $this->dbApp->import_records( $request );
+        return $this->dbApp->topic_relationship_questions_create($request, $topic);
     }
 
+    public function topic_relationship_questions_update($request, $topic, $question)
+    {
+        Cache::store('redis')->tags('question')->flush();
+        return $this->dbApp->topic_relationship_questions_update($request, $topic, $question);
+    }
+
+    public function topic_relationship_questions_delete($topic, $question)
+    {
+        Cache::store('redis')->tags('question')->flush();
+        return $this->dbApp->topic_relationship_questions_delete($topic, $question);
+    }
 }

@@ -1,6 +1,8 @@
 <?php
 namespace App\Core\Resources\Questions\v1;
 
+use App\Http\Resources\Api\Subtopic\v1\SubtopicResource;
+use App\Http\Resources\Api\Topic\v1\TopicResource;
 use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
@@ -16,63 +18,105 @@ class SchemaJson implements QuestionsInterface
         $this->eventApp = $eventApp;
     }
 
-    public function index(): QuestionCollection
+    public function subtopics_relationship_get_questions($subtopic)
     {
         return QuestionCollection::make(
-            $this->eventApp->index()
-        );
+            $this->eventApp->subtopics_relationship_get_questions($subtopic)
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
     }
 
-    public function create( $request ): \Illuminate\Http\JsonResponse
-    {
-        return QuestionResource::make($this->eventApp->create($request))
-                    ->response()
-                    ->setStatusCode(201);
-    }
-
-    public function read( $question ): QuestionResource
+    public function subtopic_relationship_questions_read($subtopic, $question)
     {
         return QuestionResource::make(
-            $this->eventApp->read( $question )
-        );
+            $this->eventApp->subtopic_relationship_questions_read($subtopic, $question)
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
     }
 
-    public function update( $request, $question ): QuestionResource
+    public function subtopic_relationship_questions_create($request, $subtopic)
     {
         return QuestionResource::make(
-            $this->eventApp->update( $request, $question )
-        );
+            $this->eventApp->subtopic_relationship_questions_create($request, $subtopic)
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
     }
 
-    public function delete( $question ): \Illuminate\Http\Response
+    public function subtopic_relationship_questions_update($request, $subtopic, $question)
     {
-        $this->eventApp->delete( $question );
+        return QuestionResource::make(
+            $this->eventApp->subtopic_relationship_questions_update($request, $subtopic, $question)
+        )->additional([
+            'meta' => [
+                'subtopic' => SubtopicResource::make($subtopic)
+            ]
+        ]);
+    }
+
+    public function subtopic_relationship_questions_delete($subtopic, $question)
+    {
+        $this->subtopic_relationship_questions_delete($subtopic, $question);
+
         return response()->noContent();
     }
 
-    public function action_for_multiple_records( $request ): \Illuminate\Http\JsonResponse
+    public function topics_relationship_get_questions($topic)
     {
-        return response()->json([
-            'information' => $this->eventApp->action_for_multiple_records( $request )
-        ], 200);
+        return QuestionCollection::make(
+            $this->eventApp->topics_relationship_get_questions($topic)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
-    public function export_records( $request ): \Illuminate\Http\JsonResponse
+    public function topic_relationship_questions_read($topic, $question)
     {
-        $this->eventApp->export_records( $request );
-
-        return response()->json([
-            'message' => "Proceso de exportación iniciada"
-        ], 200);
+        return QuestionResource::make(
+            $this->eventApp->topic_relationship_questions_read($topic, $question)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
-    public function import_records( $request ): \Illuminate\Http\JsonResponse
+    public function topic_relationship_questions_create($request, $topic)
     {
-        $this->eventApp->import_records( $request );
-
-        return response()->json([
-            'message' => "Proceso de importación iniciada"
-        ], 200);
+        return QuestionResource::make(
+            $this->eventApp->topic_relationship_questions_create($request, $topic)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
     }
 
+    public function topic_relationship_questions_update($request, $topic, $question)
+    {
+        return QuestionResource::make(
+            $this->eventApp->topic_relationship_questions_update($request, $topic, $question)
+        )->additional([
+            'meta' => [
+                'topic' => TopicResource::make($topic)
+            ]
+        ]);
+    }
+
+    public function topic_relationship_questions_delete($topic, $question)
+    {
+        $this->topic_relationship_questions_delete($topic, $question);
+
+        return response()->noContent();
+    }
 }

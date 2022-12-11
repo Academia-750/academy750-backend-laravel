@@ -16,7 +16,35 @@ class CreateQuestionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'question-text' => ['required', 'max:255'],
+            'is-test' => ['required', 'boolean'],
+            'is-card-memory' => ['required', 'boolean'],
+            'is-visible' => ['required', 'boolean'],
+
+            'answer-correct' => ['required', 'max:255'],
+            'is-grouper-answer-correct' => ['required', 'boolean'],
+
+            'answer-one' => ['required', 'max:255'],
+            'is-grouper-answer-one' => ['required', 'boolean'],
+
+            'answer-two' => ['required', 'max:255'],
+            'is-grouper-answer-two' => ['required', 'boolean'],
+
+            'answer-three' => ['required', 'max:255'],
+            'is-grouper-answer-three' => ['required', 'boolean'],
+
+            'reason-question' => [
+                'nullable',
+                Rule::when((bool) $this->get('is-card-memory') && (bool) !$this->get('file-reason'), [
+                    'required', 'max:400'
+                ])
+            ],
+            'file-reason' => [
+                'nullable',
+                Rule::when((bool) $this->get('is-card-memory') && (bool) !$this->get('reason-question'), [
+                    'required', 'max:400'
+                ])
+            ]
         ];
     }
 

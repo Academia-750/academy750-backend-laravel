@@ -13,11 +13,11 @@ Route::delete('subtopics/delete/{subtopic}', [SubtopicsController::class, 'delet
 Route::post('subtopics/actions-on-multiple-records', [SubtopicsController::class, 'action_for_multiple_records'])->name('api.v1.subtopics.actions-on-multiple-records');
 Route::post('subtopics/import', [SubtopicsController::class, 'import_records'])->name('api.v1.subtopics.import');
 
-Route::get('subtopics/{subtopic}/relationship/questions', [SubtopicsController::class, 'subtopic_get_relationship_questions'])->name('api.v1.subtopics.record.relationship.questions');
+/*Route::get('subtopics/{subtopic}/relationship/questions', [SubtopicsController::class, 'subtopic_get_relationship_questions'])->name('api.v1.subtopics.record.relationship.questions');
 Route::get('subtopics/{subtopic}/relationship/questions/{question}', [SubtopicsController::class, 'subtopic_get_a_question'])->name('api.v1.subtopics.record.relationship.questions.record');
 Route::post('subtopics/{subtopic}/relationship/questions/create', [SubtopicsController::class, 'subtopic_create_a_question'])->name('api.v1.subtopics.record.relationship.questions.create');
 Route::patch('subtopics/{subtopic}/relationship/questions/{question}/update', [SubtopicsController::class, 'subtopic_update_a_question'])->name('api.v1.subtopics.record.relationship.questions.update.record');
-Route::delete('subtopics/{subtopic}/relationship/questions/{question}/delete', [SubtopicsController::class, 'subtopic_delete_a_question'])->name('api.v1.subtopics.record.relationship.questions.delete.record');
+Route::delete('subtopics/{subtopic}/relationship/questions/{question}/delete', [SubtopicsController::class, 'subtopic_delete_a_question'])->name('api.v1.subtopics.record.relationship.questions.delete.record');*/
 /*
 Route::post('subtopics/export', [SubtopicsController::class, 'export_records'])->name('api.v1.subtopics.export');
 Route::post('subtopics/import', [SubtopicsController::class, 'import_records'])->name('api.v1.subtopics.import');

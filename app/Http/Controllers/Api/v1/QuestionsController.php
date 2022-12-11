@@ -1,9 +1,15 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
+use App\Http\Requests\Api\v1\Questions\SubtopicCreateQuestionRequest;
+use App\Http\Requests\Api\v1\Questions\SubtopicUpdateQuestionRequest;
+use App\Http\Requests\Api\v1\Questions\TopicCreateQuestionRequest;
+use App\Http\Requests\Api\v1\Questions\TopicUpdateQuestionRequest;
 use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
 use App\Http\Controllers\Controller;
+use App\Models\Subtopic;
+use App\Models\Topic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -21,39 +27,35 @@ class QuestionsController extends Controller
         $this->questionsInterface = $questionsInterface;
     }
 
-    public function index(){
-        return $this->questionsInterface->index();
+    public function subtopics_relationship_get_questions(Subtopic $subtopic) {
+        return $this->questionsInterface->subtopics_relationship_get_questions($subtopic);
+    }
+    public function subtopic_relationship_questions_read( Subtopic $subtopic, Question $question ) {
+        return $this->questionsInterface->subtopic_relationship_questions_read( $subtopic, $question );
+    }
+    public function subtopic_relationship_questions_create( CreateQuestionRequest $request, Subtopic $subtopic, Question $question ) {
+        return $this->questionsInterface->subtopic_relationship_questions_create( $request, $subtopic, $question );
+    }
+    public function subtopic_relationship_questions_update( UpdateQuestionRequest $request, Subtopic $subtopic, Question $question ) {
+        return $this->questionsInterface->subtopic_relationship_questions_update( $request, $subtopic, $question );
+    }
+    public function subtopic_relationship_questions_delete( Subtopic $subtopic, Question $question ) {
+        return $this->questionsInterface->subtopic_relationship_questions_delete( $subtopic, $question );
     }
 
-    public function create(CreateQuestionRequest $request){
-        return $this->questionsInterface->create($request);
+    public function topics_relationship_get_questions(Topic $topic) {
+        return $this->questionsInterface->topics_relationship_get_questions($topic);
     }
-
-    public function read(Question $question){
-        return $this->questionsInterface->read( $question );
+    public function topic_relationship_questions_read( Topic $topic, Question $question ) {
+        return $this->questionsInterface->topic_relationship_questions_read( $topic, $question );
     }
-
-    public function update(UpdateQuestionRequest $request, Question $question){
-        return $this->questionsInterface->update( $request, $question );
+    public function topic_relationship_questions_create( CreateQuestionRequest $request, Topic $topic, Question $question ) {
+        return $this->questionsInterface->topic_relationship_questions_create( $request, $topic, $question );
     }
-
-    public function delete(Question $question){
-        return $this->questionsInterface->delete( $question );
+    public function topic_relationship_questions_update( UpdateQuestionRequest $request, Topic $topic, Question $question ) {
+        return $this->questionsInterface->topic_relationship_questions_update( $request, $topic, $question );
     }
-
-    public function action_for_multiple_records(ActionForMassiveSelectionQuestionsRequest $request): string{
-        return $this->questionsInterface->action_for_multiple_records( $request );
-    }
-
-    public function export_records(ExportQuestionsRequest $request){
-        return $this->questionsInterface->export_records( $request );
-    }
-
-    public function import_records(ImportQuestionsRequest $request){
-        return $this->questionsInterface->import_records( $request );
-    }
-
-    public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
-        return Storage::disk('public')->download('templates_import/question.csv', 'template_import_question');
+    public function topic_relationship_questions_delete( Topic $topic, Question $question ) {
+        return $this->questionsInterface->topic_relationship_questions_delete( $topic, $question );
     }
 }

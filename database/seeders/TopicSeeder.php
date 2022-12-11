@@ -22,16 +22,15 @@ class TopicSeeder extends Seeder
     {
         $this->faker = Factory::create();
 
-        foreach ( range(1,40) as $number) {
+        foreach ( range(1,25) as $number) {
             $topic = Topic::query()->create([
-                'id' => UuidGeneratorService::getUUIDUnique(Topic::class),
                 'name' => "Topic {$number}",
                 'topic_group_id' => TopicGroup::all()->random()->getRouteKey(),
                 'is_available' => 'yes'
             ]);
 
-            //$this->registerQuestionsModel($topic, $topic->name, $this->faker->text());
-            $this->syncOppositions($topic);
+            $this->registerQuestionsModel($topic, $topic->name, $this->faker->text());
+            //$this->syncOppositions($topic);
         }
     }
 

@@ -2,15 +2,15 @@
 namespace App\Core\Resources\Questions\v1;
 
 use App\Imports\Api\v1\QuestionsImport;
+use App\Models\Answer;
 use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Core\Resources\Questions\v1\Services\ActionForMultipleRecordsService;
-use App\Core\Resources\Questions\v1\Services\ActionsQuestionsRecords;
 //use App\Imports\Api\Questions\v1\QuestionsImport;
 use App\Exports\Api\Questions\v1\QuestionsExport;
 
@@ -23,108 +23,286 @@ class DBApp implements QuestionsInterface
         $this->model = $question;
     }
 
-    public function index(){
-        return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    public function subtopics_relationship_get_questions($subtopic)
+    {
+
+        $questions_id = $subtopic->questions()->pluck("id");
+
+        return $this->model->query()->whereIn('id', $questions_id->toArray())->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function create( $request ): \App\Models\Question{
-        try {
+    public function subtopic_relationship_questions_read($subtopic, $question)
+    {
+        return $subtopic->questions()->firstWhere("id", "=", $question->getRouteKey())->applyIncludes();
+    }
 
-            DB::beginTransaction();
-                $questionCreated = $this->model->query()->create([
-                    '' => '',
-                ]);
-            DB::commit();
+    public function subtopic_relationship_questions_create($request, $subtopic)
+    {
+        $question = $subtopic->questions()->create([
+            'question' => $request->get('question-text'),
+            'reason' => $request->get('reason-question'),
+            'is_visible' => $request->get('is-visible'),
+            "has_been_used_test" => $request->get('is-test'),
+            "has_been_used_card_memory" => $request->get('is-card-memory'),
+        ]);
 
-            return $this->model->applyIncludes()->find($questionCreated->id);
+        if ($request->get('file-reason')) {
+            $question->image()->create([
+                'path' => Storage::disk('public')->put(
+                    'questions', file_get_contents($request->file('file-reason'))
+                ),
+                'type_path'
+            ]);
 
-        } catch (\Exception $e) {
-            DB::rollback();
-            abort(500,$e->getMessage());
+
         }
 
-    }
+        $answers = [
+            [
+                'answer' => $request->get('answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct'),
+                'is_correct_answer' => 'yes',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'answer' => $request->get('answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'answer' => $request->get('answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'answer' => $request->get('answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+        ];
 
-    public function read( $question ): \App\Models\Question{
-        return $this->model->applyIncludes()->find($question->getRouteKey());
-    }
+        shuffle($answers);
 
-    public function update( $request, $question ): \App\Models\Question{
-        try {
-
-            DB::beginTransaction();
-                $question->name = $request->get('name');
-                $question->save();
-            DB::commit();
-
-            return $this->model->applyIncludes()->find($question->getRouteKey());
-
-        } catch (\Exception $e) {
-            DB::rollback();
-            abort(500, $e->getMessage());
+        foreach ($answers as $answer) {
+            Answer::query()->create([
+                'answer' => $answer["answer"],
+                'is_grouper_answer' => $answer["is_grouper_answer"],
+                'is_correct_answer' => $answer["is_correct_answer"],
+                'question_id' => $answer["question_id"],
+            ]);
         }
 
+        return Question::query()->applyIncludes()->find($question->getRouteKey());
     }
 
-    public function delete( $question ): void{
-        try {
+    public function subtopic_relationship_questions_update($request, $subtopic, $question)
+    {
+        $question->question = $request->get('question-text');
+        $question->reason = $request->get('reason-question');
+        $question->is_visible = $request->get('is-visible');
+        $question->has_been_used_test = $request->get('is-test');
+        $question->has_been_used_card_memory = $request->get('is-card-memory');
+        $question->save();
 
-            DB::beginTransaction();
-                //$question->delete();
-                ActionsQuestionsRecords::deleteRecord( $question );
-            DB::commit();
+        /*$question->update([
+            'question' => $request->get('question-text'),
+            'reason' => $request->get('reason-question'),
+            'is_visible' => $request->get('is-visible'),
+            "has_been_used_test" => $request->get('is-test'),
+            "has_been_used_card_memory" => $request->get('is-card-memory'),
+        ]);*/
 
-        } catch (\Exception $e) {
-            DB::rollback();
-            abort(500, $e->getMessage());
+        $answers = [
+            [
+                'id' => $request->get('answer-correct-id'),
+                'answer' => $request->get('answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct'),
+                'is_correct_answer' => 'yes',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-one-id'),
+                'answer' => $request->get('answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-two-id'),
+                'answer' => $request->get('answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-three-id'),
+                'answer' => $request->get('answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+        ];
+
+        shuffle($answers);
+
+        foreach ($answers as $answer) {
+            $answer = Answer::query()->find($answer);
+            $answer->answer = $answer["answer"];
+            $answer->is_grouper_answer = $answer["is_grouper_answer"];
+            $answer->is_correct_answer = $answer["is_correct_answer"];
+            $answer->save();
+
+            /*$answer->update([
+                'answer' => $answer["answer"],
+                'is_grouper_answer' => $answer["is_grouper_answer"],
+                'is_correct_answer' => $answer["is_correct_answer"]
+            ]);*/
         }
 
+        return Question::query()->applyIncludes()->find($question->getRouteKey());
+
     }
 
-    public function action_for_multiple_records( $request ): array{
-        try {
+    public function subtopic_relationship_questions_delete($subtopic, $question)
+    {
+        // TODO: Implement subtopic_relationship_questions_delete() method.
+    }
 
-            DB::beginTransaction();
+    public function topics_relationship_get_questions($topic)
+    {
+        $questions_id = $topic->questions()->pluck("id");
 
-                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('questions'));
+        return $this->model->query()->whereIn('id', $questions_id->toArray())->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
 
-            DB::commit();
+    public function topic_relationship_questions_read($topic, $question)
+    {
+        return $topic->questions()->firstWhere("id", "=", $question->getRouteKey())->applyIncludes();
+    }
 
-            if (count($information) === 0) {
-                $information[] = "No hay registros afectados";
-            }
+    public function topic_relationship_questions_create($request, $topic)
+    {
+        $question = $topic->questions()->create([
+            'question' => $request->get('question-text'),
+            'reason' => $request->get('reason-question'),
+            'is_visible' => $request->get('is-visible'),
+            "has_been_used_test" => $request->get('is-test'),
+            "has_been_used_card_memory" => $request->get('is-card-memory'),
+        ]);
 
-            return $information;
+        $answers = [
+            [
+                'answer' => $request->get('answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct'),
+                'is_correct_answer' => 'yes',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'answer' => $request->get('answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'answer' => $request->get('answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'answer' => $request->get('answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+        ];
 
-        } catch (\Exception $e) {
-            DB::rollback();
-            abort(500, $e->getMessage());
+        shuffle($answers);
+
+        foreach ($answers as $answer) {
+            Answer::query()->create([
+                'answer' => $answer["answer"],
+                'is_grouper_answer' => $answer["is_grouper_answer"],
+                'is_correct_answer' => $answer["is_correct_answer"],
+                'question_id' => $answer["question_id"],
+            ]);
         }
 
+        return Question::query()->applyIncludes()->find($question->getRouteKey());
     }
 
-    public function export_records( $request ): \Symfony\Component\HttpFoundation\BinaryFileResponse{
-        if ($request->get('type') === 'pdf') {
-            $domPDF = App::make('dompdf.wrapper');
-            $questions = $this->model->query()->whereIn('id', $request->get('questions'))->get();
-            $domPDF->loadView('resources.export.templates.pdf.questions', compact('questions'))->setPaper('a4', 'landscape')->setWarnings(false);
-            return $domPDF->download('report-questions.pdf');
+    public function topic_relationship_questions_update($request, $topic, $question)
+    {
+        $question->question = $request->get('question-text');
+        $question->reason = $request->get('reason-question');
+        $question->is_visible = $request->get('is-visible');
+        $question->has_been_used_test = $request->get('is-test');
+        $question->has_been_used_card_memory = $request->get('is-card-memory');
+        $question->save();
+
+        /*$question->update([
+            'question' => $request->get('question-text'),
+            'reason' => $request->get('reason-question'),
+            'is_visible' => $request->get('is-visible'),
+            "has_been_used_test" => $request->get('is-test'),
+            "has_been_used_card_memory" => $request->get('is-card-memory'),
+        ]);*/
+
+        $answers = [
+            [
+                'id' => $request->get('answer-correct-id'),
+                'answer' => $request->get('answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct'),
+                'is_correct_answer' => 'yes',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-one-id'),
+                'answer' => $request->get('answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-two-id'),
+                'answer' => $request->get('answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-three-id'),
+                'answer' => $request->get('answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three'),
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+        ];
+
+        shuffle($answers);
+
+        foreach ($answers as $answer) {
+            $answer = Answer::query()->find($answer);
+            $answer->answer = $answer["answer"];
+            $answer->is_grouper_answer = $answer["is_grouper_answer"];
+            $answer->is_correct_answer = $answer["is_correct_answer"];
+            $answer->save();
+
+            /*$answer->update([
+                'answer' => $answer["answer"],
+                'is_grouper_answer' => $answer["is_grouper_answer"],
+                'is_correct_answer' => $answer["is_correct_answer"]
+            ]);*/
         }
-        return Excel::download(new QuestionsExport($request->get('questions')), 'questions.'. $request->get('type'));
+
+        return Question::query()->applyIncludes()->find($question->getRouteKey());
     }
 
-    public function import_records( $request ): void{
-        $filesQuestions = $request->file('filesQuestions') ?? [];
-
-        foreach ($filesQuestions as $file) {
-
-            (
-            new QuestionsImport(Auth::user(), $file->getClientOriginalName())
-            )->import($file);
-
-            //sleep(1);
-
-        }
+    public function topic_relationship_questions_delete($topic, $question)
+    {
+        // TODO: Implement topic_relationship_questions_delete() method.
     }
-
 }

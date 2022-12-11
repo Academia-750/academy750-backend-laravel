@@ -82,7 +82,9 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                         "question" => $row["pregunta"],
                         "reason" => $row["explicacion_texto"],
                         "topic_id" => $row["tema_uuid"],
-                        "subtopic_id" => $row["subtema_uuid"]
+                        "subtopic_id" => $row["subtema_uuid"],
+                        "es_test" => $row["es_test"],
+                        "es_tarjeta_de_memoria" => $row["es_tarjeta_de_memoria"],
                     ],[
                         "answer-correct" => $row["respuesta_correcta"],
                         "is-grouper-answer-correct" => $row["es_agrupadora_respuesta_correcta"],
@@ -197,6 +199,8 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                 'question' => $dataQuestion["question"],
                 'reason' => $dataQuestion["reason"],
                 'is_visible' => 'yes',
+                "has_been_used_test" => $dataQuestion["es_test"],
+                "has_been_used_card_memory" => $dataQuestion["es_tarjeta_de_memoria"],
             ]);
 
             $this->registerAnswersQuestion($question->id, $dataAnswers);
@@ -210,6 +214,8 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
             'question' => $dataQuestion["question"],
             'reason' => $dataQuestion["reason"],
             'is_visible' => 'yes',
+            'has_been_used_test' => $dataQuestion[''],
+            'has_been_used_card_memory' => $dataQuestion[''],
         ]);
 
         $this->registerAnswersQuestion($question->id, $dataAnswers);

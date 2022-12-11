@@ -5,12 +5,16 @@ use App\Models\Question;
 
 interface QuestionsInterface
 {
-    public function index();
-    public function create( $request );
-    public function read( $question );
-    public function update($request, $question );
-    public function delete( $question );
-    public function action_for_multiple_records( $request );
-    public function export_records( $request );
-    public function import_records( $request );
+    public function subtopics_relationship_get_questions( $subtopic );
+    public function subtopic_relationship_questions_read( $subtopic, $question );
+    public function subtopic_relationship_questions_create( $request, $subtopic );
+    public function subtopic_relationship_questions_update( $request, $subtopic, $question );
+    public function subtopic_relationship_questions_delete( $subtopic, $question );
+
+    public function topics_relationship_get_questions( $topic );
+    public function topic_relationship_questions_read( $topic, $question );
+    public function topic_relationship_questions_create( $request, $topic );
+    public function topic_relationship_questions_update( $request, $topic, $question );
+    public function topic_relationship_questions_delete( $topic, $question );
+
 }

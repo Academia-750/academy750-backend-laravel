@@ -16,52 +16,63 @@ class Authorizer implements QuestionsInterface
         $this->schemaJson = $schemaJson;
     }
 
-    public function index(): QuestionCollection
+    public function subtopics_relationship_get_questions($subtopic)
     {
-        Gate::authorize('index', Question::class );
-        return $this->schemaJson->index();
+        //Gate::authorize('subtopics_relationship_get_questions', [Question::class, $subtopic] );
+        return $this->schemaJson->subtopics_relationship_get_questions($subtopic);
     }
 
-    public function create( $request ): \Illuminate\Http\JsonResponse
+    public function subtopic_relationship_questions_read($subtopic, $question)
     {
-        Gate::authorize('create', Question::class );
-        return $this->schemaJson->create($request);
+        //Gate::authorize('subtopic_relationship_questions_read', [$subtopic, $question] );
+        return $this->schemaJson->subtopic_relationship_questions_read($subtopic, $question);
     }
 
-    public function read( $question ): QuestionResource
+    public function subtopic_relationship_questions_create($request, $subtopic)
     {
-        Gate::authorize('read', $question );
-        return $this->schemaJson->read( $question );
+        //Gate::authorize('subtopic_relationship_questions_create', $subtopic );
+        return $this->schemaJson->subtopic_relationship_questions_create($request, $subtopic);
     }
 
-    public function update( $request, $question ): QuestionResource
+    public function subtopic_relationship_questions_update($request, $subtopic, $question)
     {
-        Gate::authorize('update', $question );
-        return $this->schemaJson->update( $request, $question );
+        //Gate::authorize('subtopic_relationship_questions_update', [$subtopic, $question] );
+        return $this->schemaJson->subtopic_relationship_questions_update($request, $subtopic, $question);
     }
 
-    public function delete( $question ): \Illuminate\Http\Response
+    public function subtopic_relationship_questions_delete($subtopic, $question)
     {
-        Gate::authorize('delete', $question );
-        return $this->schemaJson->delete( $question );
+        //Gate::authorize('subtopic_relationship_questions_delete', [$subtopic, $question] );
+        return $this->schemaJson->subtopic_relationship_questions_delete($subtopic, $question);
     }
 
-    public function action_for_multiple_records( $request ): \Illuminate\Http\JsonResponse
+    public function topics_relationship_get_questions($topic)
     {
-        Gate::authorize('mass_selection_for_action', Question::class );
-        return $this->schemaJson->action_for_multiple_records( $request );
+        ////Gate::authorize('topics_relationship_get_questions', [Question::class, $topic] );
+        return $this->schemaJson->topics_relationship_get_questions($topic);
     }
 
-    public function export_records( $request ): \Illuminate\Http\JsonResponse
+    public function topic_relationship_questions_read($topic, $question)
     {
-        Gate::authorize('export_records', Question::class );
-        return $this->schemaJson->export_records( $request );
+        //Gate::authorize('topic_relationship_questions_read', [$topic, $question] );
+        return $this->schemaJson->topic_relationship_questions_read($topic, $question);
     }
 
-    public function import_records( $request ): \Illuminate\Http\JsonResponse
+    public function topic_relationship_questions_create($request, $topic)
     {
-        Gate::authorize('import_records', Question::class );
-        return $this->schemaJson->import_records( $request );
+        //Gate::authorize('topic_relationship_questions_create', $topic );
+        return $this->schemaJson->topic_relationship_questions_create($request, $topic);
     }
 
+    public function topic_relationship_questions_update($request, $topic, $question)
+    {
+        //Gate::authorize('topic_relationship_questions_update', [$topic, $question] );
+        return $this->schemaJson->topic_relationship_questions_update($request, $topic, $question);
+    }
+
+    public function topic_relationship_questions_delete($topic, $question)
+    {
+        //Gate::authorize('topic_relationship_questions_delete', [$topic, $question] );
+        return $this->schemaJson->topic_relationship_questions_delete($topic, $question);
+    }
 }
