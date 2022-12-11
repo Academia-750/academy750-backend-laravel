@@ -32,4 +32,4 @@ Route::get('roles/get-data/student', static function () {
 });
 
 
-Route::get('guest/user/contact-us', [UsersController::class, 'contactsUS'])->name('api.v1.users.home-page.form.contact-us');
+Route::post('guest/user/contact-us', [UsersController::class, 'contactsUS'])->name('api.v1.users.home-page.form.contact-us');
