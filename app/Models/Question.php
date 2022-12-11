@@ -19,8 +19,8 @@ class Question extends Model
         "question",
         "reason",
         "is_visible",
-        "has_been_used_test",
-        "has_been_used_card_memory",
+        "its_for_test",
+        "its_for_card_memory",
     ];
 
     public array $allowedSorts = [

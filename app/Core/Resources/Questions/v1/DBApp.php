@@ -41,9 +41,9 @@ class DBApp implements QuestionsInterface
         $question = $subtopic->questions()->create([
             'question' => $request->get('question-text'),
             'reason' => $request->get('reason-question'),
-            'is_visible' => $request->get('is-visible'),
-            "has_been_used_test" => $request->get('is-test'),
-            "has_been_used_card_memory" => $request->get('is-card-memory'),
+            'is_visible' => (bool) $request->get('is-visible') ? 'yes' : 'no',
+            "its_for_test" => (bool) $request->get('is-test') ? 'yes' : 'no',
+            "its_for_card_memory" => (bool) $request->get('is-card-memory') ? 'yes' : 'no',
         ]);
 
         if ($request->get('file-reason')) {
@@ -51,34 +51,32 @@ class DBApp implements QuestionsInterface
                 'path' => Storage::disk('public')->put(
                     'questions', file_get_contents($request->file('file-reason'))
                 ),
-                'type_path'
+                'type_path' => 'local'
             ]);
-
-
         }
 
         $answers = [
             [
                 'answer' => $request->get('answer-correct'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
                 'is_correct_answer' => 'yes',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'answer' => $request->get('answer-one'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'answer' => $request->get('answer-two'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'answer' => $request->get('answer-three'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
@@ -102,45 +100,45 @@ class DBApp implements QuestionsInterface
     {
         $question->question = $request->get('question-text');
         $question->reason = $request->get('reason-question');
-        $question->is_visible = $request->get('is-visible');
-        $question->has_been_used_test = $request->get('is-test');
-        $question->has_been_used_card_memory = $request->get('is-card-memory');
+        $question->is_visible = (bool) $request->get('is-visible') ? 'yes' : 'no';
+        $question->its_for_test = (bool) $request->get('is-test') ? 'yes' : 'no';
+        $question->its_for_card_memory = (bool) $request->get('is-card-memory') ? 'yes' : 'no';
         $question->save();
 
         /*$question->update([
             'question' => $request->get('question-text'),
             'reason' => $request->get('reason-question'),
             'is_visible' => $request->get('is-visible'),
-            "has_been_used_test" => $request->get('is-test'),
-            "has_been_used_card_memory" => $request->get('is-card-memory'),
+            "its_for_test" => $request->get('is-test'),
+            "its_for_card_memory" => $request->get('is-card-memory'),
         ]);*/
 
         $answers = [
             [
                 'id' => $request->get('answer-correct-id'),
                 'answer' => $request->get('answer-correct'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
                 'is_correct_answer' => 'yes',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'id' => $request->get('answer-one-id'),
                 'answer' => $request->get('answer-one'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'id' => $request->get('answer-two-id'),
                 'answer' => $request->get('answer-two'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'id' => $request->get('answer-three-id'),
                 'answer' => $request->get('answer-three'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
@@ -188,33 +186,33 @@ class DBApp implements QuestionsInterface
         $question = $topic->questions()->create([
             'question' => $request->get('question-text'),
             'reason' => $request->get('reason-question'),
-            'is_visible' => $request->get('is-visible'),
-            "has_been_used_test" => $request->get('is-test'),
-            "has_been_used_card_memory" => $request->get('is-card-memory'),
+            'is_visible' => (bool) $request->get('is-visible') ? 'yes' : 'no',
+            "its_for_test" => (bool) $request->get('is-test') ? 'yes' : 'no',
+            "its_for_card_memory" => (bool) $request->get('is-card-memory') ? 'yes' : 'no',
         ]);
 
         $answers = [
             [
                 'answer' => $request->get('answer-correct'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
                 'is_correct_answer' => 'yes',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'answer' => $request->get('answer-one'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'answer' => $request->get('answer-two'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'answer' => $request->get('answer-three'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
@@ -238,45 +236,45 @@ class DBApp implements QuestionsInterface
     {
         $question->question = $request->get('question-text');
         $question->reason = $request->get('reason-question');
-        $question->is_visible = $request->get('is-visible');
-        $question->has_been_used_test = $request->get('is-test');
-        $question->has_been_used_card_memory = $request->get('is-card-memory');
+        $question->is_visible = (bool) $request->get('is-visible') ? 'yes' : 'no';
+        $question->its_for_test = (bool) $request->get('is-test') ? 'yes' : 'no';
+        $question->its_for_card_memory = (bool) $request->get('is-card-memory') ? 'yes' : 'no';
         $question->save();
 
         /*$question->update([
             'question' => $request->get('question-text'),
             'reason' => $request->get('reason-question'),
             'is_visible' => $request->get('is-visible'),
-            "has_been_used_test" => $request->get('is-test'),
-            "has_been_used_card_memory" => $request->get('is-card-memory'),
+            "its_for_test" => $request->get('is-test'),
+            "its_for_card_memory" => $request->get('is-card-memory'),
         ]);*/
 
         $answers = [
             [
                 'id' => $request->get('answer-correct-id'),
                 'answer' => $request->get('answer-correct'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
                 'is_correct_answer' => 'yes',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'id' => $request->get('answer-one-id'),
                 'answer' => $request->get('answer-one'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'id' => $request->get('answer-two-id'),
                 'answer' => $request->get('answer-two'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],
             [
                 'id' => $request->get('answer-three-id'),
                 'answer' => $request->get('answer-three'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question->getRouteKey(),
             ],

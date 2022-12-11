@@ -18,6 +18,8 @@ class QuestionResource extends JsonResource
                 "question-text" => $this->resource->question,
                 "reason-text" => $this->resource->reason,
                 "is_visible" => $this->resource->is_visible === 'yes',
+                'its_for_test' => $this->resource->its_for_test,
+                'its_for_card_memory' => $this->resource->its_for_card_memory,
             ],
             'relationships' => [
                 'answers' => $this->when(collect($this->resource)->has('answers'),

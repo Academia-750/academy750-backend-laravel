@@ -13,8 +13,31 @@ class CreateQuestionRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'is-test' => $this->get('is-test') === 'true',
+            'is-card-memory' => $this->get('is-card-memory') === 'true',
+            'is-visible' => $this->get('is-visible') === 'true',
+            'is-grouper-answer-correct' => $this->get('is-grouper-answer-correct') === 'true',
+            'is-grouper-answer-one' => $this->get('is-grouper-answer-one') === 'true',
+            'is-grouper-answer-two' => $this->get('is-grouper-answer-two') === 'true',
+            'is-grouper-answer-three' => $this->get('is-grouper-answer-three') === 'true',
+        ]);
+    }
+
     public function rules(): array
     {
+
+        \Log::debug($this->get('is-test'));
+        \Log::debug(gettype($this->get('is-test')));
+
+        \Log::debug($this->get('is-card-memory'));
+        \Log::debug(gettype($this->get('is-card-memory')));
+
+        \Log::debug($this->get('is-visible'));
+        \Log::debug(gettype($this->get('is-visible')));
+
         return [
             'question-text' => ['required', 'max:255'],
             'is-test' => ['required', 'boolean'],

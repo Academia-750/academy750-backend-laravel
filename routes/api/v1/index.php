@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\v1\UsersController;
+
 Route::prefix('v1')->group(static function(){
     require __DIR__ . '/routes/json-api-auth.php';
     Route::post('/test/errors-validation/manually', static function (\Illuminate\Http\Request $request) {
@@ -21,6 +23,7 @@ Route::prefix('v1')->group(static function(){
         ]);
     });
 
+    Route::post('guest/user/contact-us', [UsersController::class, 'contactsUS'])->name('api.v1.users.home-page.form.contact-us');
 
     Route::middleware(['auth:sanctum', 'only_users_with_account_enable'])->group(static function () {
         require __DIR__ . '/routes/profile.php';
