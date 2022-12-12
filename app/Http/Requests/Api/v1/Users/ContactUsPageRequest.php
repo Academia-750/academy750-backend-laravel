@@ -31,7 +31,9 @@ class ContactUsPageRequest extends FormRequest
                 'required', 'numeric', 'regex:/^[6789]\d{8}$/', Rule::unique('users', 'phone')
             ],
             'email' => [
-                'required', 'email', Rule::unique('users', 'email')
+                'required', 'email', Rule::when($this->get('reason') === 'inscription', [
+                    Rule::unique('users', 'email')
+                ])
             ],
             'message' => [
                 'required', 'max:500'

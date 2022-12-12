@@ -28,16 +28,6 @@ class CreateQuestionRequest extends FormRequest
 
     public function rules(): array
     {
-
-        \Log::debug($this->get('is-test'));
-        \Log::debug(gettype($this->get('is-test')));
-
-        \Log::debug($this->get('is-card-memory'));
-        \Log::debug(gettype($this->get('is-card-memory')));
-
-        \Log::debug($this->get('is-visible'));
-        \Log::debug(gettype($this->get('is-visible')));
-
         return [
             'question-text' => ['required', 'max:255'],
             'is-test' => ['required', 'boolean'],

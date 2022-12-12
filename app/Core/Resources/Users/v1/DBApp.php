@@ -175,8 +175,6 @@ class DBApp implements UsersInterface
 
         try {
 
-            DB::beginTransaction();
-
             $userAcademia = User::query()->firstWhere('email', '=', config('mail.from.address'));
 
             if (!$userAcademia) {
@@ -184,8 +182,9 @@ class DBApp implements UsersInterface
             }
 
             if ($request->get('reason') === 'general' || $request->get('reason') === 'inscription') {
+
                 $userAcademia->notify(new ContactUsHomeNotification([
-                    'reason' => $request->get('reason'),
+                    'reason' => __("messages.{$request->get('reason')}"),
                     'firstName' => $request->get('first-name'),
                     'lastName' => $request->get('last-name'),
                     'phone' => $request->get('phone'),
@@ -193,27 +192,61 @@ class DBApp implements UsersInterface
                     'message' => $request->get('message'),
                 ]));
 
-                return 'Successfully';
+                if ($request->get('reason') === 'general') {
+                    return [
+                        'status' => 'successfully',
+                        'message' => '¡Muchas gracias por su solicitud! Nos pondremos en contacto con usted lo antes posible.'
+                    ];
+                }
+
+                if ($request->get('reason') === 'inscription') {
+                    return [
+                        'status' => 'successfully',
+                        'message' => '¡Primer paso dado! Nos pondremos en contacto con usted lo antes posible. ¡Te esperamos con los brazos abiertos!'
+                    ];
+                }
             }
 
+            DB::beginTransaction();
             if ($request->get('reason') === 'reset-password') {
-                $student = User::query()->firstWhere('email', '=', $request->get('email'));
+                $student = User::firstWhere('email', '=', $request->get('email'));
 
                 if (!$student) {
-                    abort(404);
+                    return [
+                        'status' => 'failed',
+                        'message' => 'No se encontró al usuario'
+                    ];
+                }
+
+                if (!$student->hasRole('student')) {
+                    return [
+                        'status' => 'failed',
+                        'message' => 'No es válido el correo electrónico'
+                    ];
                 }
 
                 $password_generated = UserService::generateSecureRandomPassword();
 
+
                 $student->password = Hash::make($password_generated);
                 $student->save();
 
+                DB::table('password_resets')->where('email', $student->email)->delete();
+                DB::table('personal_access_tokens')->where('tokenable_id', '=', $student->getRouteKey())->delete();
+
+                DB::commit();
                 $student->notify(new ResetPasswordStudentNotification(compact('password_generated')));
 
-                return 'Successfully';
+                return [
+                    'status' => 'successfully',
+                    'message' => 'Hemos enviado sus nuevas credenciales de acceso al correo solicitado.'
+                ];
             }
 
-            return 'failed';
+            return [
+                'status' => 'failed',
+                'message' => 'No se ha realizado ninguna acción'
+            ];
 
         } catch (\Exception $e) {
             DB::rollback();

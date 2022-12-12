@@ -81,7 +81,7 @@ class SchemaJson implements UsersInterface
     public function contactsUS($request)
     {
         return response()->json([
-            'status' => $this->eventApp->contactsUS($request)
+            'data' => $this->eventApp->contactsUS($request)
         ]);
     }
 }
