@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\v1\Questions;
 
+use App\Core\Resources\Questions\v1\Services\SaveQuestionsService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -11,6 +12,19 @@ class UpdateQuestionRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'is-test' => $this->get('is-test') === 'true',
+            'is-card-memory' => $this->get('is-card-memory') === 'true',
+            'is-visible' => $this->get('is-visible') === 'true',
+            'is-grouper-answer-correct' => $this->get('is-grouper-answer-correct') === 'true',
+            'is-grouper-answer-one' => $this->get('is-grouper-answer-one') === 'true',
+            'is-grouper-answer-two' => $this->get('is-grouper-answer-two') === 'true',
+            'is-grouper-answer-three' => $this->get('is-grouper-answer-three') === 'true',
+        ]);
     }
 
     public function rules(): array
@@ -39,14 +53,18 @@ class UpdateQuestionRequest extends FormRequest
 
             'reason-question' => [
                 'nullable',
-                Rule::when((bool) $this->get('is-card-memory') && (bool) !$this->get('file-reason'), [
+                Rule::when(
+                    (bool) $this->get('is-card-memory') &&
+                    (bool) SaveQuestionsService::validateImageWithFails($this->file('file-reason'))->fails()
+                    && (bool) !$this->route('question')->image
+                    , [
                     'required', 'max:400'
                 ])
             ],
             'file-reason' => [
                 'nullable',
-                Rule::when((bool) $this->get('is-card-memory') && (bool) !$this->get('reason-question'), [
-                    'required', 'max:400'
+                Rule::when((bool) $this->get('is-card-memory') && (bool) !$this->get('reason-question') && (bool) !$this->route('question')->image, [
+                    'required', 'file', 'image', 'mimes:jpeg,jpg,png,gif', 'max:10000'
                 ])
             ]
         ];

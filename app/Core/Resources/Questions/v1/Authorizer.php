@@ -25,6 +25,10 @@ class Authorizer implements QuestionsInterface
     public function subtopic_relationship_questions_read($subtopic, $question)
     {
         //Gate::authorize('subtopic_relationship_questions_read', [$subtopic, $question] );
+        if (!$subtopic->questions()->firstWhere('id', '=', $question->getRouteKey())) {
+            abort(403);
+        }
+
         return $this->schemaJson->subtopic_relationship_questions_read($subtopic, $question);
     }
 
@@ -37,6 +41,9 @@ class Authorizer implements QuestionsInterface
     public function subtopic_relationship_questions_update($request, $subtopic, $question)
     {
         //Gate::authorize('subtopic_relationship_questions_update', [$subtopic, $question] );
+        if (!$subtopic->questions()->firstWhere('id', '=', $question->getRouteKey())) {
+            abort(403);
+        }
         return $this->schemaJson->subtopic_relationship_questions_update($request, $subtopic, $question);
     }
 
@@ -55,6 +62,9 @@ class Authorizer implements QuestionsInterface
     public function topic_relationship_questions_read($topic, $question)
     {
         //Gate::authorize('topic_relationship_questions_read', [$topic, $question] );
+        if (!$topic->questions()->firstWhere('id', '=', $question->getRouteKey())) {
+            abort(403);
+        }
         return $this->schemaJson->topic_relationship_questions_read($topic, $question);
     }
 
@@ -67,6 +77,9 @@ class Authorizer implements QuestionsInterface
     public function topic_relationship_questions_update($request, $topic, $question)
     {
         //Gate::authorize('topic_relationship_questions_update', [$topic, $question] );
+        if (!$topic->questions()->firstWhere('id', '=', $question->getRouteKey())) {
+            abort(403);
+        }
         return $this->schemaJson->topic_relationship_questions_update($request, $topic, $question);
     }
 

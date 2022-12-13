@@ -1,0 +1,136 @@
+<?php
+
+namespace App\Core\Resources\Questions\v1\Services;
+
+use App\Models\Question;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+
+class SaveQuestionsService
+{
+    public static function saveQuestion ($request, $instanceModel) {
+
+        return $instanceModel->questions()->create([
+            'question' => $request->get('question-text'),
+            'reason' => (bool) $request->get('is-card-memory') ? $request->get('reason-question') : '',
+            'is_visible' => (bool) $request->get('is-visible') ? 'yes' : 'no',
+            "its_for_test" => (bool) $request->get('is-test') ? 'yes' : 'no',
+            "its_for_card_memory" => (bool) $request->get('is-card-memory') ? 'yes' : 'no',
+        ]);
+    }
+
+    public static function validateImageWithFails ($file): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
+    {
+        return Validator::make([
+            'image' => $file
+        ], [
+            'image' => ['required', 'file', 'image', 'mimes:jpeg,jpg,png,gif', 'max:10000'] // 10 mb
+        ]);
+    }
+
+    public static function saveImageFileQuestion ($request, $questionInstance, $relativePath) {
+
+        $validator = self::validateImageWithFails($request->file('file-reason'));
+
+        if ($validator->fails()) {
+            return null;
+        }
+
+        // Guarda solo la ruta relativa para acceder al Storage Publico {urlApi}/storage/...
+        $path = Storage::url($request->file('file-reason')->store($relativePath));
+
+        return $questionInstance->image()->create([
+            'path' => $path,
+            'type_path' => 'local'
+        ]);
+    }
+
+    public static function updateImageQuestionInStorage ($request, $questionInstance, $relativePath) {
+        $validator = self::validateImageWithFails($request->file('file-reason'));
+
+        if (!$validator->fails()) {
+
+            if ($questionInstance->image && $questionInstance->image->type_path === 'local') {
+
+                //$path = "/storage/questions/images/topics/zHobBUFgM32kgVL0vuF268oJYLyKtjyQWvdb6sp9.jpg";
+                $nameFileStorage = self::getPathForDeleteImageQuestion($questionInstance, "/");
+
+                if (Storage::disk('public')->exists($nameFileStorage)) {
+                    Storage::disk('public')->delete($nameFileStorage);
+                }
+                $nameFileStorage = self::getPathForDeleteImageQuestion($questionInstance, "\\");
+
+                if (Storage::disk('public')->exists($nameFileStorage)) {
+                    Storage::disk('public')->delete($nameFileStorage);
+                }
+            }
+
+            $questionInstance->image()?->delete();
+        }
+
+        return self::saveImageFileQuestion($request, $questionInstance, $relativePath);
+    }
+
+    private static function getPathForDeleteImageQuestion ($question, $separator): string
+    {
+        $path = $question->image->path;
+
+        $path_array= explode($separator, $path);
+
+        unset($path_array[0], $path_array[1]);
+
+        return implode($separator, $path_array);
+    }
+
+    public static function updateQuestion ($request, Question $question): Question
+    {
+        $question->question = $request->get('question-text');
+        $question->reason = $request->get('reason-question') ?? $question->reason;
+        $question->is_visible = (bool) $request->get('is-visible') ? 'yes' : 'no';
+        $question->its_for_test = (bool) $request->get('is-test') ? 'yes' : 'no';
+        $question->its_for_card_memory = (bool) $request->get('is-card-memory') ? 'yes' : 'no';
+        $question->save();
+
+        return $question;
+    }
+
+    public static function getAnswersByQuestion ($request, $question): array
+    {
+        $answers = [
+            [
+                'id' => $request->get('answer-correct-id'),
+                'answer' => $request->get('answer-correct'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
+                'is_correct_answer' => 'yes',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-one-id'),
+                'answer' => $request->get('answer-one'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-two-id'),
+                'answer' => $request->get('answer-two'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+            [
+                'id' => $request->get('answer-three-id'),
+                'answer' => $request->get('answer-three'),
+                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
+                'is_correct_answer' => 'no',
+                'question_id' => $question->getRouteKey(),
+            ],
+        ];
+
+        \Log::debug($answers);
+        shuffle($answers);
+        \Log::debug($answers);
+
+        return $answers;
+    }
+}

@@ -13,9 +13,9 @@ class AnswerResource extends JsonResource
             'type' => 'answers',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-                "answer_text" => $this->resource->id,
-                "is_grouper_answer" => $this->resource->answer,
-                "is_correct_answer" => $this->resource->is_grouper_answer,
+                "answer_text" => $this->resource->answer,
+                "is_grouper_answer" => $this->resource->is_grouper_answer,
+                "is_correct_answer" => $this->resource->is_correct_answer,
             ],
             'relationships' => [
                 'question' => $this->when(collect($this->resource)->has('question'),

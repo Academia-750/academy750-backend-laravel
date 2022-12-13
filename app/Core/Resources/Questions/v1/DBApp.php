@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Questions\v1;
 
+use App\Core\Resources\Questions\v1\Services\SaveQuestionsService;
 use App\Imports\Api\v1\QuestionsImport;
 use App\Models\Answer;
 use App\Models\Question;
@@ -38,129 +39,44 @@ class DBApp implements QuestionsInterface
 
     public function subtopic_relationship_questions_create($request, $subtopic)
     {
-        $question = $subtopic->questions()->create([
-            'question' => $request->get('question-text'),
-            'reason' => $request->get('reason-question'),
-            'is_visible' => (bool) $request->get('is-visible') ? 'yes' : 'no',
-            "its_for_test" => (bool) $request->get('is-test') ? 'yes' : 'no',
-            "its_for_card_memory" => (bool) $request->get('is-card-memory') ? 'yes' : 'no',
-        ]);
+        $question = SaveQuestionsService::saveQuestion($request, $subtopic);
 
-        if ($request->get('file-reason')) {
-            $question->image()->create([
-                'path' => Storage::disk('public')->put(
-                    'questions', file_get_contents($request->file('file-reason'))
-                ),
-                'type_path' => 'local'
-            ]);
+        if ($request->get('is-card-memory')) {
+            SaveQuestionsService::saveImageFileQuestion($request, $question, 'public/questions/images/subtopics');
         }
 
-        $answers = [
-            [
-                'answer' => $request->get('answer-correct'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
-                'is_correct_answer' => 'yes',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'answer' => $request->get('answer-one'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'answer' => $request->get('answer-two'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'answer' => $request->get('answer-three'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-        ];
-
-        shuffle($answers);
-
-        foreach ($answers as $answer) {
+        foreach (SaveQuestionsService::getAnswersByQuestion($request, $question) as $answerData) {
             Answer::query()->create([
-                'answer' => $answer["answer"],
-                'is_grouper_answer' => $answer["is_grouper_answer"],
-                'is_correct_answer' => $answer["is_correct_answer"],
-                'question_id' => $answer["question_id"],
+                'answer' => $answerData["answer"],
+                'is_grouper_answer' => $answerData["is_grouper_answer"],
+                'is_correct_answer' => $answerData["is_correct_answer"],
+                'question_id' => $answerData["question_id"],
             ]);
         }
 
-        return Question::query()->applyIncludes()->find($question->getRouteKey());
+        return $this->model->query()->applyIncludes()->find($question->getRouteKey());
     }
 
     public function subtopic_relationship_questions_update($request, $subtopic, $question)
     {
-        $question->question = $request->get('question-text');
-        $question->reason = $request->get('reason-question');
-        $question->is_visible = (bool) $request->get('is-visible') ? 'yes' : 'no';
-        $question->its_for_test = (bool) $request->get('is-test') ? 'yes' : 'no';
-        $question->its_for_card_memory = (bool) $request->get('is-card-memory') ? 'yes' : 'no';
-        $question->save();
+        $question = SaveQuestionsService::updateQuestion($request, $question);
 
-        /*$question->update([
-            'question' => $request->get('question-text'),
-            'reason' => $request->get('reason-question'),
-            'is_visible' => $request->get('is-visible'),
-            "its_for_test" => $request->get('is-test'),
-            "its_for_card_memory" => $request->get('is-card-memory'),
-        ]);*/
-
-        $answers = [
-            [
-                'id' => $request->get('answer-correct-id'),
-                'answer' => $request->get('answer-correct'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
-                'is_correct_answer' => 'yes',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'id' => $request->get('answer-one-id'),
-                'answer' => $request->get('answer-one'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'id' => $request->get('answer-two-id'),
-                'answer' => $request->get('answer-two'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'id' => $request->get('answer-three-id'),
-                'answer' => $request->get('answer-three'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-        ];
-
-        shuffle($answers);
-
-        foreach ($answers as $answer) {
-            $answer = Answer::query()->find($answer);
-            $answer->answer = $answer["answer"];
-            $answer->is_grouper_answer = $answer["is_grouper_answer"];
-            $answer->is_correct_answer = $answer["is_correct_answer"];
-            $answer->save();
-
-            /*$answer->update([
-                'answer' => $answer["answer"],
-                'is_grouper_answer' => $answer["is_grouper_answer"],
-                'is_correct_answer' => $answer["is_correct_answer"]
-            ]);*/
+        if ($request->get('is-card-memory')) {
+            SaveQuestionsService::updateImageQuestionInStorage($request, $question, 'public/questions/images/subtopics');
         }
 
-        return Question::query()->applyIncludes()->find($question->getRouteKey());
+        foreach (SaveQuestionsService::getAnswersByQuestion($request, $question) as $answerData) {
+            $answer = Answer::query()->find($answerData["id"]);
+            if (!$answer) {
+                abort(500, "No se ha encontrado la respuesta con UUID {$answerData['id']}");
+            }
+            $answer->answer = $answerData["answer"];
+            $answer->is_grouper_answer = $answerData["is_grouper_answer"];
+            $answer->is_correct_answer = $answerData["is_correct_answer"];
+            $answer->save();
+        }
+
+        return $this->model->query()->applyIncludes()->find($question->getRouteKey());
 
     }
 
@@ -178,125 +94,49 @@ class DBApp implements QuestionsInterface
 
     public function topic_relationship_questions_read($topic, $question)
     {
-        return $topic->questions()->firstWhere("id", "=", $question->getRouteKey())->applyIncludes();
+        return $topic->questions()->applyIncludes()->firstWhere("id", "=", $question->getRouteKey());
     }
 
     public function topic_relationship_questions_create($request, $topic)
     {
-        $question = $topic->questions()->create([
-            'question' => $request->get('question-text'),
-            'reason' => $request->get('reason-question'),
-            'is_visible' => (bool) $request->get('is-visible') ? 'yes' : 'no',
-            "its_for_test" => (bool) $request->get('is-test') ? 'yes' : 'no',
-            "its_for_card_memory" => (bool) $request->get('is-card-memory') ? 'yes' : 'no',
-        ]);
+        $question = SaveQuestionsService::saveQuestion($request, $topic);
 
-        $answers = [
-            [
-                'answer' => $request->get('answer-correct'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
-                'is_correct_answer' => 'yes',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'answer' => $request->get('answer-one'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'answer' => $request->get('answer-two'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'answer' => $request->get('answer-three'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-        ];
+        if ($request->get('is-card-memory')) {
+            SaveQuestionsService::saveImageFileQuestion($request, $question, 'public/questions/images/topics');
+        }
 
-        shuffle($answers);
-
-        foreach ($answers as $answer) {
+        foreach (SaveQuestionsService::getAnswersByQuestion($request, $question) as $answerData) {
             Answer::query()->create([
-                'answer' => $answer["answer"],
-                'is_grouper_answer' => $answer["is_grouper_answer"],
-                'is_correct_answer' => $answer["is_correct_answer"],
-                'question_id' => $answer["question_id"],
+                'answer' => $answerData["answer"],
+                'is_grouper_answer' => $answerData["is_grouper_answer"],
+                'is_correct_answer' => $answerData["is_correct_answer"],
+                'question_id' => $answerData["question_id"],
             ]);
         }
 
-        return Question::query()->applyIncludes()->find($question->getRouteKey());
+        return $this->model->query()->applyIncludes()->find($question->getRouteKey());
     }
 
     public function topic_relationship_questions_update($request, $topic, $question)
     {
-        $question->question = $request->get('question-text');
-        $question->reason = $request->get('reason-question');
-        $question->is_visible = (bool) $request->get('is-visible') ? 'yes' : 'no';
-        $question->its_for_test = (bool) $request->get('is-test') ? 'yes' : 'no';
-        $question->its_for_card_memory = (bool) $request->get('is-card-memory') ? 'yes' : 'no';
-        $question->save();
+        $question = SaveQuestionsService::updateQuestion($request, $question);
 
-        /*$question->update([
-            'question' => $request->get('question-text'),
-            'reason' => $request->get('reason-question'),
-            'is_visible' => $request->get('is-visible'),
-            "its_for_test" => $request->get('is-test'),
-            "its_for_card_memory" => $request->get('is-card-memory'),
-        ]);*/
-
-        $answers = [
-            [
-                'id' => $request->get('answer-correct-id'),
-                'answer' => $request->get('answer-correct'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
-                'is_correct_answer' => 'yes',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'id' => $request->get('answer-one-id'),
-                'answer' => $request->get('answer-one'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'id' => $request->get('answer-two-id'),
-                'answer' => $request->get('answer-two'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-            [
-                'id' => $request->get('answer-three-id'),
-                'answer' => $request->get('answer-three'),
-                'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
-                'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
-            ],
-        ];
-
-        shuffle($answers);
-
-        foreach ($answers as $answer) {
-            $answer = Answer::query()->find($answer);
-            $answer->answer = $answer["answer"];
-            $answer->is_grouper_answer = $answer["is_grouper_answer"];
-            $answer->is_correct_answer = $answer["is_correct_answer"];
-            $answer->save();
-
-            /*$answer->update([
-                'answer' => $answer["answer"],
-                'is_grouper_answer' => $answer["is_grouper_answer"],
-                'is_correct_answer' => $answer["is_correct_answer"]
-            ]);*/
+        if ($request->get('is-card-memory')) {
+            SaveQuestionsService::updateImageQuestionInStorage($request, $question, 'public/questions/images/topics');
         }
 
-        return Question::query()->applyIncludes()->find($question->getRouteKey());
+        foreach (SaveQuestionsService::getAnswersByQuestion($request, $question) as $answerData) {
+            $answer = Answer::query()->find($answerData['id']);
+            if (!$answer) {
+                abort(500, "No se ha encontrado la respuesta con UUID {$answerData['id']}");
+            }
+            $answer->answer = $answerData["answer"];
+            $answer->is_grouper_answer = $answerData["is_grouper_answer"];
+            $answer->is_correct_answer = $answerData["is_correct_answer"];
+            $answer->save();
+        }
+
+        return $this->model->query()->applyIncludes()->find($question->getRouteKey());
     }
 
     public function topic_relationship_questions_delete($topic, $question)
