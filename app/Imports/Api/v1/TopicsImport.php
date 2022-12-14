@@ -7,6 +7,7 @@ use App\Events\Api\v1\HelloEvent;
 use App\Models\ImportProcess;
 use App\Models\ImportRecord;
 use App\Models\Topic;
+use App\Models\TopicGroup;
 use App\Models\User;
 use App\Notifications\Api\ImportProcessFileFinishedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -57,7 +58,10 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
                     DB::beginTransaction();
 
                         if (!$hasErrors) {
-                            $this->registerTopic($row["tema"], $row["grupo_tema_uuid"]);
+                            $this->registerTopic(
+                                $row["tema"],
+                                TopicGroup::query()->firstWhere('name', '=', $row["grupo_tema"])?->getRouteKey()
+                            );
                             $this->count_rows_successfully++;
                         } else {
                             $this->count_rows_failed++;
@@ -112,7 +116,7 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
     {
         return Validator::make($row->toArray(), [
             'tema' => ['required', 'max:255'],
-            'grupo_tema_uuid' => ['required', 'uuid', 'exists:topic_groups,id'],
+            'grupo_tema' => ['required', 'string', 'exists:topic_groups,name'],
         ]);
     }
 
