@@ -71,11 +71,18 @@ class SchemaJson implements QuestionsInterface
 
     public function topics_relationship_get_questions($topic)
     {
+        $total_questions_subtopics = 0;
+
+        foreach ($topic->subtopics as $subtopic) {
+            $total_questions_subtopics+=$subtopic->questions->count();
+        }
+
         return QuestionCollection::make(
             $this->eventApp->topics_relationship_get_questions($topic)
         )->additional([
             'meta' => [
-                'topic' => TopicResource::make($topic)
+                'topic' => TopicResource::make($topic),
+                'total-questions-syllabus' => $topic->questions->count() + $total_questions_subtopics
             ]
         ]);
     }

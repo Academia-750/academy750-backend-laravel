@@ -20,6 +20,7 @@ class QuestionResource extends JsonResource
                 "is_visible" => $this->resource->is_visible === 'yes',
                 'its_for_test' => $this->resource->its_for_test,
                 'its_for_card_memory' => $this->resource->its_for_card_memory,
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
                 'answers' => $this->when(collect($this->resource)->has('answers'),

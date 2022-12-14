@@ -34,7 +34,7 @@ class DBApp implements QuestionsInterface
 
     public function subtopic_relationship_questions_read($subtopic, $question)
     {
-        return $subtopic->questions()->firstWhere("id", "=", $question->getRouteKey())->applyIncludes();
+        return $subtopic->questions()->applyIncludes()->firstWhere("id", "=", $question->getRouteKey());
     }
 
     public function subtopic_relationship_questions_create($request, $subtopic)
