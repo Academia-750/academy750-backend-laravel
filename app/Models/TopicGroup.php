@@ -78,7 +78,7 @@ class TopicGroup extends Model
     public function filterSearch(Builder $query, $value): void{
         $query->orWhere(function($query) use ($value) {
             $query->where('field', 'LIKE' , "%{$value}%")
-                ->orWhere('other_field', 'LIKE' , "%{$value}%");
+                ->orWhere('id', 'LIKE' , "%{$value}%");
         });
     }
 

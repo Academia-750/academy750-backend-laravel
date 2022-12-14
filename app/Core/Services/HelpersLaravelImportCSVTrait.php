@@ -35,7 +35,6 @@ trait HelpersLaravelImportCSVTrait
     {
         return ImportRecord::query()->create([
             "number_of_row" => $data["current-row"],
-            "reference_number" => $data["reference-number"],
             "has_errors" => $data["has-errors"] ? 'yes' : 'no',
             "errors_validation" => $data["errors-validation"],
             "import_process_id" => $data["import-process-id"],

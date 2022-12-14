@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('import_records', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
             $table->string("number_of_row");
-            $table->string("reference_number");
             $table->enum("has_errors", ['yes', 'no']);
             $table->json("errors_validation");
             $table->foreignUuid('import_process_id')

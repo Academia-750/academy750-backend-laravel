@@ -59,7 +59,6 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
                 $this->registerImportRecordHistory([
                     "current-row" => $current_row,
-                    'reference-number' => $row["numero_referencia"],
                     "has-errors" => $hasErrors,
                     "errors-validation" => $errors,
                     'import-process-id' => $this->importProcessRecord->id
@@ -75,7 +74,6 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
                 $this->registerImportRecordHistory([
                     "current-row" => $current_row,
-                    'reference-number' => $row["numero_referencia"],
                     "has-errors" => true,
                     "errors-validation" => [
                         "subtema" => [
@@ -109,7 +107,6 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
         return Validator::make($row->toArray(), [
             'subtema' => ['required', 'max:255'],
             'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
-            'numero_referencia' => ['required']
         ]);
     }
 

@@ -17,7 +17,6 @@ class ImportRecord extends Model
     protected $fillable = [
         'id',
         'number_of_row',
-        'reference_number',
         'has_errors',
         'errors_validation',
         'import_process_id'
@@ -58,7 +57,6 @@ class ImportRecord extends Model
      protected $casts = [
          'id' => 'string',
          'number_of_row' => 'string',
-         'reference_number' => 'string',
          'errors_validation' => 'array',
          'import_process_id' => 'string'
      ];
@@ -69,13 +67,6 @@ class ImportRecord extends Model
     public function sortNumberRow(Builder $query, $direction): void{
         $query->orderBy('number_of_row', $direction);
     }
-
-
-    public function sortReferenceNumber(Builder $query, $direction): void{
-        $query->orderBy('reference_number', $direction);
-    }
-
-
     public function sortCreatedAt(Builder $query, $direction): void{
         $query->orderBy('created_at', $direction);
     }

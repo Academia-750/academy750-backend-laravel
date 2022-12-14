@@ -102,7 +102,6 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
                 $this->registerImportRecordHistory([
                     "current-row" => $current_row,
-                    'reference-number' => $row["numero_referencia"],
                     "has-errors" => $hasErrors,
                     "errors-validation" => $errors,
                     'import-process-id' => $this->importProcessRecord->id
@@ -118,7 +117,6 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
                 $this->registerImportRecordHistory([
                     "current-row" => $current_row,
-                    'reference-number' => $row["numero_referencia"],
                     "has-errors" => true,
                     "errors-validation" => [
                         "pregunta" => [
@@ -150,7 +148,6 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
     public function validateRow ($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
         return Validator::make($row->toArray(), [
-            'numero_referencia' => ['required'],
             'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
             'subtema_uuid' => ['nullable', Rule::when( (bool) $row["subtema_uuid"],
                 ['uuid', 'exists:subtopics,id', new SubtopicBelongsTopicRule($row["tema_uuid"], $this->topics)]

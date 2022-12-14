@@ -65,7 +65,6 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
 
                         $this->registerImportRecordHistory([
                             "current-row" => $current_row,
-                            'reference-number' => $row["numero_referencia"],
                             "has-errors" => $hasErrors,
                             "errors-validation" => $errors,
                             'import-process-id' => $this->importProcessRecord->id
@@ -81,7 +80,6 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
 
                     $this->registerImportRecordHistory([
                         "current-row" => $current_row,
-                        'reference-number' => $row["numero_referencia"],
                         "has-errors" => true,
                         "errors-validation" => [
                             "tema" => [
@@ -115,7 +113,6 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
         return Validator::make($row->toArray(), [
             'tema' => ['required', 'max:255'],
             'grupo_tema_uuid' => ['required', 'uuid', 'exists:topic_groups,id'],
-            'numero_referencia' => ['required']
         ]);
     }
 
