@@ -64,7 +64,7 @@ class SchemaJson implements QuestionsInterface
 
     public function subtopic_relationship_questions_delete($subtopic, $question)
     {
-        $this->subtopic_relationship_questions_delete($subtopic, $question);
+        $this->eventApp->subtopic_relationship_questions_delete($subtopic, $question);
 
         return response()->noContent();
     }
@@ -122,7 +122,7 @@ class SchemaJson implements QuestionsInterface
 
     public function topic_relationship_questions_delete($topic, $question)
     {
-        $this->topic_relationship_questions_delete($topic, $question);
+        $this->eventApp->topic_relationship_questions_delete($topic, $question);
 
         return response()->noContent();
     }

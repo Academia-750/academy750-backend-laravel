@@ -82,7 +82,19 @@ class DBApp implements QuestionsInterface
 
     public function subtopic_relationship_questions_delete($subtopic, $question)
     {
-        // TODO: Implement subtopic_relationship_questions_delete() method.
+        try {
+            DB::beginTransaction();
+
+                $question->delete();
+
+            DB::commit();
+
+            return "Successfully";
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::debug($e->getMessage());
+            abort(500,$e->getMessage());
+        }
     }
 
     public function topics_relationship_get_questions($topic)
@@ -141,6 +153,16 @@ class DBApp implements QuestionsInterface
 
     public function topic_relationship_questions_delete($topic, $question)
     {
-        // TODO: Implement topic_relationship_questions_delete() method.
+        try {
+            DB::beginTransaction();
+            $question->delete();
+
+            DB::commit();
+
+            return "Successfully";
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
     }
 }

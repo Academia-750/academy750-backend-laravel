@@ -56,6 +56,7 @@ class QuestionsController extends Controller
         return $this->questionsInterface->topic_relationship_questions_update( $request, $topic, $question );
     }
     public function topic_relationship_questions_delete( Topic $topic, Question $question ) {
+        \Log::debug("Controlador topic_relationship_questions_delete");
         return $this->questionsInterface->topic_relationship_questions_delete( $topic, $question );
     }
 }

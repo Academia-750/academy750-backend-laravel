@@ -12,7 +12,7 @@ class TestModelResource extends JsonResource
             'type' => 'resources',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
 

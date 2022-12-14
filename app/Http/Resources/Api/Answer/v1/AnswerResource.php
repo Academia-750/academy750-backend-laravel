@@ -16,6 +16,7 @@ class AnswerResource extends JsonResource
                 "answer_text" => $this->resource->answer,
                 "is_grouper_answer" => $this->resource->is_grouper_answer,
                 "is_correct_answer" => $this->resource->is_correct_answer,
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
                 'question' => $this->when(collect($this->resource)->has('question'),

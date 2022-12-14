@@ -17,6 +17,10 @@ class SubtopicResource extends JsonResource
             'attributes' => [
                 "name" => $this->resource->name,
                 "is_available" => $this->resource->is_available,
+                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
+            ],
+            'meta' => [
+                'total_questions_subtopic' => $this->resource->questions->count()
             ],
             'relationships' => [
                 'topics' => $this->when(collect($this->resource)->has('topics'),

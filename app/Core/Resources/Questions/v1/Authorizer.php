@@ -50,6 +50,9 @@ class Authorizer implements QuestionsInterface
     public function subtopic_relationship_questions_delete($subtopic, $question)
     {
         //Gate::authorize('subtopic_relationship_questions_delete', [$subtopic, $question] );
+        if (!$subtopic->questions()->firstWhere('id', '=', $question->getRouteKey())) {
+            abort(403);
+        }
         return $this->schemaJson->subtopic_relationship_questions_delete($subtopic, $question);
     }
 
@@ -86,6 +89,9 @@ class Authorizer implements QuestionsInterface
     public function topic_relationship_questions_delete($topic, $question)
     {
         //Gate::authorize('topic_relationship_questions_delete', [$topic, $question] );
+        if (!$topic->questions()->firstWhere('id', '=', $question->getRouteKey())) {
+            abort(403);
+        }
         return $this->schemaJson->topic_relationship_questions_delete($topic, $question);
     }
 }
