@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Api\User\v1;
 
+use App\Http\Resources\Api\Image\v1\ImageResource;
 use App\Http\Resources\Api\Role\v1\RoleCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 use JetBrains\PhpStorm\ArrayShape;
@@ -29,6 +30,10 @@ class UserResource extends JsonResource
                 'roles' => $this->when(collect($this->resource)->has('roles'),
                     function () {
                         return RoleCollection::make($this->resource->roles);
+                    }),
+                'image' => $this->when(collect($this->resource)->has('image'),
+                    function () {
+                        return ImageResource::make($this->resource->image);
                     })
             ],
             'meta' => [

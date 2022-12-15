@@ -22,7 +22,7 @@ class TopicSeeder extends Seeder
     {
         $this->faker = Factory::create();
 
-        foreach ( range(1,25) as $number) {
+        foreach ( range(1,10) as $number) {
             $topic = Topic::query()->create([
                 'name' => "Topic {$number}",
                 'topic_group_id' => TopicGroup::all()->random()->getRouteKey(),

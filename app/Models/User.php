@@ -147,6 +147,7 @@ class User extends Authenticatable
     ];
 
     public array $allowedIncludes = [
+        'image',
         'roles',
         'roles-permissions'
     ];

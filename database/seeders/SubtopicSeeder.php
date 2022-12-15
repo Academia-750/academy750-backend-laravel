@@ -21,7 +21,7 @@ class SubtopicSeeder extends Seeder
     {
         $this->faker = Factory::create();
 
-        foreach ( range(1, 80) as $number) {
+        foreach ( range(1, 10) as $number) {
             $topic = Topic::all()->random();
             $subtopic = Subtopic::query()->create([
                 'name' => "Subtema {$number} - {$topic->name}",
