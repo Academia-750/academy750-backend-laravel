@@ -2,6 +2,7 @@
 
 namespace App\Core\Resources\Questions\v1\Services;
 
+use App\Core\Services\ManageImagesStorage;
 use App\Models\Question;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -53,33 +54,20 @@ class SaveQuestionsService
             if ($questionInstance->image && $questionInstance->image->type_path === 'local') {
 
                 //$path = "/storage/questions/images/topics/zHobBUFgM32kgVL0vuF268oJYLyKtjyQWvdb6sp9.jpg";
-                $nameFileStorage = self::getPathForDeleteImageQuestion($questionInstance, "/");
+                $nameFileStorage = ManageImagesStorage::getPathForDeleteImageModel($questionInstance, "/");
 
-                if (Storage::disk('public')->exists($nameFileStorage)) {
-                    Storage::disk('public')->delete($nameFileStorage);
-                }
-                $nameFileStorage = self::getPathForDeleteImageQuestion($questionInstance, "\\");
+                ManageImagesStorage::deleteImageStorage($nameFileStorage);
 
-                if (Storage::disk('public')->exists($nameFileStorage)) {
-                    Storage::disk('public')->delete($nameFileStorage);
-                }
+                $nameFileStorage = ManageImagesStorage::getPathForDeleteImageModel($questionInstance, "\\");
+
+                ManageImagesStorage::deleteImageStorage($nameFileStorage);
+
             }
 
             $questionInstance->image()?->delete();
         }
 
         return self::saveImageFileQuestion($request, $questionInstance, $relativePath);
-    }
-
-    private static function getPathForDeleteImageQuestion ($question, $separator): string
-    {
-        $path = $question->image->path;
-
-        $path_array= explode($separator, $path);
-
-        unset($path_array[0], $path_array[1]);
-
-        return implode($separator, $path_array);
     }
 
     public static function updateQuestion ($request, Question $question): Question
@@ -127,9 +115,7 @@ class SaveQuestionsService
             ],
         ];
 
-        \Log::debug($answers);
         shuffle($answers);
-        \Log::debug($answers);
 
         return $answers;
     }
