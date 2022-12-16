@@ -34,7 +34,11 @@ class QuestionResource extends JsonResource
                 'image' => $this->when(collect($this->resource)->has('image'),
                     function () {
                         return ImageResource::make($this->resource->image);
-                    })
+                    }),
+                // 'questionable' => $this->when(collect($this->resource)->has('questionable'),
+                //     function () {
+                //         return $this->resource->questionable;
+                //     })
             ]
         ];
     }

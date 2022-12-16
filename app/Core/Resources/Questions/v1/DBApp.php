@@ -165,4 +165,17 @@ class DBApp implements QuestionsInterface
             abort(500,$e->getMessage());
         }
     }
+
+    public function generate(){
+        $questions_count = Question::isVisible()->applyFilters()->applySorts()->applyIncludes()->count();
+        if($questions_count < request('filter')['take']){
+            $questions = Question::where('is_visible', 'no')->get();
+            $questions->map(fn (Question $question) => $question->update(['is_visible' => 'yes']));
+        };
+
+        $questions = Question::isVisible()->applyFilters()->applySorts()->applyIncludes()->get();
+        $questions->map(fn (Question $question) => $question->update(['is_visible' => 'no']));
+        return $questions;
+    }
+
 }

@@ -32,8 +32,9 @@ class UserSeeder extends Seeder
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Academia',
             'last_name' => 'Bomberos Principal',
-            'email' => config('mail.from.address'),
-            //'dni' => '16788280M',
+            // 'email' => config('mail.from.address'),
+            'email' => 'admin2@admin.com',
+            'dni' => '16788280M',
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('GZVX4B)5PbD^aR'),
         ]);
@@ -41,8 +42,9 @@ class UserSeeder extends Seeder
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Academia',
             'last_name' => 'Bomberos Impugnaciones',
-            'email' => config('mail.mail_impugnaciones'),
-            //'dni' => '73314025F',
+            // 'email' => config('mail.mail_impugnaciones'),
+            'email' => 'admin@admin.com',
+            'dni' => '73314025F',
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('GZVX4B)5PbD^aR'),
         ]);

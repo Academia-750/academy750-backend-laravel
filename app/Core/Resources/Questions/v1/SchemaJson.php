@@ -120,10 +120,10 @@ class SchemaJson implements QuestionsInterface
         ]);
     }
 
-    public function topic_relationship_questions_delete($topic, $question)
+    public function generate(): QuestionCollection
     {
-        $this->eventApp->topic_relationship_questions_delete($topic, $question);
-
-        return response()->noContent();
+        return QuestionCollection::make(
+            $this->eventApp->generate()
+        );
     }
 }

@@ -196,4 +196,9 @@ class CacheApp implements TopicsInterface
         Cache::store('redis')->tags('opposition')->flush();
         $this->dbApp->topic_delete_a_question($topic, $question);
     }
+
+    public function topic_relationship_questions()
+    {
+        return $this->dbApp->topic_relationship_questions();
+    }
 }

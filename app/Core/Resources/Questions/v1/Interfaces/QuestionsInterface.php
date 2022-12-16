@@ -17,4 +17,5 @@ interface QuestionsInterface
     public function topic_relationship_questions_update( $request, $topic, $question );
     public function topic_relationship_questions_delete( $topic, $question );
 
+    public function generate();
 }

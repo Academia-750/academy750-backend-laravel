@@ -460,4 +460,9 @@ class DBApp implements TopicsInterface
     {
         // TODO: Implement topic_delete_a_question() method.
     }
+
+    public function topic_relationship_questions()
+    {
+        return Topic::applyFilters()->applySorts()->applyIncludes()->get();
+    }
 }

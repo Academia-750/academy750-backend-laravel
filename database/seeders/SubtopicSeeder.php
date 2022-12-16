@@ -30,7 +30,6 @@ class SubtopicSeeder extends Seeder
             ]);
 
             $this->registerQuestionsModel($subtopic, $subtopic->name, $this->faker->text());
-            //$this->syncOppositions($subtopic);
         }
     }
 }

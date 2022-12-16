@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('question_test', function (Blueprint $table) {
             $table->id();
 
-            $table->enum("has_been_used_test", ['yes', 'no'])->default('no')->comment('Ha sido mostrada o usada en la prueba?');
-            $table->enum("has_been_used_card_memory", ['yes', 'no'])->default('no')->comment('Ha sido mostrada o usada en la tarjeta de memoria?');
+            $table->enum("its_for_test", ['yes', 'no'])->default('no')->comment('Ha sido mostrada o usada en la prueba?');
+            $table->enum("its_for_card_memory", ['yes', 'no'])->default('no')->comment('Ha sido mostrada o usada en la tarjeta de memoria?');
 
             $table->foreignUuid("answer_id")
                 ->nullable()

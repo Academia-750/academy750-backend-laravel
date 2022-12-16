@@ -41,4 +41,9 @@ class QuestionPolicy
     public function topic_relationship_questions_delete (User $user, $topic, $question): bool {
         return true;
     }
+
+    public function generate(): bool
+    {
+        return true;
+    }
 }

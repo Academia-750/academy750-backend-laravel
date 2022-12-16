@@ -9,6 +9,8 @@ trait QuestionsHelpersTrait
                 'question' => "Question of {$fieldTextQuestion} - {$number}",
                 'reason' => "Reason {$number} - {$fakerText}",
                 'is_visible' => "yes",
+                'its_for_test' => fake()->randomElement(['yes', 'no']),
+                'its_for_card_memory' => fake()->randomElement(['yes', 'no']),
             ]);
         }
 

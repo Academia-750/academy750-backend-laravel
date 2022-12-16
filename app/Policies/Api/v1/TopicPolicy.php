@@ -138,4 +138,9 @@ class TopicPolicy
     {
         return true;
     }
+
+    public function topic_relationship_questions(): bool
+    {
+        return true;
+    }
 }

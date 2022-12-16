@@ -36,7 +36,9 @@ class Topic extends Model
         "day",
         "month",
         "year",
-        "date"
+        "date",
+        "oppositions",
+        "topic_group",
     ];
 
     public array $adapterFilters = [
@@ -45,6 +47,8 @@ class Topic extends Model
         "month" => "Month",
         "year" => "Year",
         "date" => "Date",
+        "oppositions" => "Oppositions",
+        "topic_group" => "TopicGroup",
     ];
 
     public array $allowedIncludes = [
@@ -94,6 +98,18 @@ class Topic extends Model
         });
     }
 
+    public function filterOppositions(Builder $query, $value): void{
+        $query->whereHas('oppositions', function($query) use ($value) {
+            $query->where('opposition_id', '=', $value);
+        });
+    }
+
+    public function filterTopicGroup(Builder $query, $value): void{
+        $query->whereHas('topic_group', function($query) use ($value) {
+            $query->where('topic_group_id', '=', $value);
+        });
+    }
+
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
@@ -108,7 +124,6 @@ class Topic extends Model
             ->withPivot('is_available')
             ->withTimestamps();
     }
-
 
     public function topic_group (): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

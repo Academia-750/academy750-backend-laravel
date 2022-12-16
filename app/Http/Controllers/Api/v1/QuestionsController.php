@@ -27,9 +27,11 @@ class QuestionsController extends Controller
         $this->questionsInterface = $questionsInterface;
     }
 
-    public function subtopics_relationship_get_questions(Subtopic $subtopic) {
+    public function subtopics_relationship_get_questions(Subtopic $subtopic)
+    {
         return $this->questionsInterface->subtopics_relationship_get_questions($subtopic);
     }
+
     public function subtopic_relationship_questions_read( Subtopic $subtopic, Question $question ) {
         return $this->questionsInterface->subtopic_relationship_questions_read( $subtopic, $question );
     }
@@ -56,7 +58,10 @@ class QuestionsController extends Controller
         return $this->questionsInterface->topic_relationship_questions_update( $request, $topic, $question );
     }
     public function topic_relationship_questions_delete( Topic $topic, Question $question ) {
-        \Log::debug("Controlador topic_relationship_questions_delete");
         return $this->questionsInterface->topic_relationship_questions_delete( $topic, $question );
+    }
+
+    public function generate(){
+        return $this->questionsInterface->generate();
     }
 }

@@ -196,8 +196,8 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                 'question' => $dataQuestion["question"],
                 'reason' => $dataQuestion["reason"],
                 'is_visible' => 'yes',
-                "has_been_used_test" => $dataQuestion["es_test"],
-                "has_been_used_card_memory" => $dataQuestion["es_tarjeta_de_memoria"],
+                "its_for_test" => $dataQuestion["es_test"],
+                "its_for_card_memory" => $dataQuestion["es_tarjeta_de_memoria"],
             ]);
 
             $this->registerAnswersQuestion($question->id, $dataAnswers);
@@ -211,8 +211,8 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
             'question' => $dataQuestion["question"],
             'reason' => $dataQuestion["reason"],
             'is_visible' => 'yes',
-            'has_been_used_test' => $dataQuestion[''],
-            'has_been_used_card_memory' => $dataQuestion[''],
+            'its_for_test' => $dataQuestion[''],
+            'its_for_card_memory' => $dataQuestion[''],
         ]);
 
         $this->registerAnswersQuestion($question->id, $dataAnswers);
