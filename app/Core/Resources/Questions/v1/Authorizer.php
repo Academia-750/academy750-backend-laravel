@@ -95,10 +95,4 @@ class Authorizer implements QuestionsInterface
         return $this->schemaJson->topic_relationship_questions_delete($topic, $question);
     }
 
-    public function generate(): QuestionCollection
-    {
-        Gate::authorize('generate', Question::class );
-        return $this->schemaJson->generate();
-    }
-
 }

@@ -17,5 +17,3 @@ Route::get('topics/{topic}/relationship/questions/{question}', [QuestionsControl
 Route::post('topics/{topic}/relationship/questions/create', [QuestionsController::class, 'topic_relationship_questions_create'])->name('api.v1.topics.relationship.questions.create');
 Route::post('topics/{topic}/relationship/questions/update/{question}', [QuestionsController::class, 'topic_relationship_questions_update'])->name('api.v1.topics.relationship.questions.update');
 Route::delete('topics/{topic}/relationship/questions/delete/{question}', [QuestionsController::class, 'topic_relationship_questions_delete'])->name('api.v1.topics.relationship.questions.delete');
-
-Route::get('questions/generate/data', [QuestionsController::class, 'generate'])->name('api.v1.questions.data');

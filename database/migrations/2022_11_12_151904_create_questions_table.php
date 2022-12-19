@@ -15,13 +15,15 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
+            $table->uuidMorphs('questionable');
+
             $table->string("question")->comment("La pregunta");
             $table->text("reason")->nullable()->comment("La explicacion");
             $table->enum('is_visible', [ 'yes', 'no' ])->comment('Está visible?')->default('yes');
             $table->enum("its_for_test", ['yes', 'no'])->default('yes')->comment('¿Es una pregunta para test?');
             $table->enum("its_for_card_memory", ['yes', 'no'])->default('no')->comment('¿Es una pregunta para tarjeta de memoria?');
+            $table->enum("its_being_used_tests", ['yes', 'no'])->default('no')->comment('¿Está siendo usada en Cuestionarios?');
 
-            $table->uuidMorphs('questionable');
 
             $table->timestamps();
         });

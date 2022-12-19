@@ -4,6 +4,7 @@ namespace App\Http\Resources\Api\Subtopic\v1;
 
 use App\Http\Resources\Api\Opposition\v1\OppositionCollection;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
+use App\Http\Resources\Api\TestModel\v1\QuestionnaireCollection;
 use App\Http\Resources\Api\Topic\v1\TopicCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -34,7 +35,11 @@ class SubtopicResource extends JsonResource
                 'questions' => $this->when(collect($this->resource)->has('questions'),
                     function () {
                         return QuestionCollection::make($this->resource->questions);
-                    })
+                    }),
+                'tests' => $this->when(collect($this->resource)->has('tests'),
+                    function () {
+                        return QuestionnaireCollection::make($this->resource->tests);
+                    }),
             ]
         ];
     }

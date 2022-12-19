@@ -16,16 +16,6 @@ return new class extends Migration
         Schema::create('question_test', function (Blueprint $table) {
             $table->id();
 
-            $table->enum("its_for_test", ['yes', 'no'])->default('no')->comment('Ha sido mostrada o usada en la prueba?');
-            $table->enum("its_for_card_memory", ['yes', 'no'])->default('no')->comment('Ha sido mostrada o usada en la tarjeta de memoria?');
-
-            $table->foreignUuid("answer_id")
-                ->nullable()
-                ->constrained()
-                ->nullOnDelete();
-
-            $table->enum("status_solved_test", ['unanswered', 'wrong', 'correct'])->default('unanswered')->comment('Estado de resolución de la pregunta');
-
             $table->foreignUuid('test_id')
                 ->constrained()
                 ->cascadeOnUpdate()
@@ -35,6 +25,17 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
+
+            $table->enum("have_been_show_test", ['yes', 'no'])->default('no')->comment('Ha sido mostrada o usada en la prueba?');
+            $table->enum("have_been_show_card_memory", ['yes', 'no'])->default('no')->comment('Ha sido mostrada o usada en la tarjeta de memoria?');
+
+            $table->foreignUuid("answer_id")
+                ->nullable()
+                ->comment('El ID de la respuesta seleccionada por el alumno para esta preguntada')
+                ->constrained()
+                ->nullOnDelete();
+
+            $table->enum("status_solved_test", ['unanswered', 'wrong', 'correct'])->default('unanswered')->comment('Estado de resolución de la pregunta');
 
             $table->timestamps();
         });

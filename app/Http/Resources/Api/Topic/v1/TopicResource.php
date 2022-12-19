@@ -4,7 +4,7 @@ namespace App\Http\Resources\Api\Topic\v1;
 
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Subtopic\v1\SubtopicCollection;
-use App\Http\Resources\Api\TestModel\v1\TestResourceCollection as TestsCollection;
+use App\Http\Resources\Api\TestModel\v1\QuestionnaireCollection;
 use App\Http\Resources\Api\TopicGroup\v1\TopicGroupResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,7 +36,7 @@ class TopicResource extends JsonResource
                     }),
                 'tests' => $this->when(collect($this->resource)->has('tests'),
                     function () {
-                        return TestsCollection::make($this->resource->tests);
+                        return QuestionnaireCollection::make($this->resource->tests);
                     }),
             ],
             'meta' => [

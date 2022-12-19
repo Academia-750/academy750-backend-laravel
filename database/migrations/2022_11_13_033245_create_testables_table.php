@@ -13,18 +13,22 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('test_topic', function (Blueprint $table) {
+        Schema::create('testables', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
 
+            $table->uuidMorphs('testable');
+
             $table->foreignUuid('test_id')
+                ->comment('El ID del Test al que pertenece el tema o subtema')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('topic_id')
+
+            /*$table->foreignUuid('topic_id')
                 ->nullable()
                 ->constrained()
-                ->nullOnDelete();
+                ->nullOnDelete();*/
 
             $table->timestamps();
         });

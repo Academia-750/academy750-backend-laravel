@@ -60,8 +60,4 @@ class QuestionsController extends Controller
     public function topic_relationship_questions_delete( Topic $topic, Question $question ) {
         return $this->questionsInterface->topic_relationship_questions_delete( $topic, $question );
     }
-
-    public function generate(){
-        return $this->questionsInterface->generate();
-    }
 }

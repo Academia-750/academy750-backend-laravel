@@ -9,10 +9,11 @@ class TestTypeResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'type' => 'resources',
+            'type' => 'tests-type',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-
+                'name' => $this->resource->name,
+                'alias_name' => $this->resource->alias_name
             ],
             'relationships' => [
 

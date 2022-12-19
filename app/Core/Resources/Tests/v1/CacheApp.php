@@ -26,13 +26,6 @@ class CacheApp implements TestsInterface
 
     }
 
-    public function create( $request ){
-
-        Cache::store('redis')->tags('test')->flush();
-
-        return $this->dbApp->create( $request );
-    }
-
     public function read( $test ){
 
         return Cache::store('redis')->tags('test')->rememberForever("test.find.".$test->getRouteKey(), function () use ( $test ) {
@@ -40,33 +33,10 @@ class CacheApp implements TestsInterface
         });
     }
 
-    public function update( $request, $test ){
-
+    public function generate ( $request ) {
         Cache::store('redis')->tags('test')->flush();
 
-        return $this->dbApp->update( $request, $test );
-    }
-
-    public function delete( $test ): void{
-
-        Cache::store('redis')->tags('test')->flush();
-        $this->dbApp->delete( $test );
-    }
-
-    public function action_for_multiple_records( $request ): array{
-
-        Cache::store('redis')->tags('test')->flush();
-
-        return $this->dbApp->action_for_multiple_records( $request );
-    }
-
-    public function export_records( $request ){
-        $this->dbApp->export_records( $request );
-    }
-
-    public function import_records( $request ): void{
-        Cache::store('redis')->tags('test')->flush();
-        $this->dbApp->import_records( $request );
+        return $this->dbApp->generate( $request );
     }
 
 }

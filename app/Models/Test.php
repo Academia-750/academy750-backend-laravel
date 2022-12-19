@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Core\Services\UUIDTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use function Symfony\Component\String\s;
 
 class Test extends Model
 {
@@ -48,7 +49,14 @@ class Test extends Model
         "date" => "Date",
     ];
 
-    public array $allowedIncludes = [];
+    public array $allowedIncludes = [
+        'test_type',
+        'opposition',
+        'user',
+        'questions',
+        'topics',
+        'subtopics',
+    ];
 
     public array $adapterIncludes = [];
 
@@ -80,9 +88,8 @@ class Test extends Model
     }
 
     public function filterSearch(Builder $query, $value): void{
-        $query->orWhere(function($query) use ($value) {
-            $query->where('field', 'LIKE' , "%{$value}%")
-                ->orWhere('other_field', 'LIKE' , "%{$value}%");
+        $query->orWhere(static function($query) use ($value) {
+            $query->whereDate('created_at', $value);
         });
     }
 
@@ -106,12 +113,26 @@ class Test extends Model
 
     public function questions (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
-        return $this->belongsToMany(Question::class);
+        return $this->belongsToMany(Question::class)
+            ->withPivot([
+                'have_been_show_test',
+                'have_been_show_card_memory',
+                'answer_id',
+                'status_solved_test',
+                'test_id',
+                'question_id',
+            ]);
     }
 
-    public function topics (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function topics (): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
-        return $this->belongsToMany(Topic::class)
+        return $this->morphedByMany(Topic::class, 'testable')
+            ->withTimestamps();
+    }
+
+    public function subtopics (): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    {
+        return $this->morphedByMany(Subtopic::class, 'testable')
             ->withTimestamps();
     }
 }

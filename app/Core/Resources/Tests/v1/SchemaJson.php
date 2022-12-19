@@ -1,10 +1,11 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
+use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
+use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
-use App\Http\Resources\Api\Test\v1\TestResourceCollection;
-use App\Http\Resources\Api\Test\v1\TestModelResource;
+
 use App\Core\Resources\Tests\v1\EventApp;
 use Illuminate\Support\Str;
 
@@ -16,63 +17,26 @@ class SchemaJson implements TestsInterface
         $this->eventApp = $eventApp;
     }
 
-    public function index(): TestResourceCollection
+    public function index(): QuestionnaireCollection
     {
-        return TestResourceCollection::make(
+        return QuestionnaireCollection::make(
             $this->eventApp->index()
         );
     }
 
-    public function create( $request ): \Illuminate\Http\JsonResponse
+    public function read( $test ): QuestionnaireResource
     {
-        return TestModelResource::make($this->eventApp->create($request))
-                    ->response()
-                    ->setStatusCode(201);
-    }
-
-    public function read( $test ): TestModelResource
-    {
-        return TestModelResource::make(
+        return QuestionnaireResource::make(
             $this->eventApp->read( $test )
         );
     }
 
-    public function update( $request, $test ): TestModelResource
+    public function generate( $request )
     {
-        return TestModelResource::make(
-            $this->eventApp->update( $request, $test )
+        return QuestionnaireCollection::make(
+            $this->eventApp->generate( $request )
         );
     }
 
-    public function delete( $test ): \Illuminate\Http\Response
-    {
-        $this->eventApp->delete( $test );
-        return response()->noContent();
-    }
-
-    public function action_for_multiple_records( $request ): \Illuminate\Http\JsonResponse
-    {
-        return response()->json([
-            'information' => $this->eventApp->action_for_multiple_records( $request )
-        ], 200);
-    }
-
-    public function export_records( $request ): \Illuminate\Http\JsonResponse
-    {
-        $this->eventApp->export_records( $request );
-
-        return response()->json([
-            'message' => "Proceso de exportación iniciada"
-        ], 200);
-    }
-
-    public function import_records( $request ): \Illuminate\Http\JsonResponse
-    {
-        $this->eventApp->import_records( $request );
-
-        return response()->json([
-            'message' => "Proceso de importación iniciada"
-        ], 200);
-    }
 
 }

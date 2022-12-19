@@ -38,7 +38,7 @@ class Topic extends Model
         "year",
         "date",
         "oppositions",
-        "topic_group",
+        "topic-group",
     ];
 
     public array $adapterFilters = [
@@ -48,7 +48,7 @@ class Topic extends Model
         "year" => "Year",
         "date" => "Date",
         "oppositions" => "Oppositions",
-        "topic_group" => "TopicGroup",
+        "topic-group" => "TopicGroup",
     ];
 
     public array $allowedIncludes = [
@@ -91,10 +91,15 @@ class Topic extends Model
     }
 
     public function filterSearch(Builder $query, $value): void{
-        $query->orWhere(static function($query) use ($value) {
+        $query->where(static function($query) use ($value) {
             $query->where('name', 'LIKE' , "%{$value}%")
                 ->orWhere('id', 'LIKE' , "%{$value}%")
-                ->orWhere('is_available', 'LIKE' , "%{$value}%");
+                ->orWhere('is_available', 'LIKE' , "%{$value}%")
+                ->orWhereHas('topic_group', static function(Builder $query) use ($value) {
+                    $query->where('name', 'like', "%{$value}%")
+                        ->orWhere('id', 'LIKE' , "%{$value}%");
+                })
+            ;
         });
     }
 
@@ -125,6 +130,12 @@ class Topic extends Model
             ->withTimestamps();
     }
 
+    public function tests (): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    {
+        return $this->morphToMany(Test::class, 'testable')
+            ->withTimestamps();
+    }
+
     public function topic_group (): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(TopicGroup::class);
@@ -143,11 +154,5 @@ class Topic extends Model
         });*/
 
         return $this->morphMany(Question::class, 'questionable');
-    }
-
-    public function tests (): \Illuminate\Database\Eloquent\Relations\BelongsToMany
-    {
-        return $this->belongsToMany(Test::class)
-            ->withTimestamps();
     }
 }

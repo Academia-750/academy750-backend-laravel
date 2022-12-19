@@ -23,10 +23,12 @@ return new class extends Migration
             $table->enum("is_solved_test", ['yes', 'no'])->default('no')->comment('Ha sido completado la prueba?');
 
             $table->foreignUuid("test_type_id")
+                ->comment('El ID del tipo de cuestionario')
                 ->constrained()
                 ->cascadeOnDelete();
 
             $table->foreignUuid("opposition_id")
+                ->comment('El ID de la Oposición')
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();

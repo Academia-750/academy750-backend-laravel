@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Api\TestModel\v1;
+namespace App\Http\Resources\Api\Questionnaire\v1;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class TestResourceCollection extends ResourceCollection
+class QuestionnaireCollection extends ResourceCollection
 {
     //public $collects = ExampleResource::class;
 

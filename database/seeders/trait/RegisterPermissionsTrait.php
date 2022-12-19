@@ -144,6 +144,9 @@ trait RegisterPermissionsTrait
 
         $permissions = [
             'create-tests-for-resolve' => 'create-tests-for-resolve',
+            'list-oppositions' => 'list-oppositions',
+            'list-topics' => 'list-topics',
+            'list-topic-groups' => 'list-topic-groups',
             'list-uncompleted-tests' => 'list-uncompleted-tests',
             'resolve-a-tests' => 'resolve-a-tests',
             'see-results-of-tests' => 'see-results-of-tests',

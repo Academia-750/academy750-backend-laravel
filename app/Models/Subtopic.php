@@ -109,6 +109,12 @@ class Subtopic extends Model
             ->withTimestamps();
     }
 
+    public function tests (): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    {
+        return $this->morphToMany(Test::class, 'testable')
+            ->withTimestamps();
+    }
+
 
     public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
     {

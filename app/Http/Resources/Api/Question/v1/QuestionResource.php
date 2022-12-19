@@ -4,7 +4,7 @@ namespace App\Http\Resources\Api\Question\v1;
 
 use App\Http\Resources\Api\Answer\v1\AnswerCollection;
 use App\Http\Resources\Api\Image\v1\ImageResource;
-use App\Http\Resources\Api\TestModel\v1\TestResourceCollection as TestsCollection;
+use App\Http\Resources\Api\TestModel\v1\QuestionnaireCollection as TestsCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class QuestionResource extends JsonResource
@@ -20,6 +20,7 @@ class QuestionResource extends JsonResource
                 "is_visible" => $this->resource->is_visible === 'yes',
                 'its_for_test' => $this->resource->its_for_test,
                 'its_for_card_memory' => $this->resource->its_for_card_memory,
+                'its_being_used_tests' => $this->resource->its_being_used_tests,
                 "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [

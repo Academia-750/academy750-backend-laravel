@@ -9,7 +9,7 @@ class ImportRecordResource extends JsonResource
     public function toArray($request): array
     {
         return [
-            'type' => 'resources',
+            'type' => 'import-records',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
                 "number_of_row" => $this->resource->number_of_row,

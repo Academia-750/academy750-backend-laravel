@@ -1,10 +1,10 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
+use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
+use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
-use App\Http\Resources\Api\Test\v1\TestResourceCollection;
-use App\Http\Resources\Api\Test\v1\TestModelResource;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
 use App\Core\Resources\Tests\v1\SchemaJson;
@@ -16,52 +16,24 @@ class Authorizer implements TestsInterface
         $this->schemaJson = $schemaJson;
     }
 
-    public function index(): TestResourceCollection
+    public function index(): QuestionnaireCollection
     {
         Gate::authorize('index', Test::class );
         return $this->schemaJson->index();
     }
 
-    public function create( $request ): \Illuminate\Http\JsonResponse
-    {
-        Gate::authorize('create', Test::class );
-        return $this->schemaJson->create($request);
-    }
-
-    public function read( $test ): TestModelResource
+    public function read( $test ): QuestionnaireResource
     {
         Gate::authorize('read', $test );
+
         return $this->schemaJson->read( $test );
     }
 
-    public function update( $request, $test ): TestModelResource
+    public function generate( $request )
     {
-        Gate::authorize('update', $test );
-        return $this->schemaJson->update( $request, $test );
+        Gate::authorize('generate', [Test::class, $request] );
+        return $this->schemaJson->generate( $request );
     }
 
-    public function delete( $test ): \Illuminate\Http\Response
-    {
-        Gate::authorize('delete', $test );
-        return $this->schemaJson->delete( $test );
-    }
-
-    public function action_for_multiple_records( $request ): \Illuminate\Http\JsonResponse
-    {
-        Gate::authorize('mass_selection_for_action', Test::class );
-        return $this->schemaJson->action_for_multiple_records( $request );
-    }
-
-    public function export_records( $request ): \Illuminate\Http\JsonResponse
-    {
-        Gate::authorize('export_records', Test::class );
-        return $this->schemaJson->export_records( $request );
-    }
-
-    public function import_records( $request ): \Illuminate\Http\JsonResponse
-    {
-        Gate::authorize('import_records', Test::class );
-        return $this->schemaJson->import_records( $request );
-    }
 
 }

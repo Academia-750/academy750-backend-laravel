@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api\v1\Tests;
+namespace App\Http\Requests\Api\v1\Questionnaires;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
-class ExportTestsRequest extends FormRequest
+class CreateTestRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -16,13 +16,8 @@ class ExportTestsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
-        ];
-    }
-
-    public function messages(): array {
-        return [
-            //
+            'topics' => ['required', 'array'],
+            'topics.*' => ['required', 'uuid', 'exists:topics,id']
         ];
     }
 
@@ -30,7 +25,7 @@ class ExportTestsRequest extends FormRequest
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            //'email' => 'Correo Electrónico',
+            'topics' => 'Tema'
         ];
     }
 }

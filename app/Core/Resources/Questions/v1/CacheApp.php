@@ -93,8 +93,4 @@ class CacheApp implements QuestionsInterface
         return $this->dbApp->topic_relationship_questions_delete($topic, $question);
     }
 
-    public function generate(){
-        return $this->dbApp->generate();
-    }
-
 }
