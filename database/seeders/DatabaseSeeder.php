@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(SubtopicTopicSeeder::class);
         $this->call(QuestionSeeder::class);
         $this->call(TestTypeSeeder::class);
-        $this->call(TestSeeder::class);
+        //$this->call(TestSeeder::class);
         /*$this->call(AnswerSeeder::class);
         $this->call(ImageSeeder::class);*/
         // [EndOfLineMethodRegister]

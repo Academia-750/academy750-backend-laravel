@@ -15,7 +15,11 @@ class Test extends Model
     //use SoftDeletes;
     use UUIDTrait;
 
+    public $keyType = "string";
+    public $incrementing = false;
+
     protected $fillable = [
+        'id',
         "number_of_questions_requested",
         "number_of_questions_generated",
         "test_result",

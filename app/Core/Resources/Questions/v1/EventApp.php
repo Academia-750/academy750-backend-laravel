@@ -58,4 +58,9 @@ class EventApp implements QuestionsInterface
     {
         return $this->cacheApp->topic_relationship_questions_update($request, $topic, $question);
     }
+
+    public function topic_relationship_questions_delete($topic, $question)
+    {
+        return $this->cacheApp->topic_relationship_questions_delete($topic, $question);
+    }
 }

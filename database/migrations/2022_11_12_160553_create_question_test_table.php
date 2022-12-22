@@ -31,7 +31,9 @@ return new class extends Migration
 
             $table->foreignUuid("answer_id")
                 ->nullable()
-                ->comment('El ID de la respuesta seleccionada por el alumno para esta preguntada')
+                ->comment('El ID de la respuesta seleccionada por el alumno
+
+                para esta preguntada')
                 ->constrained()
                 ->nullOnDelete();
 

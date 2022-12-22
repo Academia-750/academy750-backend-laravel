@@ -34,6 +34,8 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->foreignUuid("user_id")
+
+
                 ->comment("El alumno que resolverá la prueba")
                 ->nullable()
                 ->constrained()

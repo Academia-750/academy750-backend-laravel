@@ -23,12 +23,16 @@ Artisan::command('bomberos750:clear', function () {
     $this->call('cache:clear', ['store' => 'redis']);
     $this->call('config:clear');
     $this->call('event:clear');
-    /*$this->call('queue:clear');*/
+    $this->call('route:clear');
+    $this->call('view:clear');
+    $this->call('optimize:clear');
+
+    $this->call('queue:clear');
+
     $this->call('config:cache');
     $this->call('view:cache');
-    $this->call('view:clear');
-    // $this->call('optimize:clear');
-    // $this->call('optimize');
+    $this->call('route:cache');
+    $this->call('optimize');
 })->purpose('Optimiza la caché de la APP');
 
 Artisan::command('bomberos750:install', function () {

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Api\v1\UsersController;
+use App\Http\Resources\Api\Role\v1\RoleResource;
+use App\Models\Role;
 use Illuminate\Support\Facades\Route;
 
 // Rutas del recurso Users
@@ -11,8 +13,8 @@ Route::post('users/create', [UsersController::class, 'create'])->name('api.v1.us
 Route::patch('users/update/{user}', [UsersController::class, 'update'])->name('api.v1.users.update');
 Route::delete('users/delete/{user}', [UsersController::class, 'delete'])->name('api.v1.users.delete');
 Route::post('users/actions-on-multiple-records', [UsersController::class, 'mass_selection_for_action'])->name('api.v1.users.actions-on-multiple-records');
-Route::post('users/disable-account/{user}', [UsersController::class, 'disable_account'])->name('api.v1.users.disable-account');
-Route::post('users/enable-account/{user}', [UsersController::class, 'enable_account'])->name('api.v1.users.enable-account');
+/*Route::post('users/disable-account/{user}', [UsersController::class, 'disable_account'])->name('api.v1.users.disable-account');
+Route::post('users/enable-account/{user}', [UsersController::class, 'enable_account'])->name('api.v1.users.enable-account');*/
 /*Route::post('users/export', [UsersController::class, 'export_records'])->name('api.v1.users.export');
 Route::post('users/import', [UsersController::class, 'import_records'])->name('api.v1.users.import');*/
 Route::get('users/import/template', [UsersController::class, 'download_template_import_records'])->name('api.v1.users.import.template');
@@ -26,8 +28,10 @@ Route::get('roles/get-data/student', static function () {
         abort(404);
     }
 
-    return \App\Http\Resources\Api\Role\v1\RoleResource::make(
-        \App\Models\Role::query()->firstWhere('name', '=', 'student')
+    return RoleResource::make(
+        Role::query()->firstWhere('name', '=', 'student')
     );
+
+
 });
 
