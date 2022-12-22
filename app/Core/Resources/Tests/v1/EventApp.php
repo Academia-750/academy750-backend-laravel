@@ -14,16 +14,16 @@ class EventApp implements TestsInterface
         $this->cacheApp = $cacheApp;
     }
 
-    public function index(){
-        return $this->cacheApp->index();
+    public function get_tests_unresolved(){
+        return $this->cacheApp->get_tests_unresolved();
     }
 
-    public function read( $test ){
-        return $this->cacheApp->read( $test );
+    public function fetch_unresolved_test( $test ){
+        return $this->cacheApp->fetch_unresolved_test( $test );
     }
 
-    public function generate( $request ){
-        return $this->cacheApp->generate( $request );
+    public function create_a_quiz( $request ){
+        return $this->cacheApp->create_a_quiz( $request );
     }
 
 

@@ -1,9 +1,14 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
+use App\Core\Resources\Tests\Services\QuestionsTestService;
+use App\Core\Resources\Tests\Services\TestsService;
+use App\Models\Opposition;
 use App\Models\Question;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
+use App\Models\TestType;
+use Illuminate\Support\Facades\Auth;
 
 
 class DBApp implements TestsInterface
@@ -14,23 +19,43 @@ class DBApp implements TestsInterface
         $this->model = $test;
     }
 
-    public function index(){
-        return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    public function get_tests_unresolved(){
+        return Auth::user()?->tests()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function read( $test ): \App\Models\Test{
-        return $this->model->applyIncludes()->find($test->getRouteKey());
+    public function fetch_unresolved_test( $test ): \App\Models\Test{
+
+        $testQuery = Auth::user()->tests()->firstWhere('id', '=', $test->getRouteKey());
+
+        if (!$testQuery) {
+            abort(404);
+        }
+
+        return $this->model->applyIncludes()->find($testQuery->getRouteKey());
     }
 
-    public function generate( $request ){
-        $questions_count = Question::isVisible()->applyFilters()->applySorts()->applyIncludes()->count();
-        if($questions_count < request('filter')['take']){
-            $questions = Question::where('is_visible', 'no')->get();
-            $questions->map(fn (Question $question) => $question->update(['is_visible' => 'yes']));
-        };
+    public function create_a_quiz( $request ): Test
+    {
+        $opposition = Opposition::findOrFail($request->get('opposition_id'));
+        $testType = TestType::findOrFail($request->get('test_type_id'));
+        $user = Auth::user();
 
-        $questions = Question::isVisible()->applyFilters()->applySorts()->applyIncludes()->get();
-        $questions->map(fn (Question $question) => $question->update(['is_visible' => 'no']));
-        return $questions;
+        $questionnaire = TestsService::createTest([
+            "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
+            "opposition_id" => $opposition->getRouteKey(),
+            "test_type_id" => $testType->getRouteKey(),
+            "user_id" => $user?->getRouteKey()
+        ]);
+
+        TestsService::registerTopicsAndSubtopicsByTest($questionnaire, $request->get('topics_id'), $opposition);
+
+        QuestionsTestService::buildQuestionsTest(
+            (int) $request->get('count_questions_for_test'),
+            $testType,
+            $user,
+            $questionnaire
+        );
+
+        return $questionnaire;
     }
 }

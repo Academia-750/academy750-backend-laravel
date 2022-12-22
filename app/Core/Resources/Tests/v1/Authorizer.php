@@ -16,23 +16,23 @@ class Authorizer implements TestsInterface
         $this->schemaJson = $schemaJson;
     }
 
-    public function index(): QuestionnaireCollection
+    public function get_tests_unresolved(): QuestionnaireCollection
     {
-        Gate::authorize('index', Test::class );
-        return $this->schemaJson->index();
+        Gate::authorize('get_tests_unresolved', Test::class );
+        return $this->schemaJson->get_tests_unresolved();
     }
 
-    public function read( $test ): QuestionnaireResource
+    public function fetch_unresolved_test( $test ): QuestionnaireResource
     {
-        Gate::authorize('read', $test );
+        Gate::authorize('fetch_unresolved_test', $test );
 
-        return $this->schemaJson->read( $test );
+        return $this->schemaJson->fetch_unresolved_test( $test );
     }
 
-    public function generate( $request )
+    public function create_a_quiz( $request )
     {
-        Gate::authorize('generate', [Test::class, $request] );
-        return $this->schemaJson->generate( $request );
+        Gate::authorize('create_a_quiz', [Test::class, $request] );
+        return $this->schemaJson->create_a_quiz( $request );
     }
 
 

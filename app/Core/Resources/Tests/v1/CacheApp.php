@@ -14,29 +14,29 @@ class CacheApp implements TestsInterface
         $this->dbApp = $dbApp;
     }
 
-    public function index(){
+    public function get_tests_unresolved(){
 
         $nameCache = '';
 
         ( empty(request()->query()) ) ? $nameCache = 'test.get.all' : $nameCache = json_encode( request()->query() );
 
         return Cache::store('redis')->tags('test')->rememberForever($nameCache, function () {
-            return $this->dbApp->index();
+            return $this->dbApp->get_tests_unresolved();
         });
 
     }
 
-    public function read( $test ){
+    public function fetch_unresolved_test( $test ){
 
         return Cache::store('redis')->tags('test')->rememberForever("test.find.".$test->getRouteKey(), function () use ( $test ) {
-            return $this->dbApp->read( $test );
+            return $this->dbApp->fetch_unresolved_test( $test );
         });
     }
 
-    public function generate ( $request ) {
+    public function create_a_quiz ( $request ) {
         Cache::store('redis')->tags('test')->flush();
 
-        return $this->dbApp->generate( $request );
+        return $this->dbApp->create_a_quiz( $request );
     }
 
 }

@@ -25,9 +25,9 @@ Artisan::command('bomberos750:clear', function () {
     $this->call('event:clear');
     $this->call('route:clear');
     $this->call('view:clear');
+    $this->call('queue:clear');
     $this->call('optimize:clear');
 
-    $this->call('queue:clear');
 
     $this->call('config:cache');
     $this->call('view:cache');

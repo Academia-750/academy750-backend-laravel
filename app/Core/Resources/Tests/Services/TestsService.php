@@ -13,9 +13,9 @@ class TestsService
      * Crea un cuestionario nuevo
      *
      * @param $data
-     * @return void
+     * @return \App\Models\Test
      */
-    public static function createTest ($data )
+    public static function createTest ( $data )
     {
 
         try {
@@ -36,8 +36,6 @@ class TestsService
             DB::rollBack();
             abort(500, $th->getMessage());
         }
-
-
     }
 
     /**

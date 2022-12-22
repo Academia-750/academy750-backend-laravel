@@ -5,9 +5,9 @@ use App\Models\Test;
 
 interface TestsInterface
 {
-    public function index();
-    public function read( $test );
+    public function get_tests_unresolved();
+    public function fetch_unresolved_test( $test );
 
-    public function generate( $request );
+    public function create_a_quiz( $request );
 
 }

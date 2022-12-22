@@ -21,15 +21,15 @@ class QuestionnairesController extends Controller
         $this->testsInterface = $testsInterface;
     }
 
-    public function index(){
-        return $this->testsInterface->index();
+    public function get_tests_unresolved(){
+        return $this->testsInterface->get_tests_unresolved();
     }
 
-    public function read( Test $test ){
-        return $this->testsInterface->read( $test );
+    public function fetch_unresolved_test( Test $test ){
+        return $this->testsInterface->fetch_unresolved_test( $test );
     }
 
-    public function generate ( CreateTestRequest $request ) {
-        return $this->testsInterface->generate( $request );
+    public function create_a_quiz ( CreateTestRequest $request ) {
+        return $this->testsInterface->create_a_quiz( $request );
     }
 }

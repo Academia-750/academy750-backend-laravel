@@ -17,24 +17,24 @@ class SchemaJson implements TestsInterface
         $this->eventApp = $eventApp;
     }
 
-    public function index(): QuestionnaireCollection
+    public function get_tests_unresolved(): QuestionnaireCollection
     {
         return QuestionnaireCollection::make(
-            $this->eventApp->index()
+            $this->eventApp->get_tests_unresolved()
         );
     }
 
-    public function read( $test ): QuestionnaireResource
+    public function fetch_unresolved_test( $test ): QuestionnaireResource
     {
         return QuestionnaireResource::make(
-            $this->eventApp->read( $test )
+            $this->eventApp->fetch_unresolved_test( $test )
         );
     }
 
-    public function generate( $request )
+    public function create_a_quiz( $request )
     {
-        return QuestionnaireCollection::make(
-            $this->eventApp->generate( $request )
+        return QuestionnaireResource::make(
+            $this->eventApp->create_a_quiz( $request )
         );
     }
 
