@@ -21,13 +21,13 @@ class UserFactory extends Factory
     public function definition(): array
     {
         $firstName = $this->faker->firstName();
-        $lastName = $this->faker->firstName();
+        $lastName = $this->faker->lastName();
 
         return [
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => $firstName,
             'last_name' => $lastName,
-            'full_name' => "{$lastName} {$lastName}",
+            'full_name' => "{$firstName} {$lastName}",
             'email' => $this->faker->unique()->safeEmail(),
             'dni' => $this->generateDNIUnique(),
             'phone' => $this->getNumberPhoneSpain(),
