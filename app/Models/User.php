@@ -243,10 +243,9 @@ class User extends Authenticatable
     public function filterSearch(Builder $query, $value): void{
         $query->orWhere(function($query) use ($value) {
             $query->where('dni', 'LIKE' , "%{$value}%")
-                ->orWhere('id', 'LIKE' , "%{$value}%")
+                /*->orWhere('id', 'LIKE' , "%{$value}%")*/
                 ->orWhere('full_name', 'LIKE' , "%{$value}%")
                 //->orWhere('last_name', 'LIKE' , "%{$value}%")
-                ->orWhere('phone', 'LIKE' , "%{$value}%")
                 ->orWhere('phone', 'LIKE' , "%{$value}%")
                 ->orWhere('email', 'LIKE' , "%{$value}%")
             ;
