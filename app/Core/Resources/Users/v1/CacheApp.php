@@ -16,46 +16,50 @@ class CacheApp implements UsersInterface
 
     public function index(){
 
-        $nameCache = '';
+        /*$nameCache = '';
 
         ( empty(request()->query()) ) ? $nameCache = 'user.get.all' : $nameCache = json_encode(request()->query(), JSON_THROW_ON_ERROR);
 
         return Cache::store('redis')->tags('user')->rememberForever($nameCache, function () {
             return $this->dbApp->index();
-        });
+        });*/
+
+        return $this->dbApp->index();
 
     }
 
     public function create( $request ){
 
-        Cache::store('redis')->tags('user')->flush();
+        //Cache::store('redis')->tags('user')->flush();
 
         return $this->dbApp->create( $request );
     }
 
     public function read( $user ){
 
-        return Cache::store('redis')->tags('user')->rememberForever("user.find.".$user->getRouteKey(), function () use ( $user ) {
+        /*return Cache::store('redis')->tags('user')->rememberForever("user.find.".$user->getRouteKey(), function () use ( $user ) {
             return $this->dbApp->read( $user );
-        });
+        });*/
+
+        return $this->dbApp->read( $user );
     }
 
     public function update( $request, $user ){
 
-        Cache::store('redis')->tags('user')->flush();
+        //Cache::store('redis')->tags('user')->flush();
 
         return $this->dbApp->update( $request, $user );
     }
 
     public function delete( $user ): void{
 
-        Cache::store('redis')->tags('user')->flush();
+        //Cache::store('redis')->tags('user')->flush();
         $this->dbApp->delete( $user );
     }
 
     public function mass_selection_for_action( $request ): array{
 
-        Cache::store('redis')->tags('user')->flush();
+        //Cache::store('redis')->tags('user')->flush();
 
         return $this->dbApp->mass_selection_for_action( $request );
     }
@@ -65,7 +69,7 @@ class CacheApp implements UsersInterface
     }
 
     public function import_records( $request ){
-        Cache::store('redis')->tags('user')->flush();
+        //Cache::store('redis')->tags('user')->flush();
 
         return $this->dbApp->import_records( $request );
     }
@@ -82,7 +86,7 @@ class CacheApp implements UsersInterface
 
     public function contactsUS($request)
     {
-        Cache::store('redis')->tags('user')->flush();
+        //Cache::store('redis')->tags('user')->flush();
         return $this->dbApp->contactsUS($request);
     }
 }

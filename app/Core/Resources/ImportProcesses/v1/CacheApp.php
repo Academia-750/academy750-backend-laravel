@@ -25,6 +25,7 @@ class CacheApp implements ImportProcessesInterface
             return $this->dbApp->index();
         });
 
+        //return $this->dbApp->index();
     }
 
     /**
@@ -42,5 +43,7 @@ class CacheApp implements ImportProcessesInterface
         return Cache::store('redis')->tags('import_process')->rememberForever($nameCache, function () use ($import_process) {
             return $this->dbApp->get_relationship_import_records($import_process);
         });
+
+        //return $this->dbApp->get_relationship_import_records($import_process);
     }
 }
