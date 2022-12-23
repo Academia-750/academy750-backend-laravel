@@ -20,15 +20,19 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $firstName = $this->faker->firstName();
+        $lastName = $this->faker->firstName();
+
         return [
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
-            'first_name' => $this->faker->firstName(),
-            'last_name' => $this->faker->lastName(),
+            'first_name' => $firstName,
+            'last_name' => $lastName,
+            'full_name' => "{$lastName} {$lastName}",
             'email' => $this->faker->unique()->safeEmail(),
             'dni' => $this->generateDNIUnique(),
             'phone' => $this->getNumberPhoneSpain(),
             'state' => 'enable',
-            'password' => Hash::make('academia750'),
+            'password' => Hash::make('student'),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ];

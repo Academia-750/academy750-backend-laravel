@@ -41,6 +41,7 @@ class DBApp implements UsersInterface
                     'dni' => $request->get('dni'),
                     'first_name' => $request->get('first-name'),
                     'last_name' => $request->get('last-name'),
+                    'full_name' => "{$request->get('first-name')} {$request->get('last-name')}",
                     'phone' => $request->get('phone'),
                     'email' => $request->get('email'),
                     'password' => Hash::make($secureRandomPassword)
@@ -74,9 +75,13 @@ class DBApp implements UsersInterface
         try {
 
             DB::beginTransaction();
+                $first_name = $request->get('first-name') ?? $user->first_name;
+                $last_name = $request->get('last-name') ?? $user->last_name;
+
                 $user->dni = $request->get('dni') ?? $user->dni;
-                $user->first_name = $request->get('first-name') ?? $user->first_name;
-                $user->last_name = $request->get('last-name') ?? $user->last_name;
+                $user->first_name = $first_name;
+                $user->last_name = $last_name;
+                $user->full_name = "{$first_name} {$last_name}";
                 $user->phone = $request->get('phone') ?? $user->phone;
                 $user->email = $request->get('email') ?? $user->email;
                 $user->save();

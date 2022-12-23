@@ -52,6 +52,7 @@ class User extends Authenticatable
         'dni',
         'first_name',
         'last_name',
+        'full_name',
         'phone',
         'last_session',
         'state',
@@ -243,8 +244,8 @@ class User extends Authenticatable
         $query->orWhere(function($query) use ($value) {
             $query->where('dni', 'LIKE' , "%{$value}%")
                 ->orWhere('id', 'LIKE' , "%{$value}%")
-                ->orWhere('first_name', 'LIKE' , "%{$value}%")
-                ->orWhere('last_name', 'LIKE' , "%{$value}%")
+                ->orWhere('full_name', 'LIKE' , "%{$value}%")
+                //->orWhere('last_name', 'LIKE' , "%{$value}%")
                 ->orWhere('phone', 'LIKE' , "%{$value}%")
                 ->orWhere('phone', 'LIKE' , "%{$value}%")
                 ->orWhere('email', 'LIKE' , "%{$value}%")

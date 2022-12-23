@@ -32,6 +32,7 @@ class UserSeeder extends Seeder
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Academia',
             'last_name' => 'Bomberos Principal',
+            'full_name' => 'Academia Bomberos Principal',
             // 'email' => config('mail.from.address'),
             'email' => 'admin2@admin.com',
             'dni' => '16788280M',
@@ -42,6 +43,7 @@ class UserSeeder extends Seeder
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Academia',
             'last_name' => 'Bomberos Impugnaciones',
+            'full_name' => 'Academia Bomberos Impugnaciones',
             // 'email' => config('mail.mail_impugnaciones'),
             'email' => 'admin@admin.com',
             'dni' => '73314025F',
@@ -52,9 +54,10 @@ class UserSeeder extends Seeder
         /*Admin*/
         $adminAdolfo = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
-            'first_name' => 'Adolfo Feria',
+            'first_name' => 'Adolfo',
             'email' => 'adolfoferia.admin@academia750.com',
-            'last_name' => $this->factory->lastName(),
+            'last_name' => 'Feria',
+            'full_name' => 'Adolfo Feria',
             'dni' => "42711006Y",
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('admin'),
@@ -64,7 +67,8 @@ class UserSeeder extends Seeder
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Raul Moheno',
             'email' => 'raulmoheno.admin@academia750.com',
-            'last_name' => $this->factory->lastName(),
+            'last_name' => 'Moheno',
+            'full_name' => 'Raul Moheno',
             'dni' => "32631674X",
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('admin'),
@@ -73,9 +77,10 @@ class UserSeeder extends Seeder
         /*Editor*/
         $studentAdolfo = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
-            'first_name' => 'Adolfo Feria',
+            'first_name' => 'Adolfo',
             'email' => 'adolfoferia.student@academia750.com',
-            'last_name' => $this->factory->lastName(),
+            'last_name' => 'Feria',
+            'full_name' => 'Adolfo Feria',
             'dni' => "67239172Y",
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('student'),
@@ -84,7 +89,8 @@ class UserSeeder extends Seeder
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Raul Moheno',
             'email' => 'raulmoheno.student@academia750.com',
-            'last_name' => $this->factory->lastName(),
+            'last_name' => 'Moheno',
+            'full_name' => 'Raul Moheno',
             'dni' => "14071663X",
             'phone' => $this->getNumberPhoneSpain(),
             'password' => bcrypt('student'),
@@ -136,7 +142,7 @@ class UserSeeder extends Seeder
             'type_path' => 'url'
         ]);
 
-        User::factory()->count(30)->create()->each(static function ($itemModel) use ($roleStudent) {
+        User::factory()->count(10)->create()->each(static function ($itemModel) use ($roleStudent) {
             $itemModel->assignRole($roleStudent);
             $itemModel->image()->create([
                 'path' => 'https://via.placeholder.com/128.webp?text=ExampleUser',

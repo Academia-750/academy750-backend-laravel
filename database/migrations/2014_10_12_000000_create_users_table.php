@@ -17,8 +17,9 @@ class CreateUsersTable extends Migration
             /*$table->string('url_photo')->nullable()->default(null);*/
             $table->uuid('id')->primary()->comment('Identificador UUID');
             $table->string('dni', 20)->nullable()->unique()->comment('Documento Nacional de Identidad');
-            $table->string('first_name', 70);
-            $table->string('last_name', 70);
+            $table->string('first_name', 90);
+            $table->string('last_name', 90);
+            $table->string('full_name');
             $table->string('phone', 25)->unique()->comment('Numero de telefono');
             $table->timestamp('last_session')->nullable()->comment('Fecha de ultimo login');
             $table->enum('state', ['enable', 'disable'])->default('enable')->comment('Cuenta -> enable=Habilitada, disabled=Deshabilitada');

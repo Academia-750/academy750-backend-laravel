@@ -31,7 +31,15 @@ Route::get('roles/get-data/student', static function () {
     return RoleResource::make(
         Role::query()->firstWhere('name', '=', 'student')
     );
+});
 
+Route::get('verify/token/header-authorization', static function () {
+    if (!auth()->user()) {
+        abort(401);
+    }
 
+    return response()->json([
+        'message' => 'successfully'
+    ], 200);
 });
 
