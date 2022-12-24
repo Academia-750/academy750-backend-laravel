@@ -25,7 +25,7 @@ class TestsService
                     "number_of_questions_generated" => $data["number_of_questions_requested"], // Se actualizará una vez se obtenga el numero real de preguntas disponibles
                     "test_result" => "0",
                     "is_solved_test" => 'no',
-                    'test_type_id' => $data["test_type_id"],
+                    'test_type' => $data["test_type"],
                     'opposition_id' => $data['opposition_id'],
                     'user_id' => $data['user_id'],
                 ]);

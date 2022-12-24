@@ -22,10 +22,10 @@ class QuestionsTestService
      * @param Test $test
      * @return array|void
      */
-    public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, TestType $testType, User $user, Test $test )
+    public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test )
     {
 
-        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $test, $testType?->name === 'card-memory');
+        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $test, $testType === 'card-memory');
 
         self::registerQuestionsHistoryByTest($questions, $test, $testType);
 
@@ -43,7 +43,7 @@ class QuestionsTestService
      * @param bool $isCardMemory
      * @return array|void
      */
-    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, TestType $testType, User $user, Test $test, bool $isCardMemory ) {
+    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, bool $isCardMemory ) {
         try {
             DB::beginTransaction();
 
@@ -51,7 +51,7 @@ class QuestionsTestService
 
             $data =  DB::select(
                 "call {$nameProcedure}(?,?,?,?)",
-                array($user->getRouteKey(), $test->getRouteKey() , $testType->getRouteKey(), $amountQuestionsRequestedByTest)
+                array($user->getRouteKey(), $test->getRouteKey() , $testType, $amountQuestionsRequestedByTest)
             );
 
             DB::commit();
@@ -71,14 +71,14 @@ class QuestionsTestService
      * @param TestType $testType
      * @return void
      */
-    public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, TestType $testType): void {
+    public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType): void {
         try {
             DB::beginTransaction();
             foreach ($questions_id as $question_id) {
 
                 $test->questions()->attach($question_id, [
-                    'have_been_show_test' => $testType?->name === 'test',
-                    'have_been_show_card_memory' => $testType?->name === 'card-memory',
+                    'have_been_show_test' => $testType === 'test',
+                    'have_been_show_card_memory' => $testType === 'card-memory',
                     'answer_id' => null,
                     'status_solved_test' => 'unanswered'
                 ]);

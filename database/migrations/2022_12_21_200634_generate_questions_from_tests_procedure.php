@@ -18,13 +18,13 @@ return new class extends Migration
         CREATE PROCEDURE `get_questions_by_card_memory`(
             IN `id_usuario` INT,
             IN `id_test` INT,
-            IN `id_tipo_cuestionario` INT,
+            IN `tipo_cuestionario` VARCHAR(255),
             IN `numero_preguntas_solicitadas` INT
         )
         BEGIN
                 DECLARE c INTEGER;
 
-                SET c := (SELECT COUNT(*) from questions p WHERE p.questionable_id IN (SELECT testable_id FROM testables s, users u, tests t WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test) AND q.id NOT IN(SELECT m.question_id from question_test m, users u, tests t WHERE u.id=t.user_id AND t.id=m.test_id AND t.test_type_id=id_tipo_cuestionario AND u.id=id_usuario AND q.have_been_show_card_memory='yes'));
+                SET c := (SELECT COUNT(*) from questions p WHERE p.questionable_id IN (SELECT testable_id FROM testables s, users u, tests t WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test) AND q.id NOT IN(SELECT m.question_id from question_test m, users u, tests t WHERE u.id=t.user_id AND t.id=m.test_id AND t.test_type=tipo_cuestionario AND u.id=id_usuario AND q.have_been_show_card_memory='yes'));
 
                 IF c < 1 THEN
 
@@ -40,13 +40,13 @@ return new class extends Migration
         CREATE PROCEDURE `get_questions_by_test`(
             IN `id_usuario` INT,
             IN `id_test` INT,
-            IN `id_tipo_cuestionario` INT,
+            IN `tipo_cuestionario` VARCHAR(255),
             IN `numero_preguntas_solicitadas` INT
         )
         BEGIN
                 DECLARE c INTEGER;
 
-                SET c := (SELECT COUNT(*) from questions p WHERE p.questionable_id IN (SELECT testable_id FROM testables s, users u, tests t WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test) AND q.id NOT IN(SELECT m.question_id from question_test m, users u, tests t WHERE u.id=t.user_id AND t.id=m.test_id AND t.test_type_id=id_tipo_cuestionario AND u.id=id_usuario AND q.have_been_show_test='yes'));
+                SET c := (SELECT COUNT(*) from questions p WHERE p.questionable_id IN (SELECT testable_id FROM testables s, users u, tests t WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test) AND q.id NOT IN(SELECT m.question_id from question_test m, users u, tests t WHERE u.id=t.user_id AND t.id=m.test_id AND t.test_type=tipo_cuestionario AND u.id=id_usuario AND q.have_been_show_test='yes'));
 
                 IF c < 1 THEN
 

@@ -23,12 +23,12 @@ class TestSeeder extends Seeder
     public function generateTestsFaker (): void {
         foreach ( range(1, 4) as $n ) {
             $opposition = Opposition::all()->random();
-            $testType_id = TestType::all()->random()->getRouteKey();
+            $testTypes = ['test', 'card_memory'];
             $user = User::query()->firstWhere('dni', '=', '14071663X');
 
             $questionnaire = TestsService::createTest([
                 "number_of_questions_requested" => "25",
-                "test_type_id" => $testType_id,
+                "test_type" => $testTypes[random_int(0,1)],
                 "opposition_id" => $opposition->getRouteKey(),
                 "user_id" => $user?->getRouteKey()
             ]);

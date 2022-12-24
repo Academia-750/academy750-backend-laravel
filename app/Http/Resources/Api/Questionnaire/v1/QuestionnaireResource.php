@@ -24,13 +24,10 @@ class QuestionnaireResource extends JsonResource
                 'number_of_questions_generated' => $this->resource->number_of_questions_generated,
                 'test_result' => $this->resource->test_result,
                 'is_solved_test' => $this->resource->is_solved_test,
+                'test_type' => $this->resource->test_type,
                 "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
-                'test_type' => $this->when(collect($this->resource)->has('test_type'),
-                    function () {
-                        return TestTypeResource::make($this->resource->test_type);
-                    }),
                 'opposition' => $this->when(collect($this->resource)->has('opposition'),
                     function () {
                         return OppositionResource::make($this->resource->opposition);

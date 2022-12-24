@@ -37,13 +37,13 @@ class DBApp implements TestsInterface
     public function create_a_quiz( $request ): Test
     {
         $opposition = Opposition::findOrFail($request->get('opposition_id'));
-        $testType = TestType::findOrFail($request->get('test_type_id'));
+        $testType = $request->get('test_type'); // test || card_memory
         $user = Auth::user();
 
         $questionnaire = TestsService::createTest([
             "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
             "opposition_id" => $opposition->getRouteKey(),
-            "test_type_id" => $testType->getRouteKey(),
+            "test_type" => $testType,
             "user_id" => $user?->getRouteKey()
         ]);
 

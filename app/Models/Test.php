@@ -24,7 +24,7 @@ class Test extends Model
         "number_of_questions_generated",
         "test_result",
         "is_solved_test",
-        "test_type_id",
+        "test_type",
         "opposition_id",
         "user_id"
     ];
@@ -54,7 +54,6 @@ class Test extends Model
     ];
 
     public array $allowedIncludes = [
-        'test_type',
         'opposition',
         'user',
         'questions',
@@ -100,10 +99,10 @@ class Test extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
      // Relationships methods
 
-    public function test_type (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    /*public function test_type (): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(TestType::class);
-    }
+    }*/
 
     public function opposition (): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
