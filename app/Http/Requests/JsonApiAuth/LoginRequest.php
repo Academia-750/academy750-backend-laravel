@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\JsonApiAuth;
 
+use App\Rules\Api\v1\ValidateCorrectDNISpain;
 use Illuminate\Foundation\Http\FormRequest;
 
 class LoginRequest extends FormRequest
@@ -24,7 +25,7 @@ class LoginRequest extends FormRequest
     public function rules()
     {
         return [
-            config('json-api-auth.access_key', 'access_key') => 'required|string|min:8|max:10',
+            config('json-api-auth.access_key', 'access_key') => ['required', 'string', new ValidateCorrectDNISpain()],
             'password' => 'required|string|max:100',
         ];
     }
