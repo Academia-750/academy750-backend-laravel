@@ -3,6 +3,7 @@
 namespace App\Core\Resources\Users\v1\Services;
 
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ActionsAccountUser
 {
@@ -11,6 +12,7 @@ class ActionsAccountUser
             $user = User::query()->find($user);
         }
 
+        DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
         //$user->forceDelete();
         $user->delete();
 
@@ -21,6 +23,8 @@ class ActionsAccountUser
         if ( !($user instanceof User) ) {
             $user = User::query()->find($user);
         }
+
+        DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
 
         $user->state = 'disable';
         $user->save();
