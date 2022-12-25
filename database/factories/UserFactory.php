@@ -32,7 +32,7 @@ class UserFactory extends Factory
             'dni' => $this->generateDNIUnique(),
             'phone' => $this->getNumberPhoneSpain(),
             'state' => 'enable',
-            'password' => Hash::make('student'),
+            'password' => Hash::make('Zd8jNT!8P*G'),
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ];

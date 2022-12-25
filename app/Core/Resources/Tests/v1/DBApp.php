@@ -40,6 +40,10 @@ class DBApp implements TestsInterface
         $testType = $request->get('test_type'); // test || card_memory
         $user = Auth::user();
 
+        if (!$user) {
+            abort(404);
+        }
+
         $questionnaire = TestsService::createTest([
             "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
             "opposition_id" => $opposition->getRouteKey(),

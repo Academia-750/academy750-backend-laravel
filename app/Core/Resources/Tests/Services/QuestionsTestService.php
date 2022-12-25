@@ -51,7 +51,7 @@ class QuestionsTestService
 
             $data =  DB::select(
                 "call {$nameProcedure}(?,?,?,?)",
-                array($user->getRouteKey(), $test->getRouteKey() , $testType, $amountQuestionsRequestedByTest)
+                array($user->getRouteKey(), $test->getRouteKey() , $testType, (int) $amountQuestionsRequestedByTest)
             );
 
             DB::commit();

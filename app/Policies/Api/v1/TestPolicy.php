@@ -6,6 +6,7 @@ use App\Models\Opposition;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Test;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class TestPolicy
 {
@@ -40,8 +41,9 @@ class TestPolicy
      * @param $request
      * @return bool
      */
-    public function create_a_quiz(User $user, Test $test, Opposition $opposition, $request ): bool
+    public function create_a_quiz(User $user, Test $test, Opposition $opposition, Request $request ): bool
     {
+        \Log::debug('create a quiz Policy Test');
         $topicsBelongsToOpposition = true;
 
         $topics_id_by_opposition = $opposition->topics()->pluck('id')->toArray();

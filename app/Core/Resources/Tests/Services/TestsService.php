@@ -49,7 +49,7 @@ class TestsService
         $subtopics_id = [];
 
         foreach ( $opposition->subtopics as $subtopic ) {
-            $subtopics_id_by_topic = $topic->subtopics->pluck('id')->toArray();
+            $subtopics_id_by_topic = $topic->subtopics->pluck('subtopics.id')->toArray();
 
             if (in_array($subtopic?->getRouteKey(), $subtopics_id_by_topic, true)) {
                 $subtopics_id[] = $subtopic?->getRouteKey();
