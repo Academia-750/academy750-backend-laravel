@@ -29,7 +29,15 @@ class QuestionnairesController extends Controller
         return $this->testsInterface->fetch_unresolved_test( $test );
     }
 
+    public function fetch_card_memory( Test $test ){
+        return $this->testsInterface->fetch_card_memory( $test );
+    }
+
     public function create_a_quiz ( CreateTestRequest $request ) {
         return $this->testsInterface->create_a_quiz( $request );
+    }
+
+    public function get_cards_memory () {
+        return $this->testsInterface->get_cards_memory();
     }
 }

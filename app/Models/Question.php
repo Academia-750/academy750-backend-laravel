@@ -67,14 +67,12 @@ class Question extends Model
     ];
 
     public array $allowedIncludes = [
-        'answers',
         'tests',
         'image',
         'questionable',
     ];
 
     public array $adapterIncludes = [
-        'answers-test' => 'answers_by_test',
     ];
 
      protected $casts = [

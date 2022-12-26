@@ -25,11 +25,11 @@ class QuestionResource extends JsonResource
                 "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
-                'answers' => $this->when(collect($this->resource)->has('answers') && auth()->user()?->hasRole('admin'),
+                'answers' => $this->when(collect($this->resource)->has('answers'),
                     function () {
                         return AnswerCollection::make($this->resource->answers);
                     }),
-                'answers-test' => $this->when(collect($this->resource)->has('answers_by_test') && auth()->user()?->hasRole('student'),
+                'answers-test' => $this->when(collect($this->resource)->has('answers_by_test'),
                     function () {
                         return AnswersForResolveTestByStudentCollection::make($this->resource->answers_by_test);
                     }),

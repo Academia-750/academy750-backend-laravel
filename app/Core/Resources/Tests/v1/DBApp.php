@@ -20,10 +20,26 @@ class DBApp implements TestsInterface
     }
 
     public function get_tests_unresolved(){
-        return Auth::user()?->tests()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return Auth::user()?->tests()->where('test_type', '=', 'test')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
+    public function get_cards_memory()
+    {
+        return Auth::user()?->tests()->where('test_type', '=', 'card_memory')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function fetch_unresolved_test( $test ): \App\Models\Test{
+
+        $testQuery = Auth::user()->tests()->where('test_type', '=', 'test')->where('id', '=', $test->getRouteKey())->first();
+
+        if (!$testQuery) {
+            abort(404);
+        }
+
+        return $this->model->find($testQuery->getRouteKey())->questions()->with('answers_by_test')->jsonPaginate();
+    }
+
+    public function fetch_card_memory( $test ): \App\Models\Test{
 
         $testQuery = Auth::user()->tests()->firstWhere('id', '=', $test->getRouteKey());
 
@@ -31,7 +47,7 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
-        return $this->model->applyIncludes()->find($testQuery->getRouteKey());
+        return $this->model->find($testQuery->getRouteKey())->questions()->with('answers')->jsonPaginate();
     }
 
     public function create_a_quiz( $request ): Test

@@ -21,10 +21,17 @@ class EventApp implements TestsInterface
     public function fetch_unresolved_test( $test ){
         return $this->cacheApp->fetch_unresolved_test( $test );
     }
+    public function fetch_card_memory( $test ){
+        return $this->cacheApp->fetch_card_memory( $test );
+    }
 
     public function create_a_quiz( $request ){
         return $this->cacheApp->create_a_quiz( $request );
     }
 
 
+    public function get_cards_memory()
+    {
+        return $this->cacheApp->get_cards_memory();
+    }
 }

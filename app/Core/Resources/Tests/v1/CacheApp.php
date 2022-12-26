@@ -36,6 +36,14 @@ class CacheApp implements TestsInterface
 
         return $this->dbApp->fetch_unresolved_test( $test );
     }
+    public function fetch_card_memory( $test ){
+
+        /*return Cache::store('redis')->tags('test')->rememberForever("test.find.".$test->getRouteKey(), function () use ( $test ) {
+            return $this->dbApp->fetch_unresolved_test( $test );
+        });*/
+
+        return $this->dbApp->fetch_card_memory( $test );
+    }
 
     public function create_a_quiz ( $request ) {
         //Cache::store('redis')->tags('test')->flush();
@@ -43,4 +51,8 @@ class CacheApp implements TestsInterface
         return $this->dbApp->create_a_quiz( $request );
     }
 
+    public function get_cards_memory()
+    {
+        return $this->dbApp->get_cards_memory();
+    }
 }

@@ -98,7 +98,9 @@ class Test extends Model
 
     public function filterSearch(Builder $query, $value): void{
         $query->orWhere(static function($query) use ($value) {
-            $query->whereDate('created_at', $value);
+            $query->whereDate('created_at', $value)
+                ->orWhere('number_of_questions_requested', '=', $value)
+                ->orWhere('number_of_questions_generated', '=', $value);
         });
     }
 

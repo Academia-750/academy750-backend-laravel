@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
+use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
 use App\Models\Test;
@@ -24,10 +25,17 @@ class SchemaJson implements TestsInterface
         );
     }
 
-    public function fetch_unresolved_test( $test ): QuestionnaireResource
+    public function fetch_unresolved_test( $test ): QuestionCollection
     {
         return QuestionnaireResource::make(
             $this->eventApp->fetch_unresolved_test( $test )
+        );
+    }
+
+    public function fetch_card_memory( $test ): QuestionCollection
+    {
+        return QuestionnaireResource::make(
+            $this->eventApp->fetch_card_memory( $test )
         );
     }
 
@@ -39,4 +47,10 @@ class SchemaJson implements TestsInterface
     }
 
 
+    public function get_cards_memory()
+    {
+        return QuestionnaireCollection::make(
+            $this->eventApp->get_cards_memory()
+        );
+    }
 }

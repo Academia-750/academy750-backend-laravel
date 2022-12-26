@@ -17,6 +17,11 @@ class TestPolicy
         return $user->can('list-uncompleted-tests');
     }
 
+    public function get_cards_memory(User $user): bool
+    {
+        return $user->can('list-uncompleted-tests');
+    }
+
     /**
      * Para poder consultar un Test ya sea de tipo Cuestionario o Tarjeta de memoria, tiene que tener los permisos
      * además de que el test no esté resuelto y además de que pertenezca al usuario que solicita verlo
@@ -29,6 +34,23 @@ class TestPolicy
     {
         return $user->can('resolve-a-tests') &&
             $test?->is_solved_test === 'no' &&
+            $test?->test_type === 'test' &&
+            $test->user?->getRouteKey() === $user->getRouteKey();
+    }
+
+
+    /**
+     * Para poder consultar un Test ya sea de tipo Cuestionario o Tarjeta de memoria, tiene que tener los permisos
+     * además de que el test no esté resuelto y además de que pertenezca al usuario que solicita verlo
+     *
+     * @param User $user
+     * @param Test $test
+     * @return bool
+     */
+    public function fetch_card_memory(User $user, Test $test): bool
+    {
+        return $user->can('resolve-a-tests') &&
+            $test?->test_type === 'card_memory' &&
             $test->user?->getRouteKey() === $user->getRouteKey();
     }
 
