@@ -73,7 +73,9 @@ class Question extends Model
         'questionable',
     ];
 
-    public array $adapterIncludes = [];
+    public array $adapterIncludes = [
+        'answers-test' => 'answers_by_test',
+    ];
 
      protected $casts = [
         'id' => 'string'
@@ -180,6 +182,11 @@ class Question extends Model
     }
 
     public function answers (): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Answer::class);
+    }
+
+    public function answers_by_test (): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Answer::class);
     }

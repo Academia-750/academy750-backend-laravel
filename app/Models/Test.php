@@ -30,10 +30,12 @@ class Test extends Model
     ];
 
     public array $allowedSorts = [
+        "test-questions-count",
         "created-at"
     ];
 
     public array $adapterSorts = [
+        "test-questions-count" => "TestQuestionsCount",
         "created-at" => "CreatedAt",
     ];
 
@@ -69,6 +71,10 @@ class Test extends Model
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
+
+    public function sortTestQuestionsCount(Builder $query, $direction): void{
+        $query->orderBy('number_of_questions_generated', $direction);
+    }
 
     public function sortCreatedAt(Builder $query, $direction): void{
         $query->orderBy('created_at', $direction);
