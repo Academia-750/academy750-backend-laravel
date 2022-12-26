@@ -77,8 +77,8 @@ class QuestionsTestService
             foreach ($questions_id as $question_id) {
 
                 $test->questions()->attach($question_id, [
-                    'have_been_show_test' => $testType === 'test',
-                    'have_been_show_card_memory' => $testType === 'card-memory',
+                    'have_been_show_test' => $testType === 'test' ? 'yes' : 'no',
+                    'have_been_show_card_memory' => $testType === 'card_memory' ? 'yes' : 'no',
                     'answer_id' => null,
                     'status_solved_test' => 'unanswered'
                 ]);

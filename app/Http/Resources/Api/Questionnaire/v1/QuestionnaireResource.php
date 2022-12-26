@@ -18,8 +18,6 @@ class QuestionnaireResource extends JsonResource
             'type' => 'tests',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-                'have_been_show_test' => $this->resource->have_been_show_test,
-                'have_been_show_card_memory' => $this->resource->have_been_show_card_memory,
                 'number_of_questions_requested' => $this->resource->number_of_questions_requested,
                 'number_of_questions_generated' => $this->resource->number_of_questions_generated,
                 'test_result' => $this->resource->test_result,

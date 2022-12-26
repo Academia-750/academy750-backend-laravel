@@ -49,7 +49,7 @@ class TestsService
         $subtopics_id = [];
 
         foreach ( $opposition->subtopics as $subtopic ) {
-            $subtopics_id_by_topic = $topic->subtopics->pluck('subtopics.id')->toArray();
+            $subtopics_id_by_topic = $topic->subtopics()->pluck('subtopics.id')->toArray();
 
             if (in_array($subtopic?->getRouteKey(), $subtopics_id_by_topic, true)) {
                 $subtopics_id[] = $subtopic?->getRouteKey();
@@ -101,16 +101,17 @@ class TestsService
                     }
                 }
 
-                $topics_id = array_map(static function ($topic_id) {
+                /*$topics_id = array_map(static function ($topic_id) {
                     return Topic::query()->findOrFail($topic_id)?->getRouteKey();
-                }, $topicsSelected_id);
+                }, $topicsSelected_id);*/
 
                 // Vincular el Test creado con cada tema y sus subtemas
-                $test->topics()->sync($topics_id);
+
+                $test->topics()->sync($topicsSelected_id);
                 $test->subtopics()->sync($subtopics_id);
 
             DB::commit();
-            return array_merge($topics_id, $subtopics_id);
+            return array_merge($topicsSelected_id, $subtopics_id);
 
         } catch (\Throwable $th) {
             DB::rollBack();
