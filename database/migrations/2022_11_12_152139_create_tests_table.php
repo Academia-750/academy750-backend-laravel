@@ -19,7 +19,11 @@ return new class extends Migration
             $table->string("number_of_questions_requested")->comment('Numero total de preguntas solicitidas');
             $table->string("number_of_questions_generated")->comment('Numero total de preguntas generadas');
 
-            $table->string("test_result")->comment('Calificación final de la Prueba');
+            $table->string("test_result")->default('0')->comment('Calificación final de la Prueba');
+            $table->string("total_questions_correct")->default('0')->comment('Número total de preguntas correctas');
+            $table->string("total_questions_wrong")->default('0')->comment('Número total de preguntas incorrectas');
+            $table->string("total_questions_unanswered")->default('0')->comment('Número total de preguntas no respondidas');
+
             $table->enum("is_solved_test", ['yes', 'no'])->default('no')->comment('Ha sido completado la prueba?');
 
             $table->enum('test_type', ['test', 'card_memory'])->comment('Tipo de cuestionario');

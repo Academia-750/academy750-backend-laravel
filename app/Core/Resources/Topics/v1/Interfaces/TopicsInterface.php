@@ -6,6 +6,7 @@ use App\Models\Topic;
 interface TopicsInterface
 {
     public function index();
+    public function get_topics_available_for_create_test();
     public function create( $request );
     public function read( $topic );
     public function update($request, $topic );

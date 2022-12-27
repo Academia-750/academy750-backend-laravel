@@ -21,6 +21,9 @@ class QuestionnaireResource extends JsonResource
                 'number_of_questions_requested' => $this->resource->number_of_questions_requested,
                 'number_of_questions_generated' => $this->resource->number_of_questions_generated,
                 'test_result' => $this->resource->test_result,
+                'total_questions_correct' => $this->resource->total_questions_correct,
+                'total_questions_wrong' => $this->resource->total_questions_wrong,
+                'total_questions_unanswered' => $this->resource->total_questions_unanswered,
                 'is_solved_test' => $this->resource->is_solved_test,
                 'test_type' => $this->resource->test_type,
                 "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')

@@ -99,9 +99,22 @@ class DBApp implements QuestionsInterface
 
     public function topics_relationship_get_questions($topic)
     {
-        $questions_id = $topic->questions()->pluck("id");
+        //$questions_id = $topic->questions()->pluck("id");
 
-        return $this->model->query()->whereIn('id', $questions_id->toArray())->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+
+        if (request()?->query('filter') && request()?->query('filter')['search']) {
+            $questions_id = DB::select(
+                "call search_question_in_topics_and_subtopics(?,?)",
+                array(request()?->query('filter')['search'], $topic->getRouteKey())
+            ); //search_question_in_topics_and_subtopics
+
+
+            $questions_id = collect($questions_id)->pluck('id')->toArray();
+
+            return Question::query()->whereIn('id', $questions_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        }
+
+        return $topic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function topic_relationship_questions_read($topic, $question)

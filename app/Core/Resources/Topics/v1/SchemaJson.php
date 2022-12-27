@@ -29,6 +29,13 @@ class SchemaJson implements TopicsInterface
         );
     }
 
+    public function get_topics_available_for_create_test(): TopicCollection
+    {
+        return TopicCollection::make(
+            $this->eventApp->get_topics_available_for_create_test()
+        );
+    }
+
     public function create( $request ): \Illuminate\Http\JsonResponse
     {
         return TopicResource::make($this->eventApp->create($request))

@@ -31,6 +31,19 @@ class DBApp implements TopicsInterface
         return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
+    public function get_topics_available_for_create_test(){
+
+        $topics_id = DB::select(
+            "call topics_available_for_create_test(?,?)",
+            array(request()?->query('opposition-id'), request()?->query('topic-group-id'))
+        ); //search_question_in_topics_and_subtopics
+
+        $topics_id = collect($topics_id)->pluck('id')->toArray();
+
+        return $this->model->query()->whereIn('id', $topics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        //return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+    }
+
     public function create( $request ): \App\Models\Topic{
 
         try {
@@ -388,6 +401,8 @@ class DBApp implements TopicsInterface
 
     public function topic_get_relationship_questions($topic)
     {
+
+
         return $topic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 

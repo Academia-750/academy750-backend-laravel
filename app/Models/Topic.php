@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Core\Services\UUIDTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\DB;
 
 class Topic extends Model
 {
@@ -39,6 +40,7 @@ class Topic extends Model
         "date",
         "oppositions",
         "topic-group",
+        "has-questions-available",
     ];
 
     public array $adapterFilters = [
@@ -49,6 +51,7 @@ class Topic extends Model
         "date" => "Date",
         "oppositions" => "Oppositions",
         "topic-group" => "TopicGroup",
+        "has-questions-available" => "HasQuestionsAvailable",
     ];
 
     public array $allowedIncludes = [
@@ -113,6 +116,35 @@ class Topic extends Model
         $query->whereHas('topic_group', function($query) use ($value) {
             $query->where('topic_group_id', '=', $value);
         });
+    }
+
+    public function filterTopicsAvailable (): void {
+
+    }
+
+    public function filterHasQuestionsAvailable (Builder $query) {
+        return $query
+            ->where(static function ($query) {
+                $query->whereHas('questions', static function($query) {
+                    $query
+                        ->where('is_visible', '=', 'yes');
+                })->whereHas('subtopics.questions', static function($query) {
+                    $query->where('is_visible', '=', 'yes');
+                });
+
+
+            } ,'>' , 0);
+
+    }
+
+    public function questionsCount(): int
+    {
+        $count = $this->questions()->where('is_visible', '=', 'yes')->count();
+        foreach ($this->subtopics as $subtopic) {
+            $count += $subtopic->questions()->where('is_visible', '=', 'yes')->count();
+        }
+
+        return $count;
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */

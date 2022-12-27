@@ -3,10 +3,10 @@ namespace Database\Seeders\trait;
 
 trait QuestionsHelpersTrait
 {
-    public function registerQuestionsModel ($model, $fieldTextQuestion, $fakerText): void {
+    public function registerQuestionsModel ($model, $fieldTextQuestion, $fakerText, $keyModel): void {
         foreach ( range(1, random_int(5,15)) as $number ) {
             $model->questions()->create([
-                'question' => "Question of {$fieldTextQuestion} - {$number}",
+                'question' => "{$keyModel} Question of {$fieldTextQuestion} - {$number}",
                 'reason' => "Reason {$number} - {$fakerText}",
                 'is_visible' => "yes",
                 'its_for_test' => fake()->randomElement(['yes', 'no']),

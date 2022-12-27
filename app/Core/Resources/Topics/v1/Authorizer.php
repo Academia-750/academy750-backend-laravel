@@ -1,10 +1,12 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Models\Opposition;
 use App\Models\Topic;
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
 use App\Http\Resources\Api\Topic\v1\TopicCollection;
 use App\Http\Resources\Api\Topic\v1\TopicResource;
+use App\Models\TopicGroup;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
 use App\Core\Resources\Topics\v1\SchemaJson;
@@ -20,6 +22,18 @@ class Authorizer implements TopicsInterface
     {
         Gate::authorize('index', Topic::class );
         return $this->schemaJson->index();
+    }
+    public function get_topics_available_for_create_test(): TopicCollection
+    {
+        if (!request()?->query('opposition-id') || !Opposition::query()->find(request()?->query('opposition-id'))) {
+            abort(403);
+        }
+
+        if (!request()?->query('topic-group-id') || !TopicGroup::query()->find(request()?->query('topic-group-id'))) {
+            abort(403);
+        }
+
+        return $this->schemaJson->get_topics_available_for_create_test();
     }
 
     public function create( $request ): \Illuminate\Http\JsonResponse

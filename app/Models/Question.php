@@ -67,6 +67,7 @@ class Question extends Model
     ];
 
     public array $allowedIncludes = [
+        'answers',
         'tests',
         'image',
         'questionable',

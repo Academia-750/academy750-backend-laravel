@@ -27,14 +27,14 @@ class SchemaJson implements TestsInterface
 
     public function fetch_unresolved_test( $test ): QuestionCollection
     {
-        return QuestionnaireResource::make(
+        return QuestionCollection::make(
             $this->eventApp->fetch_unresolved_test( $test )
         );
     }
 
     public function fetch_card_memory( $test ): QuestionCollection
     {
-        return QuestionnaireResource::make(
+        return QuestionCollection::make(
             $this->eventApp->fetch_card_memory( $test )
         );
     }

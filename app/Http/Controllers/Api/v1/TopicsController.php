@@ -30,6 +30,10 @@ class TopicsController extends Controller
         return $this->topicsInterface->index();
     }
 
+    public function get_topics_available_for_create_test(){
+        return $this->topicsInterface->get_topics_available_for_create_test();
+    }
+
     public function create(CreateTopicRequest $request){
         return $this->topicsInterface->create($request);
     }
