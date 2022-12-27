@@ -177,7 +177,7 @@ class Question extends Model
 
     public function questionable (): \Illuminate\Database\Eloquent\Relations\MorphTo
     {
-        return $this->morphTo()->with(['topic.subtopics', 'topic.oppositions', 'topic.topic_group', 'topic.tests.test_type']);
+        return $this->morphTo()/*->with(['topic.subtopics', 'topic.oppositions', 'topic.topic_group', 'topic.tests.test_type'])*/;
     }
 
     public function answers (): \Illuminate\Database\Eloquent\Relations\HasMany

@@ -1,10 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
-use App\Http\Requests\Api\v1\Questions\SubtopicCreateQuestionRequest;
-use App\Http\Requests\Api\v1\Questions\SubtopicUpdateQuestionRequest;
-use App\Http\Requests\Api\v1\Questions\TopicCreateQuestionRequest;
-use App\Http\Requests\Api\v1\Questions\TopicUpdateQuestionRequest;
+use App\Http\Requests\Api\v1\Questions\ClaimQuestionMailRequest;
 use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
 use App\Http\Controllers\Controller;
@@ -59,5 +56,9 @@ class QuestionsController extends Controller
     }
     public function topic_relationship_questions_delete( Topic $topic, Question $question ) {
         return $this->questionsInterface->topic_relationship_questions_delete( $topic, $question );
+    }
+
+    public function claim_question_mail( ClaimQuestionMailRequest $request ) {
+        return $this->questionsInterface->claim_question_mail( $request );
     }
 }

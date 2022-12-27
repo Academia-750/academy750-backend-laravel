@@ -126,4 +126,13 @@ class SchemaJson implements QuestionsInterface
 
         return response()->noContent();
     }
+
+    public function claim_question_mail($request)
+    {
+        $this->eventApp->claim_question_mail($request);
+
+        return response()->json([
+            'status' => 'successfully'
+        ]);
+    }
 }

@@ -95,4 +95,8 @@ class Authorizer implements QuestionsInterface
         return $this->schemaJson->topic_relationship_questions_delete($topic, $question);
     }
 
+    public function claim_question_mail($request)
+    {
+        return $this->schemaJson->claim_question_mail($request);
+    }
 }

@@ -47,7 +47,7 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
-        return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->with('answers')->jsonPaginate();
+        return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->with(['answers', 'image'])->jsonPaginate();
     }
 
     public function create_a_quiz( $request ): Test

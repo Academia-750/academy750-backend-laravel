@@ -63,4 +63,9 @@ class EventApp implements QuestionsInterface
     {
         return $this->cacheApp->topic_relationship_questions_delete($topic, $question);
     }
+
+    public function claim_question_mail($request)
+    {
+        return $this->cacheApp->claim_question_mail($request);
+    }
 }

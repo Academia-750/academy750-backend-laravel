@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Questions\v1;
 
+use App\Core\Resources\Questions\v1\Services\ClaimQuestionMail;
 use App\Core\Resources\Questions\v1\Services\SaveQuestionsService;
 use App\Imports\Api\v1\QuestionsImport;
 use App\Models\Answer;
@@ -180,5 +181,20 @@ class DBApp implements QuestionsInterface
     }
 
 
+    public function claim_question_mail($request)
+    {
+        try {
 
+            ClaimQuestionMail::claimQuestion(
+                $request->get('test_id'),
+                $request->get('question_id'),
+                $request->get('claim_text'),
+            );
+
+            return "Successfully";
+        } catch (\Exception $e) {
+            //DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
 }
