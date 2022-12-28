@@ -12,5 +12,6 @@ interface TestsInterface
 
     public function create_a_quiz( $request );
     public function resolve_a_question_of_test( $request );
+    public function grade_a_test($request, $test);
 
 }

@@ -60,4 +60,10 @@ class CacheApp implements TestsInterface
     {
         return $this->dbApp->resolve_a_question_of_test($request);
     }
+
+    public function grade_a_test($request, $test)
+    {
+        return $this->dbApp->grade_a_test($request, $test);
+
+    }
 }

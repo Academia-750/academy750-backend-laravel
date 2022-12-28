@@ -27,6 +27,9 @@ class QuestionsTestService
 
         $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $test, $testType === 'card-memory');
 
+        $test->number_of_questions_generated = count($questions);
+        $test->save();
+
         self::registerQuestionsHistoryByTest($questions, $test, $testType);
 
         return $questions;

@@ -41,4 +41,8 @@ class QuestionnairesController extends Controller
     public function get_cards_memory () {
         return $this->testsInterface->get_cards_memory();
     }
+
+    public function grade_a_test (Request $request, Test $test) {
+        return $this->testsInterface->grade_a_test($request, $test);
+    }
 }

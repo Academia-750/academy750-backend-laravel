@@ -99,11 +99,8 @@ class DBApp implements TestsInterface
             $question = $test->questions()->findOrFail($request->get('question_id'));
 
             $answer = Answer::query()->find($request->get('answer_id'));
-            \Log::debug($answer);
 
             if ($request->get('answer_id')) {
-
-                \Log::debug($answer->is_correct_answer === 'yes' ? 'correct' : 'wrong');
 
                 $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                    'answer_id' => $answer->getRouteKey(),
@@ -111,7 +108,6 @@ class DBApp implements TestsInterface
                 ]);
 
             } else {
-                \Log::debug('Se esta guardando el resultado de una respuesta incorrecta');
                 $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                     'answer_id' => null,
                     'status_solved_question' => 'unanswered'
@@ -123,6 +119,42 @@ class DBApp implements TestsInterface
             DB::commit();
 
 
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500,$e->getMessage());
+        }
+    }
+
+    public function grade_a_test($request, $test)
+    {
+        try {
+
+            DB::beginTransaction();
+            $test = Test::query()->findOrFail($test);
+
+            $total_questions_test = $test->questions->count();
+            $totalQuestionsCorrect = $test->questions()->wherePivot('status_solved_question', 'correct')->get()->count();
+            $totalQuestionsWrong = $test->questions()->wherePivot('status_solved_question', 'wrong')->get()->count();
+            $totalQuestionsUnanswered = $test->questions()->wherePivot('status_solved_question', 'unanswered')->orWherePivot('answer_id', null)->get()->count();
+
+            $test->total_questions_correct = $totalQuestionsCorrect;
+            $test->total_questions_wrong = $totalQuestionsWrong;
+            $test->total_questions_unanswered = $totalQuestionsUnanswered;
+
+            // Calificar test
+
+            $result_final_test = (
+                $totalQuestionsCorrect - ($totalQuestionsWrong / 3) / $total_questions_test / 10
+            );
+
+            $test->test_result = $result_final_test;
+            $test->is_solved_test = 'yes';
+
+            $test->save();
+
+            DB::commit();
+
+            return $test;
         } catch (\Exception $e) {
             DB::rollback();
             abort(500,$e->getMessage());

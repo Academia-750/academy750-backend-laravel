@@ -90,4 +90,11 @@ class SchemaJson implements TestsInterface
             'status' => 'successfully'
         ]);
     }
+
+    public function grade_a_test($request, $test)
+    {
+        return QuestionnaireResource::make(
+            $this->eventApp->grade_a_test($request, $test)
+        );
+    }
 }

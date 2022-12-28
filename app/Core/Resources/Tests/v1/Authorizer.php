@@ -87,4 +87,13 @@ class Authorizer implements TestsInterface
 
         return $this->schemaJson->resolve_a_question_of_test($request);
     }
+
+    public function grade_a_test($request, $test)
+    {
+        if (!Auth::user()->hasRole('student') || !Auth::user()->tests()->find($test->getRouteKey())) {
+            abort(403);
+        }
+
+        return $this->schemaJson->grade_a_test($request, $test);
+    }
 }

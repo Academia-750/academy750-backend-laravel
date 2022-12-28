@@ -39,4 +39,9 @@ class EventApp implements TestsInterface
     {
         return $this->cacheApp->resolve_a_question_of_test($request);
     }
+
+    public function grade_a_test($request, $test)
+    {
+        return $this->cacheApp->grade_a_test($request, $test);
+    }
 }
