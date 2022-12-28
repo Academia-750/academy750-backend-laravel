@@ -109,12 +109,16 @@ class SchemaJson implements TestsInterface
         )->get();
 
         foreach ($questionsQuery as $question) {
+
+            $questionPivotTest = $test->questions()->find($question->getRouteKey());
+
             $count++;
             $questions->push([
                 "index" => $count,
-                //"question" => $test->questions()->find($question->getRouteKey()),
+                "status_question" => $questionPivotTest?->pivot?->status_solved_question,
+                "question" => $question->question,
                 'question_id' => $question->id,
-                'answer_id' => $test->questions()->find($question->getRouteKey())?->pivot?->answer_id,
+                'answer_id' => $questionPivotTest?->pivot?->answer_id,
             ]);
         }
 

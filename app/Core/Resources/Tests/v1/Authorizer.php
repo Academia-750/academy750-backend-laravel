@@ -90,6 +90,7 @@ class Authorizer implements TestsInterface
 
     public function grade_a_test($request, $test)
     {
+        \Log::debug($test);
         if (!Auth::user()->hasRole('student') || !Auth::user()->tests()->find($test->getRouteKey())) {
             abort(403);
         }

@@ -130,12 +130,17 @@ class DBApp implements TestsInterface
         try {
 
             DB::beginTransaction();
-            $test = Test::query()->findOrFail($test);
+            $test = Test::query()->findOrFail($test->getRouteKey());
+            //\Log::debug($test);
 
             $total_questions_test = $test->questions->count();
+            //\Log::debug($total_questions_test);
             $totalQuestionsCorrect = $test->questions()->wherePivot('status_solved_question', 'correct')->get()->count();
+            //\Log::debug($totalQuestionsCorrect);
             $totalQuestionsWrong = $test->questions()->wherePivot('status_solved_question', 'wrong')->get()->count();
-            $totalQuestionsUnanswered = $test->questions()->wherePivot('status_solved_question', 'unanswered')->orWherePivot('answer_id', null)->get()->count();
+            //\Log::debug($totalQuestionsWrong);
+            $totalQuestionsUnanswered = $test->questions()->wherePivot('status_solved_question', 'unanswered')->get()->count();
+            //\Log::debug($totalQuestionsUnanswered);
 
             $test->total_questions_correct = $totalQuestionsCorrect;
             $test->total_questions_wrong = $totalQuestionsWrong;
@@ -147,7 +152,9 @@ class DBApp implements TestsInterface
                 $totalQuestionsCorrect - ($totalQuestionsWrong / 3) / $total_questions_test / 10
             );
 
-            $test->test_result = $result_final_test;
+            //\Log::debug($result_final_test);
+
+            $test->test_result = number_format($result_final_test, 2);
             $test->is_solved_test = 'yes';
 
             $test->save();
@@ -157,7 +164,7 @@ class DBApp implements TestsInterface
             return $test;
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort($e->getCode(),$e->getMessage());
         }
     }
 
