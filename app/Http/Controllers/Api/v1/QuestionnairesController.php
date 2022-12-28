@@ -30,6 +30,10 @@ class QuestionnairesController extends Controller
         return $this->testsInterface->fetch_card_memory( $test );
     }
 
+    public function fetch_test_completed( Test $test ){
+        return $this->testsInterface->fetch_test_completed( $test );
+    }
+
     public function create_a_quiz ( CreateTestRequest $request ) {
         return $this->testsInterface->create_a_quiz( $request );
     }

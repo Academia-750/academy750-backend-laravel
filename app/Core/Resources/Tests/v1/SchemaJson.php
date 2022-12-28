@@ -97,4 +97,34 @@ class SchemaJson implements TestsInterface
             $this->eventApp->grade_a_test($request, $test)
         );
     }
+
+    public function fetch_test_completed($test)
+    {
+        $questions = collect([]);
+
+        $count = 0;
+
+        $questionsQuery = Question::query()->whereIn(
+            'id', $test->questions()->pluck('questions.id')->toArray()
+        )->get();
+
+        foreach ($questionsQuery as $question) {
+            $count++;
+            $questions->push([
+                "index" => $count,
+                //"question" => $test->questions()->find($question->getRouteKey()),
+                'question_id' => $question->id,
+                'answer_id' => $test->questions()->find($question->getRouteKey())?->pivot?->answer_id,
+            ]);
+        }
+
+        return QuestionCollection::make(
+            $this->eventApp->fetch_test_completed( $test )
+        )->additional([
+            'meta' => [
+                'test' => QuestionnaireResource::make($test),
+                'questions_data' => $questions
+            ]
+        ]);
+    }
 }

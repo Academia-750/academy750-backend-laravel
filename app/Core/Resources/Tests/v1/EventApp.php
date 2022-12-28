@@ -44,4 +44,9 @@ class EventApp implements TestsInterface
     {
         return $this->cacheApp->grade_a_test($request, $test);
     }
+
+    public function fetch_test_completed($test)
+    {
+        return $this->cacheApp->fetch_test_completed($test);
+    }
 }

@@ -96,4 +96,11 @@ class Authorizer implements TestsInterface
 
         return $this->schemaJson->grade_a_test($request, $test);
     }
+
+    public function fetch_test_completed($test)
+    {
+        Gate::authorize('fetch_test_completed', $test );
+
+        return $this->schemaJson->fetch_test_completed($test);
+    }
 }

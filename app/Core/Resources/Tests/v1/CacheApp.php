@@ -66,4 +66,9 @@ class CacheApp implements TestsInterface
         return $this->dbApp->grade_a_test($request, $test);
 
     }
+
+    public function fetch_test_completed($test)
+    {
+        return $this->dbApp->fetch_test_completed($test);
+    }
 }

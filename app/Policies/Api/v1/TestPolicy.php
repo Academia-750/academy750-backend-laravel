@@ -78,4 +78,13 @@ class TestPolicy
 
         return $user->can('create-tests-for-resolve') && (bool) $topicsBelongsToOpposition;
     }
+
+    /**
+     * @param User $user
+     * @param Test $test
+     * @return bool
+     */
+    public function fetch_test_completed (User $user, Test $test): bool {
+        return $user->hasRole('student') && (bool) $user->tests()->find($test->getRouteKey()) && $test->is_solved_test === 'yes';
+    }
 }

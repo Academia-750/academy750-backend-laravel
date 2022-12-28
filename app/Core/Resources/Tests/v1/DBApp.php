@@ -160,4 +160,15 @@ class DBApp implements TestsInterface
             abort(500,$e->getMessage());
         }
     }
+
+    public function fetch_test_completed($test)
+    {
+        $testQuery = Auth::user()->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->where('id', '=', $test->getRouteKey())->first();
+
+        if (!$testQuery) {
+            abort(404);
+        }
+
+        return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->with(['answers', 'image'])->jsonPaginate();
+    }
 }
