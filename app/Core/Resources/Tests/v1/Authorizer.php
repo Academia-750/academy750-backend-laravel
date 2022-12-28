@@ -66,4 +66,25 @@ class Authorizer implements TestsInterface
         Gate::authorize('get_cards_memory', Test::class );
         return $this->schemaJson->get_cards_memory();
     }
+
+    public function resolve_a_question_of_test($request)
+    {
+        $test = Test::findOrFail($request->get('test_id'));
+
+        $question = $test->questions()->find($request->get('question_id'));
+
+        if (!$question) {
+            abort(403);
+        }
+
+        if ($request->get('answer_id')) {
+            $answer = $question->answers()->find($request->get('answer_id'));
+
+            if (!$answer) {
+                abort(403);
+            }
+        }
+
+        return $this->schemaJson->resolve_a_question_of_test($request);
+    }
 }

@@ -80,7 +80,7 @@ class QuestionsTestService
                     'have_been_show_test' => $testType === 'test' ? 'yes' : 'no',
                     'have_been_show_card_memory' => $testType === 'card_memory' ? 'yes' : 'no',
                     'answer_id' => null,
-                    'status_solved_test' => 'unanswered'
+                    'status_solved_question' => 'unanswered'
                 ]);
 
             }

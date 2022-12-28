@@ -4,6 +4,7 @@ namespace App\Core\Resources\Tests\v1;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
+use App\Models\Question;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
 
@@ -27,11 +28,30 @@ class SchemaJson implements TestsInterface
 
     public function fetch_unresolved_test( $test ): QuestionCollection
     {
+        $questions = collect([]);
+
+        $count = 0;
+
+        $questionsQuery = Question::query()->whereIn(
+            'id', $test->questions()->pluck('questions.id')->toArray()
+        )->get();
+
+        foreach ($questionsQuery as $question) {
+            $count++;
+            $questions->push([
+                "index" => $count,
+                //"question" => $test->questions()->find($question->getRouteKey()),
+                'question_id' => $question->id,
+                'answer_id' => $test->questions()->find($question->getRouteKey())?->pivot?->answer_id,
+            ]);
+        }
+
         return QuestionCollection::make(
             $this->eventApp->fetch_unresolved_test( $test )
         )->additional([
             'meta' => [
-                'test' => QuestionnaireResource::make($test)
+                'test' => QuestionnaireResource::make($test),
+                'questions_data' => $questions
             ]
         ]);
     }
@@ -60,5 +80,14 @@ class SchemaJson implements TestsInterface
         return QuestionnaireCollection::make(
             $this->eventApp->get_cards_memory()
         );
+    }
+
+    public function resolve_a_question_of_test($request)
+    {
+        $this->eventApp->resolve_a_question_of_test($request);
+
+        return response()->json([
+            'status' => 'successfully'
+        ]);
     }
 }

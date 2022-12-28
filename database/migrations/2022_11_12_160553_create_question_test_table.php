@@ -37,7 +37,7 @@ return new class extends Migration
                 ->constrained()
                 ->nullOnDelete();
 
-            $table->enum("status_solved_test", ['unanswered', 'wrong', 'correct'])->default('unanswered')->comment('Estado de resolución de la pregunta');
+            $table->enum("status_solved_question", ['unanswered', 'wrong', 'correct'])->default('unanswered')->comment('Estado de resolución de la pregunta');
 
             $table->timestamps();
         });

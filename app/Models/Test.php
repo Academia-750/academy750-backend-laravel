@@ -132,7 +132,7 @@ class Test extends Model
                 'have_been_show_test',
                 'have_been_show_card_memory',
                 'answer_id',
-                'status_solved_test',
+                'status_solved_question',
                 'test_id',
                 'question_id',
             ]);

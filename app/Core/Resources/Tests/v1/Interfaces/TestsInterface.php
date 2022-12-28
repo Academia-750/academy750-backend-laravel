@@ -11,5 +11,6 @@ interface TestsInterface
     public function fetch_card_memory( $test );
 
     public function create_a_quiz( $request );
+    public function resolve_a_question_of_test( $request );
 
 }

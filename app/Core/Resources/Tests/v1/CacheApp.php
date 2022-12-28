@@ -55,4 +55,9 @@ class CacheApp implements TestsInterface
     {
         return $this->dbApp->get_cards_memory();
     }
+
+    public function resolve_a_question_of_test($request)
+    {
+        return $this->dbApp->resolve_a_question_of_test($request);
+    }
 }

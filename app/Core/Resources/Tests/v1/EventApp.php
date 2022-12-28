@@ -34,4 +34,9 @@ class EventApp implements TestsInterface
     {
         return $this->cacheApp->get_cards_memory();
     }
+
+    public function resolve_a_question_of_test($request)
+    {
+        return $this->cacheApp->resolve_a_question_of_test($request);
+    }
 }

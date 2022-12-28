@@ -13,7 +13,8 @@ class AnswersForResolveTestByStudentResource extends JsonResource
             'type' => 'answers-test',
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
-                "answer_text" => $this->resource->answer
+                "answer_text" => $this->resource->answer,
+                "is_grouper" => $this->resource->is_grouper_answer,
             ]
         ];
     }

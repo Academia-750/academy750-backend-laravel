@@ -11,3 +11,4 @@ Route::get('tests/cards-memory', [QuestionnairesController::class, 'get_cards_me
 Route::get('tests/fetch/unresolved/{test}', [QuestionnairesController::class, 'fetch_unresolved_test'])->name('api.v1.tests.fetch.unresolved');
 Route::get('tests/fetch/card-memory/{test}', [QuestionnairesController::class, 'fetch_card_memory'])->name('api.v1.tests.fetch.card-memory');
 Route::post('tests/create-a-quiz', [QuestionnairesController::class, 'create_a_quiz'])->name('api.v1.create-a-quiz');
+Route::post('tests/questionnaire/resolve-question', [QuestionnairesController::class, 'resolve_a_question_of_test'])->name('api.v1.resolve-question-of-test');
