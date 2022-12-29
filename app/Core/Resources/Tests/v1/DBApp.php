@@ -22,7 +22,7 @@ class DBApp implements TestsInterface
     }
 
     public function get_tests_unresolved(){
-        return Auth::user()?->tests()->where('test_type', '=', 'test')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'no')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function get_cards_memory()
@@ -89,6 +89,13 @@ class DBApp implements TestsInterface
         }
     }
 
+    /**
+     * Resuelve una pregunta de un Test abierto
+     * Simplemente envía el Test, la pregunta y la respuesta que se ha escojido
+     *
+     * @param $request
+     * @return void
+     */
     public function resolve_a_question_of_test($request)
     {
         try {
@@ -176,6 +183,13 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
+        /*$questions = Question::query()->with(['answers', 'answers_by_test', 'image'])->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray());
+
+        // 47e626b1-8bb9-4805-90cf-088f7863c8b1
+
+        \Log::debug($questions->find('47e626b1-8bb9-4805-90cf-088f7863c8b1'));
+        \Log::debug($testQuery->questions()->pluck('questions.id')->toArray());
+        \Log::debug(Question::query()->find('47e626b1-8bb9-4805-90cf-088f7863c8b1')->answers);*/
         return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->with(['answers', 'image'])->jsonPaginate();
     }
 }
