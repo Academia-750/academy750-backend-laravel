@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
+use App\Http\Resources\Api\Question\v1\QuestionByTestCollection;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
@@ -25,7 +26,7 @@ class Authorizer implements TestsInterface
         return $this->schemaJson->get_tests_unresolved();
     }
 
-    public function fetch_unresolved_test( $test ): QuestionCollection
+    public function fetch_unresolved_test( $test ): QuestionByTestCollection
     {
         Gate::authorize('fetch_unresolved_test', $test );
 

@@ -3,7 +3,6 @@
 namespace App\Http\Resources\Api\Question\v1;
 
 use App\Http\Resources\Api\Answer\v1\AnswerCollection;
-use App\Http\Resources\Api\Answer\v1\AnswersForResolveTestByStudentCollection;
 use App\Http\Resources\Api\Image\v1\ImageResource;
 use App\Http\Resources\Api\TestModel\v1\QuestionnaireCollection as TestsCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -25,19 +24,12 @@ class QuestionResource extends JsonResource
                 "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
             ],
             'relationships' => [
-                'answers' => $this->when(collect($this->resource)->has('answers'),
-                    function () {
-                        return AnswerCollection::make($this->resource->answers);
-                    }),
-                'answers-test' => $this->when(collect($this->resource)->has('answers_by_test'),
-                    function () {
-                        return AnswersForResolveTestByStudentCollection::make($this->resource->answers_by_test);
-                    }),
+                'answers' => AnswerCollection::make($this->resource->answers),
                 'tests' => $this->when(collect($this->resource)->has('tests'),
                     function () {
                         return TestsCollection::make($this->resource->tests);
                     }),
-                'image' => $this->when(collect($this->resource)->has('image'),
+                'image' => $this->when((bool) $this->resource->image,
                     function () {
                         return ImageResource::make($this->resource->image);
                     }),

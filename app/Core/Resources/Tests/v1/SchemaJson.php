@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
+use App\Http\Resources\Api\Question\v1\QuestionByTestCollection;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
@@ -26,15 +27,13 @@ class SchemaJson implements TestsInterface
         );
     }
 
-    public function fetch_unresolved_test( $test ): QuestionCollection
+    public function fetch_unresolved_test( $test ): QuestionByTestCollection
     {
         $questions = collect([]);
 
         $count = 0;
 
-        $questionsQuery = Question::query()->whereIn(
-            'id', $test->questions()->pluck('questions.id')->toArray()
-        )->get();
+        $questionsQuery = Question::query()->whereIn('id', $test->questions()->pluck('questions.id')->toArray())->get();
 
         foreach ($questionsQuery as $question) {
             $count++;
@@ -46,7 +45,7 @@ class SchemaJson implements TestsInterface
             ]);
         }
 
-        return QuestionCollection::make(
+        return QuestionByTestCollection::make(
             $this->eventApp->fetch_unresolved_test( $test )
         )->additional([
             'meta' => [
