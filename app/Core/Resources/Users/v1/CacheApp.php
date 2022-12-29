@@ -89,4 +89,24 @@ class CacheApp implements UsersInterface
         //Cache::store('redis')->tags('user')->flush();
         return $this->dbApp->contactsUS($request);
     }
+
+    public function get_history_statistical_data_graph_by_student($request)
+    {
+        return $this->dbApp->get_history_statistical_data_graph_by_student($request);
+    }
+
+    public function fetch_history_questions_by_type_and_period($request)
+    {
+        return $this->dbApp->fetch_history_questions_by_type_and_period($request);
+    }
+
+    public function fetch_history_questions_wrong_by_topic_of_student($topic)
+    {
+        return $this->dbApp->fetch_history_questions_wrong_by_topic_of_student($topic);
+    }
+
+    public function fetch_history_tests_completed_by_student()
+    {
+        return $this->dbApp->fetch_history_tests_completed_by_student();
+    }
 }

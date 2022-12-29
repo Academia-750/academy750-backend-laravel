@@ -1,6 +1,8 @@
 <?php
 namespace App\Core\Resources\Users\v1;
 
+use App\Http\Resources\Api\Question\v1\QuestionCollection;
+use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Http\Resources\Api\User\v1\UserCollection;
@@ -83,5 +85,34 @@ class SchemaJson implements UsersInterface
         return response()->json([
             'data' => $this->eventApp->contactsUS($request)
         ]);
+    }
+
+    public function get_history_statistical_data_graph_by_student($request)
+    {
+        return response()->json([
+            'data' => $this->eventApp->get_history_statistical_data_graph_by_student($request)
+        ]);
+    }
+
+    public function fetch_history_questions_by_type_and_period($request)
+    {
+
+        return QuestionCollection::make(
+            $this->eventApp->fetch_history_questions_by_type_and_period($request)
+        );
+    }
+
+    public function fetch_history_questions_wrong_by_topic_of_student($topic)
+    {
+        return QuestionCollection::make(
+            $this->eventApp->fetch_history_questions_wrong_by_topic_of_student($topic)
+        );
+    }
+
+    public function fetch_history_tests_completed_by_student()
+    {
+        return QuestionnaireCollection::make(
+            $this->eventApp->fetch_history_tests_completed_by_student()
+        );
     }
 }

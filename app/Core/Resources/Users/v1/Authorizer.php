@@ -3,7 +3,6 @@ namespace App\Core\Resources\Users\v1;
 
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
 
 class Authorizer implements UsersInterface
@@ -75,5 +74,29 @@ class Authorizer implements UsersInterface
     public function contactsUS($request)
     {
         return $this->schemaJson->contactsUS($request);
+    }
+
+    public function get_history_statistical_data_graph_by_student($request)
+    {
+        Gate::authorize('get_history_statistical_data_graph_by_student', User::class);
+        return $this->schemaJson->get_history_statistical_data_graph_by_student($request);
+    }
+
+    public function fetch_history_questions_by_type_and_period($request)
+    {
+        Gate::authorize('fetch_history_questions_by_type_and_period', User::class);
+        return $this->schemaJson->fetch_history_questions_by_type_and_period($request);
+    }
+
+    public function fetch_history_questions_wrong_by_topic_of_student($topic)
+    {
+        Gate::authorize('fetch_history_questions_wrong_by_topic_of_student', User::class);
+        return $this->schemaJson->fetch_history_questions_wrong_by_topic_of_student($topic);
+    }
+
+    public function fetch_history_tests_completed_by_student()
+    {
+        Gate::authorize('fetch_history_tests_completed_by_student', User::class);
+        return $this->schemaJson->fetch_history_tests_completed_by_student();
     }
 }

@@ -4,12 +4,15 @@ namespace App\Core\Resources\Users\v1;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Core\Resources\Users\v1\Services\ActionForMultipleRecordsService;
 use App\Core\Resources\Users\v1\Services\ActionsAccountUser;
+use App\Core\Resources\Users\v1\Services\StatisticsDataHistoryStudent;
 use App\Core\Services\UserService;
 use App\Exports\Api\Users\v1\UsersExport;
 use App\Models\Role;
+use App\Models\Test;
 use App\Models\User;
 use App\Notifications\Api\ContactUsHomeNotification;
 use App\Notifications\Api\ResetPasswordStudentNotification;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -257,9 +260,57 @@ class DBApp implements UsersInterface
             DB::rollback();
             abort(500, $e->getMessage());
         }
+    }
+
+    public function get_history_statistical_data_graph_by_student($request)
+    {
+        try {
+
+            $today = Carbon::now();
+            $student = Auth::user();
+            $datePeriod = $today->subMonths(
+                StatisticsDataHistoryStudent::getPeriodInInteger( $request->get('period') )
+            )->format('Y-m-d');
+
+            $tests = Test::query()->whereIn('id', StatisticsDataHistoryStudent::getTestsIdUser( $datePeriod ));
 
 
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500, $e->getMessage());
+        }
+    }
+
+    public function fetch_history_questions_by_type_and_period($request)
+    {
+        try {
 
 
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500, $e->getMessage());
+        }
+    }
+
+    public function fetch_history_questions_wrong_by_topic_of_student($topic)
+    {
+        try {
+
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort($e->getCode(), $e->getMessage());
+        }
+    }
+
+    public function fetch_history_tests_completed_by_student()
+    {
+        try {
+
+            return Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort($e->getCode(), $e->getMessage());
+        }
     }
 }

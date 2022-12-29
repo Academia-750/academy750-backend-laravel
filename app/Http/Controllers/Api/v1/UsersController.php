@@ -2,10 +2,14 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Requests\Api\v1\Users\ContactUsPageRequest;
+use App\Http\Requests\Api\v1\Users\FetchHistoryQuestionsByTypeAndPeriodOfStudentRequest;
+use App\Http\Requests\Api\v1\Users\FetchHistoryStatisticalDataGraphByStudentRequest;
+use App\Models\Topic;
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Api\v1\Users\CreateUserRequest;
@@ -13,6 +17,7 @@ use App\Http\Requests\Api\v1\Users\UpdateUserRequest;
 use App\Http\Requests\Api\v1\Users\ActionForMassiveSelectionUsersRequest;
 use App\Http\Requests\Api\v1\Users\ExportUsersRequest;
 use App\Http\Requests\Api\v1\Users\ImportUsersRequest;
+use Illuminate\Validation\Rule;
 
 class UsersController extends Controller
 {
@@ -56,5 +61,25 @@ class UsersController extends Controller
 
     public function contactsUS(ContactUsPageRequest $request){
         return $this->usersInterface->contactsUS( $request );
+    }
+
+    public function get_history_statistical_data_graph_by_student(FetchHistoryStatisticalDataGraphByStudentRequest $request){
+
+        return $this->usersInterface->get_history_statistical_data_graph_by_student($request);
+    }
+
+    public function fetch_history_questions_by_type_and_period(FetchHistoryQuestionsByTypeAndPeriodOfStudentRequest $request){
+
+        return $this->usersInterface->fetch_history_questions_by_type_and_period($request);
+    }
+
+    public function fetch_history_questions_wrong_by_topic_of_student(Topic $topic){
+
+        return $this->usersInterface->fetch_history_questions_wrong_by_topic_of_student($topic);
+    }
+
+    public function fetch_history_tests_completed_by_student(){
+
+        return $this->usersInterface->fetch_history_tests_completed_by_student();
     }
 }

@@ -57,4 +57,24 @@ class UserPolicy
     {
         return $user->can('import-students');
     }
+
+    public function get_history_statistical_data_graph_by_student(User $user): bool
+    {
+        return $user->hasRole('student');
+    }
+
+    public function fetch_history_questions_by_type_and_period(User $user): bool
+    {
+        return $user->hasRole('student');
+    }
+
+    public function fetch_history_questions_wrong_by_topic_of_student(User $user): bool
+    {
+        return $user->hasRole('student');
+    }
+
+    public function fetch_history_tests_completed_by_student(User $user): bool
+    {
+        return $user->hasRole('student');
+    }
 }

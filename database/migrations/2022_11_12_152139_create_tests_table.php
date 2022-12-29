@@ -35,12 +35,13 @@ return new class extends Migration
                 ->nullOnDelete();
 
             $table->foreignUuid("user_id")
-
-
                 ->comment("El alumno que resolverá la prueba")
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
+
+            $table->timestamp('finished_at', 0)
+                ->nullable();
 
             $table->timestamps();
         });

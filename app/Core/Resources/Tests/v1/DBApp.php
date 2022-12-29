@@ -9,6 +9,7 @@ use App\Models\Question;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
 use App\Models\TestType;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -164,6 +165,7 @@ class DBApp implements TestsInterface
 
             $test->test_result = number_format($result_final_test, 2);
             $test->is_solved_test = 'yes';
+            $test->finished_at = Carbon::now();
 
             $test->save();
 

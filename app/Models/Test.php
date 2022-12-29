@@ -69,7 +69,8 @@ class Test extends Model
     public array $adapterIncludes = [];
 
      protected $casts = [
-        'id' => 'string'
+        'id' => 'string',
+         'finished_at' => 'date'
      ];
 
     /* -------------------------------------------------------------------------------------------------------------- */
