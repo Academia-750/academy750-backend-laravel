@@ -45,23 +45,29 @@ class SchemaJson implements TestsInterface
             ]);
         }
 
+        $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
+
         return QuestionByTestCollection::make(
             $this->eventApp->fetch_unresolved_test( $test )
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => $questions
+                'questions_data' => $questions,
+                'number_of_questions_answered_of_test' => $countQuestionsAnswered,
+                'total_questions_of_this_test' => $test->questions->count()
             ]
         ]);
     }
 
     public function fetch_card_memory( $test ): QuestionCollection
     {
+
         return QuestionCollection::make(
             $this->eventApp->fetch_card_memory( $test )
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test)
+
             ]
         ]);
     }
@@ -85,8 +91,14 @@ class SchemaJson implements TestsInterface
     {
         $this->eventApp->resolve_a_question_of_test($request);
 
+        $test = Test::query()->find($request->get('test_id'));
+
+        $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
+
         return response()->json([
-            'status' => 'successfully'
+            'status' => 'successfully',
+            'number_of_questions_answered_of_test' => $countQuestionsAnswered,
+            'total_questions_of_this_test' => $test->questions->count()
         ]);
     }
 

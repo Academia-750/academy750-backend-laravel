@@ -16,7 +16,7 @@ class FetchHistoryStatisticalDataGraphByStudentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'period' => ['required', 'string', Rule::in(['last-month', 'last-three-months'])],
+            'period' => ['required', 'string', Rule::in(['last-month', 'last-three-months', 'total'])],
             'topics_id' => ['required', 'array'],
             'topics_id.*' => ['required', 'uuid', 'exists:topics,id'],
         ];

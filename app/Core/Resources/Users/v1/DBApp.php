@@ -9,6 +9,7 @@ use App\Core\Services\UserService;
 use App\Exports\Api\Users\v1\UsersExport;
 use App\Models\Role;
 use App\Models\Test;
+use App\Models\Topic;
 use App\Models\User;
 use App\Notifications\Api\ContactUsHomeNotification;
 use App\Notifications\Api\ResetPasswordStudentNotification;
@@ -266,32 +267,34 @@ class DBApp implements UsersInterface
     {
         try {
 
-            //$today = Carbon::now()->setTimezone(config('app.timezone'));
             $today = date('Y-m-d');
             $student = Auth::user();
-            /*$datePeriod = $today->subMonths(
-                StatisticsDataHistoryStudent::getPeriodInInteger( $request->get('period') )
-            )->format('Y-m-d H:i:s');*/
+            $last_date = date('Y-m-d', strtotime($today . StatisticsDataHistoryStudent::getPeriodInKey( $request->get('period') )));
 
+            $topicsData = StatisticsDataHistoryStudent::getCollectGroupsStatisticsQuestionsTopic(
+                $request->get('topics_id'),
+                $request->get('period'), [
+                    'student_id' => $student?->getRouteKey(),
+                    'last_date' => $last_date,
+                    'today' => $today,
+                ]
+            );
 
-            $last_date = date('Y-m-d', strtotime($today . '-3 month'));
+            //\Log::debug($topicsData);
+            $topics = [];
 
-            $topics_id = $request->get('topics_id');
+            foreach ($topicsData as $topicData) {
+                $topicDataArray = (array) $topicData;
 
-            $topicsDataStatistic = [];
-
-            \Log::debug(StatisticsDataHistoryStudent::getPeriodInInteger( $request->get('period') ) );
-            \Log::debug($today);
-            \Log::debug($last_date);
-            \Log::debug(date_default_timezone_get());
-
-            foreach ($topics_id as $topic_id) {
-                $topicsDataStatistic[] = DB::select('call getResults_bytopic_date(?,?,?,?)', array(
-                    $topic_id, $student?->getRouteKey(), $last_date, $today
-                ));
+                 $topics[] = [
+                    'topic' => Topic::query()->find($topicDataArray['topic_id']),
+                    'correct' => $topicDataArray['correct'],
+                    'wrong' => $topicDataArray['wrong'],
+                    'unanswered' => $topicDataArray['unanswered'],
+                ];
             }
 
-            return $topicsDataStatistic;
+            return $topics;
 
         } catch (\Exception $e) {
             DB::rollback();
