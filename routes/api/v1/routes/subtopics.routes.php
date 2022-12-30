@@ -23,3 +23,5 @@ Route::post('subtopics/export', [SubtopicsController::class, 'export_records'])-
 Route::post('subtopics/import', [SubtopicsController::class, 'import_records'])->name('api.v1.subtopics.import');
 Route::get('subtopics/import/template', [SubtopicsController::class, 'download_template_import_records'])->name('api.v1.subtopics.import.template');
 */
+
+Route::get('subtopics/import/template', [SubtopicsController::class, 'download_template_import_records'])->name('api.v1.subtopics.import.template');

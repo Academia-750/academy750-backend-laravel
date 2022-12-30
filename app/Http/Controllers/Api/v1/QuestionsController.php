@@ -61,4 +61,12 @@ class QuestionsController extends Controller
     public function claim_question_mail( ClaimQuestionMailRequest $request ) {
         return $this->questionsInterface->claim_question_mail( $request );
     }
+
+    public function import_records(ImportQuestionsRequest $request){
+        return $this->questionsInterface->import_records( $request );
+    }
+
+    public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
+        return Storage::disk('public')->download('templates/csv/questions_import.csv', 'template_import_questions');
+    }
 }

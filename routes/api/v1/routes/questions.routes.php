@@ -19,3 +19,6 @@ Route::post('topics/{topic}/relationship/questions/update/{question}', [Question
 Route::delete('topics/{topic}/relationship/questions/delete/{question}', [QuestionsController::class, 'topic_relationship_questions_delete'])->name('api.v1.topics.relationship.questions.delete');
 
 Route::post('questions/claim/academia', [QuestionsController::class, 'claim_question_mail'])->name('api.v1.questions.claim.mail');
+Route::post('questions/import', [QuestionsController::class, 'import_records'])->name('api.v1.questions.import');
+
+Route::get('questions/import/template', [QuestionsController::class, 'download_template_import_records'])->name('api.v1.questions.import.template');

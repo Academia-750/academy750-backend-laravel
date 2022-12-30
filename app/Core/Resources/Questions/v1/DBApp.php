@@ -197,4 +197,19 @@ class DBApp implements QuestionsInterface
             abort(500,$e->getMessage());
         }
     }
+
+    public function import_records($request)
+    {
+        $filesQuestions = $request->file('filesQuestions') ?? [];
+
+        foreach ($filesQuestions as $file) {
+
+            (
+            new QuestionsImport(Auth::user(), $file->getClientOriginalName())
+            )->import($file);
+
+            //sleep(1);
+
+        }
+    }
 }

@@ -68,4 +68,9 @@ class EventApp implements QuestionsInterface
     {
         return $this->cacheApp->claim_question_mail($request);
     }
+
+    public function import_records($request)
+    {
+        $this->cacheApp->import_records($request);
+    }
 }

@@ -135,4 +135,13 @@ class SchemaJson implements QuestionsInterface
             'status' => 'successfully'
         ]);
     }
+
+    public function import_records($request)
+    {
+        $this->eventApp->import_records( $request );
+
+        return response()->json([
+            'message' => "Proceso de importación iniciada"
+        ], 200);
+    }
 }

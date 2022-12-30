@@ -99,4 +99,9 @@ class Authorizer implements QuestionsInterface
     {
         return $this->schemaJson->claim_question_mail($request);
     }
+
+    public function import_records($request)
+    {
+        $this->schemaJson->import_records($request);
+    }
 }

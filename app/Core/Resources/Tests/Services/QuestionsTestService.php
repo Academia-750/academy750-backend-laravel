@@ -27,6 +27,9 @@ class QuestionsTestService
 
         $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $test, $testType === 'card-memory');
 
+        \Log::debug("EL PROCEDURE YA SE HA EJECUTADO");
+        \Log::debug("Número de preguntas generadas: " . count($questions));
+
         $test->number_of_questions_generated = count($questions);
         $test->save();
 
@@ -51,16 +54,26 @@ class QuestionsTestService
             DB::beginTransaction();
 
             $nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
+            \Log::debug("Nombre del procedure a ejecutar: {$nameProcedure}");
+            \Log::debug("LOS DATOS QUE PASO COMO PARÁMETRO");
+            \Log::debug("ID del Usuario Alumno: {$user->getRouteKey()}");
+            \Log::debug("ID del Test: {$test->getRouteKey()}");
+            \Log::debug("Tipo de Test: {$testType}");
+            \Log::debug("Cantidad de preguntas solicitadas: {$amountQuestionsRequestedByTest}");
 
             $data =  DB::select(
                 "call {$nameProcedure}(?,?,?,?)",
                 array($user->getRouteKey(), $test->getRouteKey() , $testType, (int) $amountQuestionsRequestedByTest)
             );
 
+            \Log::debug("AQUÍ DESPUÉS SE GENERA LA DATA DEL PROCEDURE");
+            \Log::debug($data);
+
             DB::commit();
 
             return $data;
         } catch (\Throwable $th) {
+            \Log::debug("SE PRODUJO UN ERROR JUSTO DESPUÉS DE EJECUTAR EL PROCEDURE");
             DB::rollBack();
             abort(500, $th->getMessage());
         }

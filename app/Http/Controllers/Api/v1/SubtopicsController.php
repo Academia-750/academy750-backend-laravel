@@ -76,6 +76,6 @@ class SubtopicsController extends Controller
     }
 
     public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
-        return Storage::disk('public')->download('templates_import/subtopic.csv', 'template_import_subtopic');
+        return Storage::disk('public')->download('templates/csv/subtopics_import.csv', 'template_import_subtopics');
     }
 }

@@ -105,4 +105,9 @@ class CacheApp implements QuestionsInterface
     {
         return $this->dbApp->claim_question_mail($request);
     }
+
+    public function import_records($request)
+    {
+        $this->dbApp->import_records($request);
+    }
 }
