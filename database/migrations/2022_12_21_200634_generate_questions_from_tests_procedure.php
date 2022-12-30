@@ -25,29 +25,29 @@ return new class extends Migration
                 DECLARE c INTEGER;
 
                 SET c := (SELECT COUNT(*) from questions p WHERE p.questionable_id IN
-                (SELECT testable_id FROM testables s, users u, tests t WHERE t.id=s.test_id
-                AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test)
-                AND p.id NOT IN(SELECT m.question_id from question_test m, users u, tests t
-                WHERE u.id=t.user_id AND t.id=m.test_id AND t.test_type=tipo_cuestionario AND u.id=id_usuario)
+                (SELECT testable_id FROM testables s, tests t WHERE t.id=s.test_id
+                AND t.id=id_test)
+                AND p.id NOT IN(SELECT m.question_id from question_test m, tests t
+                WHERE t.id=m.test_id AND t.user_id=id_usuario AND t.test_type=tipo_cuestionario
+                AND m.have_been_show_card_memory='yes')
                 AND p.its_for_card_memory='yes');
 
                 IF c < 1 THEN
 
                 update question_test m SET m.have_been_show_card_memory='no' WHERE m.question_id IN
                 (SELECT p.id from questions p WHERE p.questionable_id IN
-                (SELECT testable_id FROM testables s, users u, tests t
-                WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test));
+                (SELECT testable_id FROM testables s, tests t
+                WHERE t.id=s.test_id AND t.id=id_test AND t.user_id=id_usuario));
 
                 END IF;
 
                 SELECT p.id from questions p WHERE p.questionable_id IN
-                (SELECT testable_id FROM testables s, users u, tests t
-                WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test)
-                AND p.id NOT IN
-                (SELECT m.question_id from question_test m, users u, tests t
-                WHERE u.id=t.user_id AND t.id=m.test_id AND t.test_type=tipo_cuestionario AND u.id=id_usuario)
-                AND p.its_for_card_memory='yes'
-                ORDER BY RAND() LIMIT numero_preguntas_solicitadas ;
+                 (SELECT testable_id FROM testables s, tests t WHERE t.id=s.test_id
+                  AND t.user_id=id_usuario AND t.id=id_test) AND p.id NOT IN
+                  (SELECT m.question_id from question_test m, tests t
+                  WHERE t.id=m.test_id AND t.test_type=tipo_cuestionario AND
+                  t.user_id=id_usuario and m.have_been_show_card_memory='yes')
+                  ORDER BY RAND() LIMIT numero_preguntas_solicitadas;
 
         END";
 
@@ -61,29 +61,32 @@ return new class extends Migration
         BEGIN
                 DECLARE c INTEGER;
 
-                SET c := (SELECT COUNT(*) from questions p WHERE p.questionable_id IN
-                (SELECT testable_id FROM testables s, users u, tests t
-                WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test)
-                AND p.id NOT IN(SELECT m.question_id from question_test m, users u, tests t
-                WHERE u.id=t.user_id AND t.id=m.test_id AND t.test_type=tipo_cuestionario AND u.id=id_usuario)
-                AND p.its_for_test='yes');
+                SET c := (   SELECT Count(*) from questions p WHERE p.questionable_id IN
+                (SELECT testable_id FROM testables s, tests t WHERE t.id=s.test_id
+                 AND t.user_id=id_usuario AND t.id=id_test) AND p.id NOT IN
+                 (SELECT m.question_id from question_test m, tests t
+                 WHERE t.id=m.test_id AND t.test_type='test' AND
+                 t.user_id=id_usuario and m.have_been_show_test='yes')
+                 ORDER BY RAND() LIMIT numero_preguntas_solicitadas);
 
                 IF c < 1 THEN
 
                 update question_test m SET m.have_been_show_test='no' WHERE m.question_id IN
                 (SELECT p.id from questions p WHERE p.questionable_id IN
-                (SELECT testable_id FROM testables s, users u, tests t
-                WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test));
+                (SELECT testable_id FROM testables s, tests t
+                WHERE t.id=s.test_id AND t.id=id_test AND t.user_id=id_usuario));
 
                 END IF;
 
+
+
                 SELECT p.id from questions p WHERE p.questionable_id IN
-                (SELECT testable_id FROM testables s, users u, tests t
-                WHERE t.id=s.test_id AND u.id=t.user_id AND t.user_id=id_usuario AND t.id=id_test)
-                AND p.id NOT IN(SELECT m.question_id from question_test m, users u, tests t
-                WHERE u.id=t.user_id AND t.id=m.test_id AND t.test_type=tipo_cuestionario AND u.id=id_usuario)
-                AND p.its_for_test='yes'
-                ORDER BY RAND() LIMIT numero_preguntas_solicitadas ;
+                 (SELECT testable_id FROM testables s, tests t WHERE t.id=s.test_id
+                  AND t.user_id=id_usuario AND t.id=id_test) AND p.id NOT IN
+                  (SELECT m.question_id from question_test m, tests t
+                  WHERE t.id=m.test_id AND t.test_type=tipo_cuestionario AND
+                  t.user_id=id_usuario and m.have_been_show_test='yes')
+                  ORDER BY RAND() LIMIT numero_preguntas_solicitadas;
 
         END";
 

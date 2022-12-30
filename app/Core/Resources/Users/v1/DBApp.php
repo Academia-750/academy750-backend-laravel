@@ -280,7 +280,6 @@ class DBApp implements UsersInterface
                 ]
             );
 
-            //\Log::debug($topicsData);
             $topics = [];
 
             foreach ($topicsData as $topicData) {
@@ -329,6 +328,28 @@ class DBApp implements UsersInterface
         try {
 
             return Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort($e->getCode(), $e->getMessage());
+        }
+    }
+
+    public function fetch_topics_available_in_tests()
+    {
+        try {
+            $topicsData = [];
+
+            $tests = Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->get();
+
+            foreach ($tests as $test) {
+
+                foreach ($test->topics()->pluck("topics.id")->toArray() as $topic) {
+                    $topicsData[] = $topic;
+                }
+
+            }
+
+            return Topic::query()->whereIn('id', array_unique($topicsData))->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
         } catch (\Exception $e) {
             DB::rollback();
             abort($e->getCode(), $e->getMessage());

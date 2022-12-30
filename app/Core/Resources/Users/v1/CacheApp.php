@@ -109,4 +109,9 @@ class CacheApp implements UsersInterface
     {
         return $this->dbApp->fetch_history_tests_completed_by_student();
     }
+
+    public function fetch_topics_available_in_tests()
+    {
+        return $this->dbApp->fetch_topics_available_in_tests();
+    }
 }

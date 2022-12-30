@@ -3,6 +3,7 @@ namespace App\Core\Resources\Users\v1;
 
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
+use App\Http\Resources\Api\Topic\v1\TopicCollection;
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Http\Resources\Api\User\v1\UserCollection;
@@ -113,6 +114,13 @@ class SchemaJson implements UsersInterface
     {
         return QuestionnaireCollection::make(
             $this->eventApp->fetch_history_tests_completed_by_student()
+        );
+    }
+
+    public function fetch_topics_available_in_tests()
+    {
+        return TopicCollection::make(
+            $this->eventApp->fetch_topics_available_in_tests()
         );
     }
 }

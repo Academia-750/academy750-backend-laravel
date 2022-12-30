@@ -97,4 +97,9 @@ class EventApp implements UsersInterface
     {
         return $this->cacheApp->fetch_history_tests_completed_by_student();
     }
+
+    public function fetch_topics_available_in_tests()
+    {
+        return $this->cacheApp->fetch_topics_available_in_tests();
+    }
 }

@@ -99,4 +99,10 @@ class Authorizer implements UsersInterface
         Gate::authorize('fetch_history_tests_completed_by_student', User::class);
         return $this->schemaJson->fetch_history_tests_completed_by_student();
     }
+
+    public function fetch_topics_available_in_tests()
+    {
+        Gate::authorize('fetch_topics_available_in_tests', User::class);
+        return $this->schemaJson->fetch_topics_available_in_tests();
+    }
 }

@@ -16,4 +16,5 @@ interface UsersInterface
     public function fetch_history_questions_by_type_and_period($request);
     public function fetch_history_questions_wrong_by_topic_of_student($topic);
     public function fetch_history_tests_completed_by_student();
+    public function fetch_topics_available_in_tests();
 }

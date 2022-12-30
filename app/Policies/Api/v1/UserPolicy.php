@@ -77,4 +77,9 @@ class UserPolicy
     {
         return $user->hasRole('student');
     }
+
+    public function fetch_topics_available_in_tests(User $user): bool
+    {
+        return $user->hasRole('student');
+    }
 }
