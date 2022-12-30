@@ -266,14 +266,32 @@ class DBApp implements UsersInterface
     {
         try {
 
-            $today = Carbon::now();
+            //$today = Carbon::now()->setTimezone(config('app.timezone'));
+            $today = date('Y-m-d');
             $student = Auth::user();
-            $datePeriod = $today->subMonths(
+            /*$datePeriod = $today->subMonths(
                 StatisticsDataHistoryStudent::getPeriodInInteger( $request->get('period') )
-            )->format('Y-m-d');
+            )->format('Y-m-d H:i:s');*/
 
-            $tests = Test::query()->whereIn('id', StatisticsDataHistoryStudent::getTestsIdUser( $datePeriod ));
 
+            $last_date = date('Y-m-d', strtotime($today . '-3 month'));
+
+            $topics_id = $request->get('topics_id');
+
+            $topicsDataStatistic = [];
+
+            \Log::debug(StatisticsDataHistoryStudent::getPeriodInInteger( $request->get('period') ) );
+            \Log::debug($today);
+            \Log::debug($last_date);
+            \Log::debug(date_default_timezone_get());
+
+            foreach ($topics_id as $topic_id) {
+                $topicsDataStatistic[] = DB::select('call getResults_bytopic_date(?,?,?,?)', array(
+                    $topic_id, $student?->getRouteKey(), $last_date, $today
+                ));
+            }
+
+            return $topicsDataStatistic;
 
         } catch (\Exception $e) {
             DB::rollback();

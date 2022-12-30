@@ -63,7 +63,7 @@ class UsersController extends Controller
         return $this->usersInterface->contactsUS( $request );
     }
 
-    public function get_history_statistical_data_graph_by_student(FetchHistoryStatisticalDataGraphByStudentRequest $request){
+    public function fetch_history_statistical_data_graph_by_student(FetchHistoryStatisticalDataGraphByStudentRequest $request){
 
         return $this->usersInterface->get_history_statistical_data_graph_by_student($request);
     }

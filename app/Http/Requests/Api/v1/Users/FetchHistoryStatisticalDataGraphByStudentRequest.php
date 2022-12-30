@@ -17,6 +17,8 @@ class FetchHistoryStatisticalDataGraphByStudentRequest extends FormRequest
     {
         return [
             'period' => ['required', 'string', Rule::in(['last-month', 'last-three-months'])],
+            'topics_id' => ['required', 'array'],
+            'topics_id.*' => ['required', 'uuid', 'exists:topics,id'],
         ];
     }
 
@@ -24,7 +26,8 @@ class FetchHistoryStatisticalDataGraphByStudentRequest extends FormRequest
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            'period' => 'Periodo de tiempo'
+            'period' => 'Periodo de tiempo',
+            'topics_id' => 'Temas'
         ];
     }
 }
