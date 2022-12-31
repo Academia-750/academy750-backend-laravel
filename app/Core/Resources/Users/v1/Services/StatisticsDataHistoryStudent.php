@@ -18,7 +18,7 @@ class StatisticsDataHistoryStudent
         return '0 month';
     }
 
-    public static function getStatisticsByPeriod ($topic_id, $student_id, $last_date, $today) {
+ /*   public static function getStatisticsByPeriod ($topic_id, $student_id, $last_date, $today) {
         \Log::debug($last_date);
         \Log::debug($today);
 
@@ -31,7 +31,7 @@ class StatisticsDataHistoryStudent
         return DB::select('call getResults_bytopic_total(?,?,?,?)', array(
             $topic_id, $student_id
         ));
-    }
+    }*/
 
     public static function getCollectGroupsStatisticsQuestionsTopic ($topics_id, $period, $data): array {
         $topicsDataStatistic = [];

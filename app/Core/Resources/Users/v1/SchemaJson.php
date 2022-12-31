@@ -105,9 +105,13 @@ class SchemaJson implements UsersInterface
 
     public function fetch_history_questions_wrong_by_topic_of_student($topic)
     {
-        return QuestionCollection::make(
+        /*return QuestionCollection::make(
             $this->eventApp->fetch_history_questions_wrong_by_topic_of_student($topic)
-        );
+        );*/
+
+        return response()->json([
+            'data' => $this->eventApp->fetch_history_questions_wrong_by_topic_of_student($topic)
+        ]);
     }
 
     public function fetch_history_tests_completed_by_student()

@@ -5,8 +5,10 @@ use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Core\Resources\Users\v1\Services\ActionForMultipleRecordsService;
 use App\Core\Resources\Users\v1\Services\ActionsAccountUser;
 use App\Core\Resources\Users\v1\Services\StatisticsDataHistoryStudent;
+use App\Core\Resources\Users\v1\Services\TopicsStatisticsService;
 use App\Core\Services\UserService;
 use App\Exports\Api\Users\v1\UsersExport;
+use App\Models\Question;
 use App\Models\Role;
 use App\Models\Test;
 use App\Models\Topic;
@@ -315,7 +317,35 @@ class DBApp implements UsersInterface
     public function fetch_history_questions_wrong_by_topic_of_student($topic)
     {
         try {
+            $user = Auth::user();
 
+            if (!$user) {
+                abort(404);
+            }
+
+            //$questions_id  = array_unique(TopicsStatisticsService::getQuestionsFailedBelongsToTopicAndTest($topic));
+            $questions_id_results_procedure  = DB::select('call get_questions_wrong_history_by_topic_and_tests_student_procedure(?,?)',
+            array($user->getRouteKey(), $topic->getRouteKey()));
+
+            /*\Log::debug($questions_id_results_procedure);
+            $questions_id = [];
+
+            foreach ($questions_id_results_procedure as $key => $question_id) {
+                $questionsData = (array) $question_id;
+
+                $questions_id[] = [
+                    'question_id' => $questionsData['question_wrong_id'],
+                    'test_id' => $questionsData['question_wrong_id'],
+                ];
+
+
+            }
+
+            \Log::debug($questions_id);*/
+
+
+            return $questions_id_results_procedure;
+            //return Question::query()->whereIn('id', $questions_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -337,19 +367,10 @@ class DBApp implements UsersInterface
     public function fetch_topics_available_in_tests()
     {
         try {
-            $topicsData = [];
 
-            $tests = Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->get();
+            $topicsData = array_unique(TopicsStatisticsService::getTopicsByTestsCompleted());
 
-            foreach ($tests as $test) {
-
-                foreach ($test->topics()->pluck("topics.id")->toArray() as $topic) {
-                    $topicsData[] = $topic;
-                }
-
-            }
-
-            return Topic::query()->whereIn('id', array_unique($topicsData))->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+            return Topic::query()->whereIn('id', $topicsData)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
         } catch (\Exception $e) {
             DB::rollback();
             abort($e->getCode(), $e->getMessage());

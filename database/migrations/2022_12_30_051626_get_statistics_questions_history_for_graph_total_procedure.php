@@ -34,19 +34,6 @@ return new class extends Migration
 
         DB::unprepared($procedure1);
 
-        $procedure2 = "DROP PROCEDURE IF EXISTS `get_topics_by_test_of_student`;
-        CREATE PROCEDURE `get_topics_by_test_of_student`(
-            IN `id_user` VARCHAR(255)
-        )
-        BEGIN
-
-        SELECT distinct(l.testable_id) FROM testables l, tests t where t.user_id=id_user and l.testable_type='App\Models\Topic';
-
-        END";
-
-        DB::unprepared($procedure2);
-
-
     }
 
     /**
@@ -57,12 +44,8 @@ return new class extends Migration
     public function down()
     {
         $procedure1= "DROP PROCEDURE IF EXISTS `getResults_bytopic_total`";
-        $procedure2= "DROP PROCEDURE IF EXISTS `get_topics_by_test_of_student`";
-
 
         DB::unprepared($procedure1);
-        DB::unprepared($procedure1);
-
 
     }
 };
