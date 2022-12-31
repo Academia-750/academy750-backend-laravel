@@ -43,8 +43,10 @@ Route::get('verify/token/header-authorization', static function () {
     ], 200);
 });
 
+Route::get('/users/student/tests/fetch/between-period-date',[UsersController::class, 'fetch_tests_between_period_date'])->name('api.v1.users.student.tests.fetch-tests-between-period-date');
+
 Route::post('/users/student/tests/fetch/history-statistical-data-graph',[UsersController::class, 'fetch_history_statistical_data_graph_by_student'])->name('api.v1.users.student.tests.fetch-history-statistical-data-graph');
-Route::post('/users/student/tests/fetch/history-questions-by-type-and-period',[UsersController::class, 'fetch_history_questions_by_type_and_period'])->name('api.v1.users.student.tests.fetch-history-questions-by-type-and-period');
+Route::get('/users/student/tests/fetch/history-questions-by-test-relation-type-question',[UsersController::class, 'fetch_history_questions_by_type_and_period'])->name('api.v1.users.student.tests.fetch-history-questions-by-type-and-period');
 Route::get('/users/student/tests/fetch/history-questions-wrong-by-topic/{topic}',[UsersController::class, 'fetch_history_questions_wrong_by_topic_of_student'])->name('api.v1.users.student.tests.fetch-history-questions-wrong-by-topic-of-student');
 Route::get('/users/student/tests/fetch/history-tests-completed',[UsersController::class, 'fetch_history_tests_completed_by_student'])->name('api.v1.users.student.tests.fetch-history-tests-completed-by-student');
 Route::get('/users/student/tests/fetch/topics-available-in-tests',[UsersController::class, 'fetch_topics_available_in_tests'])->name('api.v1.users.student.tests.fetch-topics-available-in-tests');

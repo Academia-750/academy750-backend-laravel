@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Core\Resources\Users\v1\Services\StatisticsDataHistoryStudent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Core\Services\UUIDTrait;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 use function Symfony\Component\String\s;
 
 class Test extends Model

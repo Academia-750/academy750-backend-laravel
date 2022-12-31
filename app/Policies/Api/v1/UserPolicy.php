@@ -82,4 +82,9 @@ class UserPolicy
     {
         return $user->hasRole('student');
     }
+
+    public function fetch_tests_between_period_date(User $user): bool
+    {
+        return $user->hasRole('student');
+    }
 }

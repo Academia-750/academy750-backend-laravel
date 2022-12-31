@@ -83,9 +83,9 @@ class EventApp implements UsersInterface
         return $this->cacheApp->get_history_statistical_data_graph_by_student($request);
     }
 
-    public function fetch_history_questions_by_type_and_period($request)
+    public function fetch_history_questions_by_type_and_period()
     {
-        return $this->cacheApp->fetch_history_questions_by_type_and_period($request);
+        return $this->cacheApp->fetch_history_questions_by_type_and_period();
     }
 
     public function fetch_history_questions_wrong_by_topic_of_student($topic)
@@ -101,5 +101,10 @@ class EventApp implements UsersInterface
     public function fetch_topics_available_in_tests()
     {
         return $this->cacheApp->fetch_topics_available_in_tests();
+    }
+
+    public function fetch_tests_between_period_date()
+    {
+        return $this->cacheApp->fetch_tests_between_period_date();
     }
 }

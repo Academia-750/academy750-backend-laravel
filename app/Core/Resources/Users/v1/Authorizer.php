@@ -4,6 +4,8 @@ namespace App\Core\Resources\Users\v1;
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class Authorizer implements UsersInterface
 {
@@ -82,10 +84,24 @@ class Authorizer implements UsersInterface
         return $this->schemaJson->get_history_statistical_data_graph_by_student($request);
     }
 
-    public function fetch_history_questions_by_type_and_period($request)
+    public function fetch_history_questions_by_type_and_period()
     {
+        $data = [
+            'test_id' => request('test-id'),
+            'type_question' => request('type-question'),
+        ];
+
+        $validateData = Validator::make($data,[
+            'test_id' => ['required', 'exists:tests,id'],
+            'type_question' => ['required', Rule::in(['correct','wrong', 'unanswered'])],
+        ]);
+
+        if ($validateData->fails()) {
+            abort(400, 'Por favor, mandar los parámetros correctos, {test_id} y {type_question}');
+        }
+
         Gate::authorize('fetch_history_questions_by_type_and_period', User::class);
-        return $this->schemaJson->fetch_history_questions_by_type_and_period($request);
+        return $this->schemaJson->fetch_history_questions_by_type_and_period();
     }
 
     public function fetch_history_questions_wrong_by_topic_of_student($topic)
@@ -104,5 +120,11 @@ class Authorizer implements UsersInterface
     {
         Gate::authorize('fetch_topics_available_in_tests', User::class);
         return $this->schemaJson->fetch_topics_available_in_tests();
+    }
+
+    public function fetch_tests_between_period_date()
+    {
+        Gate::authorize('fetch_tests_between_period_date', User::class);
+        return $this->schemaJson->fetch_tests_between_period_date();
     }
 }

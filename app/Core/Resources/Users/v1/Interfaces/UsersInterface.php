@@ -13,8 +13,9 @@ interface UsersInterface
     public function enable_account( $request, $user );
     public function contactsUS( $request );
     public function get_history_statistical_data_graph_by_student($request);
-    public function fetch_history_questions_by_type_and_period($request);
+    public function fetch_history_questions_by_type_and_period();
     public function fetch_history_questions_wrong_by_topic_of_student($topic);
     public function fetch_history_tests_completed_by_student();
     public function fetch_topics_available_in_tests();
+    public function fetch_tests_between_period_date();
 }

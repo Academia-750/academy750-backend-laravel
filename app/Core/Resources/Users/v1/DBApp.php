@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
 //use App\Imports\Api\Users\v1\UserImport;
 
@@ -303,10 +305,20 @@ class DBApp implements UsersInterface
         }
     }
 
-    public function fetch_history_questions_by_type_and_period($request)
+    public function fetch_history_questions_by_type_and_period()
     {
         try {
+            $student = Auth::user();
 
+            if (!$student) {
+                abort(500, 'No se encuentra al usuario autenticado');
+            }
+
+            $test = Test::query()->findOrFail(request('test-id'));
+
+            return Question::query()->whereIn('id',
+                $test->questions()->wherePivot('status_solved_question', '=', request('type-question')
+                )->pluck('questions.id')->toArray())->jsonPaginate();
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -373,6 +385,60 @@ class DBApp implements UsersInterface
             return Topic::query()->whereIn('id', $topicsData)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
         } catch (\Exception $e) {
             DB::rollback();
+            abort($e->getCode(), $e->getMessage());
+        }
+    }
+
+    public function fetch_tests_between_period_date()
+    {
+        try {
+            $student = Auth::user();
+
+            if (!$student) {
+                abort(500, 'No se encuentra al usuario autenticado');
+            }
+
+            $data = [
+                'key_period_date' => request('key-period-date')
+            ];
+
+            $validateData = Validator::make($data,[
+                'key_period_date' => ['required', Rule::in(['all', 'last-month', 'last-three-months'])]
+            ]);
+
+            if ($validateData->fails()) {
+                abort(400, 'Por favor, mandar el parámetro correcto para filtrar por periodo');
+            }
+
+            if (request('key-period-date') === 'all') {
+                return $student?->tests()
+                    ->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')
+                    ->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+            }
+
+            $today = date('Y-m-d');
+
+            $last_date = date('Y-m-d', strtotime($today . StatisticsDataHistoryStudent::getPeriodInKey( request('key-period-date') )));
+
+            $tests_id_by_procedure = DB::select('call get_tests_of_student_by_period_date(?,?,?)',
+            array($student->getRouteKey(), $last_date, $today));
+
+
+            $tests_id = array_map(static function ($test) {
+                $test = (array) $test;
+
+                return $test['id'];
+            }, $tests_id_by_procedure);
+
+
+            return Test::query()
+                ->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')
+                ->whereIn('id', $tests_id)
+                ->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            \Log::debug($e->getMessage());
             abort($e->getCode(), $e->getMessage());
         }
     }

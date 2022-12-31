@@ -3,7 +3,10 @@ namespace App\Core\Resources\Users\v1;
 
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
+use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
 use App\Http\Resources\Api\Topic\v1\TopicCollection;
+use App\Models\Question;
+use App\Models\Test;
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Http\Resources\Api\User\v1\UserCollection;
@@ -95,12 +98,41 @@ class SchemaJson implements UsersInterface
         ]);
     }
 
-    public function fetch_history_questions_by_type_and_period($request)
+    public function fetch_history_questions_by_type_and_period()
     {
 
+        $test = Test::query()->findOrFail(request('test-id'));
+
+        $questions = collect([]);
+
+        $count = 0;
+
+        $questionsQuery = Question::query()->whereIn(
+            'id', $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->pluck('questions.id')->toArray()
+        )->get();
+
+        foreach ($questionsQuery as $question) {
+
+            $questionPivotTest = $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->find($question->getRouteKey());
+
+            $count++;
+            $questions->push([
+                "index" => $count,
+                "status_question" => $questionPivotTest?->pivot?->status_solved_question,
+                "question" => $question->question,
+                'question_id' => $question->id,
+                'answer_id' => $questionPivotTest?->pivot?->answer_id,
+            ]);
+        }
+
         return QuestionCollection::make(
-            $this->eventApp->fetch_history_questions_by_type_and_period($request)
-        );
+            $this->eventApp->fetch_history_questions_by_type_and_period()
+        )->additional([
+            'meta' => [
+                'test' => QuestionnaireResource::make($test),
+                'questions_data' => $questions
+            ]
+        ]);
     }
 
     public function fetch_history_questions_wrong_by_topic_of_student($topic)
@@ -125,6 +157,13 @@ class SchemaJson implements UsersInterface
     {
         return TopicCollection::make(
             $this->eventApp->fetch_topics_available_in_tests()
+        );
+    }
+
+    public function fetch_tests_between_period_date()
+    {
+        return QuestionnaireCollection::make(
+            $this->eventApp->fetch_tests_between_period_date()
         );
     }
 }

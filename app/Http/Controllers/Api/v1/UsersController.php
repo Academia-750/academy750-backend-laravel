@@ -68,9 +68,9 @@ class UsersController extends Controller
         return $this->usersInterface->get_history_statistical_data_graph_by_student($request);
     }
 
-    public function fetch_history_questions_by_type_and_period(FetchHistoryQuestionsByTypeAndPeriodOfStudentRequest $request){
+    public function fetch_history_questions_by_type_and_period(){
 
-        return $this->usersInterface->fetch_history_questions_by_type_and_period($request);
+        return $this->usersInterface->fetch_history_questions_by_type_and_period();
     }
 
     public function fetch_history_questions_wrong_by_topic_of_student(Topic $topic){
@@ -86,5 +86,10 @@ class UsersController extends Controller
     public function fetch_topics_available_in_tests(){
 
         return $this->usersInterface->fetch_topics_available_in_tests();
+    }
+
+    public function fetch_tests_between_period_date(){
+
+        return $this->usersInterface->fetch_tests_between_period_date();
     }
 }
