@@ -3,9 +3,7 @@
 namespace App\Imports\Api\v1;
 
 use App\Core\Services\HelpersLaravelImportCSVTrait;
-use App\Events\Api\v1\HelloEvent;
 use App\Models\ImportProcess;
-use App\Models\ImportRecord;
 use App\Models\Topic;
 use App\Models\TopicGroup;
 use App\Models\User;
@@ -21,7 +19,6 @@ use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithEvents;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Events\AfterSheet;
-use Maatwebsite\Excel\Events\BeforeImport;
 use Maatwebsite\Excel\Events\AfterImport;
 
 class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEvents, WithChunkReading
@@ -134,7 +131,6 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
 
         $event->getConcernable()->updateDataImportHistory($event);
 
-        //broadcast(new HelloEvent([]));
         //broadcast(new ImportZonesEvent($event->getConcernable()->failuresArray, $event->getConcernable()->userAuth, $event->getConcernable()->failedBoolean));
     }
 

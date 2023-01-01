@@ -14,4 +14,4 @@ Route::post('oppositions/mass-selection-action', [OppositionsController::class, 
 Route::get("oppositions/{opposition}/relationship/syllabus", [OppositionsController::class, 'get_relationship_syllabus'])->name('api.v1.oppositions.relationships.syllabus');
 /*Route::post('oppositions/export', [OppositionsController::class, 'export_records'])->name('api.v1.oppositions.export');
 Route::post('oppositions/import', [OppositionsController::class, 'import_records'])->name('api.v1.oppositions.import');*/
-Route::get('oppositions/import/template', [OppositionsController::class, 'download_template_import_records'])->name('api.v1.oppositions.import.template');
+//Route::get('oppositions/import/template', [OppositionsController::class, 'download_template_import_records'])->name('api.v1.oppositions.import.template');

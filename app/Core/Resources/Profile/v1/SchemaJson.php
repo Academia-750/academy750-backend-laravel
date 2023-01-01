@@ -4,7 +4,7 @@ namespace App\Core\Resources\Profile\v1;
 
 use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
 use App\Http\Resources\Api\User\v1\UserResource;
-use App\Http\Resources\Api\v1\NotificationUser\NotificationUserCollection;
+use App\Http\Resources\Api\NotificationUser\v1\NotificationUserCollection;
 use Illuminate\Support\Facades\Auth;
 
 class SchemaJson implements ProfileInterface

@@ -17,7 +17,7 @@ Route::post('users/actions-on-multiple-records', [UsersController::class, 'mass_
 Route::post('users/enable-account/{user}', [UsersController::class, 'enable_account'])->name('api.v1.users.enable-account');*/
 /*Route::post('users/export', [UsersController::class, 'export_records'])->name('api.v1.users.export');
 Route::post('users/import', [UsersController::class, 'import_records'])->name('api.v1.users.import');*/
-Route::get('users/import/template', [UsersController::class, 'download_template_import_records'])->name('api.v1.users.import.template');
+//Route::get('users/import/template', [UsersController::class, 'download_template_import_records'])->name('api.v1.users.import.template');
 
 /*Route::get('/students/records/archived', [UsersController::class, 'get_records_archived'])->name('api.v1.students.archived.get');
 Route::get('/students/records/archived/restore/{company}', [UsersController::class, 'restore_archived'])->name('api.v1.students.archived.restore');
