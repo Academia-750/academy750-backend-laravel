@@ -82,18 +82,18 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                         "question" => $row["pregunta"],
                         "reason" => $row["explicacion_texto"],
                         "topic_id" => $row["tema_uuid"],
-                        "subtopic_id" => $row["subtema_uuid"],
-                        "es_test" => $row["es_test"],
-                        "es_tarjeta_de_memoria" => $row["es_tarjeta_de_memoria"],
+                        "subtopic_id" => (bool) array_key_exists('subtema_uuid', $row->toArray()) && $row["subtema_uuid"],
+                        "es_test" => array_key_exists('es_test', $row->toArray()) && $row["es_test"],
+                        "es_tarjeta_de_memoria" => array_key_exists('es_tarjeta_de_memoria', $row->toArray()) &&$row["es_tarjeta_de_memoria"],
                     ],[
                         "answer-correct" => $row["respuesta_correcta"],
-                        "is-grouper-answer-correct" => $row["es_agrupadora_respuesta_correcta"],
+                        "is-grouper-answer-correct" => array_key_exists('is-grouper-answer-correct', $row->toArray()) && $row["es_agrupadora_respuesta_correcta"],
                         "answer-1" => $row["respuesta_1"],
-                        "is-grouper-answer-one" => $row["es_agrupadora_respuesta_1"],
+                        "is-grouper-answer-one" => array_key_exists('is-grouper-answer-one', $row->toArray()) && $row["es_agrupadora_respuesta_1"],
                         "answer-2" => $row["respuesta_2"],
-                        "is-grouper-answer-two" => $row["es_agrupadora_respuesta_2"],
+                        "is-grouper-answer-two" => array_key_exists('is-grouper-answer-two', $row->toArray()) && $row["es_agrupadora_respuesta_2"],
                         "answer-3" => $row["respuesta_3"],
-                        "is-grouper-answer-three" => $row["es_agrupadora_respuesta_3"],
+                        "is-grouper-answer-three" => array_key_exists('is-grouper-answer-three', $row->toArray()) && $row["es_agrupadora_respuesta_3"],
                     ]);
                     $this->count_rows_successfully++;
                 } else {
@@ -149,38 +149,38 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
     {
         return Validator::make($row->toArray(), [
             'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
-            'subtema_uuid' => ['nullable', Rule::when( (bool) $row["subtema_uuid"],
+            'subtema_uuid' => ['nullable', Rule::when( (bool) array_key_exists("subtema_uuid", $row->toArray()) && isset($row["subtema_uuid"]),
                 ['uuid', 'exists:subtopics,id', new SubtopicBelongsTopicRule($row["tema_uuid"], $this->topics)]
             )],
             'pregunta' => ['required','max:255'],
-            'es_test' => ['nullable', Rule::when( (bool) $row["es_test"],
+            'es_test' => ['nullable', Rule::when( (bool) array_key_exists("es_test", $row->toArray()) && isset($row["es_test"]),
                 ['in:si,no']
             )],
-            'es_tarjeta_de_memoria' => ['nullable', Rule::when( (bool) $row["es_tarjeta_de_memoria"],
+            'es_tarjeta_de_memoria' => ['nullable', Rule::when( (bool) array_key_exists("es_tarjeta_de_memoria", $row->toArray()) && isset($row["es_tarjeta_de_memoria"]),
                 ['in:si,no']
             )],
             "respuesta_correcta" => [
                 'required', 'max:255'
             ],
-            'es_agrupadora_respuesta_correcta' => ['nullable', Rule::when( (bool) $row["es_agrupadora_respuesta_correcta"],
+            'es_agrupadora_respuesta_correcta' => ['nullable', Rule::when( (bool) array_key_exists("es_agrupadora_respuesta_correcta", $row->toArray()) && isset($row["es_agrupadora_respuesta_correcta"]),
                 ['in:si,no']
             )],
             "respuesta_1" => [
                 'required', 'max:255'
             ],
-            'es_agrupadora_respuesta_1' => ['nullable', Rule::when( (bool) $row["es_agrupadora_respuesta_1"],
+            'es_agrupadora_respuesta_1' => ['nullable', Rule::when( (bool) array_key_exists("es_agrupadora_respuesta_1", $row->toArray()) && isset($row["es_agrupadora_respuesta_1"]),
                 ['in:si,no']
             )],
             "respuesta_2" => [
                 'required', 'max:255'
             ],
-            'es_agrupadora_respuesta_2' => ['nullable', Rule::when( (bool) $row["es_agrupadora_respuesta_2"],
+            'es_agrupadora_respuesta_2' => ['nullable', Rule::when( (bool) array_key_exists("es_agrupadora_respuesta_2", $row->toArray()) && isset($row["es_agrupadora_respuesta_2"]),
                 ['in:si,no']
             )],
             "respuesta_3" => [
                 'required', 'max:255'
             ],
-            'es_agrupadora_respuesta_3' => ['nullable', Rule::when( (bool) $row["es_agrupadora_respuesta_3"],
+            'es_agrupadora_respuesta_3' => ['nullable', Rule::when( (bool) array_key_exists("es_agrupadora_respuesta_3", $row->toArray()) && isset($row["es_agrupadora_respuesta_3"]),
                 ['in:si,no']
             )],
             'explicacion_texto' => ['required', 'max:400']
@@ -190,14 +190,14 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
     public function registerQuestion ($dataQuestion, $dataAnswers): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
         if ((bool) $dataQuestion["subtopic_id"]) {
-            $subtopic = Subtopic::query()->firstWhere('id','=',$dataQuestion["subtopic_id"]);
+            $subtopic = Subtopic::query()->firstWhere('id','=', $dataQuestion["subtopic_id"]);
 
             $question = $subtopic?->questions()->create([
-                'question' => $dataQuestion["question"],
+                'question' =>  $dataQuestion["question"],
                 'reason' => $dataQuestion["reason"],
                 'is_visible' => 'yes',
-                "its_for_test" => $dataQuestion["es_test"],
-                "its_for_card_memory" => $dataQuestion["es_tarjeta_de_memoria"],
+                "its_for_test" => $this->getEnumValueByConditionalRow($dataQuestion["es_test"]),
+                "its_for_card_memory" => $this->getEnumValueByConditionalRow($dataQuestion["es_tarjeta_de_memoria"]),
             ]);
 
             $this->registerAnswersQuestion($question->id, $dataAnswers);
@@ -211,8 +211,8 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
             'question' => $dataQuestion["question"],
             'reason' => $dataQuestion["reason"],
             'is_visible' => 'yes',
-            'its_for_test' => $dataQuestion[''],
-            'its_for_card_memory' => $dataQuestion[''],
+            'its_for_test' => $this->getEnumValueByConditionalRow($dataQuestion['es_test']),
+            'its_for_card_memory' => $this->getEnumValueByConditionalRow($dataQuestion['es_tarjeta_de_memoria']),
         ]);
 
         $this->registerAnswersQuestion($question->id, $dataAnswers);
@@ -220,8 +220,8 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
         return $topic;
     }
 
-    public function isGrouperAnswer ($answer): string {
-        if ($answer === 'si') {
+    public function getEnumConditionalModel ($value): string {
+        if ($value === 'si') {
             return 'yes';
         }
         return 'no';
@@ -229,7 +229,14 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
     public function getBoolIsGrouperAnswer ($value): string {
         if ($value) {
-            return $this->isGrouperAnswer($value);
+            return $this->getEnumConditionalModel($value);
+        }
+        return 'no';
+    }
+
+    public function getEnumValueByConditionalRow ($value) {
+        if ($value) {
+            return $this->getEnumConditionalModel($value);
         }
         return 'no';
     }
