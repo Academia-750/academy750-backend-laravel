@@ -28,7 +28,7 @@ class SendCredentialsUserNotification extends Notification/* implements ShouldQu
         $dni = $notifiable->dni;
         $password_generated = $this->data["password_generated"];
         return (new MailMessage)
-            ->subject("Academia 750 - clave de acceso")
+            ->subject("Academia 750 - Clave de acceso")
             ->greeting("<span class='greeting-text-default-mailable typography-greeting-text text-size-18'>Hola! Bienvenid@ a Academia 750!</span>")
             ->line("Te enviamos tus nuevas claves de acceso para que puedas disfrutar y aprender de todo lo que te espera con nosotros.")
             ->line("<b>Usuario</b>: {$dni}")

@@ -157,13 +157,16 @@ class DBApp implements TestsInterface
 
             // Calificar test
 
-            $result_final_test = (
+            /*$result_final_test = (
                 $totalQuestionsCorrect - ($totalQuestionsWrong / 3) / $total_questions_test / 10
+            );*/
+            $result_final_test = (
+                $totalQuestionsCorrect - ($totalQuestionsWrong / 3) / ($total_questions_test / 10)
             );
 
             //\Log::debug($result_final_test);
 
-            $test->test_result = number_format($result_final_test, 2);
+            $test->test_result = ( (int) $result_final_test ) <= 0 ? '0' : number_format($result_final_test, 2);
             $test->is_solved_test = 'yes';
             $test->finished_at = Carbon::now();
 
