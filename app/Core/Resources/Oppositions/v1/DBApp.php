@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 //use App\Imports\Api\Oppositions\v1\OppositionsImport;
-use App\Exports\Api\Oppositions\v1\OppositionsExport;
 
 
 class DBApp implements OppositionsInterface
@@ -24,7 +23,7 @@ class DBApp implements OppositionsInterface
     }
 
     public function index(){
-        return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model->applyFilters()->orderBy('name', 'asc')->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function create( $request ): \App\Models\Opposition{

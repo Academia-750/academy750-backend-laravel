@@ -224,7 +224,7 @@ class DBApp implements UsersInterface
             if ($request->get('reason') === 'reset-password') {
                 $student = User::firstWhere('email', '=', $request->get('email'));
 
-                if (!$student) {
+                if (!$student || $student->hasRole('admin')) {
                     return [
                         'status' => 'failed',
                         'message' => 'No se encontró al usuario'

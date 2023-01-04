@@ -28,7 +28,7 @@ class DBApp implements TopicsInterface
     }
 
     public function index(){
-        return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model->applyFilters()->orderBy('name', 'asc')->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function get_topics_available_for_create_test(){
