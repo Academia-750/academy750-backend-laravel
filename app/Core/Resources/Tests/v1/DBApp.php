@@ -161,7 +161,8 @@ class DBApp implements TestsInterface
                 $totalQuestionsCorrect - ($totalQuestionsWrong / 3) / $total_questions_test / 10
             );*/
             $result_final_test = (
-                $totalQuestionsCorrect - ($totalQuestionsWrong / 3) / ($total_questions_test / 10)
+                ( $totalQuestionsCorrect - ($totalQuestionsWrong / 3) )
+                / ($total_questions_test / 10)
             );
 
             //\Log::debug($result_final_test);
