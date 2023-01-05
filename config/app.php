@@ -73,7 +73,8 @@ return [
     |
     */
 
-    'timezone' => env('APP_ENV', 'production') === 'production' ? 'Europe/Madrid' : 'America/Lima',
+    //'timezone' => env('APP_ENV', 'production') === 'production' ? 'Europe/Madrid' : 'America/Lima',
+    'timezone' => 'Europe/Madrid',
 
     /*
     |--------------------------------------------------------------------------
