@@ -30,7 +30,7 @@ class ResetPasswordStudentNotification extends Notification/* implements ShouldQ
         $password_generated = $this->data["password_generated"];
 
         return (new MailMessage)
-            ->subject("Academia 750 - Nueva clave de acceso")
+            ->subject("Academia 750 - Nueva Clave de acceso")
             ->greeting("<span class='greeting-text-default-mailable typography-greeting-text text-size-18'>Hola! {$namePerson}</span>")
             ->line("Tus nuevos datos de acceso son:")
             ->line("<b>Usuario</b>: {$dni}")

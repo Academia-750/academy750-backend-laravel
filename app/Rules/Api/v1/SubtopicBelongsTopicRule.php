@@ -17,6 +17,15 @@ class SubtopicBelongsTopicRule implements Rule
         $this->topics = $topics;
     }
 
+    /**
+     * Valida que el Subtema pertenece al Tema especificado
+     *
+     * Para saber el subtema y el tema, se pasan sus UUID y luego se consulta su informacion.
+     *
+     * @param $attribute
+     * @param $value
+     * @return bool
+     */
     public function passes($attribute, $value): bool
     {
         $topic = $this->topics->where('id', '=', $this->topic_uuid)->first();

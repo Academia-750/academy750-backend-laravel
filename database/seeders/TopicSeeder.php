@@ -30,7 +30,7 @@ class TopicSeeder extends Seeder
             ]);
 
             //$this->syncOppositions($topic);
-            $this->registerQuestionsModel($topic, $topic->name, $this->faker->text(), 'topic');
+            //$this->registerQuestionsModel($topic, $topic->name, $this->faker->text(), 'topic');
         }
     }
 

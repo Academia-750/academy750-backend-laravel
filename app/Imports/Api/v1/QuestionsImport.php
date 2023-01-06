@@ -3,6 +3,8 @@
 namespace App\Imports\Api\v1;
 
 use App\Core\Services\HelpersLaravelImportCSVTrait;
+use App\Imports\Api\Services\QuestionsImportService;
+use App\Imports\Api\Services\QuestionsImportValidation;
 use App\Models\Answer;
 use App\Models\Subtopic;
 use App\Models\Topic;
@@ -53,48 +55,12 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                     $errors = $validateData->errors();
                 }
 
-                /*\Log::debug("Pregunta: {$row["pregunta"]}");
-                \Log::debug("Explicacion: {$row["explicacion_texto"]}");
-                \Log::debug("Tema UUID: {$row["tema_uuid"]}");
-                \Log::debug("Subtema UUID: {$row["subtema_uuid"]}");
-
-                \Log::debug("Respuesta correcta: {$row["respuesta_correcta"]}");
-                \Log::debug("Es agrupadora respuesta correcta: {$row["es_agrupadora_respuesta_correcta"]}");
-                \Log::debug("Type respuesta correcta: " . gettype($row["es_agrupadora_respuesta_correcta"]));
-
-                \Log::debug("Respuesta 1: {$row["respuesta_1"]}");
-                \Log::debug("Es agrupadora respuesta 1: {$row["es_agrupadora_respuesta_1"]}");
-                \Log::debug("Type respuesta 1: " . gettype($row["es_agrupadora_respuesta_1"]));
-
-                \Log::debug("Respuesta 2: {$row["respuesta_2"]}");
-                \Log::debug("Es agrupadora respuesta 2: {$row["es_agrupadora_respuesta_2"]}");
-                \Log::debug("Type respuesta 2: " . gettype($row["es_agrupadora_respuesta_2"]));
-
-                \Log::debug("Respuesta 3: {$row["respuesta_3"]}");
-                \Log::debug("Es agrupadora respuesta 3: {$row["es_agrupadora_respuesta_3"]}");
-                \Log::debug("Type respuesta 3: " . gettype($row["es_agrupadora_respuesta_3"]));*/
-
                 DB::beginTransaction();
 
 
                 if (!$hasErrors) {
-                    $this->registerQuestion([
-                        "question" => $row["pregunta"],
-                        "reason" => $row["explicacion_texto"],
-                        "topic_id" => $row["tema_uuid"],
-                        "subtopic_id" => (bool) array_key_exists('subtema_uuid', $row->toArray()) && $row["subtema_uuid"],
-                        "es_test" => array_key_exists('es_test', $row->toArray()) && $row["es_test"],
-                        "es_tarjeta_de_memoria" => array_key_exists('es_tarjeta_de_memoria', $row->toArray()) &&$row["es_tarjeta_de_memoria"],
-                    ],[
-                        "answer-correct" => $row["respuesta_correcta"],
-                        "is-grouper-answer-correct" => array_key_exists('is-grouper-answer-correct', $row->toArray()) && $row["es_agrupadora_respuesta_correcta"],
-                        "answer-1" => $row["respuesta_1"],
-                        "is-grouper-answer-one" => array_key_exists('is-grouper-answer-one', $row->toArray()) && $row["es_agrupadora_respuesta_1"],
-                        "answer-2" => $row["respuesta_2"],
-                        "is-grouper-answer-two" => array_key_exists('is-grouper-answer-two', $row->toArray()) && $row["es_agrupadora_respuesta_2"],
-                        "answer-3" => $row["respuesta_3"],
-                        "is-grouper-answer-three" => array_key_exists('is-grouper-answer-three', $row->toArray()) && $row["es_agrupadora_respuesta_3"],
-                    ]);
+                    $this->registerQuestion(QuestionsImportService::getDataFormattedForRegisterQuestions($row),
+                        QuestionsImportService::getDataFormattedForRegisterQuestions($row));
                     $this->count_rows_successfully++;
                 } else {
                     $this->count_rows_failed++;
@@ -147,44 +113,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
      * */
     public function validateRow ($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
-        return Validator::make($row->toArray(), [
-            'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
-            'subtema_uuid' => ['nullable', Rule::when( (bool) array_key_exists("subtema_uuid", $row->toArray()) && isset($row["subtema_uuid"]),
-                ['uuid', 'exists:subtopics,id', new SubtopicBelongsTopicRule($row["tema_uuid"], $this->topics)]
-            )],
-            'pregunta' => ['required','max:255'],
-            'es_test' => ['nullable', Rule::when( (bool) array_key_exists("es_test", $row->toArray()) && isset($row["es_test"]),
-                ['in:si,no']
-            )],
-            'es_tarjeta_de_memoria' => ['nullable', Rule::when( (bool) array_key_exists("es_tarjeta_de_memoria", $row->toArray()) && isset($row["es_tarjeta_de_memoria"]),
-                ['in:si,no']
-            )],
-            "respuesta_correcta" => [
-                'required', 'max:255'
-            ],
-            'es_agrupadora_respuesta_correcta' => ['nullable', Rule::when( (bool) array_key_exists("es_agrupadora_respuesta_correcta", $row->toArray()) && isset($row["es_agrupadora_respuesta_correcta"]),
-                ['in:si,no']
-            )],
-            "respuesta_1" => [
-                'required', 'max:255'
-            ],
-            'es_agrupadora_respuesta_1' => ['nullable', Rule::when( (bool) array_key_exists("es_agrupadora_respuesta_1", $row->toArray()) && isset($row["es_agrupadora_respuesta_1"]),
-                ['in:si,no']
-            )],
-            "respuesta_2" => [
-                'required', 'max:255'
-            ],
-            'es_agrupadora_respuesta_2' => ['nullable', Rule::when( (bool) array_key_exists("es_agrupadora_respuesta_2", $row->toArray()) && isset($row["es_agrupadora_respuesta_2"]),
-                ['in:si,no']
-            )],
-            "respuesta_3" => [
-                'required', 'max:255'
-            ],
-            'es_agrupadora_respuesta_3' => ['nullable', Rule::when( (bool) array_key_exists("es_agrupadora_respuesta_3", $row->toArray()) && isset($row["es_agrupadora_respuesta_3"]),
-                ['in:si,no']
-            )],
-            'explicacion_texto' => ['required', 'max:400']
-        ]);
+        return QuestionsImportValidation::validateRowValidator($row->toArray(), $this->topics);
     }
 
     public function registerQuestion ($dataQuestion, $dataAnswers): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
@@ -192,13 +121,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
         if ((bool) $dataQuestion["subtopic_id"]) {
             $subtopic = Subtopic::query()->firstWhere('id','=', $dataQuestion["subtopic_id"]);
 
-            $question = $subtopic?->questions()->create([
-                'question' =>  $dataQuestion["question"],
-                'reason' => $dataQuestion["reason"],
-                'is_visible' => 'yes',
-                "its_for_test" => $this->getEnumValueByConditionalRow($dataQuestion["es_test"]),
-                "its_for_card_memory" => $this->getEnumValueByConditionalRow($dataQuestion["es_tarjeta_de_memoria"]),
-            ]);
+            $question = QuestionsImportService::registerQuestion($subtopic, $dataQuestion);
 
             $this->registerAnswersQuestion($question->id, $dataAnswers);
 
@@ -207,71 +130,17 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
         $topic = Topic::query()->firstWhere('id','=',$dataQuestion["topic_id"]);
 
-        $question = $topic?->questions()->create([
-            'question' => $dataQuestion["question"],
-            'reason' => $dataQuestion["reason"],
-            'is_visible' => 'yes',
-            'its_for_test' => $this->getEnumValueByConditionalRow($dataQuestion['es_test']),
-            'its_for_card_memory' => $this->getEnumValueByConditionalRow($dataQuestion['es_tarjeta_de_memoria']),
-        ]);
+        $question = QuestionsImportService::registerQuestion($topic, $dataQuestion);
 
         $this->registerAnswersQuestion($question->id, $dataAnswers);
 
         return $topic;
     }
 
-    public function getEnumConditionalModel ($value): string {
-        if ($value === 'si') {
-            return 'yes';
-        }
-        return 'no';
-    }
-
-    public function getBoolIsGrouperAnswer ($value): string {
-        if ($value) {
-            return $this->getEnumConditionalModel($value);
-        }
-        return 'no';
-    }
-
-    public function getEnumValueByConditionalRow ($value) {
-        if ($value) {
-            return $this->getEnumConditionalModel($value);
-        }
-        return 'no';
-    }
-
     public function registerAnswersQuestion ($question_id, $dataAnswers): void {
 
-        Answer::query()->create([
-            'answer' => $dataAnswers["answer-correct"],
-            'is_grouper_answer' => $this->getBoolIsGrouperAnswer($dataAnswers["is-grouper-answer-correct"]),
-            'is_correct_answer' => 'yes',
-            'question_id' => $question_id
-        ]);
-
-        Answer::query()->create([
-            'answer' => $dataAnswers["answer-1"],
-            'is_grouper_answer' => $this->getBoolIsGrouperAnswer($dataAnswers["is-grouper-answer-one"]),
-            'is_correct_answer' => 'no',
-            'question_id' => $question_id
-        ]);
-
-        Answer::query()->create([
-            'answer' => $dataAnswers["answer-2"],
-            'is_grouper_answer' => $this->getBoolIsGrouperAnswer($dataAnswers["is-grouper-answer-two"]),
-            'is_correct_answer' => 'no',
-            'question_id' => $question_id
-        ]);
-
-        Answer::query()->create([
-            'answer' => $dataAnswers["answer-3"],
-            'is_grouper_answer' => $this->getBoolIsGrouperAnswer($dataAnswers["is-grouper-answer-three"]),
-            'is_correct_answer' => 'no',
-            'question_id' => $question_id
-        ]);
+        QuestionsImportService::registerAnswersOfQuestion($question_id, $dataAnswers);
     }
-
 
     public static function afterSheet(AfterSheet $event): void
     {

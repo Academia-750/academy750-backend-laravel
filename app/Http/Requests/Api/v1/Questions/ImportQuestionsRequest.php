@@ -19,7 +19,7 @@ class ImportQuestionsRequest extends FormRequest
         return [
             'filesQuestions.*' => [
                 'required',
-                'mimes:csv'
+                'mimes:csv,txt'
             ]
         ];
     }

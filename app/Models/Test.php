@@ -138,6 +138,7 @@ class Test extends Model
                 'status_solved_question',
                 'test_id',
                 'question_id',
+                'index'
             ]);
     }
 

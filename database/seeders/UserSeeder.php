@@ -32,14 +32,14 @@ class UserSeeder extends Seeder
 
         $roleStudent = Role::query()->where('name', '=', 'student')->first();
 
-        User::factory()->count(5)->create()->each(static function ($itemModel) use ($roleStudent) {
+        User::factory()->count(20)->create()->each(static function ($itemModel) use ($roleStudent) {
             $itemModel->assignRole($roleStudent);
             $itemModel->image()->create([
                 'path' => 'https://via.placeholder.com/128.webp?text=ExampleUser',
                 'type_path' => 'url'
             ]);
         });
-        User::factory()->count(5)->create()->each(static function ($itemModel) use ($roleStudent) {
+        User::factory()->count(20)->create()->each(static function ($itemModel) use ($roleStudent) {
             $itemModel->assignRole($roleStudent);
             $itemModel->state = 'disable';
             $itemModel->save();
