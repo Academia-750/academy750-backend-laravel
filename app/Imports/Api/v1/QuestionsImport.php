@@ -60,7 +60,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
                 if (!$hasErrors) {
                     $this->registerQuestion(QuestionsImportService::getDataFormattedForRegisterQuestions($row),
-                        QuestionsImportService::getDataFormattedForRegisterQuestions($row));
+                        QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row));
                     $this->count_rows_successfully++;
                 } else {
                     $this->count_rows_failed++;

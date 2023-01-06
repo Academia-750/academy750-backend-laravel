@@ -90,9 +90,13 @@ class QuestionsTestService
     public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType): void {
         try {
             DB::beginTransaction();
+            $index = 0;
+
             foreach ($questions_id as $question_id) {
+                $index++;
 
                 $test->questions()->attach($question_id, [
+                    'index' => $index,
                     'have_been_show_test' => $testType === 'test' ? 'yes' : 'no',
                     'have_been_show_card_memory' => $testType === 'card_memory' ? 'yes' : 'no',
                     'answer_id' => null,
