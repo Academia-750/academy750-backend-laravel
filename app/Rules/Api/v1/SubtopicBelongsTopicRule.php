@@ -30,6 +30,10 @@ class SubtopicBelongsTopicRule implements Rule
     {
         $topic = $this->topics->where('id', '=', $this->topic_uuid)->first();
 
+        if (!$topic) {
+            return false;
+        }
+
         return $topic->subtopics->contains($value);
     }
 

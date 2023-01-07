@@ -39,6 +39,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
     public function collection(Collection $collection): void {
 
+        \Log::debug($collection->toArray());
         foreach ($collection as $row) {
 
             try {
@@ -59,6 +60,10 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
 
                 if (!$hasErrors) {
+                    \Log::debug($row);
+                    \Log::debug(QuestionsImportService::getDataFormattedForRegisterQuestions($row));
+                    \Log::debug(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row));
+
                     $this->registerQuestion(QuestionsImportService::getDataFormattedForRegisterQuestions($row),
                         QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row));
                     $this->count_rows_successfully++;
@@ -118,6 +123,9 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
     public function registerQuestion ($dataQuestion, $dataAnswers): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
+        \Log::debug($dataQuestion);
+        \Log::debug($dataAnswers);
+
         if ((bool) $dataQuestion["subtopic_id"]) {
             $subtopic = Subtopic::query()->firstWhere('id','=', $dataQuestion["subtopic_id"]);
 

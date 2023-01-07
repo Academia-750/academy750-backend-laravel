@@ -22,7 +22,7 @@ class ImportProcessFileFinishedNotification extends Notification implements Shou
 
     public function via($notifiable): array
     {
-        return ['database', 'mail'];
+        return ['database'/*, 'mail'*/];
     }
 
     public function toDatabase($notifiable): array

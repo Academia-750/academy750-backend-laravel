@@ -59,33 +59,27 @@ class QuestionsImportService
             "question" => $row["pregunta"],
             "reason" => $row["explicacion_texto"],
             "topic_id" => $row["tema_uuid"],
-            "subtopic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "subtema_uuid")
-                && $row["subtema_uuid"],
-            "es_test" => QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_test")
-                && $row["es_test"],
-            "es_tarjeta_de_memoria" => QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_tarjeta_de_memoria")
-                && $row["es_tarjeta_de_memoria"],
+            "subtopic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "subtema_uuid") ? $row["subtema_uuid"] : null,
+            "es_test" => QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_test") ? $row["es_test"] : null,
+            "es_tarjeta_de_memoria" => QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_tarjeta_de_memoria") ? $row["es_tarjeta_de_memoria"] : null,
         ];
     }
 
     public static function getDataFormattedForRegisterAnswersOfQuestion ($row): array {
+
         return [
             "answer-correct" => $row["respuesta_correcta"],
             "is-grouper-answer-correct" =>
-                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_correcta")
-                && $row["es_agrupadora_respuesta_correcta"],
+                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_correcta") ? $row["es_agrupadora_respuesta_correcta"] : null,
             "answer-1" => $row["respuesta_1"],
             "is-grouper-answer-one" =>
-                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_1")
-                && $row["es_agrupadora_respuesta_1"],
+                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_1") ? $row["es_agrupadora_respuesta_1"] : null,
             "answer-2" => $row["respuesta_2"],
             "is-grouper-answer-two" =>
-                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_2")
-                && $row["es_agrupadora_respuesta_2"],
+                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_2") ? $row["es_agrupadora_respuesta_2"] : null,
             "answer-3" => $row["respuesta_3"],
             "is-grouper-answer-three" =>
-                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_3")
-                && $row["es_agrupadora_respuesta_3"],
+                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_3") ? $row["es_agrupadora_respuesta_3"] : null,
         ];
     }
 }

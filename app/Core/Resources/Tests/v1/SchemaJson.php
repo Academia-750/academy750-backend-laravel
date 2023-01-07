@@ -31,17 +31,19 @@ class SchemaJson implements TestsInterface
     {
         $questions = collect([]);
 
-        $count = 0;
 
-        $questionsQuery = Question::query()->whereIn('id', $test->questions()->pluck('questions.id')->toArray())->get();
+
+        $questionsQuery = Question::query()->whereIn('id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray())->get();
 
         foreach ($questionsQuery as $question) {
-            $count++;
+
+            $questionPivotTest = $test->questions()->find($question->getRouteKey());
+
             $questions->push([
-                "index" => $count,
+                "index" => $questionPivotTest?->pivot?->index,
                 //"question" => $test->questions()->find($question->getRouteKey()),
                 'question_id' => $question->id,
-                'answer_id' => $test->questions()->find($question->getRouteKey())?->pivot?->answer_id,
+                'answer_id' => $questionPivotTest?->pivot?->answer_id,
             ]);
         }
 
@@ -113,19 +115,16 @@ class SchemaJson implements TestsInterface
     {
         $questions = collect([]);
 
-        $count = 0;
-
         $questionsQuery = Question::query()->whereIn(
-            'id', $test->questions()->pluck('questions.id')->toArray()
+            'id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray()
         )->get();
 
         foreach ($questionsQuery as $question) {
 
             $questionPivotTest = $test->questions()->find($question->getRouteKey());
 
-            $count++;
             $questions->push([
-                "index" => $count,
+                "index" => $questionPivotTest?->pivot?->index,
                 "status_question" => $questionPivotTest?->pivot?->status_solved_question,
                 "question" => $question->question,
                 'question_id' => $question->id,

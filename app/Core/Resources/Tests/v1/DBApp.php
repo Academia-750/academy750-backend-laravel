@@ -40,7 +40,7 @@ class DBApp implements TestsInterface
         }
 
         //return $testQuery->questions()->jsonPaginate();
-        return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate();
+        return Question::query()->whereIn('id', $testQuery->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray())->jsonPaginate();
     }
 
     public function fetch_card_memory( $test ){
@@ -111,13 +111,13 @@ class DBApp implements TestsInterface
 
             if ($request->get('answer_id')) {
 
-                $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
+                $test->questions()->orderBy('index', 'ASC')->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                    'answer_id' => $answer->getRouteKey(),
                    'status_solved_question' => $answer->is_correct_answer === 'yes' ? 'correct' : 'wrong'
                 ]);
 
             } else {
-                $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
+                $test->questions()->orderBy('index', 'ASC')->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                     'answer_id' => null,
                     'status_solved_question' => 'unanswered'
                 ]);
@@ -144,11 +144,11 @@ class DBApp implements TestsInterface
 
             $total_questions_test = $test->questions->count();
             //\Log::debug($total_questions_test);
-            $totalQuestionsCorrect = $test->questions()->wherePivot('status_solved_question', 'correct')->get()->count();
+            $totalQuestionsCorrect = $test->questions()->orderBy('index', 'ASC')->wherePivot('status_solved_question', 'correct')->get()->count();
             //\Log::debug($totalQuestionsCorrect);
-            $totalQuestionsWrong = $test->questions()->wherePivot('status_solved_question', 'wrong')->get()->count();
+            $totalQuestionsWrong = $test->questions()->orderBy('index', 'ASC')->wherePivot('status_solved_question', 'wrong')->get()->count();
             //\Log::debug($totalQuestionsWrong);
-            $totalQuestionsUnanswered = $test->questions()->wherePivot('status_solved_question', 'unanswered')->get()->count();
+            $totalQuestionsUnanswered = $test->questions()->orderBy('index', 'ASC')->wherePivot('status_solved_question', 'unanswered')->get()->count();
             //\Log::debug($totalQuestionsUnanswered);
 
             $test->total_questions_correct = $totalQuestionsCorrect;

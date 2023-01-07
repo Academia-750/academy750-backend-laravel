@@ -20,12 +20,12 @@ Artisan::command('inspire', function () {
 
 Artisan::command('bomberos750:clear', function () {
     $this->call('cache:clear');
-    $this->call('cache:clear', ['store' => 'redis']);
+    $this->call('cache:clear');
     $this->call('config:clear');
     $this->call('event:clear');
     $this->call('route:clear');
     $this->call('view:clear');
-    $this->call('queue:clear');
+    //$this->call('queue:clear');
     $this->call('optimize:clear');
 
 
@@ -43,7 +43,7 @@ Artisan::command('bomberos750:install', function () {
 
 Artisan::command('bomberos750:test', function () {
     $this->call('bomberos750:clear');
-    $this->call('cache:clear', ['store' => 'redis']);
+    $this->call('cache:clear');
     $this->call('cache:clear');
     $this->call('test', ['--stop-on-failure' => true]);
     //Artisan::call('test', ['--stop-on-failure']);

@@ -17,15 +17,15 @@ class CacheApp implements ImportProcessesInterface
     public function index()
     {
 
-        $nameCache = '';
+        /*$nameCache = '';
 
         (empty(request()->query())) ? $nameCache = 'import_process.get.all' : $nameCache = json_encode(request()->query());
 
         return Cache::store('redis')->tags('import_process')->rememberForever($nameCache, function () {
             return $this->dbApp->index();
-        });
+        });*/
 
-        //return $this->dbApp->index();
+        return $this->dbApp->index();
     }
 
     /**
@@ -33,7 +33,7 @@ class CacheApp implements ImportProcessesInterface
      */
     public function get_relationship_import_records($import_process)
     {
-
+/*
         $nameCache = '';
 
         (empty(request()->query())) ?
@@ -42,8 +42,8 @@ class CacheApp implements ImportProcessesInterface
 
         return Cache::store('redis')->tags('import_process')->rememberForever($nameCache, function () use ($import_process) {
             return $this->dbApp->get_relationship_import_records($import_process);
-        });
+        });*/
 
-        //return $this->dbApp->get_relationship_import_records($import_process);
+        return $this->dbApp->get_relationship_import_records($import_process);
     }
 }
