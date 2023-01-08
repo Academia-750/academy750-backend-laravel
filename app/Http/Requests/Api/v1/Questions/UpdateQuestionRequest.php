@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Api\v1\Questions;
 
 use App\Core\Resources\Questions\v1\Services\SaveQuestionsService;
+use App\Rules\Api\v1\Questions\IsRequiredTypeTestOfQuestion;
+use App\Rules\Api\v1\Questions\IsThereShouldBeNoMoreThan1GroupingAnswer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -29,10 +31,31 @@ class UpdateQuestionRequest extends FormRequest
 
     public function rules(): array
     {
+
+        $isThereShouldBeNoMoreThan1GroupAnswer = collect([
+                [
+                    'is-grouper' => (bool) $this->get('is-grouper-answer-correct')
+                ],
+                [
+                    'is-grouper' => (bool) $this->get('is-grouper-answer-one')
+                ],
+                [
+                    'is-grouper' => (bool) $this->get('is-grouper-answer-two')
+                ],
+                [
+                    'is-grouper' => (bool) $this->get('is-grouper-answer-three')
+                ],
+            ])->where('is-grouper', true)
+                ->count() <= 1;
+
         return [
-            'question-text' => ['required', 'max:255'],
-            'is-test' => ['required', 'boolean'],
-            'is-card-memory' => ['required', 'boolean'],
+            'question-text' => ['required', 'max:255', new IsThereShouldBeNoMoreThan1GroupingAnswer($isThereShouldBeNoMoreThan1GroupAnswer)],
+            'is-test' => ['required', 'boolean', new IsRequiredTypeTestOfQuestion(
+                "Test", "Tarjeta de memoria", $this->get('is-card-memory')
+            )],
+            'is-card-memory' => ['required', 'boolean', new IsRequiredTypeTestOfQuestion(
+                "Tarjeta de memoria", "Test", $this->get('is-test')
+            )],
             'is-visible' => ['required', 'boolean'],
 
             'answer-correct-id' => ['required', 'uuid', 'exists:answers,id'],

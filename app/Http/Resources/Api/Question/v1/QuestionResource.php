@@ -17,7 +17,7 @@ class QuestionResource extends JsonResource
             'attributes' => [
                 "question-text" => $this->resource->question,
                 "reason-text" => $this->resource->reason,
-                "is_visible" => $this->resource->is_visible === 'yes',
+                "is_visible" => $this->resource->is_visible,
                 'its_for_test' => $this->resource->its_for_test,
                 'its_for_card_memory' => $this->resource->its_for_card_memory,
                 'its_being_used_tests' => $this->resource->its_being_used_tests,
