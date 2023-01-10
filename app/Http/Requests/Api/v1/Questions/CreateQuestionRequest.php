@@ -3,8 +3,11 @@
 namespace App\Http\Requests\Api\v1\Questions;
 
 use App\Core\Resources\Questions\v1\Services\SaveQuestionsService;
+use App\Rules\Api\v1\Question\IsRequiredAnyReasonTextOrImageQuestionRule;
+use App\Rules\Api\v1\Questions\IsRequiredAnyTypeTestQuestionRule;
 use App\Rules\Api\v1\Questions\IsRequiredTypeTestOfQuestion;
 use App\Rules\Api\v1\Questions\IsThereShouldBeNoMoreThan1GroupingAnswer;
+use App\Rules\Api\v1\Questions\ValidateImageQuestionRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -48,14 +51,15 @@ class CreateQuestionRequest extends FormRequest
         ])->where('is-grouper', true)
         ->count() <= 1;
 
+
         return [
-            'question-text' => ['required', 'max:255', new IsThereShouldBeNoMoreThan1GroupingAnswer($isThereShouldBeNoMoreThan1GroupAnswer)],
-            'is-test' => ['required', 'boolean', new IsRequiredTypeTestOfQuestion(
-                "Test", "Tarjeta de memoria", $this->get('is-card-memory')
-            )],
-            'is-card-memory' => ['required', 'boolean', new IsRequiredTypeTestOfQuestion(
-                "Tarjeta de memoria", "Test", $this->get('is-test')
-            )],
+            'question-text' => ['required', 'max:255',
+                new IsThereShouldBeNoMoreThan1GroupingAnswer($isThereShouldBeNoMoreThan1GroupAnswer),
+                new IsRequiredAnyTypeTestQuestionRule((bool) $this->get('is-test'), (bool) $this->get('is-card-memory')),
+                new IsRequiredAnyReasonTextOrImageQuestionRule((bool) $this->get('is-card-memory'), $this->get('reason-question') , $this->file('file-reason')),
+            ],
+            'is-test' => ['required', 'boolean'],
+            'is-card-memory' => ['required', 'boolean'],
             'is-visible' => ['required', 'boolean'],
 
             'answer-correct' => ['required', 'max:255'],
@@ -73,16 +77,14 @@ class CreateQuestionRequest extends FormRequest
             'reason-question' => [
                 'nullable',
                 Rule::when(
-                    (bool) $this->get('is-card-memory') &&
-                    (bool) SaveQuestionsService::validateImageWithFails($this->file('file-reason'))->fails()
-                    , [
+                    (bool) $this->get('reason-question'), [
                     'required', 'max:400'
                 ])
             ],
             'file-reason' => [
                 'nullable',
-                Rule::when((bool) $this->get('is-card-memory') && (bool) !$this->get('reason-question'), [
-                    'required', 'file', 'image', 'mimes:jpeg,jpg,png,gif', 'max:10000'
+                Rule::when((bool) $this->get('file-reason'), [
+                    'required', new ValidateImageQuestionRule($this->file('file-reason'))
                 ])
             ]
         ];

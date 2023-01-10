@@ -42,7 +42,7 @@ class DBApp implements QuestionsInterface
     {
         $question = SaveQuestionsService::saveQuestion($request, $subtopic);
 
-        if ($request->get('is-card-memory')) {
+        if ($request->file('file-reason')) {
             SaveQuestionsService::saveImageFileQuestion($request, $question, 'public/questions/images/subtopics');
         }
 
@@ -62,7 +62,7 @@ class DBApp implements QuestionsInterface
     {
         $question = SaveQuestionsService::updateQuestion($request, $question);
 
-        if ($request->get('is-card-memory')) {
+        if ($request->file('file-reason')) {
             SaveQuestionsService::updateImageQuestionInStorage($request, $question, 'public/questions/images/subtopics');
         }
 
@@ -127,7 +127,7 @@ class DBApp implements QuestionsInterface
     {
         $question = SaveQuestionsService::saveQuestion($request, $topic);
 
-        if ($request->get('is-card-memory')) {
+        if ($request->file('file-reason')) {
             SaveQuestionsService::saveImageFileQuestion($request, $question, 'public/questions/images/topics');
         }
 
@@ -147,7 +147,7 @@ class DBApp implements QuestionsInterface
     {
         $question = SaveQuestionsService::updateQuestion($request, $question);
 
-        if ($request->get('is-card-memory')) {
+        if ($request->file('file-reason')) {
             SaveQuestionsService::updateImageQuestionInStorage($request, $question, 'public/questions/images/topics');
         }
 
