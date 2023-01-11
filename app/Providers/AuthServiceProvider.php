@@ -35,5 +35,6 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         AuthService::RemoveExpiredTokensAction();
+
     }
 }
