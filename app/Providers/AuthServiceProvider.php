@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Pluralizer;
 
 class AuthServiceProvider extends ServiceProvider
@@ -35,6 +36,10 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         AuthService::RemoveExpiredTokensAction();
+
+        if (Schema::hasTable('personal_access_tokens')) {
+            AuthService::RemoveExpiredTokensAction();
+        }
 
     }
 }
