@@ -35,11 +35,9 @@ class AuthServiceProvider extends ServiceProvider
             return 'App\\Policies\\Api\\v1\\'. Pluralizer::singular(class_basename($model)).'Policy';
         });
 
-        AuthService::RemoveExpiredTokensAction();
-
-        if (Schema::hasTable('personal_access_tokens')) {
+        /*if (Schema::hasTable('personal_access_tokens')) {
             AuthService::RemoveExpiredTokensAction();
-        }
+        }*/
 
     }
 }
