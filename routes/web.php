@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', static function () {
     //return view('welcome');
 
-    return "Hola";
+    $configUriFrontend = redirect(config('app.url_frontend'));
+
+    return "Hola. Esta es la URL del Frontend: {$configUriFrontend}";
     //return redirect(config('app.url_frontend'));
 });
 
