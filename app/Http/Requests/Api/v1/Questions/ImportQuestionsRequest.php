@@ -14,9 +14,10 @@ class ImportQuestionsRequest extends FormRequest
         return true;
     }
 
-    #[ArrayShape(['filesQuestions.*' => "string[]"])] public function rules(): array
+    #[ArrayShape(['filesQuestions' => "string[]", 'filesQuestions.*' => "string[]"])] public function rules(): array
     {
         return [
+            'filesQuestions' => ['required', 'array', 'max:3'],
             'filesQuestions.*' => [
                 'required',
                 'mimes:csv,txt'

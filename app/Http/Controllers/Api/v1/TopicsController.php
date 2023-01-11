@@ -8,6 +8,7 @@ use App\Http\Requests\Api\v1\Topics\ActionForMassiveSelectionTopicsRequest;
 use App\Http\Requests\Api\v1\Topics\CreateSubtopicRelationshipTopicRequest;
 use App\Http\Requests\Api\v1\Topics\CreateTopicRequest;
 use App\Http\Requests\Api\v1\Topics\ExportTopicsRequest;
+use App\Http\Requests\Api\v1\Topics\ImportSubtopicsRequest;
 use App\Http\Requests\Api\v1\Topics\ImportTopicsRequest;
 use App\Http\Requests\Api\v1\Topics\UpdateSubtopicRelationshipTopicRequest;
 use App\Http\Requests\Api\v1\Topics\UpdateSubtopicsOfOppositionByTopicRequest;
@@ -60,6 +61,10 @@ class TopicsController extends Controller
 
     public function import_records(ImportTopicsRequest $request){
         return $this->topicsInterface->import_records( $request );
+    }
+
+    public function import_subtopics_by_topics(ImportSubtopicsRequest $request){
+        return $this->topicsInterface->import_subtopics_by_topics( $request );
     }
 
     public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {

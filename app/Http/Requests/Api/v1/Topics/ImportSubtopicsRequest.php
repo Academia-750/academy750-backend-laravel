@@ -7,29 +7,29 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use JetBrains\PhpStorm\ArrayShape;
 
-class ImportTopicsRequest extends FormRequest
+class ImportSubtopicsRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
     }
 
-    #[ArrayShape(['filesTopics' => "string[]", 'filesTopics.*' => "string[]"])] public function rules(): array
+    #[ArrayShape(['filesSubtopics' => "string[]", 'filesSubtopics.*' => "string[]"])] public function rules(): array
     {
         return [
-            'filesTopics' => ['required', 'array', 'max:3'],
-            'filesTopics.*' => [
+            'filesSubtopics' => ['required', 'array', 'max:3'],
+            'filesSubtopics.*' => [
                 'required',
                 'mimes:csv'
             ]
         ];
     }
 
-    #[ArrayShape(['filesTopics' => "string"])] public function attributes(): array
+    #[ArrayShape(['filesSubtopics' => "string"])] public function attributes(): array
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
-            'filesTopics' => 'Archivos CSV de los temas a importar',
+            'filesSubtopics' => 'Archivos CSV de los subtemas a importar',
         ];
     }
 }

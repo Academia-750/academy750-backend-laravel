@@ -302,4 +302,13 @@ class SchemaJson implements TopicsInterface
             $this->eventApp->topic_relationship_questions()
         );
     }
+
+    public function import_subtopics_by_topics($request)
+    {
+        $this->eventApp->import_subtopics_by_topics( $request );
+
+        return response()->json([
+            'message' => "Proceso de importación iniciada"
+        ], 200);
+    }
 }

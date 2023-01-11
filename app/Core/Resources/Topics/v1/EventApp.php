@@ -166,4 +166,9 @@ class EventApp implements TopicsInterface
     {
         return $this->cacheApp->topic_relationship_questions();
     }
+
+    public function import_subtopics_by_topics($request)
+    {
+        $this->cacheApp->import_subtopics_by_topics( $request );
+    }
 }

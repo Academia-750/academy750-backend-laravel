@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Imports\Api\v1\SubtopicsImport;
 use App\Imports\Api\v1\TopicsImport;
 use App\Models\Answer;
 use App\Models\Opposition;
@@ -479,5 +480,20 @@ class DBApp implements TopicsInterface
     public function topic_relationship_questions()
     {
         return Topic::applyFilters()->applySorts()->applyIncludes()->get();
+    }
+
+    public function import_subtopics_by_topics($request)
+    {
+        $filesSubtopics = $request->file('filesSubtopics') ?? [];
+
+        foreach ($filesSubtopics as $file) {
+
+            (
+            new SubtopicsImport(Auth::user(), $file->getClientOriginalName())
+            )->import($file);
+
+            //sleep(1);
+
+        }
     }
 }

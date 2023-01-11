@@ -218,4 +218,9 @@ class CacheApp implements TopicsInterface
     {
         return $this->dbApp->topic_relationship_questions();
     }
+
+    public function import_subtopics_by_topics($request)
+    {
+        return $this->dbApp->import_subtopics_by_topics($request);
+    }
 }

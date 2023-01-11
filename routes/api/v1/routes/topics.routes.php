@@ -13,6 +13,7 @@ Route::patch('topics/update/{topic}', [TopicsController::class, 'update'])->name
 Route::delete('topics/delete/{topic}', [TopicsController::class, 'delete'])->name('api.v1.topics.soft-delete');
 Route::post('topics/actions-on-multiple-records', [TopicsController::class, 'action_for_multiple_records'])->name('api.v1.topics.actions-on-multiple-records');
 Route::post('topics/import', [TopicsController::class, 'import_records'])->name('api.v1.topics.import');
+Route::post('topics/subtopics/import', [TopicsController::class, 'import_subtopics_by_topics'])->name('api.v1.topics.import.subtopics');
 
 Route::get("topics/{topic}/oppositions-available", [TopicsController::class, 'get_oppositions_available_of_topic'])->name('api.v1.topics.oppositions-available');
 
