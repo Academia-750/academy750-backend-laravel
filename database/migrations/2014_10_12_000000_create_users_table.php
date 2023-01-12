@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             /*$table->string('url_photo')->nullable()->default(null);*/
-            $table->uuid('id')/*->primary()*/->comment('Identificador UUID');
+            $table->uuid('id')->primary()->comment('Identificador UUID');
             $table->string('dni', 20)->nullable()->unique()->comment('Documento Nacional de Identidad');
             $table->string('first_name', 90);
             $table->string('last_name', 90);
