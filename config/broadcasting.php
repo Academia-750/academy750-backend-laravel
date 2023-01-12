@@ -46,11 +46,7 @@ return [
                 'scheme' => env('PUSHER_APP_PROJECT_WEBSOCKETS_PROTOCOL', 'https'),
                 'useTLS' => false,
                 'encrypted' => false,
-                'cluster' => env('PUSHER_APP_CLUSTER'),
-                'curl_options' => [
-                    CURLOPT_SSL_VERIFYHOST => 0,
-                    CURLOPT_SSL_VERIFYPEER => 0,
-                ]
+                'cluster' => env('PUSHER_APP_CLUSTER')
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html
