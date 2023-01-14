@@ -14,11 +14,20 @@ class OnlyOneAnswerCorrectRule implements Rule
 
     public function passes($attribute, $value): bool
     {
-        return true;
+        if (!$this->isQuestionTrueOrFalse) {
+            return true;
+        }
+
+        $answers = collect([
+            ['is-correct' => $this->isCorrectAnswerTrue],
+            ['is-correct' => $this->isCorrectAnswerFalse],
+        ]);
+
+        return $answers->where('is-correct', true)->count() === 1;
     }
 
     public function message(): string
     {
-        return __('validation.error');
+        return 'En las preguntas de verdadero o falso debe tener 1 respuesta correcta';
     }
 }

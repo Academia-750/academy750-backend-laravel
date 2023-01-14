@@ -32,24 +32,13 @@ class UpdateQuestionRequest extends FormRequest
     public function rules(): array
     {
 
-        $isThereShouldBeNoMoreThan1GroupAnswer = collect([
-                [
-                    'is-grouper' => (bool) $this->get('is-grouper-answer-correct')
-                ],
-                [
-                    'is-grouper' => (bool) $this->get('is-grouper-answer-one')
-                ],
-                [
-                    'is-grouper' => (bool) $this->get('is-grouper-answer-two')
-                ],
-                [
-                    'is-grouper' => (bool) $this->get('is-grouper-answer-three')
-                ],
-            ])->where('is-grouper', true)
-                ->count() <= 1;
-
         return [
-            'question-text' => ['required', 'max:255', new IsThereShouldBeNoMoreThan1GroupingAnswer($isThereShouldBeNoMoreThan1GroupAnswer)],
+            'question-text' => ['required', 'max:255', new IsThereShouldBeNoMoreThan1GroupingAnswer(
+                $this->get('is-grouper-answer-correct'),
+                $this->get('is-grouper-answer-one'),
+                $this->get('is-grouper-answer-two'),
+                $this->get('is-grouper-answer-three')
+            )],
             'is-test' => ['required', 'boolean', new IsRequiredTypeTestOfQuestion(
                 "Test", "Tarjeta de memoria", $this->get('is-card-memory')
             )],

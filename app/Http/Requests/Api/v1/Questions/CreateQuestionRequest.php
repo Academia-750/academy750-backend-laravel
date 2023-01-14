@@ -36,27 +36,19 @@ class CreateQuestionRequest extends FormRequest
     public function rules(): array
     {
 
-        $isThereShouldBeNoMoreThan1GroupAnswer = collect([
-            [
-                'is-grouper' => (bool) $this->get('is-grouper-answer-correct')
-            ],
-            [
-                'is-grouper' => (bool) $this->get('is-grouper-answer-one')
-            ],
-            [
-                'is-grouper' => (bool) $this->get('is-grouper-answer-two')
-            ],
-            [
-                'is-grouper' => (bool) $this->get('is-grouper-answer-three')
-            ],
-        ])->where('is-grouper', true)
-        ->count() <= 1;
+
 
 
         return [
             'is-question-true-or-false' => ['required', 'boolean'],
             'question-text' => ['required', 'max:255',
-                new IsThereShouldBeNoMoreThan1GroupingAnswer($isThereShouldBeNoMoreThan1GroupAnswer),
+                new IsThereShouldBeNoMoreThan1GroupingAnswer(
+                    (bool) $this->get('is-question-true-or-false'),
+                    $this->get('is-grouper-answer-correct'),
+                    $this->get('is-grouper-answer-one'),
+                    $this->get('is-grouper-answer-two'),
+                    $this->get('is-grouper-answer-three')
+                ),
                 new IsRequiredAnyTypeTestQuestionRule((bool) $this->get('is-test'), (bool) $this->get('is-card-memory')),
                 new IsRequiredAnyReasonTextOrImageQuestionRule((bool) $this->get('is-card-memory'), $this->get('reason-question') , $this->file('file-reason')),
                 new OnlyOneAnswerCorrectRule(

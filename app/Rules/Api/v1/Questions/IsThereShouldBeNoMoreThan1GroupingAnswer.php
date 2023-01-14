@@ -7,14 +7,36 @@ use Illuminate\Support\Str;
 
 class IsThereShouldBeNoMoreThan1GroupingAnswer implements Rule
 {
-    public function __construct(Public $isThereShouldBeNoMoreThan1GroupAnswer)
+    public function __construct(Public bool $isQuestionTrueOrFalse, Public $isGrouperAnswerCorrect, Public $isGrouperAnswerOne, Public $isGrouperAnswerTwo, Public $isGrouperAnswerThree)
     {
         //
     }
 
     public function passes($attribute, $value): bool
     {
-        return (bool) $this->isThereShouldBeNoMoreThan1GroupAnswer;
+        if (!$this->isQuestionTrueOrFalse) {
+            return true;
+        }
+
+
+        $isThereShouldBeNoMoreThan1GroupAnswer = collect([
+                [
+                    'is-grouper' => (bool) $this->isGrouperAnswerCorrect
+                ],
+                [
+                    'is-grouper' => (bool) $this->isGrouperAnswerOne
+                ],
+                [
+                    'is-grouper' => (bool) $this->isGrouperAnswerTwo
+                ],
+                [
+                    'is-grouper' => (bool) $this->isGrouperAnswerThree
+                ],
+            ]);
+
+
+        return $isThereShouldBeNoMoreThan1GroupAnswer->where('is-grouper', true)
+                ->count() <= 1;
     }
 
     public function message(): string

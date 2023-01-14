@@ -84,6 +84,28 @@ class SaveQuestionsService
 
     public static function getAnswersByQuestion ($request, $question): array
     {
+
+        if ($request->get('is-question-true-or-false')) {
+            $answers = [
+                [
+                    'id' => $request->get('is-correct-answer-true-id'),
+                    'answer' => $request->get('is-correct-answer-true'),
+                    'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
+                    'is_correct_answer' => 'yes',
+                    'question_id' => $question->getRouteKey(),
+                ],
+                [
+                    'id' => $request->get('is-correct-answer-false-id'),
+                    'answer' => $request->get('answer-one'),
+                    'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
+                    'is_correct_answer' => 'no',
+                    'question_id' => $question->getRouteKey(),
+                ]
+            ];
+
+            return $answers;
+        }
+
         $answers = [
             [
                 'id' => $request->get('answer-correct-id'),
