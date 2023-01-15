@@ -7,14 +7,14 @@ use Illuminate\Support\Str;
 
 class OnlyOneAnswerCorrectRule implements Rule
 {
-    public function __construct(Public bool $isQuestionTrueOrFalse, Public bool $isCorrectAnswerTrue, Public bool $isCorrectAnswerFalse)
+    public function __construct(Public bool $isQuestionBinaryAlternatives, Public bool $isCorrectAnswerTrue, Public bool $isCorrectAnswerFalse)
     {
         //
     }
 
     public function passes($attribute, $value): bool
     {
-        if (!$this->isQuestionTrueOrFalse) {
+        if (!$this->isQuestionBinaryAlternatives) {
             return true;
         }
 
@@ -28,6 +28,6 @@ class OnlyOneAnswerCorrectRule implements Rule
 
     public function message(): string
     {
-        return 'En las preguntas de verdadero o falso debe tener 1 respuesta correcta';
+        return 'En las preguntas binarias (de 2 alternativas) debe tener 1 respuesta correcta';
     }
 }

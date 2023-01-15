@@ -23,6 +23,7 @@ class Question extends Model
         "id",
         "question",
         "reason",
+        "is_question_binary_alternatives",
         "is_visible",
         "its_for_test",
         "its_for_card_memory"

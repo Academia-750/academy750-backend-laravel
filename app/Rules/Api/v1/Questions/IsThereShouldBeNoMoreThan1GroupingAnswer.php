@@ -7,14 +7,14 @@ use Illuminate\Support\Str;
 
 class IsThereShouldBeNoMoreThan1GroupingAnswer implements Rule
 {
-    public function __construct(Public bool $isQuestionTrueOrFalse, Public $isGrouperAnswerCorrect, Public $isGrouperAnswerOne, Public $isGrouperAnswerTwo, Public $isGrouperAnswerThree)
+    public function __construct(Public bool $isQuestionBinaryAlternatives, Public $isGrouperAnswerCorrect, Public $isGrouperAnswerOne, Public $isGrouperAnswerTwo, Public $isGrouperAnswerThree)
     {
         //
     }
 
     public function passes($attribute, $value): bool
     {
-        if (!$this->isQuestionTrueOrFalse) {
+        if ($this->isQuestionBinaryAlternatives) {
             return true;
         }
 

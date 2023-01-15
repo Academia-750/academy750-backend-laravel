@@ -27,82 +27,71 @@ class CreateQuestionRequest extends FormRequest
             'is-grouper-answer-one' => $this->get('is-grouper-answer-one') === 'true',
             'is-grouper-answer-two' => $this->get('is-grouper-answer-two') === 'true',
             'is-grouper-answer-three' => $this->get('is-grouper-answer-three') === 'true',
-            'is-question-true-or-false' => $this->get('is-question-true-or-false') === 'true',
-            'is-correct-answer-true' => $this->get('is-correct-answer-true') === 'true',
-            'is-correct-answer-false' => $this->get('is-correct-answer-false') === 'true',
+
+            'is-question-binary-alternatives' => $this->get('is-question-binary-alternatives') === 'true',
+            'correct-answer-binary-alternative' => $this->get('correct-answer-binary-alternative') === 'true',
+            'another-answer-binary-alternative' => $this->get('another-answer-binary-alternative') === 'true',
         ]);
     }
 
+    // Validación completada. Falta refactorizar funcionalidades para guardar correctamente la pregunta y sus alternativas
     public function rules(): array
     {
-
-
-
-
         return [
-            'is-question-true-or-false' => ['required', 'boolean'],
+
+            'is-question-binary-alternatives' => ['required', 'boolean'],
+            'is-visible' => ['required', 'boolean'],
             'question-text' => ['required', 'max:255',
                 new IsThereShouldBeNoMoreThan1GroupingAnswer(
-                    (bool) $this->get('is-question-true-or-false'),
+                    (bool) $this->get('is-question-binary-alternatives'),
                     $this->get('is-grouper-answer-correct'),
                     $this->get('is-grouper-answer-one'),
                     $this->get('is-grouper-answer-two'),
                     $this->get('is-grouper-answer-three')
                 ),
                 new IsRequiredAnyTypeTestQuestionRule((bool) $this->get('is-test'), (bool) $this->get('is-card-memory')),
-                new IsRequiredAnyReasonTextOrImageQuestionRule((bool) $this->get('is-card-memory'), $this->get('reason-question') , $this->file('file-reason')),
-                new OnlyOneAnswerCorrectRule(
-                    (bool) $this->get('is-question-true-or-false'),
-                    (bool) $this->get('is-correct-answer-true'),
-                    (bool) $this->get('is-correct-answer-false'),
-                )
+                new IsRequiredAnyReasonTextOrImageQuestionRule((bool) $this->get('is-card-memory'), $this->get('reason-question') , $this->file('file-reason'))
             ],
-            'is-test' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'boolean'])
-            ],
-            'is-card-memory' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'boolean'])
-            ],
-            'is-visible' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'boolean'])
-            ],
+            'is-test' => ['required', 'boolean'],
+            'is-card-memory' => ['required', 'boolean'],
 
             'answer-correct' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'max:255'])
+                Rule::when((bool) !$this->get('is-question-binary-alternatives'), ['required', 'max:255'])
             ],
+
             'is-grouper-answer-correct' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'boolean'])
+                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-one' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'max:255'])
+                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'max:255'])
             ],
             'is-grouper-answer-one' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'boolean'])
+                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-two' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'max:255'])
+                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'max:255'])
             ],
             'is-grouper-answer-two' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'boolean'])
+                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-three' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'max:255'])
+                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'max:255'])
             ],
             'is-grouper-answer-three' => [
-                Rule::when((bool) !$this->get('is-question-true-or-false'), ['required', 'boolean'])
+                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'boolean'])
             ],
 
-            'is-correct-answer-true' => [
+            'correct-answer-binary-alternative' => [
                 Rule::when(
-                $this->get('is-question-true-or-false'),
-                ['required', 'boolean'])
+                $this->get('is-question-binary-alternatives'),
+                ['required', 'string', 'max:255'])
             ],
-            'is-correct-answer-false' => [Rule::when(
-                $this->get('is-question-true-or-false'),
-                ['required', 'boolean'])
+            'another-answer-binary-alternative' => [Rule::when(
+                $this->get('is-question-binary-alternatives') && $this->get('is-test'),
+                ['required', 'string', 'max:255'])
             ],
 
             'reason-question' => [

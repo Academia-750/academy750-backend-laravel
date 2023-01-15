@@ -9,7 +9,7 @@ class ActionsAccountUser
 {
     public static function deleteUser ($user) {
         if ( !($user instanceof User) ) {
-            $user = User::query()->find($user);
+            $user = User::query()->findOrFail($user);
         }
 
         DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
@@ -21,7 +21,8 @@ class ActionsAccountUser
     public static function disableAccountUser ($user) {
 
         if ( !($user instanceof User) ) {
-            $user = User::query()->find($user);
+            $user = User::query()->findOrFail($user);
+            DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
         }
 
         DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
@@ -38,7 +39,8 @@ class ActionsAccountUser
     public static function enableAccountUser ($user) {
 
         if ( !($user instanceof User) ) {
-            $user = User::query()->find($user);
+            $user = User::query()->findOrFail($user);
+            DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
         }
 
         $user->state = 'enable';
