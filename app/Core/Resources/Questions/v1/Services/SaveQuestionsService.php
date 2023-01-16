@@ -13,7 +13,8 @@ class SaveQuestionsService
 
         return $instanceModel->questions()->create([
             'question' => $request->get('question-text'),
-            'reason' => (bool) $request->get('is-card-memory') ? $request->get('reason-question') : '',
+            'reason' => $request->get('reason-question'),
+            'is_question_binary_alternatives' => $request->get('is-question-binary-alternatives'),
             'is_visible' => (bool) $request->get('is-visible') ? 'yes' : 'no',
             "its_for_test" => (bool) $request->get('is-test') ? 'yes' : 'no',
             "its_for_card_memory" => (bool) $request->get('is-card-memory') ? 'yes' : 'no',
@@ -75,6 +76,7 @@ class SaveQuestionsService
         $question->question = $request->get('question-text');
         $question->reason = $request->get('reason-question') ?? $question->reason;
         $question->is_visible = (bool) $request->get('is-visible') ? 'yes' : 'no';
+        $question->is_question_binary_alternatives = (bool) !$request->get('is-test') ? 'not_defined' : $request->get('is-question-binary-alternatives');
         $question->its_for_test = (bool) $request->get('is-test') ? 'yes' : 'no';
         $question->its_for_card_memory = (bool) $request->get('is-card-memory') ? 'yes' : 'no';
         $question->save();
@@ -85,23 +87,40 @@ class SaveQuestionsService
     public static function getAnswersByQuestion ($request, $question): array
     {
 
-        if ($request->get('is-question-true-or-false')) {
+        if (!$request->get('is-test')) {
             $answers = [
                 [
-                    'id' => $request->get('is-correct-answer-true-id'),
-                    'answer' => $request->get('is-correct-answer-true'),
-                    'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
+                    'id' => $request->get('answer-correct-id'),
+                    'answer' => $request->get('answer-correct'),
+                    'is_grouper_answer' => 'no',
+                    'is_correct_answer' => 'yes',
+                    'question_id' => $question->getRouteKey(),
+                ]
+            ];
+
+            return $answers;
+        }
+
+
+        if ($request->get('is-question-binary-alternatives') === 'yes' && $request->get('is-test')) {
+            $answers = [
+                [
+                    'id' => $request->get('answer-correct-id'),
+                    'answer' => $request->get('answer-correct'),
+                    'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'yes',
                     'question_id' => $question->getRouteKey(),
                 ],
                 [
-                    'id' => $request->get('is-correct-answer-false-id'),
-                    'answer' => $request->get('answer-one'),
-                    'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
+                    'id' => $request->get('another-answer-binary-alternative-id'),
+                    'answer' => $request->get('another-answer-binary-alternative'),
+                    'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'no',
                     'question_id' => $question->getRouteKey(),
                 ]
             ];
+
+            shuffle($answers);
 
             return $answers;
         }

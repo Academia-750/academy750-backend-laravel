@@ -27,10 +27,6 @@ class CreateQuestionRequest extends FormRequest
             'is-grouper-answer-one' => $this->get('is-grouper-answer-one') === 'true',
             'is-grouper-answer-two' => $this->get('is-grouper-answer-two') === 'true',
             'is-grouper-answer-three' => $this->get('is-grouper-answer-three') === 'true',
-
-            'is-question-binary-alternatives' => $this->get('is-question-binary-alternatives') === 'true',
-            'correct-answer-binary-alternative' => $this->get('correct-answer-binary-alternative') === 'true',
-            'another-answer-binary-alternative' => $this->get('another-answer-binary-alternative') === 'true',
         ]);
     }
 
@@ -39,7 +35,9 @@ class CreateQuestionRequest extends FormRequest
     {
         return [
 
-            'is-question-binary-alternatives' => ['required', 'boolean'],
+            'is-question-binary-alternatives' => [
+                'required', Rule::in(['yes', 'no', 'not_defined'])
+            ],
             'is-visible' => ['required', 'boolean'],
             'question-text' => ['required', 'max:255',
                 new IsThereShouldBeNoMoreThan1GroupingAnswer(
@@ -55,43 +53,36 @@ class CreateQuestionRequest extends FormRequest
             'is-test' => ['required', 'boolean'],
             'is-card-memory' => ['required', 'boolean'],
 
-            'answer-correct' => [
-                Rule::when((bool) !$this->get('is-question-binary-alternatives'), ['required', 'max:255'])
-            ],
+            'answer-correct' => ['required', 'max:255'],
 
             'is-grouper-answer-correct' => [
-                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'boolean'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-one' => [
-                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'max:255'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:255'])
             ],
             'is-grouper-answer-one' => [
-                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'boolean'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-two' => [
-                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'max:255'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:255'])
             ],
             'is-grouper-answer-two' => [
-                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'boolean'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-three' => [
-                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'max:255'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:255'])
             ],
             'is-grouper-answer-three' => [
-                Rule::when((bool) !$this->get('is-question-binary-alternatives') && $this->get('is-test'), ['required', 'boolean'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
             ],
 
-            'correct-answer-binary-alternative' => [
-                Rule::when(
-                $this->get('is-question-binary-alternatives'),
-                ['required', 'string', 'max:255'])
-            ],
             'another-answer-binary-alternative' => [Rule::when(
-                $this->get('is-question-binary-alternatives') && $this->get('is-test'),
-                ['required', 'string', 'max:255'])
+                $this->get('is-question-binary-alternatives') === 'yes' && $this->get('is-test'),
+                ['required', 'max:255'])
             ],
 
             'reason-question' => [
