@@ -38,7 +38,13 @@ class QuestionsImportValidation
                 ['uuid', 'exists:subtopics,id', new SubtopicBelongsTopicRule($row["tema_uuid"], $topicsArray)]
             )],
             'pregunta' => ['required','max:255',
-                new IsThereShouldBeNoMoreThan1GroupingAnswer($isThereShouldBeNoMoreThan1GroupAnswer),
+                new IsThereShouldBeNoMoreThan1GroupingAnswer(
+                    false,
+                    $row['es_agrupadora_respuesta_correcta'],
+                    $row['es_agrupadora_respuesta_1'],
+                    $row['es_agrupadora_respuesta_2'],
+                    $row['es_agrupadora_respuesta_3'],
+                ),
                 new IsRequiredAnyTypeTestQuestionRule($isTypeTest, $isTypeCardMemory)
             ],
             'es_test' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "es_test"),

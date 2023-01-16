@@ -38,6 +38,9 @@ class QuestionResource extends JsonResource
                 //     function () {
                 //         return $this->resource->questionable;
                 //     })
+            ],
+            'meta' => [
+                'can_this_question_be_affected' => $this->resource->tests()->count() === 0
             ]
         ];
     }
