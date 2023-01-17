@@ -90,11 +90,18 @@ class SchemaJson implements TopicsInterface
 
     public function get_relationship_subtopics($topic)
     {
+        $total_questions_subtopics = 0;
+
+        foreach ($topic->subtopics as $subtopic) {
+            $total_questions_subtopics+=$subtopic->questions->count();
+        }
+
         return SubtopicCollection::make(
             $this->eventApp->get_relationship_subtopics($topic)
         )->additional([
             'meta' => [
-                'topic' => TopicResource::make($topic)
+                'topic' => TopicResource::make($topic),
+                'total-questions-subtopics' => $total_questions_subtopics
             ]
         ]);
     }
