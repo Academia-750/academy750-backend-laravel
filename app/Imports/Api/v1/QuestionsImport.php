@@ -123,8 +123,6 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
     public function registerQuestion ($dataQuestion, $dataAnswers): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
-        \Log::debug($dataQuestion);
-        \Log::debug($dataAnswers);
 
         if ((bool) $dataQuestion["subtopic_id"]) {
             $subtopic = Subtopic::query()->firstWhere('id','=', $dataQuestion["subtopic_id"]);

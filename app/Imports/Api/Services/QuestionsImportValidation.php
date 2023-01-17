@@ -13,26 +13,13 @@ class QuestionsImportValidation
 {
     public static function validateRowValidator(array $row, $topicsArray): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
-        $isThereShouldBeNoMoreThan1GroupAnswer = collect([
-                [
-                    'is-grouper' => self::IssetRowInDataRows($row, "es_agrupadora_respuesta_correcta") && $row['es_agrupadora_respuesta_correcta'] === 'si'
-                ],
-                [
-                    'is-grouper' => self::IssetRowInDataRows($row, "es_agrupadora_respuesta_1") && $row['es_agrupadora_respuesta_1'] === 'si'
-                ],
-                [
-                    'is-grouper' => self::IssetRowInDataRows($row, "es_agrupadora_respuesta_2") && $row['es_agrupadora_respuesta_2'] === 'si'
-                ],
-                [
-                    'is-grouper' => self::IssetRowInDataRows($row, "es_agrupadora_respuesta_3") && $row['es_agrupadora_respuesta_3'] === 'si'
-                ],
-            ])->where('is-grouper', true)
-                ->count() <= 1;
-
         $isTypeCardMemory = self::IssetRowInDataRows($row, "es_tarjeta_de_memoria") && $row['es_tarjeta_de_memoria'] === 'si';
         $isTypeTest = self::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
 
         return Validator::make($row, [
+            'es_pregunta_binaria' => [
+                'required', Rule::in(['yes', 'no', 'not_defined'])
+            ],
             'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
             'subtema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "subtema_uuid"),
                 ['uuid', 'exists:subtopics,id', new SubtopicBelongsTopicRule($row["tema_uuid"], $topicsArray)]

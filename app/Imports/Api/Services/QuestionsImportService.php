@@ -17,6 +17,7 @@ class QuestionsImportService
         return $model?->questions()->create([
             'question' =>  $dataQuestion["question"],
             'reason' => $dataQuestion["reason"],
+            'is_question_binary_alternatives' => $dataQuestion['is-question-binary-alternatives'],
             'is_visible' => 'yes',
             "its_for_test" => self::getEnumConditionalModel($dataQuestion["es_test"]),
             "its_for_card_memory" => self::getEnumConditionalModel($dataQuestion["es_tarjeta_de_memoria"]),

@@ -69,13 +69,24 @@ class QuestionsTestService
             $count_topics = count($topicsSelected_id);
             $amountQuestionsPerTopic = floor($amountQuestionsRequestedByTest / $count_topics);
 
+            $isEvenNumber = ($amountQuestionsRequestedByTest % $count_topics) === 0;
+
+            $lastItemTopicArray = end($topicsSelected_id);
+
             $questions_id = [];
 
 
             foreach ($topicsSelected_id as $topic_id) {
+
+                if ($lastItemTopicArray === $topic_id && !$isEvenNumber) {
+                    $amountQuestionsForThisTopic = $amountQuestionsPerTopic + 1;
+                } else {
+                    $amountQuestionsForThisTopic = $amountQuestionsPerTopic;
+                }
+
                 $data =  DB::select(
                     "call {$nameProcedure}(?,?,?)",
-                    array($topic_id, $user->getRouteKey(), (int) $amountQuestionsPerTopic)
+                    array($topic_id, $user->getRouteKey(), (int) $amountQuestionsForThisTopic)
                 );
 
                 $dataQuestions = (array) $data;
