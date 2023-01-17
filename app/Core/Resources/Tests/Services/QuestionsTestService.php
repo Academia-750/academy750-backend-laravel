@@ -22,10 +22,10 @@ class QuestionsTestService
      * @param Test $test
      * @return array|void
      */
-    public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test )
+    public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id )
     {
 
-        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $test, $testType === 'card-memory');
+        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelected_id, $testType === 'card-memory');
 
         \Log::debug("EL PROCEDURE YA SE HA EJECUTADO");
         \Log::debug("Número de preguntas generadas: " . count($questions));
@@ -49,29 +49,47 @@ class QuestionsTestService
      * @param bool $isCardMemory
      * @return array|void
      */
-    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, bool $isCardMemory ) {
+    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, array $topicsSelected_id, bool $isCardMemory ) {
         try {
             DB::beginTransaction();
 
-            $nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
-            \Log::debug("Nombre del procedure a ejecutar: {$nameProcedure}");
+            //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
+            $nameProcedure = $isCardMemory ? 'get_questions_card_memory_by_topic' : 'get_questions_test_by_topic';
+            /*\Log::debug("Nombre del procedure a ejecutar: {$nameProcedure}");
             \Log::debug("LOS DATOS QUE PASO COMO PARÁMETRO");
             \Log::debug("ID del Usuario Alumno: {$user->getRouteKey()}");
             \Log::debug("ID del Test: {$test->getRouteKey()}");
             \Log::debug("Tipo de Test: {$testType}");
-            \Log::debug("Cantidad de preguntas solicitadas: {$amountQuestionsRequestedByTest}");
+            \Log::debug("Cantidad de preguntas solicitadas: {$amountQuestionsRequestedByTest}");*/
 
-            $data =  DB::select(
+            /*$data =  DB::select(
                 "call {$nameProcedure}(?,?,?,?)",
                 array($user->getRouteKey(), $test->getRouteKey() , $testType, (int) $amountQuestionsRequestedByTest)
-            );
+            );*/
+            $count_topics = count($topicsSelected_id);
+            $amountQuestionsPerTopic = floor($amountQuestionsRequestedByTest / $count_topics);
 
-            \Log::debug("AQUÍ DESPUÉS SE GENERA LA DATA DEL PROCEDURE");
-            \Log::debug($data);
+            $questions_id = [];
+
+
+            foreach ($topicsSelected_id as $topic_id) {
+                $data =  DB::select(
+                    "call {$nameProcedure}(?,?,?)",
+                    array($topic_id, $user->getRouteKey(), (int) $amountQuestionsPerTopic)
+                );
+
+                $dataQuestions = (array) $data;
+
+                foreach ($dataQuestions as $question_id) {
+                    $questions_id[] = $question_id;
+                }
+            }
+
+
 
             DB::commit();
 
-            return $data;
+            return $questions_id;
         } catch (\Throwable $th) {
             \Log::debug("SE PRODUJO UN ERROR JUSTO DESPUÉS DE EJECUTAR EL PROCEDURE");
             DB::rollBack();

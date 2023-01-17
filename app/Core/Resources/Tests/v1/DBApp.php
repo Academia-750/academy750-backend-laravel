@@ -80,7 +80,8 @@ class DBApp implements TestsInterface
                 (int) $request->get('count_questions_for_test'),
                 $testType,
                 $user,
-                $questionnaire
+                $questionnaire,
+                $request->get('topics_id'),
             );
             DB::commit();
 
