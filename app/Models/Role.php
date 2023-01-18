@@ -27,8 +27,7 @@ class Role extends RoleSpatieModel
     ];
 
     protected $casts = [
-        'id' => 'string',
-        'created_at' => 'datetime'
+        'id' => 'string'
     ];
 
 }

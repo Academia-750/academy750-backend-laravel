@@ -25,10 +25,6 @@ Route::prefix('v1')->group(static function(){
 
     Route::post('guest/user/contact-us', [UsersController::class, 'contactsUS'])->name('api.v1.users.home-page.form.contact-us');
 
-    Route::get('usuario/prueba/fecha', function () {
-        return \App\Models\User::find('7ef079fe-8e75-4a64-bf3d-753411bf59ef');
-    });
-
     Route::middleware(['auth:sanctum', 'only_users_with_account_enable'])->group(static function () {
         require __DIR__ . '/routes/profile.php';
         require __DIR__ . '/routes/users.routes.php';

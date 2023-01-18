@@ -16,7 +16,8 @@ class RoleResource extends JsonResource
             "attributes" => [
                 "roleName" => $this->resource->name,
                 "roleAliasName" => $this->resource->alias_name ?: $this->resource->name,
-                "createdAt" => $this->resource->created_at->format('Y-m-d h:m:s'),
+                "createdAt" => date('Y-m-d H:i:s', strtotime($this->resource->created_at)),
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
                 'permissions' => $this->when(collect($this->resource)->has('permissions'),

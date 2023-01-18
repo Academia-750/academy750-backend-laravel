@@ -18,7 +18,7 @@ class SubtopicResource extends JsonResource
             'attributes' => [
                 "name" => $this->resource->name,
                 "is_available" => $this->resource->is_available,
-                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'meta' => [
                 'total_questions_subtopic' => $this->resource->questions->count()

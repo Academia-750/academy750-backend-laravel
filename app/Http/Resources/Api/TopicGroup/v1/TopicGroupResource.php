@@ -15,7 +15,7 @@ class TopicGroupResource extends JsonResource
             'attributes' => [
                 'name' => $this->resource->name,
                 'description' => $this->resource->description,
-                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
                 'topics' => $this->when(collect($this->resource)->has('topic'),

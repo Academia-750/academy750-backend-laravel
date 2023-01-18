@@ -14,7 +14,7 @@ class ImageResource extends JsonResource
             'attributes' => [
                 "path" => $this->resource->path,
                 "type_path" => $this->resource->type_path,
-                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => []
         ];

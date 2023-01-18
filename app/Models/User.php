@@ -77,10 +77,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'id' => 'string',
-        'last_session' => 'date',
-        //'created_at' => 'date',
-        'email_verified_at' => 'date',
+        'id' => 'string'
     ];
 
     public array $allowedSorts = [

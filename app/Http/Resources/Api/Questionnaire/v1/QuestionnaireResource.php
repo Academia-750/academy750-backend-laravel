@@ -27,7 +27,7 @@ class QuestionnaireResource extends JsonResource
                 'is_solved_test' => $this->resource->is_solved_test,
                 'test_type' => $this->resource->test_type,
                 "finished_at" => $this->resource->finished_at ? $this->resource->finished_at->format('Y-m-d h:m:s') : null,
-                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
                 'opposition' => $this->when(collect($this->resource)->has('opposition'),

@@ -27,8 +27,7 @@ class Permission extends PermissionSpatieModel
     ];
 
     protected $casts = [
-        'id' => 'string',
-        'created_at' => 'datetime'
+        'id' => 'string'
     ];
 
 }

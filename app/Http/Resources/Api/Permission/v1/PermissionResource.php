@@ -16,7 +16,7 @@ class PermissionResource extends JsonResource
                 'permissionName' => $this->resource->name,
                 'permissionAliasName' => $this->resource->alias_name ?: $this->resource->name,
                 'guardNamePermission' => $this->resource->guard_name,
-                'createdAt' => $this->resource->created_at->format('Y-m-d h:m:s')
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
                 'roles' => RoleCollection::make($this->whenLoaded('roles'))

@@ -22,7 +22,7 @@ class QuestionResource extends JsonResource
                 'its_for_test' => $this->resource->its_for_test,
                 'its_for_card_memory' => $this->resource->its_for_card_memory,
                 //'its_being_used_tests' => $this->resource->its_being_used_tests,
-                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
                 'answers' => AnswerCollection::make($this->resource->answers),

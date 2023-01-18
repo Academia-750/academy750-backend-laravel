@@ -19,7 +19,7 @@ class ProfileResource extends JsonResource
                 'email' => $this->resource->email,
                 'number_phone' => $this->resource->number_phone,
                 "last_session" => ($this->resource->last_session !== null) ? $this->resource->last_session->format('Y-m-d h:m:s') : null ,
-                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s'),
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ]
         ];
     }

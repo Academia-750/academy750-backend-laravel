@@ -19,7 +19,7 @@ class TopicResource extends JsonResource
                 'name' => $this->resource->name,
                 'is_available' => $this->resource->is_available,
                 'is_available_bool' => $this->resource->is_available === 'yes',
-                "created_at" => $this->resource->created_at->format('Y-m-d h:m:s')
+                "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
                 'topic_group' => $this->when(collect($this->resource)->has('topic_group'),
