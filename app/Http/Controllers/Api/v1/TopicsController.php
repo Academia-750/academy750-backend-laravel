@@ -71,6 +71,10 @@ class TopicsController extends Controller
         return Storage::disk('public')->download('templates/csv/topics_import.csv', 'template_import_topic');
     }
 
+    public function download_template_import_subtopics_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
+        return Storage::disk('public')->download('templates/csv/subtopics_import.csv', 'template_import_subtopic');
+    }
+
     public function get_relationship_subtopics (Topic $topic) {
         return $this->topicsInterface->get_relationship_subtopics($topic);
     }

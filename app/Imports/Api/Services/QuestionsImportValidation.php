@@ -2,6 +2,7 @@
 
 namespace App\Imports\Api\Services;
 
+use App\Rules\Api\v1\Question\IsRequiredAnyReasonTextOrImageQuestionRule;
 use App\Rules\Api\v1\Questions\IsRequiredAnyTypeTestQuestionRule;
 use App\Rules\Api\v1\Questions\IsRequiredTypeTestOfQuestion;
 use App\Rules\Api\v1\Questions\IsThereShouldBeNoMoreThan1GroupingAnswer;
@@ -15,10 +16,18 @@ class QuestionsImportValidation
     {
         $isTypeCardMemory = self::IssetRowInDataRows($row, "es_tarjeta_de_memoria") && $row['es_tarjeta_de_memoria'] === 'si';
         $isTypeTest = self::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
+        $reasonText = self::IssetRowInDataRows($row, "explicacion_texto") && $row['explicacion_texto'] === 'si';
+        $answerCorrect = (bool) self::IssetRowInDataRows($row, "respuesta_correcta");
+        $answerOne = (bool) self::IssetRowInDataRows($row, "respuesta_1");
+        $answerTwo = (bool) self::IssetRowInDataRows($row, "respuesta_2");
+        $answerThree = (bool) self::IssetRowInDataRows($row, "respuesta_3");
+        $isQuestionBinary = ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest;
 
         return Validator::make($row, [
             'es_pregunta_binaria' => [
-                'required', Rule::in(['yes', 'no', 'not_defined'])
+                Rule::when( (bool) $isTypeTest,
+                    ['required','in:si,no']
+                )
             ],
             'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
             'subtema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "subtema_uuid"),
@@ -26,45 +35,52 @@ class QuestionsImportValidation
             )],
             'pregunta' => ['required','max:255',
                 new IsThereShouldBeNoMoreThan1GroupingAnswer(
-                    false,
-                    $row['es_agrupadora_respuesta_correcta'],
-                    $row['es_agrupadora_respuesta_1'],
-                    $row['es_agrupadora_respuesta_2'],
-                    $row['es_agrupadora_respuesta_3'],
+                    $isQuestionBinary,
+                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_correcta') && $row['es_agrupadora_respuesta_correcta'] === 'si',
+                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_1') && $row['es_agrupadora_respuesta_1'] === 'si',
+                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_2') && $row['es_agrupadora_respuesta_2'] === 'si',
+                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_3') && $row['es_agrupadora_respuesta_3'] === 'si',
                 ),
                 new IsRequiredAnyTypeTestQuestionRule($isTypeTest, $isTypeCardMemory)
             ],
-            'es_test' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "es_test"),
-                ['in:si,no']
-            )],
-            'es_tarjeta_de_memoria' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "es_tarjeta_de_memoria"),
-                ['in:si,no']
-            )],
+            'es_test' => ['required','in:si,no'],
+            'es_tarjeta_de_memoria' => ['required','in:si,no'],
             "respuesta_correcta" => [
                 'required', 'max:255'
             ],
-            'es_agrupadora_respuesta_correcta' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "es_agrupadora_respuesta_correcta"),
-                ['in:si,no']
+            'es_agrupadora_respuesta_correcta' => [Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
+                ['required','in:si,no']
             )],
             "respuesta_1" => [
-                'required', 'max:255'
+                Rule::when( (bool) $isTypeTest,
+                    ['required', 'max:255']
+                )
             ],
-            'es_agrupadora_respuesta_1' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "es_agrupadora_respuesta_1"),
-                ['in:si,no']
+            'es_agrupadora_respuesta_1' => [
+                Rule::when((bool) $isTypeTest && (bool) !$isQuestionBinary,
+                ['required','in:si,no']
             )],
             "respuesta_2" => [
-                'required', 'max:255'
+                Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
+                    ['required', 'max:255']
+                )
             ],
-            'es_agrupadora_respuesta_2' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "es_agrupadora_respuesta_2"),
-                ['in:si,no']
+            'es_agrupadora_respuesta_2' => [
+                Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
+                ['required','in:si,no']
             )],
             "respuesta_3" => [
-                'required', 'max:255'
+                Rule::when((bool) $isTypeTest && (bool) !$isQuestionBinary, ['required', 'max:255'])
             ],
-            'es_agrupadora_respuesta_3' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "es_agrupadora_respuesta_3"),
-                ['in:si,no']
+            'es_agrupadora_respuesta_3' => [
+                Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
+                ['required','in:si,no']
             )],
-            'explicacion_texto' => ['required', 'max:400']
+            'explicacion_texto' => ['nullable',
+                Rule::when(
+                    (bool) $reasonText || (bool) $isTypeCardMemory, [
+                    'required', 'max:400'
+                ])]
         ]);
     }
 

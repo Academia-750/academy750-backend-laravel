@@ -13,46 +13,28 @@ class QuestionsImportService
         return 'no';
     }
 
-    public static function registerQuestion ($model, $dataQuestion) {
+    public static function registerQuestion ($model, $dataQuestion, $isTest) {
         return $model?->questions()->create([
             'question' =>  $dataQuestion["question"],
             'reason' => $dataQuestion["reason"],
-            'is_question_binary_alternatives' => $dataQuestion['is-question-binary-alternatives'],
+            'is_question_binary_alternatives' => !$isTest ? 'not_defined' : $dataQuestion['is-question-binary-alternatives'],
             'is_visible' => 'yes',
             "its_for_test" => self::getEnumConditionalModel($dataQuestion["es_test"]),
             "its_for_card_memory" => self::getEnumConditionalModel($dataQuestion["es_tarjeta_de_memoria"]),
         ]);
     }
 
-    public static function registerAnswersOfQuestion ($question_id, $dataAnswers): void
+    public static function registerAnswersOfQuestion ($dataAnswers): void
     {
-        Answer::query()->create([
-            'answer' => $dataAnswers["answer-correct"],
-            'is_grouper_answer' => self::getEnumConditionalModel($dataAnswers["is-grouper-answer-correct"]),
-            'is_correct_answer' => 'yes',
-            'question_id' => $question_id
-        ]);
 
-        Answer::query()->create([
-            'answer' => $dataAnswers["answer-1"],
-            'is_grouper_answer' => self::getEnumConditionalModel($dataAnswers["is-grouper-answer-one"]),
-            'is_correct_answer' => 'no',
-            'question_id' => $question_id
-        ]);
-
-        Answer::query()->create([
-            'answer' => $dataAnswers["answer-2"],
-            'is_grouper_answer' => self::getEnumConditionalModel($dataAnswers["is-grouper-answer-two"]),
-            'is_correct_answer' => 'no',
-            'question_id' => $question_id
-        ]);
-
-        Answer::query()->create([
-            'answer' => $dataAnswers["answer-3"],
-            'is_grouper_answer' => self::getEnumConditionalModel($dataAnswers["is-grouper-answer-three"]),
-            'is_correct_answer' => 'no',
-            'question_id' => $question_id
-        ]);
+        foreach ($dataAnswers as $answer) {
+            Answer::query()->create([
+                'answer' => $answer["answer"],
+                'is_grouper_answer' => $answer["is_grouper_answer"],
+                'is_correct_answer' => $answer["is_correct_answer"],
+                'question_id' => $answer["question_id"],
+            ]);
+        }
     }
 
     public static function getDataFormattedForRegisterQuestions ($row): array {
@@ -66,21 +48,81 @@ class QuestionsImportService
         ];
     }
 
-    public static function getDataFormattedForRegisterAnswersOfQuestion ($row): array {
+    public static function getDataFormattedForRegisterAnswersOfQuestion ($row, string $question_id): array {
 
-        return [
-            "answer-correct" => $row["respuesta_correcta"],
-            "is-grouper-answer-correct" =>
-                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_correcta") ? $row["es_agrupadora_respuesta_correcta"] : null,
-            "answer-1" => $row["respuesta_1"],
-            "is-grouper-answer-one" =>
-                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_1") ? $row["es_agrupadora_respuesta_1"] : null,
-            "answer-2" => $row["respuesta_2"],
-            "is-grouper-answer-two" =>
-                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_2") ? $row["es_agrupadora_respuesta_2"] : null,
-            "answer-3" => $row["respuesta_3"],
-            "is-grouper-answer-three" =>
-                QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_agrupadora_respuesta_3") ? $row["es_agrupadora_respuesta_3"] : null,
+        $isTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
+        $answerCorrect = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_correcta");
+        $answerOne = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_1");
+        $answerTwo = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_2");
+        $answerThree = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_3");
+        $isTypeTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
+
+        $isQuestionBinary = ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest;
+
+        if (!$isTest) {
+            $answers = [
+                [
+                    'answer' => $row['respuesta_correcta'],
+                    'is_grouper_answer' => 'no',
+                    'is_correct_answer' => 'yes',
+                    'question_id' => $question_id,
+                ]
+            ];
+
+            return $answers;
+        }
+
+
+        if ($isQuestionBinary && $isTest) {
+            $answers = [
+                [
+                    'answer' => $row['respuesta_correcta'],
+                    'is_grouper_answer' => 'no',
+                    'is_correct_answer' => 'yes',
+                    'question_id' => $question_id,
+                ],
+                [
+                    'answer' => $row['respuesta_1'],
+                    'is_grouper_answer' => 'no',
+                    'is_correct_answer' => 'no',
+                    'question_id' => $question_id,
+                ]
+            ];
+
+            shuffle($answers);
+
+            return $answers;
+        }
+
+        $answers = [
+            [
+                'answer' => $row['respuesta_correcta'],
+                'is_grouper_answer' => $row['es_agrupadora_respuesta_correcta'] === 'si' ? 'yes' : 'no',
+                'is_correct_answer' => 'yes',
+                'question_id' => $question_id,
+            ],
+            [
+                'answer' => $row['respuesta_1'],
+                'is_grouper_answer' => $row['es_agrupadora_respuesta_1'] === 'si' ? 'yes' : 'no',
+                'is_correct_answer' => 'no',
+                'question_id' => $question_id,
+            ],
+            [
+                'answer' => $row['respuesta_2'],
+                'is_grouper_answer' => $row['es_agrupadora_respuesta_2'] === 'si' ? 'yes' : 'no',
+                'is_correct_answer' => 'no',
+                'question_id' => $question_id,
+            ],
+            [
+                'answer' => $row['respuesta_3'],
+                'is_grouper_answer' => $row['es_agrupadora_respuesta_3'] === 'si' ? 'yes' : 'no',
+                'is_correct_answer' => 'no',
+                'question_id' => $question_id,
+            ],
         ];
+
+        shuffle($answers);
+
+        return $answers;
     }
 }

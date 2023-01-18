@@ -60,12 +60,11 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
 
                 if (!$hasErrors) {
-                    \Log::debug($row);
+                    /*\Log::debug($row);
                     \Log::debug(QuestionsImportService::getDataFormattedForRegisterQuestions($row));
-                    \Log::debug(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row));
+                    \Log::debug(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row));*/
 
-                    $this->registerQuestion(QuestionsImportService::getDataFormattedForRegisterQuestions($row),
-                        QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row));
+                    $this->registerQuestion(QuestionsImportService::getDataFormattedForRegisterQuestions($row), $row);
                     $this->count_rows_successfully++;
                 } else {
                     $this->count_rows_failed++;
@@ -121,31 +120,31 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
         return QuestionsImportValidation::validateRowValidator($row->toArray(), $this->topics);
     }
 
-    public function registerQuestion ($dataQuestion, $dataAnswers): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
+    public function registerQuestion ($dataQuestion, $row): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
 
         if ((bool) $dataQuestion["subtopic_id"]) {
             $subtopic = Subtopic::query()->firstWhere('id','=', $dataQuestion["subtopic_id"]);
 
-            $question = QuestionsImportService::registerQuestion($subtopic, $dataQuestion);
+            $question = QuestionsImportService::registerQuestion($subtopic, $dataQuestion, QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si');
 
-            $this->registerAnswersQuestion($question->id, $dataAnswers);
+            $this->registerAnswersQuestion(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row, $question?->getRouteKey()));
 
             return $question;
         }
 
         $topic = Topic::query()->firstWhere('id','=',$dataQuestion["topic_id"]);
 
-        $question = QuestionsImportService::registerQuestion($topic, $dataQuestion);
+        $question = QuestionsImportService::registerQuestion($topic, $dataQuestion, QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si');
 
-        $this->registerAnswersQuestion($question->id, $dataAnswers);
+        $this->registerAnswersQuestion(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row, $question?->getRouteKey()));
 
         return $topic;
     }
 
-    public function registerAnswersQuestion ($question_id, $dataAnswers): void {
+    public function registerAnswersQuestion ($dataAnswers): void {
 
-        QuestionsImportService::registerAnswersOfQuestion($question_id, $dataAnswers);
+        QuestionsImportService::registerAnswersOfQuestion($dataAnswers);
     }
 
     public static function afterSheet(AfterSheet $event): void

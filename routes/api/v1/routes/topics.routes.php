@@ -35,6 +35,7 @@ Route::delete("topics/{topic}/relationship/oppositions/{opposition}/delete", [To
 Route::get('topics/relationship/questions', [TopicsController::class, 'topic_relationship_questions'])->name('api.v1.topics.relationship.questions');
 
 Route::get('topics/import/template', [TopicsController::class, 'download_template_import_records'])->name('api.v1.topics.import.template');
+Route::get('subtopics/import/template', [TopicsController::class, 'download_template_import_subtopics_records'])->name('api.v1.topics.import.subtopics.template');
 /*
 Route::post('topics/export', [TopicsController::class, 'export_records'])->name('api.v1.topics.export');
 Route::post('topics/import', [TopicsController::class, 'import_records'])->name('api.v1.topics.import');

@@ -80,7 +80,8 @@ class CreateQuestionRequest extends FormRequest
                 Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
             ],
 
-            'another-answer-binary-alternative' => [Rule::when(
+            'another-answer-binary-alternative' => [
+                Rule::when(
                 $this->get('is-question-binary-alternatives') === 'yes' && $this->get('is-test'),
                 ['required', 'max:255'])
             ],
