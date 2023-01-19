@@ -15,7 +15,6 @@
         "maatwebsite/excel": "^3.1",
         "psr/simple-cache": "2.0",
         "pusher/pusher-php-server": "7.0.2",
-        "lanin/laravel-api-debugger": "^4.0",
         "spatie/laravel-permission": "^5.5"
     },
     "require-dev": {
