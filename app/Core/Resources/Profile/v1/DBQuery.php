@@ -86,8 +86,8 @@ class DBQuery implements ProfileInterface
             $user->password = Hash::make($request->get('password'));
             $user->save();
 
-            DB::table('password_resets')->where('email', $user->email)->delete();
-            DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
+            /*DB::table('password_resets')->where('email', $user->email)->delete();
+            DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();*/
 
             DB::commit();
 
