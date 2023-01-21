@@ -62,3 +62,21 @@ Artisan::command('bomberos750:no-seeder:migrate', function () {
     //$this->call('db:seed');
     $this->call('bomberos750:clear');
 })->purpose('Borra tablas, realiza la migracion, ejecuta los seeders y optimiza la cache de la app');
+
+Artisan::command('bm', function () {
+    $this->call('bomberos750:migrate');
+})->purpose('Borra tablas, realiza la migracion, ejecuta los seeders y optimiza la cache de la app');
+
+Artisan::command('bc', function () {
+    $this->call('bomberos750:clear');
+})->purpose('Optimiza la caché de la APP');
+
+Artisan::command('check:connection', function () {
+    $this->call('bomberos750:clear');
+    if (DB::select('SELECT 1')) {
+        $this->info('Conexión exitosa');
+        //$this->info(DB::getSchemaBuilder()->getConnection());
+    } else {
+        $this->error('No hay conexión segura a la base de datos.');
+    }
+})->purpose('Comprobar conexion a base de datos');
