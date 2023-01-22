@@ -76,7 +76,7 @@ class SaveQuestionsService
         $question->question = $request->get('question-text');
         $question->reason = $request->get('reason-question') ?? $question->reason;
         $question->is_visible = (bool) $request->get('is-visible') ? 'yes' : 'no';
-        $question->is_question_binary_alternatives = (bool) !$request->get('is-test') ? 'not_defined' : $request->get('is-question-binary-alternatives');
+        $question->is_question_binary_alternatives = (bool) !$request->get('is-test') ? 'no' : $request->get('is-question-binary-alternatives');
         $question->its_for_test = (bool) $request->get('is-test') ? 'yes' : 'no';
         $question->its_for_card_memory = (bool) $request->get('is-card-memory') ? 'yes' : 'no';
         $question->save();

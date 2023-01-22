@@ -36,7 +36,7 @@ class CreateQuestionRequest extends FormRequest
         return [
 
             'is-question-binary-alternatives' => [
-                'required', Rule::in(['yes', 'no', 'not_defined'])
+                'required', Rule::in(['yes', 'no'])
             ],
             'is-visible' => ['required', 'boolean'],
             'question-text' => ['required', 'max:255',
@@ -56,7 +56,8 @@ class CreateQuestionRequest extends FormRequest
             'answer-correct' => ['required', 'max:255'],
 
             'is-grouper-answer-correct' => [
-                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
+                Rule::when($this->get('
+                is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-one' => [
