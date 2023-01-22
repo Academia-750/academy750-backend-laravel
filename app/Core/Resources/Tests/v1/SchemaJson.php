@@ -31,8 +31,6 @@ class SchemaJson implements TestsInterface
     {
         $questions = collect([]);
 
-
-
         $questionsQuery = Question::query()->whereIn('id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray())->get();
 
         foreach ($questionsQuery as $question) {
@@ -54,7 +52,7 @@ class SchemaJson implements TestsInterface
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => $questions,
+                'questions_data' => $questions->sortBy('index')->values()->toArray(),
                 'number_of_questions_answered_of_test' => $countQuestionsAnswered,
                 'total_questions_of_this_test' => $test->questions->count()
             ]
@@ -69,7 +67,6 @@ class SchemaJson implements TestsInterface
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test)
-
             ]
         ]);
     }
@@ -137,7 +134,7 @@ class SchemaJson implements TestsInterface
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => $questions
+                'questions_data' => $questions->sortBy('index')->values()->toArray()
             ]
         ]);
     }
