@@ -39,17 +39,25 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
     public function collection(Collection $collection): void {
 
-        \Log::debug($collection->toArray());
+        /*\Log::debug($collection->toArray());*/
         foreach ($collection as $row) {
-
             try {
+
+                $rowArray = $row->toArray();
+                \Log::debug("Arreglo del archivo a importar");
+                \Log::debug($rowArray);
+                /*\Log::debug($rowArray);
+                \Log::debug(array_keys($rowArray));
+                \Log::debug("------------");
+                \Log::debug(gettype($rowArray));
+                \Log::debug($row->toArray());*/
 
                 $current_row = $this->getCurrentRow();
 
                 $errors = [];
                 $hasErrors = false;
 
-                $validateData = $this->validateRow($row);
+                $validateData = $this->validateRow($rowArray);
 
                 if ($validateData->fails()) {
                     $hasErrors = true;
@@ -64,7 +72,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                     \Log::debug(QuestionsImportService::getDataFormattedForRegisterQuestions($row));
                     \Log::debug(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row));*/
 
-                    $this->registerQuestion(QuestionsImportService::getDataFormattedForRegisterQuestions($row), $row);
+                    $this->registerQuestion(QuestionsImportService::getDataFormattedForRegisterQuestions($rowArray), $rowArray);
                     $this->count_rows_successfully++;
                 } else {
                     $this->count_rows_failed++;
@@ -82,6 +90,9 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
             } catch (\Exception $e) {
                 DB::rollback();
+                \Log::debug("Ha fallado el proceso de importación de preguntas");
+                \Log::debug($e);
+                \Log::debug("---------------------------------------------------");
 
                 $this->count_rows_failed++;
 
@@ -117,7 +128,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
      * */
     public function validateRow ($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
-        return QuestionsImportValidation::validateRowValidator($row->toArray(), $this->topics);
+        return QuestionsImportValidation::validateRowValidator($row, $this->topics);
     }
 
     public function registerQuestion ($dataQuestion, $row): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder

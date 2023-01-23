@@ -24,11 +24,11 @@ class QuestionsImportValidation
         $isQuestionBinary = ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest;
 
         return Validator::make($row, [
-            'es_pregunta_binaria' => [
+            /*'es_pregunta_binaria' => [
                 Rule::when( (bool) $isTypeTest,
                     ['required','in:si,no']
                 )
-            ],
+            ],*/
             'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
             'subtema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "subtema_uuid"),
                 ['uuid', 'exists:subtopics,id', new SubtopicBelongsTopicRule($row["tema_uuid"], $topicsArray)]
@@ -84,7 +84,7 @@ class QuestionsImportValidation
         ]);
     }
 
-    public static function IssetRowInDataRows ($row, $key): bool
+    public static function IssetRowInDataRows (array $row, $key): bool
     {
         return array_key_exists($key, $row) && isset($row[$key]);
     }

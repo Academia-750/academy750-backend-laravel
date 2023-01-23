@@ -14,10 +14,13 @@ class QuestionsImportService
     }
 
     public static function registerQuestion ($model, $dataQuestion, $isTest) {
+        \Log::debug($dataQuestion['is-question-binary-alternatives']);
+        \Log::debug((bool) $dataQuestion['is-question-binary-alternatives'] ? 'yes' : 'no');
+
         return $model?->questions()->create([
             'question' =>  $dataQuestion["question"],
             'reason' => $dataQuestion["reason"],
-            'is_question_binary_alternatives' => !$isTest ? 'no' : $dataQuestion['is-question-binary-alternatives'],
+            'is_question_binary_alternatives' => !$isTest ? 'no' : ( (bool) $dataQuestion['is-question-binary-alternatives'] ? 'yes' : 'no'),
             'is_visible' => 'yes',
             "its_for_test" => self::getEnumConditionalModel($dataQuestion["es_test"]),
             "its_for_card_memory" => self::getEnumConditionalModel($dataQuestion["es_tarjeta_de_memoria"]),
@@ -37,18 +40,25 @@ class QuestionsImportService
         }
     }
 
-    public static function getDataFormattedForRegisterQuestions ($row): array {
+    public static function getDataFormattedForRegisterQuestions (array $row): array {
+        $isTypeTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
+        $answerCorrect = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_correcta");
+        $answerOne = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_1");
+        $answerTwo = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_2");
+        $answerThree = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_3");
+
         return [
             "question" => $row["pregunta"],
             "reason" => $row["explicacion_texto"],
             "topic_id" => $row["tema_uuid"],
-            "subtopic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "subtema_uuid") ? $row["subtema_uuid"] : null,
-            "es_test" => QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_test") ? $row["es_test"] : null,
-            "es_tarjeta_de_memoria" => QuestionsImportValidation::IssetRowInDataRows($row->toArray(), "es_tarjeta_de_memoria") ? $row["es_tarjeta_de_memoria"] : null,
+            "is-question-binary-alternatives" => ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest,
+            "subtopic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row, "subtema_uuid") ? $row["subtema_uuid"] : null,
+            "es_test" => QuestionsImportValidation::IssetRowInDataRows($row, "es_test") ? $row["es_test"] : null,
+            "es_tarjeta_de_memoria" => QuestionsImportValidation::IssetRowInDataRows($row, "es_tarjeta_de_memoria") ? $row["es_tarjeta_de_memoria"] : null,
         ];
     }
 
-    public static function getDataFormattedForRegisterAnswersOfQuestion ($row, string $question_id): array {
+    public static function getDataFormattedForRegisterAnswersOfQuestion (array $row, string $question_id): array {
 
         $isTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
         $answerCorrect = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_correcta");
