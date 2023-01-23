@@ -32,6 +32,15 @@ presencial y online
     * Password: ***xF7@EGm$UZ3***
   
 
+* ```Ginés Rabasco```
+  * **Admin**
+    * DNI: ***74237694L***
+    * Password: ***academia750***
+  * **Alumno**
+    * DNI: ***10668102N***
+    * Password: ***academia750***
+  
+
 * ```Adolfo Feria```
   * **Admin**
     * DNI: ***42711006Y***

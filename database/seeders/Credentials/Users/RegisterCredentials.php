@@ -2,6 +2,8 @@
 
 namespace Database\Seeders\Credentials\Users;
 
+use Database\Seeders\Credentials\Users\Interface\GinesCredentials;
+
 class RegisterCredentials
 {
     public static function registerCredentials (): void {
@@ -9,6 +11,7 @@ class RegisterCredentials
         self::registerRaul();
         self::registerAdolfo();
         self::registerCarlos();
+        self::registerGines();
     }
 
     private static function registerAcademia (): void {
@@ -29,5 +32,9 @@ class RegisterCredentials
     private static function registerCarlos (): void {
         CarlosCredentials::AdminCredentials();
         CarlosCredentials::StudentCredentials();
+    }
+    private static function registerGines (): void {
+        GinesCredentials::AdminCredentials();
+        GinesCredentials::StudentCredentials();
     }
 }
