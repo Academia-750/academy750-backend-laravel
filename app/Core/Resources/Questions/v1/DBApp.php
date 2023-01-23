@@ -3,6 +3,7 @@ namespace App\Core\Resources\Questions\v1;
 
 use App\Core\Resources\Questions\v1\Services\ClaimQuestionMail;
 use App\Core\Resources\Questions\v1\Services\SaveQuestionsService;
+use App\Core\Services\ManageImagesStorage;
 use App\Imports\Api\v1\QuestionsImport;
 use App\Models\Answer;
 use App\Models\Question;
@@ -145,21 +146,39 @@ class DBApp implements QuestionsInterface
 
     public function topic_relationship_questions_update($request, $topic, $question)
     {
+
+        // Delete Alternatives
+
+        $question = Question::query()->findOrFail($question->id);
+
+        foreach ($question->answers()->pluck('id')->toArray() as $answer_id) {
+            $answer = Answer::query()->findOrFail($answer_id);
+            $answer->delete();
+        }
+
         $question = SaveQuestionsService::updateQuestion($request, $question);
 
-        if ($request->file('file-reason')) {
+        if ($request->get('remove-image-existing') === 'yes') {
+            $nameFileStorage = ManageImagesStorage::getPathForDeleteImageModel($question, "/");
+
+            ManageImagesStorage::deleteImageStorage($nameFileStorage);
+
+            $nameFileStorage = ManageImagesStorage::getPathForDeleteImageModel($question, "\\");
+
+            ManageImagesStorage::deleteImageStorage($nameFileStorage);
+        }
+
+        if ($request->file('file-reason') && $request->get('remove-image-existing') === 'no') {
             SaveQuestionsService::updateImageQuestionInStorage($request, $question, 'public/questions/images/topics');
         }
 
         foreach (SaveQuestionsService::getAnswersByQuestion($request, $question) as $answerData) {
-            $answer = Answer::query()->find($answerData['id']);
-            if (!$answer) {
-                abort(500, "No se ha encontrado la respuesta con UUID {$answerData['id']}");
-            }
-            $answer->answer = $answerData["answer"];
-            $answer->is_grouper_answer = $answerData["is_grouper_answer"];
-            $answer->is_correct_answer = $answerData["is_correct_answer"];
-            $answer->save();
+            Answer::query()->create([
+                'answer' => $answerData["answer"],
+                'is_grouper_answer' => $answerData["is_grouper_answer"],
+                'is_correct_answer' => $answerData["is_correct_answer"],
+                'question_id' => $answerData["question_id"],
+            ]);
         }
 
         return $this->model->query()->applyIncludes()->find($question->getRouteKey());

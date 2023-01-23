@@ -26,7 +26,12 @@ class Question extends Model
         "is_question_binary_alternatives",
         "is_visible",
         "its_for_test",
-        "its_for_card_memory"
+        "its_for_card_memory",
+
+        /*"show_reason_text_in_test",
+        "show_reason_text_in_card_memory",
+        "show_reason_image_in_test",
+        "show_reason_image_in_card_memory"*/
     ];
 
     public array $allowedSorts = [

@@ -18,8 +18,8 @@ class QuestionsImportService
         \Log::debug((bool) $dataQuestion['is-question-binary-alternatives'] ? 'yes' : 'no');
 
         return $model?->questions()->create([
-            'question' =>  $dataQuestion["question"],
-            'reason' => $dataQuestion["reason"],
+            'question' =>  trim($dataQuestion["question"]),
+            'reason' => trim($dataQuestion["reason"]),
             'is_question_binary_alternatives' => !$isTest ? 'no' : ( (bool) $dataQuestion['is-question-binary-alternatives'] ? 'yes' : 'no'),
             'is_visible' => 'yes',
             "its_for_test" => self::getEnumConditionalModel($dataQuestion["es_test"]),
@@ -32,7 +32,7 @@ class QuestionsImportService
 
         foreach ($dataAnswers as $answer) {
             Answer::query()->create([
-                'answer' => $answer["answer"],
+                'answer' => trim($answer["answer"]),
                 'is_grouper_answer' => $answer["is_grouper_answer"],
                 'is_correct_answer' => $answer["is_correct_answer"],
                 'question_id' => $answer["question_id"],
@@ -41,7 +41,7 @@ class QuestionsImportService
     }
 
     public static function getDataFormattedForRegisterQuestions (array $row): array {
-        $isTypeTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
+        $isTypeTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && strtolower(trim($row['es_test'])) === 'si';
         $answerCorrect = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_correcta");
         $answerOne = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_1");
         $answerTwo = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_2");
@@ -60,19 +60,19 @@ class QuestionsImportService
 
     public static function getDataFormattedForRegisterAnswersOfQuestion (array $row, string $question_id): array {
 
-        $isTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
+        $isTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && strtolower(trim($row['es_test'])) === 'si';
         $answerCorrect = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_correcta");
         $answerOne = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_1");
         $answerTwo = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_2");
         $answerThree = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_3");
-        $isTypeTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
+        $isTypeTest = QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && strtolower(trim($row['es_test'])) === 'si';
 
         $isQuestionBinary = ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest;
 
         if (!$isTest) {
             $answers = [
                 [
-                    'answer' => $row['respuesta_correcta'],
+                    'answer' => trim($row['respuesta_correcta']),
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'yes',
                     'question_id' => $question_id,
@@ -86,13 +86,13 @@ class QuestionsImportService
         if ($isQuestionBinary && $isTest) {
             $answers = [
                 [
-                    'answer' => $row['respuesta_correcta'],
+                    'answer' => trim($row['respuesta_correcta']),
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'yes',
                     'question_id' => $question_id,
                 ],
                 [
-                    'answer' => $row['respuesta_1'],
+                    'answer' => trim($row['respuesta_1']),
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'no',
                     'question_id' => $question_id,
@@ -106,26 +106,26 @@ class QuestionsImportService
 
         $answers = [
             [
-                'answer' => $row['respuesta_correcta'],
-                'is_grouper_answer' => $row['es_agrupadora_respuesta_correcta'] === 'si' ? 'yes' : 'no',
+                'answer' => trim($row['respuesta_correcta']),
+                'is_grouper_answer' => strtolower(trim($row['es_agrupadora_respuesta_correcta'])) === 'si' ? 'yes' : 'no',
                 'is_correct_answer' => 'yes',
                 'question_id' => $question_id,
             ],
             [
-                'answer' => $row['respuesta_1'],
-                'is_grouper_answer' => $row['es_agrupadora_respuesta_1'] === 'si' ? 'yes' : 'no',
+                'answer' => trim($row['respuesta_1']),
+                'is_grouper_answer' => strtolower(trim($row['es_agrupadora_respuesta_1'])) === 'si' ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question_id,
             ],
             [
-                'answer' => $row['respuesta_2'],
-                'is_grouper_answer' => $row['es_agrupadora_respuesta_2'] === 'si' ? 'yes' : 'no',
+                'answer' => trim($row['respuesta_2']),
+                'is_grouper_answer' => strtolower(trim($row['es_agrupadora_respuesta_2'])) === 'si' ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question_id,
             ],
             [
-                'answer' => $row['respuesta_3'],
-                'is_grouper_answer' => $row['es_agrupadora_respuesta_3'] === 'si' ? 'yes' : 'no',
+                'answer' => trim($row['respuesta_3']),
+                'is_grouper_answer' => strtolower(trim($row['es_agrupadora_respuesta_3'])) === 'si' ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
                 'question_id' => $question_id,
             ],

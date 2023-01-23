@@ -14,9 +14,9 @@ class QuestionsImportValidation
 {
     public static function validateRowValidator(array $row, $topicsArray): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
-        $isTypeCardMemory = self::IssetRowInDataRows($row, "es_tarjeta_de_memoria") && $row['es_tarjeta_de_memoria'] === 'si';
-        $isTypeTest = self::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si';
-        $reasonText = self::IssetRowInDataRows($row, "explicacion_texto") && $row['explicacion_texto'] === 'si';
+        $isTypeCardMemory = self::IssetRowInDataRows($row, "es_tarjeta_de_memoria") && strtolower(trim($row['es_tarjeta_de_memoria'])) === 'si';
+        $isTypeTest = self::IssetRowInDataRows($row, "es_test") && strtolower(trim($row['es_test'])) === 'si';
+        $reasonText = self::IssetRowInDataRows($row, "explicacion_texto");
         $answerCorrect = (bool) self::IssetRowInDataRows($row, "respuesta_correcta");
         $answerOne = (bool) self::IssetRowInDataRows($row, "respuesta_1");
         $answerTwo = (bool) self::IssetRowInDataRows($row, "respuesta_2");
@@ -36,10 +36,10 @@ class QuestionsImportValidation
             'pregunta' => ['required','max:255',
                 new IsThereShouldBeNoMoreThan1GroupingAnswer(
                     $isQuestionBinary,
-                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_correcta') && $row['es_agrupadora_respuesta_correcta'] === 'si',
-                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_1') && $row['es_agrupadora_respuesta_1'] === 'si',
-                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_2') && $row['es_agrupadora_respuesta_2'] === 'si',
-                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_3') && $row['es_agrupadora_respuesta_3'] === 'si',
+                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_correcta') && strtolower(trim($row['es_agrupadora_respuesta_correcta'])) === 'si',
+                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_1') && strtolower(trim($row['es_agrupadora_respuesta_1'])) === 'si',
+                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_2') && strtolower(trim($row['es_agrupadora_respuesta_2'])) === 'si',
+                    self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_3') && strtolower(trim($row['es_agrupadora_respuesta_3'])) === 'si',
                 ),
                 new IsRequiredAnyTypeTestQuestionRule($isTypeTest, $isTypeCardMemory)
             ],
@@ -48,9 +48,11 @@ class QuestionsImportValidation
             "respuesta_correcta" => [
                 'required', 'max:255'
             ],
-            'es_agrupadora_respuesta_correcta' => [Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
-                ['required','in:si,no']
-            )],
+            'es_agrupadora_respuesta_correcta' => [
+                Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
+                    ['required','in:si,no']
+                )
+            ],
             "respuesta_1" => [
                 Rule::when( (bool) $isTypeTest,
                     ['required', 'max:255']

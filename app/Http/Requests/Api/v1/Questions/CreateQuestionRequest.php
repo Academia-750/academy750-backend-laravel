@@ -30,7 +30,6 @@ class CreateQuestionRequest extends FormRequest
         ]);
     }
 
-    // Validación completada. Falta refactorizar funcionalidades para guardar correctamente la pregunta y sus alternativas
     public function rules(): array
     {
         return [
