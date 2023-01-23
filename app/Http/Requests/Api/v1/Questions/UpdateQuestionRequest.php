@@ -34,6 +34,10 @@ class UpdateQuestionRequest extends FormRequest
 
     public function rules(): array
     {
+
+        \Log::debug($this->route('question'));
+        \Log::debug($this->route('question')->image);
+        \Log::debug($this->route('question')->answers);
         return [
 
             'is-question-binary-alternatives' => [
@@ -49,7 +53,7 @@ class UpdateQuestionRequest extends FormRequest
                     $this->get('is-grouper-answer-three')
                 ),
                 new IsRequiredAnyTypeTestQuestionRule((bool) $this->get('is-test'), (bool) $this->get('is-card-memory')),
-                new IsRequiredAnyReasonTextOrImageQuestionRule((bool) $this->get('is-card-memory'), $this->get('reason-question') , $this->file('file-reason'))
+                new IsRequiredAnyReasonTextOrImageQuestionRule((bool) $this->get('is-card-memory') && (bool) !$this->route('question')->image, $this->get('reason-question') , $this->file('file-reason'))
             ],
             'is-test' => ['required', 'boolean'],
             'is-card-memory' => ['required', 'boolean'],
