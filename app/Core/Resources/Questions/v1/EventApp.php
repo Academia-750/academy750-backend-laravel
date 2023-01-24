@@ -71,6 +71,6 @@ class EventApp implements QuestionsInterface
 
     public function import_records($request)
     {
-        return $this->cacheApp->import_records($request);
+        $this->cacheApp->import_records($request);
     }
 }

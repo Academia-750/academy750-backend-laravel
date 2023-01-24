@@ -237,29 +237,6 @@ class DBApp implements QuestionsInterface
 
     public function import_records($request)
     {
-        //$outputArtisan = Artisan::output();
-
-        /*\Log::debug(strpos($outputArtisan, 'queue:work') !== false);
-        \Log::debug(str_contains($outputArtisan, 'queue:work'));
-
-        if (strpos($outputArtisan, 'queue:work') !== false) {
-            $filesQuestions = $request->file('filesQuestions') ?? [];
-
-            foreach ($filesQuestions as $file) {
-
-                (
-                new QuestionsImport(Auth::user(), $file->getClientOriginalName())
-                )->import($file);
-
-                //sleep(1);
-
-            }
-
-            return 'success';
-        }
-
-        return 'failed';*/
-
         $filesQuestions = $request->file('filesQuestions') ?? [];
 
         foreach ($filesQuestions as $file) {
@@ -271,7 +248,5 @@ class DBApp implements QuestionsInterface
             //sleep(1);
 
         }
-
-        return 'success';
     }
 }
