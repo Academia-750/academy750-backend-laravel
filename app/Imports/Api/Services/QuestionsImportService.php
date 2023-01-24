@@ -50,8 +50,8 @@ class QuestionsImportService
         $answerThree = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_3");
 
         return [
-            "show_reason_text_in_test" => $row["mostrar_explicacion_en_test"],
-            "show_reason_text_in_card_memory" => $row["mostrar_explicacion_en_tarjeta_de_memoria"],
+            "show_reason_text_in_test" => QuestionsImportValidation::IssetRowInDataRows($row, "mostrar_explicacion_en_test") && $row['mostrar_explicacion_en_test'] === 'si' ? 'yes' : 'no',
+            "show_reason_text_in_card_memory" => QuestionsImportValidation::IssetRowInDataRows($row, "mostrar_explicacion_en_tarjeta_de_memoria") && $row['mostrar_explicacion_en_tarjeta_de_memoria'] === 'si' ? 'yes' : 'no',
             "question" => $row["pregunta"],
             "reason" => $row["explicacion_texto"],
             "topic_id" => $row["tema_uuid"],
