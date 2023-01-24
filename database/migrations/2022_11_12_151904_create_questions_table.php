@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->comment('Identificador UUID');
             $table->uuidMorphs('questionable');
 
-            $table->string("question")->comment("La pregunta");
+            $table->text("question")->comment("La pregunta");
             $table->text("reason")->nullable()->comment("La explicacion");
             $table->enum('is_question_binary_alternatives', [ 'yes', 'no' ])->comment('Es una pregunta con 2 alternativas?')->default('no');
             $table->enum('is_visible', [ 'yes', 'no' ])->comment('Está visible?')->default('yes');

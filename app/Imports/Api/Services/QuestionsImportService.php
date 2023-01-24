@@ -48,10 +48,13 @@ class QuestionsImportService
         $answerOne = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_1");
         $answerTwo = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_2");
         $answerThree = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_3");
+        $reasonText = self::IssetRowInDataRows($row, "explicacion_texto");
 
         return [
-            "show_reason_text_in_test" => QuestionsImportValidation::IssetRowInDataRows($row, "mostrar_explicacion_en_test") && $row['mostrar_explicacion_en_test'] === 'si' ? 'yes' : 'no',
-            "show_reason_text_in_card_memory" => QuestionsImportValidation::IssetRowInDataRows($row, "mostrar_explicacion_en_tarjeta_de_memoria") && $row['mostrar_explicacion_en_tarjeta_de_memoria'] === 'si' ? 'yes' : 'no',
+            "show_reason_text_in_test" => QuestionsImportValidation::IssetRowInDataRows($row, "mostrar_explicacion_en_test") &&
+            $row['mostrar_explicacion_en_test'] === 'si' && (bool) $reasonText ? 'yes' : 'no',
+            "show_reason_text_in_card_memory" => QuestionsImportValidation::IssetRowInDataRows($row, "mostrar_explicacion_en_tarjeta_de_memoria") &&
+            $row['mostrar_explicacion_en_tarjeta_de_memoria'] === 'si' && (bool) $reasonText? 'yes' : 'no',
             "question" => $row["pregunta"],
             "reason" => $row["explicacion_texto"],
             "topic_id" => $row["tema_uuid"],

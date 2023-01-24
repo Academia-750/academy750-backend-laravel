@@ -44,7 +44,7 @@ class UpdateQuestionRequest extends FormRequest
                 'required', Rule::in(['yes', 'no'])
             ],
             'is-visible' => ['required', 'boolean'],
-            'question-text' => ['required', 'max:255',
+            'question-text' => ['required', 'max:65535',
                 new IsThereShouldBeNoMoreThan1GroupingAnswer(
                     (bool) $this->get('is-question-binary-alternatives'),
                     $this->get('is-grouper-answer-correct'),
@@ -58,7 +58,7 @@ class UpdateQuestionRequest extends FormRequest
             'is-test' => ['required', 'boolean'],
             'is-card-memory' => ['required', 'boolean'],
 
-            'answer-correct' => ['required', 'max:255'],
+            'answer-correct' => ['required', 'max:65535'],
 
             'is-grouper-answer-correct' => [
                 Rule::when($this->get('
@@ -66,21 +66,21 @@ class UpdateQuestionRequest extends FormRequest
             ],
 
             'answer-one' => [
-                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:255'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:65535'])
             ],
             'is-grouper-answer-one' => [
                 Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-two' => [
-                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:255'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:65535'])
             ],
             'is-grouper-answer-two' => [
                 Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
             ],
 
             'answer-three' => [
-                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:255'])
+                Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'max:65535'])
             ],
             'is-grouper-answer-three' => [
                 Rule::when($this->get('is-question-binary-alternatives') === 'no' && $this->get('is-test'), ['required', 'boolean'])
@@ -89,14 +89,14 @@ class UpdateQuestionRequest extends FormRequest
             'another-answer-binary-alternative' => [
                 Rule::when(
                     $this->get('is-question-binary-alternatives') === 'yes' && $this->get('is-test'),
-                    ['required', 'max:255'])
+                    ['required', 'max:65535'])
             ],
 
             'reason-question' => [
                 'nullable',
                 Rule::when(
                     (bool) $this->get('reason-question'), [
-                    'required', 'max:400'
+                    'required', 'max:65535'
                 ])
             ],
             'file-reason' => [

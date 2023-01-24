@@ -43,9 +43,11 @@ class QuestionsImportValidation
                 ),
                 new IsRequiredAnyTypeTestQuestionRule($isTypeTest, $isTypeCardMemory)
             ],
-            'mostrar_explicacion_en_test' => [ Rule::when((bool) $reasonText, [
-                'required','in:si,no'
-            ])],
+            'mostrar_explicacion_en_test' => [
+                Rule::when((bool) $reasonText, [
+                    'required','in:si,no'
+                ])
+            ],
             'mostrar_explicacion_en_tarjeta_de_memoria' => [
                 Rule::when((bool) $reasonText, [
                     'required','in:si,no'
