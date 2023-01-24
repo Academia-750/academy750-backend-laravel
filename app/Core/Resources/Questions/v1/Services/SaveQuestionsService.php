@@ -13,7 +13,7 @@ class SaveQuestionsService
 
         return $instanceModel->questions()->create([
             'question' => $request->get('question-text'),
-            'reason' => $request->get('reason-question'),
+            'reason' => $request->get('reason-question') ? $request->get('reason-question') : '',
             'is_question_binary_alternatives' => $request->get('is-question-binary-alternatives'),
             'is_visible' => (bool) $request->get('is-visible') ? 'yes' : 'no',
             "its_for_test" => (bool) $request->get('is-test') ? 'yes' : 'no',

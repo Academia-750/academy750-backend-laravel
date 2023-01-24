@@ -138,10 +138,17 @@ class SchemaJson implements QuestionsInterface
 
     public function import_records($request)
     {
-        $this->eventApp->import_records( $request );
+        $status = $this->eventApp->import_records( $request );
 
-        return response()->json([
-            'message' => "Proceso de importación iniciada"
-        ], 200);
+        \Log::debug('Status Process Import');
+        \Log::debug($status);
+
+        if ($status === 'success') {
+            $message = 'El proceso de importación de preguntas ha iniciado. Te notificaremos en cuanto termine o puedes revisar "Mis importaciones"';
+        } else {
+            $message = 'El servicio de importación no está disponible ahora. Intente más tarde';
+        }
+
+        return response()->json(compact('message'), 200);
     }
 }

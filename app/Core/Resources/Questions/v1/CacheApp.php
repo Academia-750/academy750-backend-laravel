@@ -108,6 +108,6 @@ class CacheApp implements QuestionsInterface
 
     public function import_records($request)
     {
-        $this->dbApp->import_records($request);
+        return $this->dbApp->import_records($request);
     }
 }

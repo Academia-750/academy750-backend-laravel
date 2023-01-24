@@ -8,6 +8,7 @@ use App\Imports\Api\v1\QuestionsImport;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -236,16 +237,27 @@ class DBApp implements QuestionsInterface
 
     public function import_records($request)
     {
-        $filesQuestions = $request->file('filesQuestions') ?? [];
+        $outputArtisan = Artisan::output();
 
-        foreach ($filesQuestions as $file) {
+        \Log::debug(strpos($outputArtisan, 'queue:work') !== false);
+        \Log::debug(str_contains($outputArtisan, 'queue:work'));
 
-            (
-            new QuestionsImport(Auth::user(), $file->getClientOriginalName())
-            )->import($file);
+        if (strpos($outputArtisan, 'queue:work') !== false) {
+            $filesQuestions = $request->file('filesQuestions') ?? [];
 
-            //sleep(1);
+            foreach ($filesQuestions as $file) {
 
+                (
+                new QuestionsImport(Auth::user(), $file->getClientOriginalName())
+                )->import($file);
+
+                //sleep(1);
+
+            }
+
+            return 'success';
         }
+
+        return 'failed';
     }
 }
