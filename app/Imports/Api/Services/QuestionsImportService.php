@@ -21,6 +21,8 @@ class QuestionsImportService
             'question' =>  trim($dataQuestion["question"]),
             'reason' => trim($dataQuestion["reason"]),
             'is_question_binary_alternatives' => !$isTest ? 'no' : ( (bool) $dataQuestion['is-question-binary-alternatives'] ? 'yes' : 'no'),
+            "show_reason_text_in_test" => $dataQuestion['show_reason_text_in_test'],
+            "show_reason_text_in_card_memory" => $dataQuestion['show_reason_text_in_card_memory'],
             'is_visible' => 'yes',
             "its_for_test" => self::getEnumConditionalModel($dataQuestion["es_test"]),
             "its_for_card_memory" => self::getEnumConditionalModel($dataQuestion["es_tarjeta_de_memoria"]),
@@ -48,6 +50,8 @@ class QuestionsImportService
         $answerThree = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_3");
 
         return [
+            "show_reason_text_in_test" => $row["mostrar_explicacion_en_test"],
+            "show_reason_text_in_card_memory" => $row["mostrar_explicacion_en_tarjeta_de_memoria"],
             "question" => $row["pregunta"],
             "reason" => $row["explicacion_texto"],
             "topic_id" => $row["tema_uuid"],

@@ -43,6 +43,8 @@ class QuestionsImportValidation
                 ),
                 new IsRequiredAnyTypeTestQuestionRule($isTypeTest, $isTypeCardMemory)
             ],
+            'mostrar_explicacion_en_test' => ['required','in:si,no'],
+            'mostrar_explicacion_en_tarjeta_de_memoria' => ['required','in:si,no'],
             'es_test' => ['required','in:si,no'],
             'es_tarjeta_de_memoria' => ['required','in:si,no'],
             "respuesta_correcta" => [
