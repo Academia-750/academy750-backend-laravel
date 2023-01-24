@@ -24,10 +24,10 @@ return new class extends Migration
             $table->enum("its_for_test", ['yes', 'no'])->default('yes')->comment('¿Es una pregunta para test?');
             $table->enum("its_for_card_memory", ['yes', 'no'])->default('no')->comment('¿Es una pregunta para tarjeta de memoria?');
 
-            /*$table->enum("show_reason_text_in_test", ['yes', 'no'])->default('yes')->comment('La explicación en texto puede ser mostrada en Test?');
+            $table->enum("show_reason_text_in_test", ['yes', 'no'])->default('yes')->comment('La explicación en texto puede ser mostrada en Test?');
             $table->enum("show_reason_text_in_card_memory", ['yes', 'no'])->default('yes')->comment('La explicación en texto puede ser mostrada en Tarjeta de memoria?');
             $table->enum("show_reason_image_in_test", ['yes', 'no'])->default('yes')->comment('La explicación en imagen puede ser mostrada en Test?');
-            $table->enum("show_reason_image_in_card_memory", ['yes', 'no'])->default('yes')->comment('La explicación en imagen puede ser mostrada en Tarjeta de memoria?');*/
+            $table->enum("show_reason_image_in_card_memory", ['yes', 'no'])->default('yes')->comment('La explicación en imagen puede ser mostrada en Tarjeta de memoria?');
             //$table->enum("its_being_used_tests", ['yes', 'no'])->default('no')->comment('¿Está siendo usada en Cuestionarios?');
 
 

@@ -21,6 +21,12 @@ class QuestionResource extends JsonResource
                 "is_visible" => $this->resource->is_visible,
                 'its_for_test' => $this->resource->its_for_test,
                 'its_for_card_memory' => $this->resource->its_for_card_memory,
+
+                "show_reason_text_in_test" => $this->resource->show_reason_text_in_test,
+                "show_reason_text_in_card_memory" => $this->resource->show_reason_text_in_card_memory,
+                "show_reason_image_in_test" => $this->resource->show_reason_image_in_test,
+                "show_reason_image_in_card_memory" => $this->resource->show_reason_image_in_card_memory,
+
                 //'its_being_used_tests' => $this->resource->its_being_used_tests,
                 "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],

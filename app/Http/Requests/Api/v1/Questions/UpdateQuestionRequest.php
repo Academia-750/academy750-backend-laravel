@@ -35,9 +35,9 @@ class UpdateQuestionRequest extends FormRequest
     public function rules(): array
     {
 
-        \Log::debug($this->route('question'));
+        /*\Log::debug($this->route('question'));
         \Log::debug($this->route('question')->image);
-        \Log::debug($this->route('question')->answers);
+        \Log::debug($this->route('question')->answers);*/
         return [
 
             'is-question-binary-alternatives' => [
@@ -108,7 +108,20 @@ class UpdateQuestionRequest extends FormRequest
             // Si la pregunta ya tiene una imagen, podemos dar la opcion de removerla y no necesariamente remplazarla.
             'remove-image-existing' => [
                 'required', Rule::in(['yes', 'no'])
-            ]
+            ],
+
+            "show_reason_text_in_test" => [
+                'required', Rule::in(['yes', 'no'])
+            ],
+            "show_reason_text_in_card_memory" => [
+                'required', Rule::in(['yes', 'no'])
+            ],
+            "show_reason_image_in_test" => [
+                'required', Rule::in(['yes', 'no'])
+            ],
+            "show_reason_image_in_card_memory" => [
+                'required', Rule::in(['yes', 'no'])
+            ],
         ];
     }
 

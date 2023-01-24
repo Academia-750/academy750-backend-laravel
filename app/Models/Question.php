@@ -28,10 +28,10 @@ class Question extends Model
         "its_for_test",
         "its_for_card_memory",
 
-        /*"show_reason_text_in_test",
+        "show_reason_text_in_test",
         "show_reason_text_in_card_memory",
         "show_reason_image_in_test",
-        "show_reason_image_in_card_memory"*/
+        "show_reason_image_in_card_memory"
     ];
 
     public array $allowedSorts = [
