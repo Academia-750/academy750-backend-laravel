@@ -23,6 +23,7 @@ return new class extends Migration
             $table->enum('is_visible', [ 'yes', 'no' ])->comment('Está visible?')->default('yes');
             $table->enum("its_for_test", ['yes', 'no'])->default('yes')->comment('¿Es una pregunta para test?');
             $table->enum("its_for_card_memory", ['yes', 'no'])->default('no')->comment('¿Es una pregunta para tarjeta de memoria?');
+            $table->enum("question_in_edit_mode", ['yes', 'no'])->default('no')->comment('¿La pregunta está en modo edición?');
 
             $table->enum("show_reason_text_in_test", ['yes', 'no'])->default('yes')->comment('La explicación en texto puede ser mostrada en Test?');
             $table->enum("show_reason_text_in_card_memory", ['yes', 'no'])->default('yes')->comment('La explicación en texto puede ser mostrada en Tarjeta de memoria?');

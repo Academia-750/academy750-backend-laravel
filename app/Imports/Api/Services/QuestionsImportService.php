@@ -48,7 +48,7 @@ class QuestionsImportService
         $answerOne = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_1");
         $answerTwo = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_2");
         $answerThree = (bool) QuestionsImportValidation::IssetRowInDataRows($row, "respuesta_3");
-        $reasonText = self::IssetRowInDataRows($row, "explicacion_texto");
+        $reasonText = QuestionsImportValidation::IssetRowInDataRows($row, "explicacion_texto");
 
         return [
             "show_reason_text_in_test" => QuestionsImportValidation::IssetRowInDataRows($row, "mostrar_explicacion_en_test") &&

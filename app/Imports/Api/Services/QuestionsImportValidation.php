@@ -33,7 +33,7 @@ class QuestionsImportValidation
             'subtema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "subtema_uuid"),
                 ['uuid', 'exists:subtopics,id', new SubtopicBelongsTopicRule($row["tema_uuid"], $topicsArray)]
             )],
-            'pregunta' => ['required','max:255',
+            'pregunta' => ['required','max:65535',
                 new IsThereShouldBeNoMoreThan1GroupingAnswer(
                     $isQuestionBinary,
                     self::IssetRowInDataRows($row, 'es_agrupadora_respuesta_correcta') && strtolower(trim($row['es_agrupadora_respuesta_correcta'])) === 'si',
@@ -56,7 +56,7 @@ class QuestionsImportValidation
             'es_test' => ['required','in:si,no'],
             'es_tarjeta_de_memoria' => ['required','in:si,no'],
             "respuesta_correcta" => [
-                'required', 'max:255'
+                'required', 'max:65535'
             ],
             'es_agrupadora_respuesta_correcta' => [
                 Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
@@ -65,7 +65,7 @@ class QuestionsImportValidation
             ],
             "respuesta_1" => [
                 Rule::when( (bool) $isTypeTest,
-                    ['required', 'max:255']
+                    ['required', 'max:65535']
                 )
             ],
             'es_agrupadora_respuesta_1' => [
@@ -74,7 +74,7 @@ class QuestionsImportValidation
             )],
             "respuesta_2" => [
                 Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
-                    ['required', 'max:255']
+                    ['required', 'max:65535']
                 )
             ],
             'es_agrupadora_respuesta_2' => [
@@ -82,7 +82,7 @@ class QuestionsImportValidation
                 ['required','in:si,no']
             )],
             "respuesta_3" => [
-                Rule::when((bool) $isTypeTest && (bool) !$isQuestionBinary, ['required', 'max:255'])
+                Rule::when((bool) $isTypeTest && (bool) !$isQuestionBinary, ['required', 'max:65535'])
             ],
             'es_agrupadora_respuesta_3' => [
                 Rule::when( (bool) $isTypeTest && (bool) !$isQuestionBinary,
@@ -91,7 +91,7 @@ class QuestionsImportValidation
             'explicacion_texto' => ['nullable',
                 Rule::when(
                     (bool) $reasonText || (bool) $isTypeCardMemory, [
-                    'required', 'max:400'
+                    'required', 'max:65535'
                 ])]
         ]);
     }

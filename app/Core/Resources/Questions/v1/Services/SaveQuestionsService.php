@@ -84,6 +84,7 @@ class SaveQuestionsService
         $question->is_question_binary_alternatives = (bool) !$request->get('is-test') ? 'no' : $request->get('is-question-binary-alternatives');
         $question->its_for_test = (bool) $request->get('is-test') ? 'yes' : 'no';
         $question->its_for_card_memory = (bool) $request->get('is-card-memory') ? 'yes' : 'no';
+        $question->question_in_edit_mode = 'yes';
 
         $question->show_reason_text_in_test = $request->get("show_reason_text_in_test");
         $question->show_reason_text_in_card_memory = $request->get("show_reason_text_in_card_memory");

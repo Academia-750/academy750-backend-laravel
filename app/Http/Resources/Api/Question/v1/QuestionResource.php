@@ -27,6 +27,8 @@ class QuestionResource extends JsonResource
                 "show_reason_image_in_test" => $this->resource->show_reason_image_in_test,
                 "show_reason_image_in_card_memory" => $this->resource->show_reason_image_in_card_memory,
 
+                "question_in_edit_mode" => $this->resource->question_in_edit_mode,
+
                 //'its_being_used_tests' => $this->resource->its_being_used_tests,
                 "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
