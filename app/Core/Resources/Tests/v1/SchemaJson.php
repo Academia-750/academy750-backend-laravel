@@ -31,7 +31,12 @@ class SchemaJson implements TestsInterface
     {
         $questions = collect([]);
 
-        $questionsQuery = Question::query()->whereIn('id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray())->get();
+        //$questionsQuery = Question::query()->whereIn('id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray())->get();
+        $questionsQuery = Question::query()->whereIn(
+            'id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray()
+        )->get();
+
+        \Log::debug($questionsQuery);
 
         foreach ($questionsQuery as $question) {
 
@@ -115,6 +120,8 @@ class SchemaJson implements TestsInterface
         $questionsQuery = Question::query()->whereIn(
             'id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray()
         )->get();
+
+        \Log::debug($questionsQuery);
 
         foreach ($questionsQuery as $question) {
 
