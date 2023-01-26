@@ -16,40 +16,41 @@ return new class extends Migration
         $procedure= "DROP PROCEDURE IF EXISTS `get_questions_card_memory_by_topic`;
         CREATE PROCEDURE `get_questions_card_memory_by_topic`(
             IN `id_tema` VARCHAR(255),
+            IN `id_oposicion` VARCHAR(255),
             IN `id_usuario` VARCHAR(255),
             IN `cantidad` INT
         )
         BEGIN
 
-        DECLARE c INTEGER;
+                DECLARE c INTEGER;
 
-                SET c := (select count(*) 
-					 from questions p
-					 WHERE p.questionable_id in 
-					 (select t.id from topics t where t.id=id_tema union select s.id from subtopics s where s.topic_id=id_tema)
-					  AND p.id not in
-					  (SELECT question_id FROM question_test q, tests t where t.user_id=id_usuario and t.id=q.test_id and t.test_type='card_memory' and q.have_been_show_card_memory='yes')
-					  AND p.its_for_card_memory='yes');
+                        SET c := (select count(*)
+                             from questions p
+                             WHERE p.question_in_edit_mode='no' and p.questionable_id in
+                             (select t.id from topics t where t.id=id_tema union select s.id from subtopics s, oppositionables o where o.opposition_id=id_oposicion and o.oppositionable_id=s.id and s.topic_id=id_tema)
+                              AND p.id not in
+                              (SELECT question_id FROM question_test q, tests t where t.user_id=id_usuario and t.id=q.test_id and t.test_type='card_memory' and q.have_been_show_card_memory='yes')
+                              AND p.its_for_card_memory='yes');
 
-                IF c < 1 THEN
+                        IF c < 1 THEN
 
-                update question_test m, questions q, tests t  SET m.have_been_show_test='no' WHERE m.question_id=q.id AND
-					  q.questionable_id IN (select t.id from topics t where t.id=id_tema union select s.id from subtopics s where s.topic_id=id_tema) and
-					  t.user_id=id_usuario AND t.id=m.test_id;
+                        update question_test m, questions q, tests t  SET m.have_been_show_test='no' WHERE m.question_id=q.id AND
+                              q.questionable_id IN (select t.id from topics t where t.id=id_tema union select s.id from subtopics s, oppositionables o where o.opposition_id=id_oposicion and o.oppositionable_id=s.id and s.topic_id=id_tema) and
+                              t.user_id=id_usuario AND t.id=m.test_id AND t.test_type='card_memory' AND q.its_for_card_memory='yes';
 
-                END IF;
+                        END IF;
 
 
 
-                SELECT p.id from questions p
-					 WHERE p.questionable_id in 
-					 (select t.id from topics t where t.id=id_tema union select s.id from subtopics s where s.topic_id=id_tema)
-					  AND p.id not in
-					  (SELECT question_id FROM question_test q, tests t where t.user_id=id_usuario and t.id=q.test_id and t.test_type='card_memory' and q.have_been_show_card_memory='yes')
-					  AND p.its_for_card_memory='yes'
-                  ORDER BY RAND() LIMIT cantidad;
+                        SELECT p.id from questions p
+                             WHERE p.question_in_edit_mode='no' AND p.questionable_id in
+                             (select t.id from topics t where t.id=id_tema union select s.id from subtopics s, oppositionables o where o.opposition_id=id_oposicion and o.oppositionable_id=s.id and s.topic_id=id_tema)
+                              AND p.id not in
+                              (SELECT question_id FROM question_test q, tests t where t.user_id=id_usuario and t.id=q.test_id and t.test_type='card_memory' and q.have_been_show_card_memory='yes')
+                              AND p.its_for_card_memory='yes'
+                          ORDER BY RAND() LIMIT cantidad;
 
-        END";
+                END";
 
         DB::unprepared($procedure);
     }

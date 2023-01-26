@@ -82,6 +82,7 @@ class DBApp implements TestsInterface
                 $user,
                 $questionnaire,
                 $request->get('topics_id'),
+                $request->get('opposition_id')
             );
             DB::commit();
 

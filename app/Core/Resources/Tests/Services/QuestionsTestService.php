@@ -22,10 +22,10 @@ class QuestionsTestService
      * @param Test $test
      * @return array|void
      */
-    public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id )
+    public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
     {
 
-        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelected_id, $testType === 'card-memory');
+        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelected_id, $testType === 'card-memory', $opposition_id);
 
         \Log::debug("EL PROCEDURE YA SE HA EJECUTADO");
         \Log::debug("Número de preguntas generadas: " . count($questions));
@@ -43,13 +43,12 @@ class QuestionsTestService
      * si es cuestionario o tarjeta de memoria
      *
      * @param int $amountQuestionsRequestedByTest
-     * @param TestType $testType
      * @param User $user
-     * @param Test $test
      * @param bool $isCardMemory
+     * @param string $opposition_id
      * @return array|void
      */
-    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, array $topicsSelected_id, bool $isCardMemory ) {
+    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
         try {
             DB::beginTransaction();
 
@@ -85,8 +84,8 @@ class QuestionsTestService
                 }
 
                 $data =  DB::select(
-                    "call {$nameProcedure}(?,?,?)",
-                    array($topic_id, $user->getRouteKey(), (int) $amountQuestionsForThisTopic)
+                    "call {$nameProcedure}(?,?,?,?)",
+                    array($topic_id, $opposition_id, $user->getRouteKey(), (int) $amountQuestionsForThisTopic)
                 );
 
                 $dataQuestions = (array) $data;
