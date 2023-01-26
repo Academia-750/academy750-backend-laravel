@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
+use App\Core\Resources\Tests\Services\TestsQuestionsService;
 use App\Http\Resources\Api\Question\v1\QuestionByTestCollection;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
@@ -29,26 +30,6 @@ class SchemaJson implements TestsInterface
 
     public function fetch_unresolved_test( $test ): QuestionByTestCollection
     {
-        $questions = collect([]);
-
-        //$questionsQuery = Question::query()->whereIn('id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray())->get();
-        $questionsQuery = Question::query()->whereIn(
-            'id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray()
-        )->get();
-
-        \Log::debug($questionsQuery);
-
-        foreach ($questionsQuery as $question) {
-
-            $questionPivotTest = $test->questions()->find($question->getRouteKey());
-
-            $questions->push([
-                "index" => $questionPivotTest?->pivot?->index,
-                //"question" => $test->questions()->find($question->getRouteKey()),
-                'question_id' => $question->id,
-                'answer_id' => $questionPivotTest?->pivot?->answer_id,
-            ]);
-        }
 
         $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
 
@@ -57,7 +38,7 @@ class SchemaJson implements TestsInterface
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => $questions->sortBy('index')->values()->toArray(),
+                'questions_data' => TestsQuestionsService::getQuestionsDataTestSortByIndexByTest($test),
                 'number_of_questions_answered_of_test' => $countQuestionsAnswered,
                 'total_questions_of_this_test' => $test->questions->count()
             ]
@@ -115,33 +96,13 @@ class SchemaJson implements TestsInterface
 
     public function fetch_test_completed($test)
     {
-        $questions = collect([]);
-
-        $questionsQuery = Question::query()->whereIn(
-            'id', $test->questions()->orderBy('index', 'ASC')->pluck('questions.id')->toArray()
-        )->get();
-
-        \Log::debug($questionsQuery);
-
-        foreach ($questionsQuery as $question) {
-
-            $questionPivotTest = $test->questions()->find($question->getRouteKey());
-
-            $questions->push([
-                "index" => $questionPivotTest?->pivot?->index,
-                "status_question" => $questionPivotTest?->pivot?->status_solved_question,
-                "question" => $question->question,
-                'question_id' => $question->id,
-                'answer_id' => $questionPivotTest?->pivot?->answer_id,
-            ]);
-        }
 
         return QuestionCollection::make(
             $this->eventApp->fetch_test_completed( $test )
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => $questions->sortBy('index')->values()->toArray()
+                'questions_data' => TestsQuestionsService::getQuestionsDataTestSortByIndexByTest($test)
             ]
         ]);
     }

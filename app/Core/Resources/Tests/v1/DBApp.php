@@ -2,6 +2,7 @@
 namespace App\Core\Resources\Tests\v1;
 
 use App\Core\Resources\Tests\Services\QuestionsTestService;
+use App\Core\Resources\Tests\Services\TestsQuestionsService;
 use App\Core\Resources\Tests\Services\TestsService;
 use App\Models\Answer;
 use App\Models\Opposition;
@@ -39,21 +40,7 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
-        //return $testQuery->questions()->jsonPaginate();
-        $questions = collect([]);
-
-        foreach ($testQuery->questions()->pluck('questions.id')->toArray() as $question_id) {
-            $questions->push( Question::query()->find($question_id) );
-        }
-
-        $queryQuestions = Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate();
-
-
-
-        \Log::debug(Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate());
-
-        //return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate();
-        return $queryQuestions;
+        return TestsQuestionsService::getQuestionsEloquentSortByIndexByTest($testQuery);
     }
 
     public function fetch_card_memory( $test ){
@@ -204,20 +191,6 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
-        /*$questions = Question::query()->with(['answers', 'answers_by_test', 'image'])->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray());
-
-        // 47e626b1-8bb9-4805-90cf-088f7863c8b1
-
-        \Log::debug($questions->find('47e626b1-8bb9-4805-90cf-088f7863c8b1'));
-        \Log::debug($testQuery->questions()->pluck('questions.id')->toArray());
-        \Log::debug(Question::query()->find('47e626b1-8bb9-4805-90cf-088f7863c8b1')->answers);*/
-
-        $queryFetchTest = Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate();
-        // Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate()
-
-            \Log::debug($queryFetchTest);
-
-        //return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate();
-        return $queryFetchTest;
+        return TestsQuestionsService::getQuestionsEloquentSortByIndexByTest($testQuery);
     }
 }
