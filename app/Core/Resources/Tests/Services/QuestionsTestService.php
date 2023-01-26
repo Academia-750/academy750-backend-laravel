@@ -95,8 +95,6 @@ class QuestionsTestService
                 }
             }
 
-
-
             DB::commit();
 
             return $questions_id;
