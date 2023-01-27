@@ -110,4 +110,9 @@ class CacheApp implements QuestionsInterface
     {
         $this->dbApp->import_records($request);
     }
+
+    public function set_mode_edit_question($request, $question)
+    {
+        $this->dbApp->set_mode_edit_question($request, $question);
+    }
 }

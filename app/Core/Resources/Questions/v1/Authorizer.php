@@ -104,4 +104,13 @@ class Authorizer implements QuestionsInterface
     {
         $this->schemaJson->import_records($request);
     }
+
+    public function set_mode_edit_question($request, $question)
+    {
+        if ($question->tests()->count() > 0) {
+            abort(403);
+        }
+
+        return $this->schemaJson->set_mode_edit_question($request, $question);
+    }
 }

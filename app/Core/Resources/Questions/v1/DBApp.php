@@ -37,9 +37,6 @@ class DBApp implements QuestionsInterface
 
     public function subtopic_relationship_questions_read($subtopic, $question)
     {
-        $question->question_in_edit_mode = 'yes';
-        $question->save();
-
         return $subtopic->questions()->applyIncludes()->firstWhere("id", "=", $question->getRouteKey());
     }
 
@@ -145,9 +142,6 @@ class DBApp implements QuestionsInterface
 
     public function topic_relationship_questions_read($topic, $question)
     {
-        $question->question_in_edit_mode = 'yes';
-        $question->save();
-
         return $topic->questions()->applyIncludes()->firstWhere("id", "=", $question->getRouteKey());
     }
 
@@ -260,5 +254,11 @@ class DBApp implements QuestionsInterface
             //sleep(1);
 
         }
+    }
+
+    public function set_mode_edit_question($request, $question)
+    {
+        $question->question_in_edit_mode = $request->get('is-mode-edition-question');
+        $question->save();
     }
 }

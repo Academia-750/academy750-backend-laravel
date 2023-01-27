@@ -16,6 +16,7 @@ interface QuestionsInterface
     public function topic_relationship_questions_create( $request, $topic );
     public function topic_relationship_questions_update( $request, $topic, $question );
     public function topic_relationship_questions_delete( $topic, $question );
+    public function set_mode_edit_question( $request, $question );
 
     public function claim_question_mail( $request );
     public function import_records( $request );

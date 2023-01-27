@@ -22,3 +22,5 @@ Route::post('questions/claim/academia', [QuestionsController::class, 'claim_ques
 Route::post('questions/import', [QuestionsController::class, 'import_records'])->name('api.v1.questions.import');
 
 Route::get('questions/import/template', [QuestionsController::class, 'download_template_import_records'])->name('api.v1.questions.import.template');
+
+Route::post('questions/set-mode-edit/{question}/tests', [QuestionsController::class, 'set_mode_edit_question'])->name('api.v1.questions.set-edit-mode-question');

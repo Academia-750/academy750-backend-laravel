@@ -66,6 +66,14 @@ class QuestionsController extends Controller
         return $this->questionsInterface->import_records( $request );
     }
 
+    public function set_mode_edit_question( Request $request, Question $question ) {
+        $request->validate([
+            'is-mode-edition-question' => ['required', 'in:yes,no']
+        ]);
+
+        return $this->questionsInterface->set_mode_edit_question( $request, $question );
+    }
+
     public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
         return Storage::disk('public')->download('templates/csv/questions_import.csv', 'template_import_questions');
     }

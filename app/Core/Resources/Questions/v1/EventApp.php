@@ -73,4 +73,9 @@ class EventApp implements QuestionsInterface
     {
         $this->cacheApp->import_records($request);
     }
+
+    public function set_mode_edit_question($request, $question)
+    {
+        $this->cacheApp->set_mode_edit_question($request, $question);
+    }
 }

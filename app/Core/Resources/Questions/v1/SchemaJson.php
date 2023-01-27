@@ -144,4 +144,11 @@ class SchemaJson implements QuestionsInterface
             'message' => "Proceso de importación iniciada"
         ], 200);
     }
+
+    public function set_mode_edit_question($request, $question)
+    {
+        $this->eventApp->set_mode_edit_question($request, $question);
+
+        return response()->json(['message' => 'successfully']);
+    }
 }
