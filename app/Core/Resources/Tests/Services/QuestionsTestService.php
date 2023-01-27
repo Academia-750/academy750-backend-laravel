@@ -25,7 +25,7 @@ class QuestionsTestService
     public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
     {
 
-        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelected_id, $testType === 'card-memory', $opposition_id);
+        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
 
         \Log::debug("EL PROCEDURE YA SE HA EJECUTADO");
         \Log::debug("Número de preguntas generadas: " . count($questions));
