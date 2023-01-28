@@ -113,15 +113,19 @@ class DBApp implements TestsInterface
 
             if ($request->get('answer_id')) {
 
+                $stateQuestionAnswered = $answer->is_correct_answer === 'yes' ? 'correct' : 'wrong';
+
                 $test->questions()->orderBy('index', 'ASC')->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                    'answer_id' => $answer->getRouteKey(),
-                   'status_solved_question' => $answer->is_correct_answer === 'yes' ? 'correct' : 'wrong'
+                   'status_solved_question' => $stateQuestionAnswered,
+                    'have_been_show_test' => $stateQuestionAnswered === 'wrong' ? 'no' : 'yes'
                 ]);
 
             } else {
                 $test->questions()->orderBy('index', 'ASC')->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                     'answer_id' => null,
-                    'status_solved_question' => 'unanswered'
+                    'status_solved_question' => 'unanswered',
+                    'have_been_show_test' => 'no'
                 ]);
             }
 
