@@ -38,6 +38,16 @@ class QuestionsTestService
         return $questions;
     }
 
+    public static function getNumbersQuestionPerTopic ( $count_total_questions_request, $count_current_total_questions_got_procedure, $count_current_total_remaining_topics ) {
+        \Log::debug('______getNumbersQuestionPerTopic________');
+        \Log::debug($count_total_questions_request);
+        \Log::debug($count_current_total_questions_got_procedure);
+        \Log::debug($count_current_total_questions_got_procedure);
+        \Log::debug(($count_total_questions_request - $count_current_total_questions_got_procedure));
+        \Log::debug($count_current_total_remaining_topics);
+        return ceil( ($count_total_questions_request - $count_current_total_questions_got_procedure) / $count_current_total_remaining_topics );
+    }
+
     /**
      * Invoca el procedure correspondiente para generar las preguntas dependiendo
      * si es cuestionario o tarjeta de memoria
@@ -54,38 +64,19 @@ class QuestionsTestService
 
             //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
             $nameProcedure = $isCardMemory ? 'get_questions_card_memory_by_topic' : 'get_questions_test_by_topic';
-            /*\Log::debug("Nombre del procedure a ejecutar: {$nameProcedure}");
-            \Log::debug("LOS DATOS QUE PASO COMO PARÁMETRO");
-            \Log::debug("ID del Usuario Alumno: {$user->getRouteKey()}");
-            \Log::debug("ID del Test: {$test->getRouteKey()}");
-            \Log::debug("Tipo de Test: {$testType}");
-            \Log::debug("Cantidad de preguntas solicitadas: {$amountQuestionsRequestedByTest}");*/
-
-            /*$data =  DB::select(
-                "call {$nameProcedure}(?,?,?,?)",
-                array($user->getRouteKey(), $test->getRouteKey() , $testType, (int) $amountQuestionsRequestedByTest)
-            );*/
-            $count_topics = count($topicsSelected_id);
-            $amountQuestionsPerTopic = floor($amountQuestionsRequestedByTest / $count_topics);
-
-            $isEvenNumber = ($amountQuestionsRequestedByTest % $count_topics) === 0;
-
-            $lastItemTopicArray = end($topicsSelected_id);
 
             $questions_id = [];
 
+            $count_current_questions_got_procedure = 0;
+            $count_current_remaining_topics_requested = count($topicsSelected_id);
+
+            $count_current_questions_per_topic = self::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, 0, $count_current_remaining_topics_requested);
 
             foreach ($topicsSelected_id as $topic_id) {
 
-                if ($lastItemTopicArray === $topic_id && !$isEvenNumber) {
-                    $amountQuestionsForThisTopic = $amountQuestionsPerTopic + 1;
-                } else {
-                    $amountQuestionsForThisTopic = $amountQuestionsPerTopic;
-                }
-
                 $data =  DB::select(
                     "call {$nameProcedure}(?,?,?,?)",
-                    array($topic_id, $opposition_id, $user->getRouteKey(), (int) $amountQuestionsForThisTopic)
+                    array($topic_id, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic)
                 );
 
                 $dataQuestions = (array) $data;
@@ -93,6 +84,17 @@ class QuestionsTestService
                 foreach ($dataQuestions as $question_id) {
                     $questions_id[] = $question_id;
                 }
+                $count_current_questions_got_procedure+= count($dataQuestions);
+                \Log::debug('___Numero de preguntas generadas por el procedure___');
+                \Log::debug(count($dataQuestions));
+                \Log::debug($count_current_questions_got_procedure);
+                $count_current_remaining_topics_requested--;
+
+                if ($count_current_remaining_topics_requested === 0) {
+                    break;
+                }
+
+                $count_current_questions_per_topic = self::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, $count_current_questions_got_procedure, $count_current_remaining_topics_requested);
             }
 
             DB::commit();
