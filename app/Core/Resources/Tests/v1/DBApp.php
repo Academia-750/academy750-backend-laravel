@@ -115,14 +115,14 @@ class DBApp implements TestsInterface
 
                 $stateQuestionAnswered = $answer->is_correct_answer === 'yes' ? 'correct' : 'wrong';
 
-                $test->questions()->orderBy('index', 'ASC')->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
+                $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                    'answer_id' => $answer->getRouteKey(),
                    'status_solved_question' => $stateQuestionAnswered,
                     /*'have_been_show_test' => $stateQuestionAnswered === 'wrong' ? 'no' : 'yes'*/
                 ]);
 
             } else {
-                $test->questions()->orderBy('index', 'ASC')->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
+                $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                     'answer_id' => null,
                     'status_solved_question' => 'unanswered',
                     /*'have_been_show_test' => 'no'*/
@@ -150,11 +150,11 @@ class DBApp implements TestsInterface
 
             $total_questions_test = $test->questions->count();
             //\Log::debug($total_questions_test);
-            $totalQuestionsCorrect = $test->questions()->orderBy('index', 'ASC')->wherePivot('status_solved_question', 'correct')->get()->count();
+            $totalQuestionsCorrect = $test->questions()->wherePivot('status_solved_question', 'correct')->get()->count();
             //\Log::debug($totalQuestionsCorrect);
-            $totalQuestionsWrong = $test->questions()->orderBy('index', 'ASC')->wherePivot('status_solved_question', 'wrong')->get()->count();
+            $totalQuestionsWrong = $test->questions()->wherePivot('status_solved_question', 'wrong')->get()->count();
             //\Log::debug($totalQuestionsWrong);
-            $totalQuestionsUnanswered = $test->questions()->orderBy('index', 'ASC')->wherePivot('status_solved_question', 'unanswered')->get()->count();
+            $totalQuestionsUnanswered = $test->questions()->wherePivot('status_solved_question', 'unanswered')->get()->count();
             //\Log::debug($totalQuestionsUnanswered);
 
             $test->total_questions_correct = $totalQuestionsCorrect;
@@ -181,11 +181,11 @@ class DBApp implements TestsInterface
 
             $test->refresh();
 
-            /*foreach ($test->questions()->wherePivot('status_solved_question', 'correct')->get() as $question) {
-                $question->updateExistingPivot($question->getRouteKey(), [
+            foreach ($test->questions()->wherePivot('status_solved_question', 'correct')->get() as $question) {
+                $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->id, [
                     'have_been_show_test' => 'yes'
                 ]);
-            }*/
+            }
 
             DB::commit();
 

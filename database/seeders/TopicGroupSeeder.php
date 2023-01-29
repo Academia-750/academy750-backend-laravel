@@ -12,14 +12,17 @@ class TopicGroupSeeder extends Seeder
     {
         TopicGroup::query()->create([
             'name' => 'Legislación',
+            'key' => 'legislation',
             'description' => 'Temás del capítulo Legislación'
         ]);
         TopicGroup::query()->create([
             'name' => 'Genérico',
+            'key' => 'generic',
             'description' => 'Temás del capítulo Genérico'
         ]);
         TopicGroup::query()->create([
             'name' => 'Específico',
+            'key' => 'specific',
             'description' => 'Temás del capítulo Específico'
         ]);
     }

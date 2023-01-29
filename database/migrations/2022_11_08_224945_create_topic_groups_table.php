@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('topic_groups', function (Blueprint $table) {
             $table->uuid('id')->primary()->comment('Identificador UUID');
             $table->string("name");
+            $table->string("key");
             $table->text("description");
             $table->timestamps();
         });

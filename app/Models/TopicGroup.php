@@ -17,6 +17,7 @@ class TopicGroup extends Model
     protected $fillable = [
         "id",
         "name",
+        "key",
         "description"
     ];
 

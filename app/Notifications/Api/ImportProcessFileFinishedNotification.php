@@ -52,6 +52,7 @@ class ImportProcessFileFinishedNotification extends Notification/* implements Sh
         $titleNotification = $this->data["title-notification"];
 
         return (new MailMessage)
+            //->from( config('mail.from.address') )
             ->subject("Importación finalizada - {$importProcessesRecord->name_file}")
             ->greeting("<p class='center-text text-size-20 typography-greeting-text'>{$titleNotification}</p>")
             ->line("<b>Archivo</b>: {$importProcessesRecord->name_file}")

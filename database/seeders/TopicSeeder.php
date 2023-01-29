@@ -22,6 +22,13 @@ class TopicSeeder extends Seeder
     {
         $this->faker = Factory::create();
 
+        Topic::query()->create([
+            'id' => '2368f180-4e30-4dc9-ac56-c0be2d43ee0a',
+            'name' => "Hidráulica",
+            'topic_group_id' => TopicGroup::query()->firstWhere('key', 'generic')?->getRouteKey() /*TopicGroup::all()->random()->getRouteKey()*/,
+            'is_available' => 'yes'
+        ]);
+
         foreach ( range(1,4) as $number) {
             $topic = Topic::query()->create([
                 'name' => "Topic {$number}",
