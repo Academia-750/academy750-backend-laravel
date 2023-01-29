@@ -39,12 +39,12 @@ class QuestionsTestService
     }
 
     public static function getNumbersQuestionPerTopic ( $count_total_questions_request, $count_current_total_questions_got_procedure, $count_current_total_remaining_topics ) {
-        \Log::debug('______getNumbersQuestionPerTopic________');
+        /*\Log::debug('______getNumbersQuestionPerTopic________');
         \Log::debug($count_total_questions_request);
         \Log::debug($count_current_total_questions_got_procedure);
         \Log::debug($count_current_total_questions_got_procedure);
         \Log::debug(($count_total_questions_request - $count_current_total_questions_got_procedure));
-        \Log::debug($count_current_total_remaining_topics);
+        \Log::debug($count_current_total_remaining_topics);*/
         return ceil( ($count_total_questions_request - $count_current_total_questions_got_procedure) / $count_current_total_remaining_topics );
     }
 
@@ -82,15 +82,17 @@ class QuestionsTestService
 
                 $dataQuestionsIdCasted = (array) $dataQuestionsId;
 
-                //array_merge($questions_id, $dataQuestionsIdCasted);
+                $questionsCurrentID = $questions_id;
 
-                 foreach ($dataQuestionsIdCasted as $question_id) {
+                $questions_id = array_merge($questionsCurrentID, $dataQuestionsIdCasted);
+
+                /*foreach ($dataQuestionsIdCasted as $question_id) {
                     $questions_id[] = $question_id;
-                }
+                }*/
                 $count_current_questions_got_procedure+= count($dataQuestionsIdCasted);
-                \Log::debug('___Numero de preguntas generadas por el procedure___');
+                /*\Log::debug('___Numero de preguntas generadas por el procedure___');
                 \Log::debug(count($dataQuestionsIdCasted));
-                \Log::debug($count_current_questions_got_procedure);
+                \Log::debug($count_current_questions_got_procedure);*/
                 $count_current_remaining_topics_requested--;
 
                 if ($count_current_remaining_topics_requested === 0) {
