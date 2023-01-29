@@ -3,6 +3,8 @@ namespace App\Core\Resources\Topics\v1;
 
 use App\Imports\Api\v1\SubtopicsImport;
 use App\Imports\Api\v1\TopicsImport;
+use App\Jobs\Api\v1\ImportSubtopicsJob;
+use App\Jobs\Api\v1\ImportTopicsJob;
 use App\Models\Answer;
 use App\Models\Opposition;
 use App\Models\Question;
@@ -131,23 +133,6 @@ class DBApp implements TopicsInterface
             return $domPDF->download('report-topics.pdf');
         }
         return Excel::download(new TopicsExport($request->get('topics')), 'topics.'. $request->get('type'));
-    }
-
-    public function import_records( $request ): void{
-        //Proceso de importacion con Queues - El archivo debe tener
-        //(new TopicsImport(Auth::user()))->import($request->file('topics'))
-        $filesTopics = $request->file('filesTopics') ?? [];
-
-        foreach ($filesTopics as $file) {
-
-            (
-            new TopicsImport(Auth::user(), $file->getClientOriginalName())
-            )->import($file);
-
-            //sleep(1);
-
-        }
-
     }
 
     public function get_relationship_subtopics($topic)
@@ -482,18 +467,52 @@ class DBApp implements TopicsInterface
         return Topic::applyFilters()->applySorts()->applyIncludes()->get();
     }
 
+    public function import_records( $request ): void{
+        // IMPORTAR TEMAS
+
+        try {
+
+            $filesTopics = $request->file('filesTopics') ?? [];
+
+            foreach ($filesTopics as $file) {
+
+                /*dispatch(
+                    new ImportTopicsJob( $file, Auth::user() )
+                );*/
+
+                (
+                new TopicsImport(Auth::user(), $file->getClientOriginalName())
+                )->import($file);
+
+            }
+
+        } catch (\Exception $e) {
+            abort(500,$e->getMessage());
+        }
+
+    }
+
     public function import_subtopics_by_topics($request)
     {
-        $filesSubtopics = $request->file('filesSubtopics') ?? [];
 
-        foreach ($filesSubtopics as $file) {
+        try {
 
-            (
-            new SubtopicsImport(Auth::user(), $file->getClientOriginalName())
-            )->import($file);
+            $filesSubtopics = $request->file('filesSubtopics') ?? [];
 
-            //sleep(1);
+            foreach ($filesSubtopics as $file) {
 
+                /*dispatch(
+                    new ImportSubtopicsJob( $file, Auth::user() )
+                );*/
+
+                (
+                new SubtopicsImport(Auth::user(), $file->getClientOriginalName())
+                )->import($file);
+
+            }
+
+        } catch (\Exception $e) {
+            abort(500,$e->getMessage());
         }
     }
 }

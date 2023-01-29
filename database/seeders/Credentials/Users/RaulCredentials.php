@@ -18,7 +18,8 @@ class RaulCredentials implements  CredentialsInterface
 
         $adminRaul = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
-            'email' => 'raulmoheno.admin@academia750.com',
+            //'email' => 'raulmoheno.admin@academia750.com',
+            'email' => 'springh.trap@gmail.com',
             'first_name' => 'Raul',
             'last_name' => 'Moheno',
             'full_name' => 'Raul Moheno',
@@ -42,7 +43,8 @@ class RaulCredentials implements  CredentialsInterface
 
         $studentRaul = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
-            'email' => 'raulmoheno.student@academia750.com',
+            //'email' => 'raulmoheno.student@academia750.com',
+            'email' => 'ramz.162025@gmail.com',
             'first_name' => 'Raul',
             'last_name' => 'Moheno',
             'full_name' => 'Raul Moheno',

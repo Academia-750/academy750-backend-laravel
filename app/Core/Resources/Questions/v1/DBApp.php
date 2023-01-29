@@ -5,6 +5,7 @@ use App\Core\Resources\Questions\v1\Services\ClaimQuestionMail;
 use App\Core\Resources\Questions\v1\Services\SaveQuestionsService;
 use App\Core\Services\ManageImagesStorage;
 use App\Imports\Api\v1\QuestionsImport;
+use App\Jobs\Api\v1\ImportQuestionsJob;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
@@ -246,6 +247,10 @@ class DBApp implements QuestionsInterface
         $filesQuestions = $request->file('filesQuestions') ?? [];
 
         foreach ($filesQuestions as $file) {
+
+            /*dispatch(
+                new ImportQuestionsJob( [$file], Auth::user() )
+            );*/
 
             (
             new QuestionsImport(Auth::user(), $file->getClientOriginalName())

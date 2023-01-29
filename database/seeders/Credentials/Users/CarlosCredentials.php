@@ -17,7 +17,7 @@ class CarlosCredentials implements CredentialsInterface
 
         $adminCarlos = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
-            'email' => 'carlosherrera.admin@academia750.com',
+            'email' => 'cehojac@gmail.com',
             'first_name' => 'Carlos',
             'last_name' => 'Herrera',
             'full_name' => 'Carlos Herrera',

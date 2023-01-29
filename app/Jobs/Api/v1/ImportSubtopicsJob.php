@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Api\v1;
 
-use App\Imports\Api\v1\TopicsImport;
+use App\Imports\Api\v1\SubtopicsImport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -11,7 +11,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Throwable;
 
-class ImportTopicsJob implements ShouldQueue
+class ImportSubtopicsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -23,7 +23,7 @@ class ImportTopicsJob implements ShouldQueue
     public function handle()
     {
         (
-        new TopicsImport($this->userAuth, $this->file->getClientOriginalName())
+        new SubtopicsImport($this->userAuth, $this->file->getClientOriginalName())
         )->import($this->file);
     }
 

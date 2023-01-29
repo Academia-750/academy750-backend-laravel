@@ -18,7 +18,7 @@ class GinesCredentials implements  CredentialsInterface
 
         $adminGines = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
-            'email' => 'gines.rabasco.admin@academia750.com',
+            'email' => 'ginesRJ88@gmail.com',
             'first_name' => 'Gines',
             'last_name' => 'Rabasco',
             'full_name' => 'Gines Rabasco',

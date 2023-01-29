@@ -19,7 +19,7 @@ class AdolfoCredentials implements CredentialsInterface
 
         $adminAdolfo = User::query()->create([
             'id' => UuidGeneratorService::getUUIDUnique(User::class),
-            'email' => 'adolfoferia.admin@academia750.com',
+            'email' => 'adolfoferia@gmail.com',
             'first_name' => 'Adolfo',
             'last_name' => 'Feria',
             'full_name' => 'Adolfo Feria',

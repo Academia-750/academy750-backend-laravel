@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\DB;
 
-class StudentHasBeenRemovedFromTheSystemNotification extends Notification/* implements ShouldQueue*/
+class StudentHasBeenRemovedFromTheSystemNotification extends Notification implements ShouldQueue
 {
     use Queueable;
 

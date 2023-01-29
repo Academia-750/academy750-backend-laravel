@@ -118,14 +118,14 @@ class DBApp implements TestsInterface
                 $test->questions()->orderBy('index', 'ASC')->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                    'answer_id' => $answer->getRouteKey(),
                    'status_solved_question' => $stateQuestionAnswered,
-                    'have_been_show_test' => $stateQuestionAnswered === 'wrong' ? 'no' : 'yes'
+                    /*'have_been_show_test' => $stateQuestionAnswered === 'wrong' ? 'no' : 'yes'*/
                 ]);
 
             } else {
                 $test->questions()->orderBy('index', 'ASC')->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
                     'answer_id' => null,
                     'status_solved_question' => 'unanswered',
-                    'have_been_show_test' => 'no'
+                    /*'have_been_show_test' => 'no'*/
                 ]);
             }
 
@@ -178,6 +178,14 @@ class DBApp implements TestsInterface
             $test->finished_at = Carbon::now();
 
             $test->save();
+
+            $test->refresh();
+
+            /*foreach ($test->questions()->wherePivot('status_solved_question', 'correct')->get() as $question) {
+                $question->updateExistingPivot($question->getRouteKey(), [
+                    'have_been_show_test' => 'yes'
+                ]);
+            }*/
 
             DB::commit();
 

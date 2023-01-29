@@ -74,19 +74,22 @@ class QuestionsTestService
 
             foreach ($topicsSelected_id as $topic_id) {
 
-                $data =  DB::select(
+                // procedure 1
+                $dataQuestionsId =  DB::select(
                     "call {$nameProcedure}(?,?,?,?)",
                     array($topic_id, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic)
                 );
 
-                $dataQuestions = (array) $data;
+                $dataQuestionsIdCasted = (array) $dataQuestionsId;
 
-                foreach ($dataQuestions as $question_id) {
+                //array_merge($questions_id, $dataQuestionsIdCasted);
+
+                 foreach ($dataQuestionsIdCasted as $question_id) {
                     $questions_id[] = $question_id;
                 }
-                $count_current_questions_got_procedure+= count($dataQuestions);
+                $count_current_questions_got_procedure+= count($dataQuestionsIdCasted);
                 \Log::debug('___Numero de preguntas generadas por el procedure___');
-                \Log::debug(count($dataQuestions));
+                \Log::debug(count($dataQuestionsIdCasted));
                 \Log::debug($count_current_questions_got_procedure);
                 $count_current_remaining_topics_requested--;
 
@@ -125,7 +128,7 @@ class QuestionsTestService
 
                 $test->questions()->attach($question_id, [
                     'index' => $index,
-                    'have_been_show_test' => $testType === 'test' ? 'yes' : 'no',
+                    'have_been_show_test' => 'no',
                     'have_been_show_card_memory' => $testType === 'card_memory' ? 'yes' : 'no',
                     'answer_id' => null,
                     'status_solved_question' => 'unanswered'

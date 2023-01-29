@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Support\Facades\Cache;
 
-class ImportProcessFileFinishedNotification extends Notification implements ShouldQueue
+class ImportProcessFileFinishedNotification extends Notification/* implements ShouldQueue*/
 {
     use Queueable;
 
