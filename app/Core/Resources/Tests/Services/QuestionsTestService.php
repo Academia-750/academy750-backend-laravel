@@ -50,6 +50,11 @@ class QuestionsTestService
         return ceil( ($count_total_questions_request - $count_current_total_questions_got_procedure) / $count_current_total_remaining_topics );
     }
 
+    public static function clean_object_std_by_procedure ($item) {
+        $itemCasted = (array) $item;
+        return $itemCasted['id'];
+    }
+
     /**
      * Invoca el procedure correspondiente para generar las preguntas dependiendo
      * si es cuestionario o tarjeta de memoria
@@ -82,7 +87,8 @@ class QuestionsTestService
                     array($topic_id, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic)
                 );
 
-                $dataQuestionsIdCasted = (array) $dataQuestionsId;
+                //$dataQuestionsIdCasted = (array) $dataQuestionsId;
+                $dataQuestionsIdCasted = array_map(array(__CLASS__, 'clean_object_std_by_procedure'), (array) $dataQuestionsId);
 
                 // Aquí será la variable que almacenará las preguntas del procedure 1 y en caso de no haber suficientes preguntas para este tema, se usará para almacenar también las del prcoedure 2
                 $questionsTotalForThisTopic = $dataQuestionsIdCasted;
@@ -103,11 +109,12 @@ class QuestionsTestService
                         )
                     );
 
-                    $questionsIdProcedure2Complete = (array) $questionsIdProcedure2Complete;
+                    //$questionsIdProcedure2Complete = (array) $questionsIdProcedure2Complete;
+                    $questionsIdProcedure2CompleteCasted = array_map(array(__CLASS__, 'clean_object_std_by_procedure'), (array) $questionsIdProcedure2Complete);
 
                     // Unimos las preguntas del procedure 1 y las del procedure 2
 
-                    $questionsTotalForThisTopic = array_merge($dataQuestionsIdCasted, $questionsIdProcedure2Complete);
+                    $questionsTotalForThisTopic = array_merge($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
                 }
 
                 // Creamos una referencia del array que almacena todas las preguntas absolutamente de todas las preguntas que se vayan recoletando de cada tema
