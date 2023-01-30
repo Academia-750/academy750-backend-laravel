@@ -33,6 +33,8 @@ class QuestionsTestService
         $test->number_of_questions_generated = count($questions);
         $test->save();
 
+        shuffle($questions);
+
         self::registerQuestionsHistoryByTest($questions, $test, $testType);
 
         return $questions;
@@ -74,7 +76,7 @@ class QuestionsTestService
 
             foreach ($topicsSelected_id as $topic_id) {
 
-                // procedure 1
+                // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
                 $dataQuestionsId =  DB::select(
                     "call {$nameProcedure}(?,?,?,?)",
                     array($topic_id, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic)
@@ -82,28 +84,52 @@ class QuestionsTestService
 
                 $dataQuestionsIdCasted = (array) $dataQuestionsId;
 
+                // Aquí será la variable que almacenará las preguntas del procedure 1 y en caso de no haber suficientes preguntas para este tema, se usará para almacenar también las del prcoedure 2
+                $questionsTotalForThisTopic = $dataQuestionsIdCasted;
+
+                // Si no me devolvió el número de preguntas que necesito de este tema, tocará buscar entre las preguntas visibles
+                if (count($dataQuestionsIdCasted) < $count_current_questions_per_topic) {
+                    $questionsIdProcedure2Complete = DB::select(
+                        'call complete_questions_test_by_topic(?,?,?,?,?)',
+                        array(
+                            $topic_id,
+                            $opposition_id,
+                            $user->getRouteKey(),
+                            (int) ( $count_current_questions_per_topic - count($dataQuestionsIdCasted) ), // Ejemplo: Si se requiere 5 preguntas por tema, y el procedure 1 me dió 2 (preguntas no visibles), entonces al procedure 2 solo le pediré lo que falta para la meta, que son 2 preguntas, pero buscará entre las preguntas visibles
+                            implode(',', $dataQuestionsIdCasted) // Paso las preguntas que ya me dió el procedure 1 para evitar que el procedure 2 me las vaya a devolver nuevamente
+                        )
+                    );
+
+                    $questionsIdProcedure2Complete = (array) $questionsIdProcedure2Complete;
+
+                    // Unimos las preguntas del procedure 1 y las del procedure 2
+
+                    $questionsTotalForThisTopic = array_merge($dataQuestionsIdCasted, $questionsIdProcedure2Complete);
+                }
+
+                // Creamos una referencia del array que almacena todas las preguntas absolutamente de todas las preguntas que se vayan recoletando de cada tema
                 $questionsCurrentID = $questions_id;
 
-                $questions_id = array_merge($questionsCurrentID, $dataQuestionsIdCasted);
+                // Unimos todas las preguntas que hemos juntado hasta ahora de los demás temas, con las nuevas preguntas de este tema
+                $questions_id = array_merge($questionsCurrentID, $questionsTotalForThisTopic);
 
-                /*foreach ($dataQuestionsIdCasted as $question_id) {
-                    $questions_id[] = $question_id;
-                }*/
-                $count_current_questions_got_procedure+= count($dataQuestionsIdCasted);
-                /*\Log::debug('___Numero de preguntas generadas por el procedure___');
-                \Log::debug(count($dataQuestionsIdCasted));
-                \Log::debug($count_current_questions_got_procedure);*/
+                // Aquí llevamos el conteo de cuantas preguntas ya hemos acumulado por cada tema, para así saber cuantas preguntas necesitaremos para el siguiente tema
+                $count_current_questions_got_procedure+= count($questionsTotalForThisTopic);
+
+                // Restamos 1 tema por buscar preguntas, ya que en este punto ya hemos obtenido preguntas del tema actual, y analizaremos cuantas preguntas necesitaremos del siguiente tema
                 $count_current_remaining_topics_requested--;
 
                 if ($count_current_remaining_topics_requested === 0) {
                     break;
                 }
 
+                // En caso de que todavía queden temas disponibles, hacemos el cálculo nuevamente de cuantas preguntas necesitaremos del siguiente tema
                 $count_current_questions_per_topic = self::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, $count_current_questions_got_procedure, $count_current_remaining_topics_requested);
             }
 
             DB::commit();
 
+            // Devolvemos todas los ID de las preguntas que hemos recolectado entre todos los temas seleccionados por el alumno
             return $questions_id;
         } catch (\Throwable $th) {
             \Log::debug("SE PRODUJO UN ERROR JUSTO DESPUÉS DE EJECUTAR EL PROCEDURE");
