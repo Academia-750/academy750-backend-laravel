@@ -46,7 +46,7 @@ class TopicSeeder extends Seeder
 
         $topicExample = Topic::query()->create([
             //'id' => '2368f180-4e30-4dc9-ac56-c0be2d43ee0a',
-            'name' => "Tema ejemplo 1",
+            'name' => "Incendios Forestales",
             'topic_group_id' => TopicGroup::query()->firstWhere('key', 'specific')?->getRouteKey() /*TopicGroup::all()->random()->getRouteKey()*/,
             'is_available' => 'yes'
         ]);

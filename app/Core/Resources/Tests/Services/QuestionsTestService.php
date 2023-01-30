@@ -20,39 +20,23 @@ class QuestionsTestService
      * @param TestType $testType
      * @param User $user
      * @param Test $test
-     * @return array|void
+     * @return array|void|null
      */
     public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
     {
 
-        $questions = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
+        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
 
-        \Log::debug("EL PROCEDURE YA SE HA EJECUTADO");
-        \Log::debug("Número de preguntas generadas: " . count($questions));
-
-        $test->number_of_questions_generated = count($questions);
+        $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
         $test->save();
 
-        shuffle($questions);
+        // Desordenamos array de preguntas
+        shuffle($TotalQuestionsGottenByAllTopicsSelected);
 
-        self::registerQuestionsHistoryByTest($questions, $test, $testType);
+        // Registramos que todas las preguntas disponibles recolectadas, se registren en el Test a generar
+        self::registerQuestionsHistoryByTest($TotalQuestionsGottenByAllTopicsSelected, $test, $testType);
 
-        return $questions;
-    }
-
-    public static function getNumbersQuestionPerTopic ( $count_total_questions_request, $count_current_total_questions_got_procedure, $count_current_total_remaining_topics ) {
-        /*\Log::debug('______getNumbersQuestionPerTopic________');
-        \Log::debug($count_total_questions_request);
-        \Log::debug($count_current_total_questions_got_procedure);
-        \Log::debug($count_current_total_questions_got_procedure);
-        \Log::debug(($count_total_questions_request - $count_current_total_questions_got_procedure));
-        \Log::debug($count_current_total_remaining_topics);*/
-        return ceil( ($count_total_questions_request - $count_current_total_questions_got_procedure) / $count_current_total_remaining_topics );
-    }
-
-    public static function clean_object_std_by_procedure ($item) {
-        $itemCasted = (array) $item;
-        return $itemCasted['id'];
+        return $TotalQuestionsGottenByAllTopicsSelected;
     }
 
     /**
@@ -70,36 +54,30 @@ class QuestionsTestService
             DB::beginTransaction();
 
             //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
-            $nameProcedure = $isCardMemory ? 'get_questions_card_memory_by_topic' : 'get_questions_test_by_topic';
+            $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
 
             $questions_id = [];
 
             $count_current_questions_got_procedure = 0;
             $count_current_remaining_topics_requested = count($topicsSelected_id);
 
-            $count_current_questions_per_topic = self::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, 0, $count_current_remaining_topics_requested);
+            $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, 0, $count_current_remaining_topics_requested);
 
             foreach ($topicsSelected_id as $topic_id) {
 
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
-                $dataQuestionsId =  DB::select(
-                    "call {$nameProcedure}(?,?,?,?)",
-                    array($topic_id, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic)
-                );
-
-                //$dataQuestionsIdCasted = (array) $dataQuestionsId;
-                $dataQuestionsIdCasted = array_map(array(__CLASS__, 'clean_object_std_by_procedure'), (array) $dataQuestionsId);
+                $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_id, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
 
                 // Aquí será la variable que almacenará las preguntas del procedure 1 y en caso de no haber suficientes preguntas para este tema, se usará para almacenar también las del prcoedure 2
                 $questionsTotalForThisTopic = $dataQuestionsIdCasted;
 
                 // Si no me devolvió el número de preguntas que necesito de este tema, tocará buscar entre las preguntas visibles
-                if (count($dataQuestionsIdCasted) < $count_current_questions_per_topic) {
+                if (GetQuestionsByTopicProceduresService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic($dataQuestionsIdCasted, $count_current_questions_per_topic)) {
 
-                    $nameProcedureProcedure = $isCardMemory ? 'complete_questions_test_by_topic' : 'complete_questions_card_memory_by_topic';
-
-                    $questionsIdProcedure2Complete = DB::select(
-                        "call {$nameProcedureProcedure}(?,?,?,?,?)",
+                    $nameProcedureProcedure = GetQuestionsByTopicProceduresService::getNameSecondProcedure($isCardMemory);
+                    //$questionsIdProcedure2Complete = (array) $questionsIdProcedure2Complete;
+                    $questionsIdProcedure2CompleteCasted = GetQuestionsByTopicProceduresService::callSecondProcedure(
+                        $nameProcedureProcedure,
                         array(
                             $topic_id,
                             $opposition_id,
@@ -109,12 +87,9 @@ class QuestionsTestService
                         )
                     );
 
-                    //$questionsIdProcedure2Complete = (array) $questionsIdProcedure2Complete;
-                    $questionsIdProcedure2CompleteCasted = array_map(array(__CLASS__, 'clean_object_std_by_procedure'), (array) $questionsIdProcedure2Complete);
-
                     // Unimos las preguntas del procedure 1 y las del procedure 2
 
-                    $questionsTotalForThisTopic = array_merge($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
+                    $questionsTotalForThisTopic = GetQuestionsByTopicProceduresService::combineQuestionsOfFirstProcedureWithSecondProcedure($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
                 }
 
                 // Creamos una referencia del array que almacena todas las preguntas absolutamente de todas las preguntas que se vayan recoletando de cada tema
@@ -134,7 +109,7 @@ class QuestionsTestService
                 }
 
                 // En caso de que todavía queden temas disponibles, hacemos el cálculo nuevamente de cuantas preguntas necesitaremos del siguiente tema
-                $count_current_questions_per_topic = self::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, $count_current_questions_got_procedure, $count_current_remaining_topics_requested);
+                $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, $count_current_questions_got_procedure, $count_current_remaining_topics_requested);
             }
 
             DB::commit();

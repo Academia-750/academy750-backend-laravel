@@ -3,14 +3,14 @@ namespace Database\Seeders\trait;
 
 trait QuestionsHelpersTrait
 {
-    public function registerQuestionsModel ($model, $fieldTextQuestion, $fakerText, $keyModel): void {
-        foreach ( range(1, random_int(5,15)) as $number ) {
+    public function registerQuestionsModel ($model, $fakerText, $its_for_test, $its_for_card_memory, $countTotalQuestions, $tipoTestPreguntaTexto): void {
+        foreach ( range(1, $countTotalQuestions) as $number ) {
             $model->questions()->create([
-                'question' => "{$keyModel} Question of {$fieldTextQuestion} - {$number}",
-                'reason' => "Reason {$number} - {$fakerText}",
+                'question' => "Pregunta {$number} - {$tipoTestPreguntaTexto}",
+                'reason' => "Explicacion {$number} - {$fakerText}",
                 'is_visible' => "yes",
-                'its_for_test' => fake()->randomElement(['yes', 'no']),
-                'its_for_card_memory' => fake()->randomElement(['yes', 'no']),
+                'its_for_test' => $its_for_test,
+                'its_for_card_memory' => $its_for_card_memory,
             ]);
         }
 
