@@ -89,8 +89,11 @@ class QuestionsTestService
 
                 // Si no me devolvió el número de preguntas que necesito de este tema, tocará buscar entre las preguntas visibles
                 if (count($dataQuestionsIdCasted) < $count_current_questions_per_topic) {
+
+                    $nameProcedureProcedure = $isCardMemory ? 'complete_questions_test_by_topic' : 'complete_questions_card_memory_by_topic';
+
                     $questionsIdProcedure2Complete = DB::select(
-                        'call complete_questions_test_by_topic(?,?,?,?,?)',
+                        "call {$nameProcedureProcedure}(?,?,?,?,?)",
                         array(
                             $topic_id,
                             $opposition_id,
