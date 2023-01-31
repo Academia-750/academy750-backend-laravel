@@ -10,7 +10,7 @@ Route::get('subtopics/{subtopic}/relationship/questions', [QuestionsController::
 Route::get('subtopics/{subtopic}/relationship/questions/{question}', [QuestionsController::class, 'subtopic_relationship_questions_read'])->name('api.v1.subtopics.relationship.questions.read');
 Route::post('subtopics/{subtopic}/relationship/questions/create', [QuestionsController::class, 'subtopic_relationship_questions_create'])->name('api.v1.subtopics.relationship.questions.create');
 Route::post('subtopics/{subtopic}/relationship/questions/update/{question}', [QuestionsController::class, 'subtopic_relationship_questions_update'])->name('api.v1.subtopics.relationship.questions.update');
-Route::delete('subtopics/{subtopic}/relationship/questions/delete/{question}', [QuestionsController::class, 'subtopic_relationship_questions_delete'])->name('api.v1.subtopics.relationship.questions.delete');
+Route::delete('subtopics/{subtopic}/relationship/questions/{question}/delete', [QuestionsController::class, 'subtopic_relationship_questions_delete'])->name('api.v1.subtopics.relationship.questions.delete');
 
 Route::get('topics/{topic}/relationship/questions', [QuestionsController::class, 'topics_relationship_get_questions'])->name('api.v1.topics.relationship.questions.index');
 Route::get('topics/{topic}/relationship/questions/{question}', [QuestionsController::class, 'topic_relationship_questions_read'])->name('api.v1.topics.relationship.questions.read');

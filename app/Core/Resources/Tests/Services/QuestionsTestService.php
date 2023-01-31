@@ -62,17 +62,30 @@ class QuestionsTestService
             $count_current_remaining_topics_requested = count($topicsSelected_id);
 
             $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, 0, $count_current_remaining_topics_requested);
+            \Log::debug("_________________________________________________________________________________________________");
+            \Log::debug("Primera ves obtenemos la cantidad de preguntas por tema que necesitaremos extraer del primer tema");
+            \Log::debug("Cantidad de preguntas que necesitaremos del tema 1: {$count_current_questions_per_topic}");
+            \Log::debug("Cantidad de temas seleccionados: {$count_current_remaining_topics_requested}");
+            \Log::debug($topicsSelected_id);
 
-            foreach ($topicsSelected_id as $topic_id) {
+            $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory);
+            \Log::debug($topicsSelectedOrdered);
+
+            foreach ($topicsSelectedOrdered as $topic_id) {
 
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
                 $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_id, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
+
+                \Log::debug("----Preguntas Procedure 1----");
+                \Log::debug($dataQuestionsIdCasted);
+                \Log::debug(count($dataQuestionsIdCasted));
 
                 // Aquí será la variable que almacenará las preguntas del procedure 1 y en caso de no haber suficientes preguntas para este tema, se usará para almacenar también las del prcoedure 2
                 $questionsTotalForThisTopic = $dataQuestionsIdCasted;
 
                 // Si no me devolvió el número de preguntas que necesito de este tema, tocará buscar entre las preguntas visibles
                 if (GetQuestionsByTopicProceduresService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic($dataQuestionsIdCasted, $count_current_questions_per_topic)) {
+                    \Log::debug("Al parecer no hubo suficientes preguntas del procedure 1 para completar las que se necesitaban del tema");
 
                     $nameProcedureProcedure = GetQuestionsByTopicProceduresService::getNameSecondProcedure($isCardMemory);
                     //$questionsIdProcedure2Complete = (array) $questionsIdProcedure2Complete;
@@ -87,6 +100,10 @@ class QuestionsTestService
                         )
                     );
 
+                    \Log::debug("----Preguntas Procedure 2----");
+                    \Log::debug($questionsIdProcedure2CompleteCasted);
+                    \Log::debug(count($questionsIdProcedure2CompleteCasted));
+
                     // Unimos las preguntas del procedure 1 y las del procedure 2
 
                     $questionsTotalForThisTopic = GetQuestionsByTopicProceduresService::combineQuestionsOfFirstProcedureWithSecondProcedure($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
@@ -97,19 +114,32 @@ class QuestionsTestService
 
                 // Unimos todas las preguntas que hemos juntado hasta ahora de los demás temas, con las nuevas preguntas de este tema
                 $questions_id = array_merge($questionsCurrentID, $questionsTotalForThisTopic);
+                $asfafsa = count($questions_id);
+                \Log::debug("Cantidad de preguntas que se recojieron de este tema en total: {$asfafsa}");
+
+                $ahuifsa0fa = count($questionsTotalForThisTopic);
+                \Log::debug("Cantidad de preguntas que llevamos ya recolectadas entre los anteriores temas: {$ahuifsa0fa}");
 
                 // Aquí llevamos el conteo de cuantas preguntas ya hemos acumulado por cada tema, para así saber cuantas preguntas necesitaremos para el siguiente tema
                 $count_current_questions_got_procedure+= count($questionsTotalForThisTopic);
 
+                \Log::debug("La cantidad de preguntas que llevamos sumando las de este tema: {$count_current_questions_got_procedure}");
+
+                \Log::debug("La cantidad de temas que nos falta recorrer actualmente: {$count_current_remaining_topics_requested}");
                 // Restamos 1 tema por buscar preguntas, ya que en este punto ya hemos obtenido preguntas del tema actual, y analizaremos cuantas preguntas necesitaremos del siguiente tema
                 $count_current_remaining_topics_requested--;
 
+                \Log::debug("La cantidad de temas que nos falta recorrer actualmente quitando el tema que hemos recorrido justo ahora: {$count_current_remaining_topics_requested}");
+
                 if ($count_current_remaining_topics_requested === 0) {
+                    \Log::debug("Ya se acabaron los temas recorridos");
                     break;
                 }
 
                 // En caso de que todavía queden temas disponibles, hacemos el cálculo nuevamente de cuantas preguntas necesitaremos del siguiente tema
                 $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, $count_current_questions_got_procedure, $count_current_remaining_topics_requested);
+
+                \Log::debug("En este punto hemos recorrido el tema, por lo que para el siguiente tema tenemos que recojer: {$count_current_questions_per_topic} preguntas");
             }
 
             DB::commit();

@@ -19,6 +19,7 @@ class GetQuestionsByTopicProceduresService
         }
         return 'get_questions_test_by_topic';
     }
+
     public static function getNameSecondProcedure (bool $isCardMemory): string
     {
         if ($isCardMemory) {
@@ -27,11 +28,29 @@ class GetQuestionsByTopicProceduresService
         return 'complete_questions_test_by_topic';
     }
 
+    public static function getNameOrderByTopicsASCProcedure (bool $isCardMemory): string
+    {
+        if ($isCardMemory) {
+            return 'get_topic_questions_quantity_card_memory';
+        }
+        return 'get_topic_questions_quantity_test';
+    }
+
     public static function clean_object_std_by_procedure ($item) {
         // Una función para que el resultado del procedure sea compatible con un array de PHP
 
         $itemCasted = (array) $item;
         return $itemCasted['id'];
+    }
+
+    public static function clean_object_std_by_procedure_topics_data_order_by_questions_total_available ($item): array {
+        // Una función para que el resultado del procedure sea compatible con un array de PHP
+
+        $itemCasted = (array) $item;
+        return [
+            'topic_id' => $itemCasted['topic_id'],
+            'total_questions' => $itemCasted['total_questions']
+        ];
     }
 
     public static function countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic (array $dataQuestionsIdCasted, int $count_current_questions_per_topic): bool
@@ -62,5 +81,39 @@ class GetQuestionsByTopicProceduresService
     public static function combineQuestionsOfFirstProcedureWithSecondProcedure (array $dataQuestionsIdCasted, array $questionsIdProcedure2CompleteCasted): array
     {
         return array_merge($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
+    }
+
+    public static function getTopicsWithTotalQuestionsAvailable (bool $isCardMemory, array $data): array {
+        $nameProcedure = self::getNameOrderByTopicsASCProcedure($isCardMemory);
+
+        $topicsData = DB::select(
+            "call {$nameProcedure}(?,?)",
+            $data
+        );
+
+        \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO EN CRUDO--');
+        \Log::debug((array) $topicsData);
+
+        return array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData);
+    }
+
+
+    public static function sortTopicsAscByQuestionsTotal (array $topics_id, string $opposition_id, bool $isCardMemory): array
+    {
+
+        $topicsDataForOrderByTotalQuestions = [];
+
+        foreach ($topics_id as $topic_id) {
+
+            $resultProcedure = self::getTopicsWithTotalQuestionsAvailable($isCardMemory, array( $topic_id, $opposition_id ))[0];
+
+            \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO--');
+            \Log::debug($resultProcedure);
+
+            $topicsDataForOrderByTotalQuestions[] = $resultProcedure;
+        }
+
+        return collect($topicsDataForOrderByTotalQuestions)->sortBy('total_questions')->pluck('topic_id')->toArray();
+
     }
 }

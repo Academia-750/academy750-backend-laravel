@@ -26,7 +26,7 @@ return new class extends Migration
 
                 SET c := (select count(*)
                      from questions p
-                     WHERE p.question_in_edit_mode='no' AND p.questionable_id in
+                     WHERE p.question_in_edit_mode='no' AND p.is_visible='yes' AND p.questionable_id in
                      (select t.id from topics t where t.id=id_tema union select s.id from subtopics s, oppositionables o where o.opposition_id=id_oposicion and o.oppositionable_id=s.id and s.topic_id=id_tema)
                       AND p.id not in (SELECT question_id FROM question_test q, tests t where t.user_id=id_usuario and t.id=q.test_id and t.test_type='test' and q.have_been_show_test='yes') AND p.its_for_test='yes');
 
@@ -43,7 +43,7 @@ return new class extends Migration
 
 
                 SELECT p.id from questions p
-                     WHERE p.question_in_edit_mode='no' AND p.questionable_id in
+                     WHERE p.question_in_edit_mode='no' AND p.is_visible='yes' AND p.questionable_id in
                      (select t.id from topics t where t.id=id_tema union select s.id from subtopics s, oppositionables o where o.opposition_id=id_oposicion and o.oppositionable_id=s.id and s.topic_id=id_tema)
                       AND p.id not in
                       (SELECT question_id FROM question_test q, tests t where t.user_id=id_usuario and t.id=q.test_id and t.test_type='test' and q.have_been_show_test='yes')
