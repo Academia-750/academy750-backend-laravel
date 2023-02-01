@@ -18,7 +18,7 @@ class AcademiaCredentials
             'full_name' => 'Academia Bomberos Principal',
             'email' => config('mail.from.address'),
             //'email' => 'admin2@admin.com',
-            'dni' => '16788280M',
+            'dni' => '123456789',
             'phone' => UserService::getNumberPhoneSpain(),
             'password' => bcrypt('GZVX4B)5PbD^aR'),
         ]);
@@ -42,7 +42,7 @@ class AcademiaCredentials
             'full_name' => 'Academia Bomberos Impugnaciones',
             'email' => config('mail.mail_impugnaciones'),
             //'email' => 'admin@admin.com',
-            'dni' => '73314025F',
+            'dni' => '987654321',
             'phone' => UserService::getNumberPhoneSpain(),
             'password' => bcrypt('GZVX4B)5PbD^aR'),
         ]);
