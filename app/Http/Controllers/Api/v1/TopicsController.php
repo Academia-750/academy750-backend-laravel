@@ -158,4 +158,8 @@ class TopicsController extends Controller
     public function topic_relationship_questions(){
         return $this->topicsInterface->topic_relationship_questions();
     }
+
+    public function topics_get_worst_topics_of_student(){
+        return $this->topicsInterface->topics_get_worst_topics_of_student();
+    }
 }

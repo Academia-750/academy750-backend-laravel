@@ -36,6 +36,8 @@ Route::get('topics/relationship/questions', [TopicsController::class, 'topic_rel
 
 Route::get('topics/import/template', [TopicsController::class, 'download_template_import_records'])->name('api.v1.topics.import.template');
 Route::get('subtopics/import/template', [TopicsController::class, 'download_template_import_subtopics_records'])->name('api.v1.topics.import.subtopics.template');
+
+Route::get('topics/student/get-worst-topics', [TopicsController::class, 'topics_get_worst_topics_of_student'])->name('api.v1.topics.worsts-in-test.student');
 /*
 Route::post('topics/export', [TopicsController::class, 'export_records'])->name('api.v1.topics.export');
 Route::post('topics/import', [TopicsController::class, 'import_records'])->name('api.v1.topics.import');

@@ -209,4 +209,9 @@ class Authorizer implements TopicsInterface
         Gate::authorize('import_records', Topic::class );
         return $this->schemaJson->import_subtopics_by_topics($request);
     }
+
+    public function topics_get_worst_topics_of_student()
+    {
+        return $this->schemaJson->topics_get_worst_topics_of_student();
+    }
 }

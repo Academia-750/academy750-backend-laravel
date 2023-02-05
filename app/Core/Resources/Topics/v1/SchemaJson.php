@@ -318,4 +318,9 @@ class SchemaJson implements TopicsInterface
             'message' => "Proceso de importación iniciada"
         ], 200);
     }
+
+    public function topics_get_worst_topics_of_student()
+    {
+        return $this->eventApp->topics_get_worst_topics_of_student();
+    }
 }

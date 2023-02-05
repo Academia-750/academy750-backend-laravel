@@ -515,4 +515,34 @@ class DBApp implements TopicsInterface
             abort(500,$e->getMessage());
         }
     }
+
+    public function topics_get_worst_topics_of_student()
+    {
+        $topics_data = DB::select(
+            "call get_5_worse_topic_results_by_user(?)",
+            array(Auth::user()?->getRouteKey())
+        ); //search_question_in_topics_and_subtopics
+
+        \Log::debug($topics_data);
+
+        $topics_data_mapped = array_map(static function ($topic) {
+            $itemCasted = (array) $topic;
+            return [
+                'topic_id' => $itemCasted['TOPIC_ID'],
+                'topic_name' => $itemCasted['TOPIC_NAME'],
+                'total_questions_correct' => $itemCasted['CORRECT_ANS'],
+                'total_questions_wrong' => $itemCasted['INCORRECT_ANS'],
+                'total_questions_unanswered' => $itemCasted['UNANSWERED_ANS'],
+                'percentage_without_format' => $itemCasted['PERCENTAGE'],
+                'percentage_with_format' => ((string) ((int) $itemCasted['PERCENTAGE'])) . '%',
+            ];
+        }, (array) $topics_data);
+
+        \Log::debug($topics_data_mapped);
+
+        return $topics_data_mapped;
+        /*$topics_id = collect($topics_id)->pluck('id')->toArray();
+
+        return $this->model->query()->whereIn('id', $topics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();*/
+    }
 }

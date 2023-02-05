@@ -19,7 +19,7 @@ return new class extends Migration
             IN `id_usuario` VARCHAR(255)
         )
         BEGIN
-        select aux_tb.TOPIC_ID, aux_tb.TOPIC_NAME, 
+        select aux_tb.TOPIC_ID, aux_tb.TOPIC_NAME,
         sum( case when aux_tb.STATUS= 'correct' then 1 else 0 end ) as CORRECT_ANS,
         sum( case when aux_tb.STATUS= 'wrong' then 1 else 0 end ) as INCORRECT_ANS,
         sum( case when aux_tb.STATUS= 'unanswered' then 1 else 0 end ) as UNANSWERED_ANS,
@@ -40,7 +40,7 @@ return new class extends Migration
         inner join topics as E on E.id = D.topic_id
         where A.user_id = id_usuario and A.finished_at is not null) as aux_tb
         group by aux_tb.TOPIC_ID, aux_tb.TOPIC_NAME
-        order by PERCENTAGE;
+        order by PERCENTAGE limit 5;
         END";
 
         DB::unprepared($procedure1);

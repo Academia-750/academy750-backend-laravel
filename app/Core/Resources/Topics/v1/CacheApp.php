@@ -223,4 +223,9 @@ class CacheApp implements TopicsInterface
     {
         return $this->dbApp->import_subtopics_by_topics($request);
     }
+
+    public function topics_get_worst_topics_of_student()
+    {
+        return $this->dbApp->topics_get_worst_topics_of_student();
+    }
 }

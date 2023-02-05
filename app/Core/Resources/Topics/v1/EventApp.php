@@ -171,4 +171,9 @@ class EventApp implements TopicsInterface
     {
         $this->cacheApp->import_subtopics_by_topics( $request );
     }
+
+    public function topics_get_worst_topics_of_student()
+    {
+        return $this->cacheApp->topics_get_worst_topics_of_student();
+    }
 }
