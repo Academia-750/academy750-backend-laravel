@@ -57,7 +57,7 @@ class QuestionsImportService
             $row['mostrar_explicacion_en_tarjeta_de_memoria'] === 'si' && (bool) $reasonText? 'yes' : 'no',
             "question" => $row["pregunta"],
             "reason" => $row["explicacion_texto"],
-            "topic_id" => $row["tema_uuid"],
+            "topic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row, "tema_uuid") ? $row["tema_uuid"] : null,
             "is-question-binary-alternatives" => ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest,
             "subtopic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row, "subtema_uuid") ? $row["subtema_uuid"] : null,
             "es_test" => QuestionsImportValidation::IssetRowInDataRows($row, "es_test") ? $row["es_test"] : null,

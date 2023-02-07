@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 
 class QuestionsImportValidation
 {
-    public static function validateRowValidator(array $row, $topicsArray): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
+    public static function validateRowValidator(array $row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
         $isTypeCardMemory = self::IssetRowInDataRows($row, "es_tarjeta_de_memoria") && strtolower(trim($row['es_tarjeta_de_memoria'])) === 'si';
         $isTypeTest = self::IssetRowInDataRows($row, "es_test") && strtolower(trim($row['es_test'])) === 'si';
@@ -29,9 +29,11 @@ class QuestionsImportValidation
                     ['required','in:si,no']
                 )
             ],*/
-            'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
+            'tema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "tema_uuid"),
+                ['uuid', 'exists:topics,id']
+            )],
             'subtema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "subtema_uuid"),
-                ['uuid', 'exists:subtopics,id', new SubtopicBelongsTopicRule($row["tema_uuid"], $topicsArray)]
+                ['uuid', 'exists:subtopics,id']
             )],
             'pregunta' => ['required','max:65535',
                 new IsThereShouldBeNoMoreThan1GroupingAnswer(

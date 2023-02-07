@@ -33,7 +33,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
     public function __construct($userAuth, $nameFile) {
         //$this->userAuth = $userAuth;
 
-        $this->topics = Topic::query()->with("subtopics")->get();
+        //$this->topics = Topic::query()->with("subtopics")->get();
         $this->registerImportProcessHistory( $userAuth, $nameFile, "Importar preguntas" );
     }
 
@@ -128,7 +128,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
      * */
     public function validateRow ($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
-        return QuestionsImportValidation::validateRowValidator($row, $this->topics);
+        return QuestionsImportValidation::validateRowValidator($row);
     }
 
     public function registerQuestion ($dataQuestion, $row): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
