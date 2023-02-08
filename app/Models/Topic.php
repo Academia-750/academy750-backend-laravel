@@ -15,6 +15,9 @@ class Topic extends Model
     //use SoftDeletes;
     use UUIDTrait;
 
+    public $keyType = "string";
+    public $incrementing = false;
+
     protected $fillable = [
         "id",
         "name",

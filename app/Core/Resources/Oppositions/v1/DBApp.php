@@ -23,7 +23,9 @@ class DBApp implements OppositionsInterface
     }
 
     public function index(){
-        return $this->model->applyFilters()->orderBy('name', 'asc')->applySorts()->applyIncludes()->jsonPaginate();
+        $queryResults = $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+
+        return $queryResults;
     }
 
     public function create( $request ): \App\Models\Opposition{
