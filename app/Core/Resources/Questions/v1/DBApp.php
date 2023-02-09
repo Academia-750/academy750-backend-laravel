@@ -9,7 +9,9 @@ use App\Jobs\Api\v1\ImportQuestionsJob;
 use App\Models\Answer;
 use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
+use Illuminate\Bus\Batch;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -246,18 +248,34 @@ class DBApp implements QuestionsInterface
     {
         $filesQuestions = $request->file('filesQuestions') ?? [];
 
+        $batchesImportQueues = [];
+
         foreach ($filesQuestions as $file) {
 
             /*dispatch(
                 new ImportQuestionsJob( [$file], Auth::user() )
             );*/
 
-            (
+            $batchesImportQueues[] = (
             new QuestionsImport(Auth::user(), $file->getClientOriginalName())
             )->import($file)/*->chain([])*/;
 
+
             usleep(500);
         }
+
+        Bus::batch($batchesImportQueues)
+            ->then(function (Batch $batch) {
+                Bus::batch($batch)->dispatch();
+            })
+            ->catch(function (Batch $batch, \Throwable $e) {
+                \Log::debug("Ha ocurrido un error al hacer batch usando el Throwable");
+                \Log::debug($e->getMessage());
+            })
+            ->catch(function (Batch $batch, \Exception $e) {
+                \Log::debug("Ha ocurrido un error al hacer batch usando el Exception");
+                \Log::debug($e->getMessage());
+            })->name('Queue Import')->onQueue('imports-excel-academia');
     }
 
     public function set_mode_edit_question($request, $question)
