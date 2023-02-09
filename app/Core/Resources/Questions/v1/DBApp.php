@@ -254,10 +254,9 @@ class DBApp implements QuestionsInterface
 
             (
             new QuestionsImport(Auth::user(), $file->getClientOriginalName())
-            )->import($file);
+            )->import($file)/*->chain([])*/;
 
-            //sleep(1);
-
+            usleep(500);
         }
     }
 

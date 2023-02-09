@@ -14,6 +14,8 @@ class QuestionsImportValidation
 {
     public static function validateRowValidator(array $row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
+        \Log::debug("Comienza a validar la fila");
+
         $isTypeCardMemory = self::IssetRowInDataRows($row, "es_tarjeta_de_memoria") && strtolower(trim($row['es_tarjeta_de_memoria'])) === 'si';
         $isTypeTest = self::IssetRowInDataRows($row, "es_test") && strtolower(trim($row['es_test'])) === 'si';
         $reasonText = self::IssetRowInDataRows($row, "explicacion_texto");
@@ -23,6 +25,7 @@ class QuestionsImportValidation
         $answerThree = (bool) self::IssetRowInDataRows($row, "respuesta_3");
         $isQuestionBinary = ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest;
 
+        \Log::debug("Comprobó algunos campos de la fila");
         return Validator::make($row, [
             /*'es_pregunta_binaria' => [
                 Rule::when( (bool) $isTypeTest,
