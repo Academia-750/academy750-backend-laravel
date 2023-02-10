@@ -248,38 +248,14 @@ class DBApp implements QuestionsInterface
     {
         $filesQuestions = $request->file('filesQuestions') ?? [];
 
-        $batchesImportQueues = [];
-
         foreach ($filesQuestions as $file) {
 
-            /*dispatch(
-                new ImportQuestionsJob( [$file], Auth::user() )
-            );*/
+            $job = ( new QuestionsImport(Auth::user(), $file->getClientOriginalName()) );
 
-            //( new QuestionsImport(Auth::user(), $file->getClientOriginalName()) )->import($file)/*->chain([])*/;
-
-            $job = ( new QuestionsImport(Auth::user(), $file->getClientOriginalName()) )
-                /*->onFailure(function (\Exception $exception) {
-                    Log::error($exception->getMessage());
-                })*/;
             $job->import($file);
-
 
             usleep(500);
         }
-
-        /*Bus::batch($batchesImportQueues)
-            ->then(function (Batch $batch) {
-                Bus::batch($batch)->dispatch();
-            })
-            ->catch(function (Batch $batch, \Throwable $e) {
-                \Log::debug("Ha ocurrido un error al hacer batch usando el Throwable");
-                \Log::debug($e->getMessage());
-            })
-            ->catch(function (Batch $batch, \Exception $e) {
-                \Log::debug("Ha ocurrido un error al hacer batch usando el Exception");
-                \Log::debug($e->getMessage());
-            })->name('Queue Import')->onQueue('imports-excel-academia');*/
     }
 
     public function set_mode_edit_question($request, $question)

@@ -2,11 +2,8 @@
 
 namespace App\Imports\Api\Services;
 
-use App\Rules\Api\v1\Question\IsRequiredAnyReasonTextOrImageQuestionRule;
 use App\Rules\Api\v1\Questions\IsRequiredAnyTypeTestQuestionRule;
-use App\Rules\Api\v1\Questions\IsRequiredTypeTestOfQuestion;
 use App\Rules\Api\v1\Questions\IsThereShouldBeNoMoreThan1GroupingAnswer;
-use App\Rules\Api\v1\SubtopicBelongsTopicRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
