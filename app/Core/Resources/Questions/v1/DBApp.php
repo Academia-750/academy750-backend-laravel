@@ -259,10 +259,9 @@ class DBApp implements QuestionsInterface
             //( new QuestionsImport(Auth::user(), $file->getClientOriginalName()) )->import($file)/*->chain([])*/;
 
             $job = ( new QuestionsImport(Auth::user(), $file->getClientOriginalName()) )
-                ->onFailure(function (\Exception $exception) {
-                    // Aquí puedes manejar el error
+                /*->onFailure(function (\Exception $exception) {
                     Log::error($exception->getMessage());
-                });
+                })*/;
             $job->import($file);
 
 

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Concerns\SkipsOnFailure;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithChunkReading;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -25,8 +26,9 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Events\AfterImport;
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\ImportFailed;
+use Maatwebsite\Excel\Validators\Failure;
 
-class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEvents, WithChunkReading
+class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEvents, WithChunkReading, SkipsOnFailure
 {
     use Importable, RegistersEventListeners, HelpersLaravelImportCSVTrait;
     public $topics;
@@ -227,6 +229,11 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
     public static function importFailed (ImportFailed $event)
     {
         \Log::debug("Ha ocurrido un error en la importación usando el ImportFailed Event");
+    }
+
+    public function onFailure(Failure ...$failures)
+    {
+        \Log::debug("Ha ocurrido un error en la importación usando el onFailure");
     }
 }
 
