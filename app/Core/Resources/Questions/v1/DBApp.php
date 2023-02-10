@@ -256,15 +256,20 @@ class DBApp implements QuestionsInterface
                 new ImportQuestionsJob( [$file], Auth::user() )
             );*/
 
-            $batchesImportQueues[] = (
-            new QuestionsImport(Auth::user(), $file->getClientOriginalName())
-            )->import($file)/*->chain([])*/;
+            //( new QuestionsImport(Auth::user(), $file->getClientOriginalName()) )->import($file)/*->chain([])*/;
+
+            $job = ( new QuestionsImport(Auth::user(), $file->getClientOriginalName()) )
+                ->onFailure(function (\Exception $exception) {
+                    // Aquí puedes manejar el error
+                    Log::error($exception->getMessage());
+                });
+            $job->import($file);
 
 
             usleep(500);
         }
 
-        Bus::batch($batchesImportQueues)
+        /*Bus::batch($batchesImportQueues)
             ->then(function (Batch $batch) {
                 Bus::batch($batch)->dispatch();
             })
@@ -275,7 +280,7 @@ class DBApp implements QuestionsInterface
             ->catch(function (Batch $batch, \Exception $e) {
                 \Log::debug("Ha ocurrido un error al hacer batch usando el Exception");
                 \Log::debug($e->getMessage());
-            })->name('Queue Import')->onQueue('imports-excel-academia');
+            })->name('Queue Import')->onQueue('imports-excel-academia');*/
     }
 
     public function set_mode_edit_question($request, $question)
