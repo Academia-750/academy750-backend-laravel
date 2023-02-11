@@ -168,11 +168,15 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
         \Log::debug("Se ha ejecutado el registerQuestion");
 
-        if ((bool) $dataQuestion["subtopic_id"]) {
+        if ((bool) $dataQuestion["its_for_subtopic"]) {
 
             \Log::debug("Pertenece a subtema");
 
-            $subtopic = Subtopic::query()->firstWhere('id','=', $dataQuestion["subtopic_id"]);
+            $subtopic = Subtopic::query()->firstWhere('id','=', $dataQuestion["topic_id"]);
+
+            if (!$subtopic) {
+                abort(500, "No se ha encontrado al subtema");
+            }
 
             $question = QuestionsImportService::registerQuestion($subtopic, $dataQuestion, QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si');
 
@@ -186,6 +190,10 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
         \Log::debug("Pertenece a tema");
 
         $topic = Topic::query()->firstWhere('id','=',$dataQuestion["topic_id"]);
+
+        if (!$topic) {
+            abort(500, "No se ha encontrado al subtema");
+        }
 
         $question = QuestionsImportService::registerQuestion($topic, $dataQuestion, QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si');
 

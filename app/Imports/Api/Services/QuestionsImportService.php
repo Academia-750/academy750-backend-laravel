@@ -58,8 +58,9 @@ class QuestionsImportService
             "question" => $row["pregunta"],
             "reason" => $row["explicacion_texto"],
             "topic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row, "tema_uuid") ? $row["tema_uuid"] : null,
+            "its_for_subtopic" => (bool) QuestionsImportValidation::IssetRowInDataRows($row, "es_para_subtema") && $row["es_para_subtema"] === 'si',
             "is-question-binary-alternatives" => ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest,
-            "subtopic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row, "subtema_uuid") ? $row["subtema_uuid"] : null,
+            //"subtopic_id" => (bool) QuestionsImportValidation::IssetRowInDataRows($row, "subtema_uuid") ? $row["subtema_uuid"] : null,
             "es_test" => QuestionsImportValidation::IssetRowInDataRows($row, "es_test") ? $row["es_test"] : null,
             "es_tarjeta_de_memoria" => QuestionsImportValidation::IssetRowInDataRows($row, "es_tarjeta_de_memoria") ? $row["es_tarjeta_de_memoria"] : null,
         ];

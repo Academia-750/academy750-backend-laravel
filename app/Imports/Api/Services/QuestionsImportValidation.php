@@ -22,6 +22,17 @@ class QuestionsImportValidation
         $answerThree = (bool) self::IssetRowInDataRows($row, "respuesta_3");
         $isQuestionBinary = ((bool) $answerCorrect && (bool) $answerOne) && (!$answerTwo && !$answerThree) && $isTypeTest;
 
+        if (self::IssetRowInDataRows($row, "es_para_subtema") && $row['es_para_subtema'] === 'si') {
+            $optionsRulesConditionalItsForSubtopicOrTopic = [
+                'required','uuid', 'exists:subtopics,id'
+            ];
+        } else {
+            $optionsRulesConditionalItsForSubtopicOrTopic = [
+                'required','uuid', 'exists:topics,id'
+            ];
+        }
+
+
         \Log::debug("Comprobó algunos campos de la fila");
         return Validator::make($row, [
             /*'es_pregunta_binaria' => [
@@ -29,12 +40,11 @@ class QuestionsImportValidation
                     ['required','in:si,no']
                 )
             ],*/
-            'tema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "tema_uuid"),
-                ['uuid', 'exists:topics,id']
-            )],
-            'subtema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "subtema_uuid"),
+            'tema_uuid' => $optionsRulesConditionalItsForSubtopicOrTopic,
+            /*'subtema_uuid' => ['nullable', Rule::when( (bool) self::IssetRowInDataRows($row, "subtema_uuid"),
                 ['uuid', 'exists:subtopics,id']
-            )],
+            )],*/
+            'es_para_subtema' => ['required', 'in:si,no'],
             'pregunta' => ['required','max:65535',
                 new IsThereShouldBeNoMoreThan1GroupingAnswer(
                     $isQuestionBinary,

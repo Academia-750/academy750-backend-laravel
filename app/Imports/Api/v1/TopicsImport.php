@@ -33,9 +33,6 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
 
     public function collection(Collection $collection): void {
 
-            $importProcess = ImportProcess::query()->find($this->importProcessRecord->id);
-
-
             foreach ($collection as $row) {
 
                 try {
