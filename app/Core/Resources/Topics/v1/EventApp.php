@@ -18,8 +18,8 @@ class EventApp implements TopicsInterface
         return $this->cacheApp->index();
     }
 
-    public function get_topics_available_for_create_test(){
-        return $this->cacheApp->get_topics_available_for_create_test();
+    public function get_topics_available_for_create_test($request){
+        return $this->cacheApp->get_topics_available_for_create_test($request);
     }
 
     public function create( $request ){

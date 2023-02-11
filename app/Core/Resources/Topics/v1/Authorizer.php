@@ -23,17 +23,17 @@ class Authorizer implements TopicsInterface
         Gate::authorize('index', Topic::class );
         return $this->schemaJson->index();
     }
-    public function get_topics_available_for_create_test(): TopicCollection
+    public function get_topics_available_for_create_test($request): TopicCollection
     {
-        if (!request()?->query('opposition-id') || !Opposition::query()->find(request()?->query('opposition-id'))) {
+        /*if (!request()?->query('opposition-id') || !Opposition::query()->find(request()?->query('opposition-id'))) {
             abort(403);
         }
 
         if (!request()?->query('topic-group-id') || !TopicGroup::query()->find(request()?->query('topic-group-id'))) {
             abort(403);
-        }
+        }*/
 
-        return $this->schemaJson->get_topics_available_for_create_test();
+        return $this->schemaJson->get_topics_available_for_create_test($request);
     }
 
     public function create( $request ): \Illuminate\Http\JsonResponse

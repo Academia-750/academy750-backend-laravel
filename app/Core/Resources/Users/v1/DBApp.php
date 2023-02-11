@@ -339,25 +339,19 @@ class DBApp implements UsersInterface
             $questions_id_results_procedure  = DB::select('call get_questions_wrong_history_by_topic_and_tests_student_procedure(?,?)',
             array($user->getRouteKey(), $topic->getRouteKey()));
 
-            /*\Log::debug($questions_id_results_procedure);
-            $questions_id = [];
-
-            foreach ($questions_id_results_procedure as $key => $question_id) {
-                $questionsData = (array) $question_id;
-
-                $questions_id[] = [
-                    'question_id' => $questionsData['question_wrong_id'],
-                    'test_id' => $questionsData['question_wrong_id'],
+            return  array_map(static function ($item) {
+                $questionItem = (array) $item;
+                return [
+                    'question_data' => Question::query()->findOrFail($questionItem['question_wrong_id']),
+                    'explicacion_pregunta' => $questionItem['explicacion_pregunta'],
+                    'fecha_test' => $questionItem['fecha_test'],
+                    'question_wrong_id' => $questionItem['question_wrong_id'],
+                    'test_wrong_id' => $questionItem['test_wrong_id'],
+                    'texto_pregunta' => $questionItem['texto_pregunta'],
+                    'texto_respuesta_correcta' => $questionItem['texto_respuesta_correcta'],
+                    'texto_respuesta_marcada' => $questionItem['texto_respuesta_marcada']
                 ];
-
-
-            }
-
-            \Log::debug($questions_id);*/
-
-
-            return $questions_id_results_procedure;
-            //return Question::query()->whereIn('id', $questions_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+            }, $questions_id_results_procedure);
 
         } catch (\Exception $e) {
             DB::rollback();

@@ -29,10 +29,10 @@ class SchemaJson implements TopicsInterface
         );
     }
 
-    public function get_topics_available_for_create_test(): TopicCollection
+    public function get_topics_available_for_create_test($request): TopicCollection
     {
         return TopicCollection::make(
-            $this->eventApp->get_topics_available_for_create_test()
+            $this->eventApp->get_topics_available_for_create_test($request)
         );
     }
 

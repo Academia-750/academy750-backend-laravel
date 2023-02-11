@@ -17,6 +17,7 @@ use App\Models\Opposition;
 use App\Models\Question;
 use App\Models\Subtopic;
 use App\Models\Topic;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class TopicsController extends Controller
@@ -31,8 +32,15 @@ class TopicsController extends Controller
         return $this->topicsInterface->index();
     }
 
-    public function get_topics_available_for_create_test(){
-        return $this->topicsInterface->get_topics_available_for_create_test();
+    public function get_topics_available_for_create_test(Request $request){
+
+        $request->validate([
+            'topics-group-id' => ['required', 'array'],
+            'topics-group-id.*' => ['required', 'uuid', 'exists:topic_groups,id'],
+            'opposition-id' => ['required', 'exists:oppositions,id']
+        ]);
+
+        return $this->topicsInterface->get_topics_available_for_create_test($request);
     }
 
     public function create(CreateTopicRequest $request){

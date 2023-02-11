@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\v1\TopicsController;
 // Rutas del recurso Topics
 
 Route::get('topics', [TopicsController::class, 'index'])->name('api.v1.topics.index');
-Route::get('topics/available/by-generate-test', [TopicsController::class, 'get_topics_available_for_create_test'])->name('api.v1.topics.topics-available-por-create-test');
+Route::post('topics/available/by-generate-test', [TopicsController::class, 'get_topics_available_for_create_test'])->name('api.v1.topics.topics-available-por-create-test');
 Route::get('topics/{topic}', [TopicsController::class, 'read'])->name('api.v1.topics.read');
 Route::post('topics/create', [TopicsController::class, 'create'])->name('api.v1.topics.create');
 Route::patch('topics/update/{topic}', [TopicsController::class, 'update'])->name('api.v1.topics.update');

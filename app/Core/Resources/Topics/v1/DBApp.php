@@ -34,14 +34,20 @@ class DBApp implements TopicsInterface
         return $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function get_topics_available_for_create_test(){
+    public function get_topics_available_for_create_test($request){
+
+        \Log::debug($request);
+        \Log::debug(implode(',', $request->get('topics-group-id')));
 
         $topics_id = DB::select(
             "call topics_available_for_create_test(?,?)",
-            array(request()?->query('opposition-id'), request()?->query('topic-group-id'))
+            array($request->get('opposition-id'), implode(',', $request->get('topics-group-id')) )
         ); //search_question_in_topics_and_subtopics
 
+        \Log::debug($topics_id);
+
         $topics_id = collect($topics_id)->pluck('id')->toArray();
+        \Log::debug($topics_id);
 
         return $this->model->query()->whereIn('id', $topics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
         //return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();

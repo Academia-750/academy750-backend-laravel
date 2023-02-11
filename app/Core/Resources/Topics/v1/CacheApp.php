@@ -27,7 +27,7 @@ class CacheApp implements TopicsInterface
         return $this->dbApp->index();
 
     }
-    public function get_topics_available_for_create_test(){
+    public function get_topics_available_for_create_test($request){
 
         /*$nameCache = '';
 
@@ -37,7 +37,7 @@ class CacheApp implements TopicsInterface
             return $this->dbApp->index();
         });*/
 
-        return $this->dbApp->get_topics_available_for_create_test();
+        return $this->dbApp->get_topics_available_for_create_test($request);
 
     }
 
