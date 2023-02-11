@@ -1,6 +1,7 @@
 <?php
 namespace App\Core\Resources\Topics\v1;
 
+use App\Core\Resources\Topics\v1\Services\GetTopicsAvailableForTestService;
 use App\Imports\Api\v1\SubtopicsImport;
 use App\Imports\Api\v1\TopicsImport;
 use App\Jobs\Api\v1\ImportSubtopicsJob;
@@ -36,18 +37,34 @@ class DBApp implements TopicsInterface
 
     public function get_topics_available_for_create_test($request){
 
+        \Log::debug("---------------------Data Request---------------------");
         \Log::debug($request);
-        \Log::debug(implode(',', $request->get('topics-group-id')));
+        //\Log::debug(implode(',', $request->get('topics-group-id')));
+        $topics_id = [];
 
-        $topics_id = DB::select(
-            "call topics_available_for_create_test(?,?)",
-            array($request->get('opposition-id'), implode(',', $request->get('topics-group-id')) )
-        ); //search_question_in_topics_and_subtopics
+        $topics_procedure_results = [];
 
+        foreach ($request->get('topics-group-id') as $topicGroupId) {
+            \Log::debug("---------------------Iteración {$topicGroupId}---------------------");
+            \Log::debug($topicGroupId);
+
+            $topics_procedure_results = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup($request->get('opposition-id'), $topicGroupId);
+            \Log::debug($topics_procedure_results);
+
+            $topics_id = array_merge(
+                $topics_id,
+                $topics_procedure_results
+            );
+
+
+        }
+
+
+        \Log::debug("---------------------Final Array Topics ID---------------------");
         \Log::debug($topics_id);
 
-        $topics_id = collect($topics_id)->pluck('id')->toArray();
-        \Log::debug($topics_id);
+        //$topics_id = collect($topics_id)->pluck('id')->toArray();
+        //\Log::debug($topics_id);
 
         return $this->model->query()->whereIn('id', $topics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
         //return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
