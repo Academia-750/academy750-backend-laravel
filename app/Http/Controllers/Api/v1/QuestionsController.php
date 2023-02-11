@@ -74,6 +74,19 @@ class QuestionsController extends Controller
         return $this->questionsInterface->set_mode_edit_question( $request, $question );
     }
 
+    public function set_state_visibility_question( Request $request, Question $question ) {
+        $request->validate([
+            'is-visible-question' => ['required', 'in:yes,no']
+        ]);
+
+        $question->is_visible = $request->get('is-visible-question');
+        $question->save();
+
+        return response()->json([
+            'message' => 'successfully'
+        ]);
+    }
+
     public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
         return Storage::disk('public')->download('templates/csv/questions_import.csv', 'template_import_questions');
     }
