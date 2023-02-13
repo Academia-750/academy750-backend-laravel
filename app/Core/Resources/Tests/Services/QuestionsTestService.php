@@ -56,6 +56,8 @@ class QuestionsTestService
             //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
             $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
 
+            \Log::debug("Nombre del primer Procedure ejecutado {$nameProcedure}");
+
             $questions_id = [];
 
             $count_current_questions_got_procedure = 0;
@@ -88,6 +90,7 @@ class QuestionsTestService
                     \Log::debug("Al parecer no hubo suficientes preguntas del procedure 1 para completar las que se necesitaban del tema");
 
                     $nameProcedureProcedure = GetQuestionsByTopicProceduresService::getNameSecondProcedure($isCardMemory);
+                    \Log::debug("Nombre del segundo Procedure ejecutado {$nameProcedureProcedure}");
                     //$questionsIdProcedure2Complete = (array) $questionsIdProcedure2Complete;
                     $questionsIdProcedure2CompleteCasted = GetQuestionsByTopicProceduresService::callSecondProcedure(
                         $nameProcedureProcedure,

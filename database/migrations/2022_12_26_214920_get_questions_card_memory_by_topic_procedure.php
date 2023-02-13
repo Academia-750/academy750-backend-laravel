@@ -34,7 +34,7 @@ return new class extends Migration
 
                         IF c < 1 THEN
 
-                        update question_test m, questions q, tests t  SET m.have_been_show_test='no' WHERE m.question_id=q.id AND
+                        update question_test m, questions q, tests t  SET m.have_been_show_card_memory='no' WHERE m.question_id=q.id AND
                               q.questionable_id IN (select t.id from topics t where t.id=id_tema union select s.id from subtopics s, oppositionables o where o.opposition_id=id_oposicion and o.oppositionable_id=s.id and s.topic_id=id_tema) and
                               t.user_id=id_usuario AND t.id=m.test_id AND t.test_type='card_memory' AND q.its_for_card_memory='yes';
 
