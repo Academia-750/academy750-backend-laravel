@@ -22,10 +22,10 @@ class ContactUsPageRequest extends FormRequest
                 'required', Rule::in(['general', 'inscription', 'reset-password'])
             ],
             'first-name' => [
-                'required', 'min:3', 'max:25', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
+                'required', 'min:3', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
             ],
             'last-name' => [
-                'required', 'min:3', 'max:25', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
+                'required', 'min:3', 'max:255', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
             ],
             'phone' => [
                 'required', 'numeric', 'regex:/^[6789]\d{8}$/', Rule::unique('users', 'phone')

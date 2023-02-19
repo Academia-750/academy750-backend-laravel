@@ -35,11 +35,13 @@ class Test extends Model
     ];
 
     public array $allowedSorts = [
+        'finished-at',
         "test-questions-count",
         "created-at"
     ];
 
     public array $adapterSorts = [
+        'finished-at' => 'finishedAt',
         "test-questions-count" => "TestQuestionsCount",
         "created-at" => "CreatedAt",
     ];
@@ -83,6 +85,10 @@ class Test extends Model
 
     public function sortCreatedAt(Builder $query, $direction): void{
         $query->orderBy('created_at', $direction);
+    }
+
+    public function sortFinishedAt(Builder $query, $direction): void{
+        $query->orderBy('finished_at', $direction);
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */
