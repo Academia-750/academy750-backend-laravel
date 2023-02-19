@@ -1,6 +1,8 @@
 <?php
 
+use App\Core\Services\UserService;
 use App\Http\Controllers\Api\v1\ProfileController;
+use App\Http\Controllers\Api\v1\UsersController as UsersControllerAlias;
 use App\Http\Controllers\JsonApiAuth\ConfirmablePasswordController;
 use App\Http\Controllers\JsonApiAuth\EmailVerificationNotificationController;
 use App\Http\Controllers\JsonApiAuth\LoginController;
@@ -9,6 +11,8 @@ use App\Http\Controllers\JsonApiAuth\NewPasswordController;
 use App\Http\Controllers\JsonApiAuth\PasswordResetLinkController;
 use App\Http\Controllers\JsonApiAuth\RegisterController;
 use App\Http\Controllers\JsonApiAuth\VerifyEmailController;
+use App\Models\User;
+use App\Notifications\Api\ResetPasswordStudentNotification;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', RegisterController::class)->name('json-api-auth.register');
@@ -38,3 +42,5 @@ Route::post('/confirm-password', ConfirmablePasswordController::class)
     ->name('json-api-auth.password.confirm');
 
 Route::post('/check-previous-session', [ProfileController::class, 'checkPreviousSessionAccess']);
+
+Route::post('/passwords-system/users/request-change-password', [UsersControllerAlias::class, 'requestResetPasswordUser']);

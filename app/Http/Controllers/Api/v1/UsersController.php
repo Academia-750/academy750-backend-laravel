@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
+use App\Core\Services\UserService;
 use App\Http\Requests\Api\v1\Users\ContactUsPageRequest;
 use App\Http\Requests\Api\v1\Users\FetchHistoryQuestionsByTypeAndPeriodOfStudentRequest;
 use App\Http\Requests\Api\v1\Users\FetchHistoryStatisticalDataGraphByStudentRequest;
@@ -8,7 +9,10 @@ use App\Models\Topic;
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Http\Controllers\Controller;
+use App\Notifications\Api\ResetPasswordStudentNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -61,6 +65,44 @@ class UsersController extends Controller
 
     public function contactsUS(ContactUsPageRequest $request){
         return $this->usersInterface->contactsUS( $request );
+    }
+
+    public function requestResetPasswordUser(Request $request){
+        $request->validate([
+            'email' => ['required', 'email', 'max:255']
+        ]);
+
+        $student = User::firstWhere('email', '=', $request->get('email'));
+
+        if (!$student || $student->hasRole('admin')) {
+            return [
+                'status' => 'failed',
+                'message' => 'No se encontró al usuario'
+            ];
+        }
+
+        if (!$student->hasRole('student')) {
+            return [
+                'status' => 'failed',
+                'message' => 'No es válido el correo electrónico'
+            ];
+        }
+
+        $password_generated = UserService::generateSecureRandomPassword();
+
+        $student->password = Hash::make($password_generated);
+        $student->save();
+
+        DB::table('password_resets')->where('email', $student->email)->delete();
+        DB::table('personal_access_tokens')->where('tokenable_id', '=', $student->getRouteKey())->delete();
+
+        DB::commit();
+        $student->notify(new ResetPasswordStudentNotification(compact('password_generated')));
+
+        return [
+            'status' => 'successfully',
+            'message' => 'Hemos enviado sus nuevas credenciales de acceso al correo solicitado.'
+        ];
     }
 
     public function fetch_history_statistical_data_graph_by_student(FetchHistoryStatisticalDataGraphByStudentRequest $request){
