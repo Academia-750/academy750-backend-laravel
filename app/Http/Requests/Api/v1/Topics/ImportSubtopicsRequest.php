@@ -20,7 +20,7 @@ class ImportSubtopicsRequest extends FormRequest
             'filesSubtopics' => ['required', 'array', 'max:3'],
             'filesSubtopics.*' => [
                 'required',
-                'mimes:csv'
+                'mimes:csv,txt'
             ]
         ];
     }
