@@ -24,8 +24,6 @@ class RecaptchaValidationRule implements Rule
 
         $response = Http::asForm()->post($uri, $data)->object();
 
-        \Log::debug($response);
-
         return $response?->success && $response?->score >= 0.7;
 
     }
