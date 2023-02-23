@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\v1\Users;
 
+use App\Rules\Api\v1\ContactUs\RecaptchaValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -14,8 +15,8 @@ class ContactUsPageRequest extends FormRequest
         return true;
     }
 
-    #[ArrayShape(['reason' => "array", 'first-name' => "string[]", 'last-name' => "string[]", 'phone' => "array", 'email' => "array", 'message' => "string[]"])]
-    public function rules(): array
+
+    #[ArrayShape(['reason' => "array", 'first-name' => "string[]", 'last-name' => "string[]", 'phone' => "array", 'email' => "array", 'message' => "string[]", 'g-recaptcha-response' => "string[]"])] public function rules(): array
     {
         return [
             'reason' => [
@@ -37,6 +38,9 @@ class ContactUsPageRequest extends FormRequest
             ],
             'message' => [
                 'required', 'max:500'
+            ],
+            'g-recaptcha-response' => [
+                'required', new RecaptchaValidationRule
             ]
         ];
     }

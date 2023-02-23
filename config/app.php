@@ -19,6 +19,9 @@ return [
 
     'app_url_logo' => env('APP_URL_LOGO', 'http://api-bomberos750.test/logo.png'),
 
+    'app_url_recaptcha_google' => env('APP_URL_GOOGLE_RECAPTCHA', 'https://www.google.com/recaptcha/api/siteverify'),
+    'app_token_recaptcha_google' => env('APP_SECRET_TOKEN_GOOGLE_RECAPTCHA'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
