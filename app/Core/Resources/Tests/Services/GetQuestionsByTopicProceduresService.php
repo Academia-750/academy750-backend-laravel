@@ -91,8 +91,8 @@ class GetQuestionsByTopicProceduresService
             $data
         );
 
-        \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO EN CRUDO--');
-        \Log::debug((array) $topicsData);
+        // \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO EN CRUDO--');
+        // \Log::debug((array) $topicsData);
 
         return array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData);
     }
@@ -107,8 +107,8 @@ class GetQuestionsByTopicProceduresService
 
             $resultProcedure = self::getTopicsWithTotalQuestionsAvailable($isCardMemory, array( $topic_id, $opposition_id ))[0];
 
-            \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO--');
-            \Log::debug($resultProcedure);
+            // \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO--');
+            // \Log::debug($resultProcedure);
 
             $topicsDataForOrderByTotalQuestions[] = $resultProcedure;
         }

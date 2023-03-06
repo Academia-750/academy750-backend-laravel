@@ -9,8 +9,8 @@ class GetTopicsAvailableForTestService
     public static function mapDataTopicsAvailableForTest ($topics_id_data) {
         return array_map(function ($item) {
             $topic = (array) $item;
-            \Log::debug("---------------------Topic Data Map Procedure---------------------");
-            \Log::debug($topic);
+            // \Log::debug("---------------------Topic Data Map Procedure---------------------");
+            // \Log::debug($topic);
 
             return [
                 'id' => $topic['id']
@@ -24,8 +24,8 @@ class GetTopicsAvailableForTestService
             array($opposition_id, $topic_group_id)
         );
 
-        \Log::debug("---------------------Topic Data Procedure---------------------");
-        \Log::debug($topic_data);
+        // \Log::debug("---------------------Topic Data Procedure---------------------");
+        // \Log::debug($topic_data);
 
         return self::mapDataTopicsAvailableForTest(
             $topic_data

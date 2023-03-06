@@ -15,7 +15,7 @@ class ClaimQuestionMail
 {
     public static function claimQuestion (string $test_id, string $question_id, string $claim_text): void
     {
-        \Log::debug(config('mail.mail_impugnaciones'));
+        // \Log::debug(config('mail.mail_impugnaciones'));
         $userAcademia = User::query()->firstWhere('email', '=', config('mail.mail_impugnaciones'));
 
         if (!$userAcademia) {

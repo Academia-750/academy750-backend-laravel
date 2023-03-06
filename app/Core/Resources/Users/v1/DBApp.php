@@ -432,7 +432,7 @@ class DBApp implements UsersInterface
 
         } catch (\Exception $e) {
             DB::rollback();
-            \Log::debug($e->getMessage());
+            // \Log::debug($e->getMessage());
             abort($e->getCode(), $e->getMessage());
         }
     }

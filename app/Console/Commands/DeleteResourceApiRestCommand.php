@@ -36,14 +36,14 @@ class DeleteResourceApiRestCommand extends Command
     public function handle():void
     {
         foreach ($this->get_paths() as $path) {
-            \Log::debug($path);
+            // \Log::debug($path);
             if( $this->filesystem->exists($path) ){
                 $this->filesystem->delete($path);
             }
         }
 
         foreach ($this->get_directories() as $directory) {
-            \Log::debug($directory);
+            // \Log::debug($directory);
             if( $this->filesystem->exists($directory) ){
                 $this->filesystem->deleteDirectory($directory);
             }
@@ -120,19 +120,19 @@ class DeleteResourceApiRestCommand extends Command
     protected function delete_migration_file () {
         $nameMigration = Str::snake(Str::camel($this->getPluralClassName($this->argument('name'))));
         $files_directory = $this->filesystem->files('database/migrations');
-        \Log::debug(
+        // \Log::debug(
             serialize($files_directory)
         );
         $nameMigrationArrayResult = array_filter($files_directory, function ($path) use ($nameMigration) {
             return (strrpos($path, "create_{$nameMigration}_table")) !== null;
         });
 
-        \Log::debug(
+        // \Log::debug(
             serialize($nameMigrationArrayResult)
         );
 
         if ($this->filesystem->exists($nameMigrationArrayResult[0])) {
-            \Log::debug(
+            // \Log::debug(
                 "Si existe la migracion"
             );
             $this->filesystem->delete($nameMigrationArrayResult[0]);

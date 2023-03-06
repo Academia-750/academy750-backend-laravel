@@ -29,6 +29,6 @@ class ImportQuestionsJob implements ShouldQueue
 
     public function failed(Throwable $exception)
     {
-        \Log::debug($exception->getMessage());
+        // \Log::debug($exception->getMessage());
     }
 }

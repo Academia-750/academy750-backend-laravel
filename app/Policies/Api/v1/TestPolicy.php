@@ -65,7 +65,7 @@ class TestPolicy
      */
     public function create_a_quiz(User $user, Test $test, Opposition $opposition, Request $request ): bool
     {
-        \Log::debug('create a quiz Policy Test');
+        // \Log::debug('create a quiz Policy Test');
         $topicsBelongsToOpposition = true;
 
         $topics_id_by_opposition = $opposition->topics()->pluck('id')->toArray();

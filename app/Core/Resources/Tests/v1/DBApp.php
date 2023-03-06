@@ -146,16 +146,16 @@ class DBApp implements TestsInterface
 
             DB::beginTransaction();
             $test = Test::query()->findOrFail($test->getRouteKey());
-            //\Log::debug($test);
+            //// \Log::debug($test);
 
             $total_questions_test = $test->questions->count();
-            //\Log::debug($total_questions_test);
+            //// \Log::debug($total_questions_test);
             $totalQuestionsCorrect = $test->questions()->wherePivot('status_solved_question', 'correct')->get()->count();
-            //\Log::debug($totalQuestionsCorrect);
+            //// \Log::debug($totalQuestionsCorrect);
             $totalQuestionsWrong = $test->questions()->wherePivot('status_solved_question', 'wrong')->get()->count();
-            //\Log::debug($totalQuestionsWrong);
+            //// \Log::debug($totalQuestionsWrong);
             $totalQuestionsUnanswered = $test->questions()->wherePivot('status_solved_question', 'unanswered')->get()->count();
-            //\Log::debug($totalQuestionsUnanswered);
+            //// \Log::debug($totalQuestionsUnanswered);
 
             $test->total_questions_correct = $totalQuestionsCorrect;
             $test->total_questions_wrong = $totalQuestionsWrong;
@@ -171,7 +171,7 @@ class DBApp implements TestsInterface
                 / ($total_questions_test / 10)
             );
 
-            //\Log::debug($result_final_test);
+            //// \Log::debug($result_final_test);
 
             $test->test_result = ( (int) $result_final_test ) <= 0 ? '0' : number_format($result_final_test, 2);
             $test->is_solved_test = 'yes';

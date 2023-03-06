@@ -35,9 +35,9 @@ class UpdateQuestionRequest extends FormRequest
     public function rules(): array
     {
 
-        /*\Log::debug($this->route('question'));
-        \Log::debug($this->route('question')->image);
-        \Log::debug($this->route('question')->answers);*/
+        /*// \Log::debug($this->route('question'));
+        // \Log::debug($this->route('question')->image);
+        // \Log::debug($this->route('question')->answers);*/
         return [
 
             'is-question-binary-alternatives' => [

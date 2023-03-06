@@ -14,8 +14,8 @@ class QuestionsImportService
     }
 
     public static function registerQuestion ($model, $dataQuestion, $isTest) {
-        \Log::debug($dataQuestion['is-question-binary-alternatives']);
-        \Log::debug((bool) $dataQuestion['is-question-binary-alternatives'] ? 'yes' : 'no');
+        // \Log::debug($dataQuestion['is-question-binary-alternatives']);
+        // \Log::debug((bool) $dataQuestion['is-question-binary-alternatives'] ? 'yes' : 'no');
 
         return $model?->questions()->create([
             'question' =>  trim($dataQuestion["question"]),

@@ -19,8 +19,8 @@ class StatisticsDataHistoryStudent
     }
 
  /*   public static function getStatisticsByPeriod ($topic_id, $student_id, $last_date, $today) {
-        \Log::debug($last_date);
-        \Log::debug($today);
+        // \Log::debug($last_date);
+        // \Log::debug($today);
 
         return DB::select('call getResults_bytopic_date(?,?,?,?)', array(
             $topic_id, $student_id, $last_date, $today
@@ -49,13 +49,13 @@ class StatisticsDataHistoryStudent
                 );
             }
 
-            /* \Log::debug($nameProcedure);
-            \Log::debug($arguments);
-            \Log::debug("{$data['last_date']} 00:00:00");
-            \Log::debug("{$data['today']} 00:00:00"); */
+            /* // \Log::debug($nameProcedure);
+            // \Log::debug($arguments);
+            // \Log::debug("{$data['last_date']} 00:00:00");
+            // \Log::debug("{$data['today']} 00:00:00"); */
 ;
             $topicsDataStatistic[] = DB::select("call {$nameProcedure}(?,?,?,?)", $arguments)[0];
-            //\Log::debug($topicsDataStatistic);
+            //// \Log::debug($topicsDataStatistic);
         }
 
         return $topicsDataStatistic;

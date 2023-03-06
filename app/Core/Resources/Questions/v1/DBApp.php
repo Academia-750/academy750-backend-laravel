@@ -118,7 +118,7 @@ class DBApp implements QuestionsInterface
             return "Successfully";
         } catch (\Exception $e) {
             DB::rollback();
-            \Log::debug($e->getMessage());
+            // \Log::debug($e->getMessage());
             abort(500,$e->getMessage());
         }
     }

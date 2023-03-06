@@ -28,8 +28,8 @@ class ActionUserLogoutEvent implements ShouldBroadcast
 
     public function broadcastOn(): array
     {
-        \Log::debug("Ejecutar ActionUserLogoutEvent");
-        \Log::debug($this->user->getRouteKey());
+        // \Log::debug("Ejecutar ActionUserLogoutEvent");
+        // \Log::debug($this->user->getRouteKey());
 
 
         return [
