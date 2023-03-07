@@ -3,12 +3,12 @@
 namespace Database\Seeders;
 
 use App\Core\Services\UserServiceTrait;
-use App\Core\Services\UuidGeneratorService;
-use App\Models\Permission;
+//use App\Core\Services\UuidGeneratorService;
+//use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\Credentials\Users\RegisterCredentials;
-use Faker\Factory;
+//use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
 
     public function __construct()
     {
-        $this->factory = Factory::create();
+        //$this->factory = Factory::create();
     }
 
     public function run(): void
@@ -30,7 +30,7 @@ class UserSeeder extends Seeder
 
         RegisterCredentials::registerCredentials();
 
-        $roleStudent = Role::query()->where('name', '=', 'student')->first();
+        /*$roleStudent = Role::query()->where('name', '=', 'student')->first();
 
         User::factory()->count(20)->create()->each(static function ($itemModel) use ($roleStudent) {
             $itemModel->assignRole($roleStudent);
@@ -47,6 +47,6 @@ class UserSeeder extends Seeder
                 'path' => 'https://via.placeholder.com/128.webp?text=ExampleUser',
                 'type_path' => 'url'
             ]);
-        });
+        });*/
     }
 }
