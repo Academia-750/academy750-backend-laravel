@@ -99,8 +99,6 @@ class Topic extends Model
     public function filterSearch(Builder $query, $value): void{
         $query->where(static function($query) use ($value) {
             $query->where('name', 'LIKE' , "%{$value}%")
-                ->orWhere('id', 'LIKE' , "%{$value}%")
-                ->orWhere('is_available', 'LIKE' , "%{$value}%")
                 ->orWhereHas('topic_group', static function(Builder $query) use ($value) {
                     $query->where('name', 'like', "%{$value}%")
                         ->orWhere('id', 'LIKE' , "%{$value}%");

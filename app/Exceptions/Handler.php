@@ -2,7 +2,11 @@
 
 namespace App\Exceptions;
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -47,4 +51,24 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, \Exception|Throwable $e): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
+    {
+        if ( $this->isExceptionRedirectFrontend($request, $e) ) {
+            return redirect(config('app.url_frontend'));
+        }
+
+        return parent::render($request, $e);
+    }
+
+    private function isExceptionRedirectFrontend ($request, $exception): bool
+    {
+        return !$request->isJson() &&
+            ($exception instanceof MethodNotAllowedHttpException ||
+                $exception instanceof RouteNotFoundException ||
+                $exception instanceof AuthenticationException ||
+                $exception instanceof NotFoundHttpException
+            );
+    }
+
 }

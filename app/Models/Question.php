@@ -117,9 +117,9 @@ class Question extends Model
 
     public function filterSearch(Builder $query, $value): void{
         $query->where(static function($query) use ($value) {
-            $query->where('question', 'LIKE' , "%{$value}%")
-                ->orWhere('id', 'LIKE' , "%{$value}%")
-                ->orWhere('reason', 'LIKE' , "%{$value}%");
+            $query->where('question', 'LIKE' , "%{$value}%");
+                //->orWhere('id', 'LIKE' , "%{$value}%")
+                //->orWhere('reason', 'LIKE' , "%{$value}%");
         });
     }
 

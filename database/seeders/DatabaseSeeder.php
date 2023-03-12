@@ -20,7 +20,7 @@ class DatabaseSeeder extends Seeder
         //$this->call(StudentSeeder::class);
 
         //$this->call(OppositionSeeder::class);
-        //$this->call(TopicGroupSeeder::class);
+        $this->call(TopicGroupSeeder::class);
         //$this->call(TopicSeeder::class);
         //$this->call(SubtopicSeeder::class);
 
@@ -29,7 +29,7 @@ class DatabaseSeeder extends Seeder
 
         // $this->call(SubtopicTopicSeeder::class);
         //$this->call(QuestionSeeder::class);
-        //$this->call(TestTypeSeeder::class);
+        $this->call(TestTypeSeeder::class);
         //$this->call(TestSeeder::class);
         /*$this->call(AnswerSeeder::class);
         $this->call(ImageSeeder::class);*/

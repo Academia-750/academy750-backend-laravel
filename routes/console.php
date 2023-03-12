@@ -33,6 +33,12 @@ Artisan::command('bomberos750:clear', function () {
     $this->call('view:cache');
     $this->call('route:cache');
     $this->call('optimize');
+
+    $this->call('cache:clear');
+    $this->call('config:clear');
+    $this->call('route:clear');
+
+
 })->purpose('Optimiza la caché de la APP');
 
 Artisan::command('bomberos750:install', function () {

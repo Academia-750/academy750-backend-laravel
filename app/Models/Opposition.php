@@ -108,7 +108,7 @@ class Opposition extends Model
     public function filterSearch(Builder $query, $value): void{
         $query->where(function($query) use ($value) {
             $query->where('name', 'LIKE' , "%{$value}%")
-                ->orWhere('id', 'LIKE' , "%{$value}%")
+                //->orWhere('id', 'LIKE' , "%{$value}%")
                 ->orWhere('period', 'LIKE' , "%{$value}%");
         });
     }

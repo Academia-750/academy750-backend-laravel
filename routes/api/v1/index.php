@@ -24,6 +24,11 @@ Route::prefix('v1')->group(static function(){
     });
 
     Route::post('guest/user/contact-us', [UsersController::class, 'contactsUS'])->name('api.v1.users.home-page.form.contact-us');
+    Route::get('guest/user/hello', function () {
+        return response()->json([
+            'message' => 'Welcome'
+        ]);
+    });
 
     Route::middleware(['auth:sanctum', 'only_users_with_account_enable'])->group(static function () {
         require __DIR__ . '/routes/profile.php';
