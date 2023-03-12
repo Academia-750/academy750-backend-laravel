@@ -54,16 +54,16 @@ class Handler extends ExceptionHandler
 
     public function render($request, \Exception|Throwable $e): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
-        if ( $this->isExceptionRedirectFrontend($request, $e) ) {
+        /*if ( $this->isExceptionRedirectFrontend($request, $e) ) {
             return redirect(config('app.url_frontend'));
-        }
+        }*/
 
         return parent::render($request, $e);
     }
 
     private function isExceptionRedirectFrontend ($request, $exception): bool
     {
-        return !$request->isJson() &&
+        return !$request->expectsJson() &&
             ($exception instanceof MethodNotAllowedHttpException ||
                 $exception instanceof RouteNotFoundException ||
                 $exception instanceof AuthenticationException ||

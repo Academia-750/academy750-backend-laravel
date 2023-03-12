@@ -3,6 +3,7 @@
 namespace App\Core\Resources\Profile\v1;
 
 use App\Core\Resources\Profile\v1\Interfaces\ProfileInterface;
+use App\Core\Resources\Users\v1\Services\ActionsAccountUser;
 use App\Models\User;
 use App\Notifications\Api\StudentHasBeenRemovedFromTheSystemNotification;
 use Illuminate\Support\Facades\Auth;
@@ -48,25 +49,25 @@ class DBQuery implements ProfileInterface
     {
         try {
 
-                $user = Auth::user();
+                DB::beginTransaction();
+                $user = User::query()->findOr(Auth::user()?->getRouteKey());
 
-                if (!$user) {
-                    abort(404);
-                }
+                ActionsAccountUser::disableAccountUser($user);
 
                 $userAcademy750 = User::query()->firstWhere('email', '=', config('mail.from.address'));
 
-                //$user->delete();
                 if (!$userAcademy750) {
                     abort(500, 'No se ha podido encontrar el correo oficial de la Academia 750');
                 }
+
+                DB::commit();
 
                 $userAcademy750->notify(new StudentHasBeenRemovedFromTheSystemNotification($user));
 
 
             return "Se ha dado de baja del sistema con éxito";
         } catch (\Exception $e) {
-            //DB::rollback();
+            DB::rollback();
             abort(500,$e->getMessage());
         }
     }

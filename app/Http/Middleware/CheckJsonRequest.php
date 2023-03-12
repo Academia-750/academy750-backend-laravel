@@ -11,7 +11,7 @@ class CheckJsonRequest
     public function handle(Request $request, Closure $next, /*$params*/)
     {
 
-        if (!$request->isJson()) {
+        if (!$request->expectsJson()) {
             //return response()->json(['error' => 'Solo se permiten solicitudes JSON.'], 400);
             return redirect(config('app.url_frontend'));
         }

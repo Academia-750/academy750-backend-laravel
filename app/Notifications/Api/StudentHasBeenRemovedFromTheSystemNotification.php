@@ -28,20 +28,8 @@ class StudentHasBeenRemovedFromTheSystemNotification extends Notification implem
 
     public function toMail($notifiable)
     {
-        try {
-            $from_email = $this->user->email;
-            $dni = $this->user->dni;
-
-            DB::beginTransaction();
-
-            $this->user->state = 'disable';
-            $this->user->save();
-
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollback();
-            abort(500,$e->getMessage());
-        }
+        $from_email = $this->user->email;
+        $dni = $this->user->dni;
 
         return (new MailMessage)
             ->from($from_email)
