@@ -51,7 +51,6 @@ class QuestionsTestService
      */
     public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
         try {
-            DB::beginTransaction();
 
             //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
             $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
@@ -145,13 +144,11 @@ class QuestionsTestService
                 // \Log::debug("En este punto hemos recorrido el tema, por lo que para el siguiente tema tenemos que recojer: {$count_current_questions_per_topic} preguntas");
             }
 
-            DB::commit();
 
             // Devolvemos todas los ID de las preguntas que hemos recolectado entre todos los temas seleccionados por el alumno
             return $questions_id;
         } catch (\Throwable $th) {
             // \Log::debug("SE PRODUJO UN ERROR JUSTO DESPUÉS DE EJECUTAR EL PROCEDURE");
-            DB::rollBack();
             abort(500, $th->getMessage());
         }
     }
@@ -166,7 +163,6 @@ class QuestionsTestService
      */
     public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType): void {
         try {
-            DB::beginTransaction();
             $index = 0;
 
             foreach ($questions_id as $question_id) {
@@ -181,7 +177,6 @@ class QuestionsTestService
                 ]);
 
             }
-            DB::commit();
         } catch (\Throwable $th) {
             DB::rollBack();
             abort(500, $th->getMessage());

@@ -19,7 +19,6 @@ class TestsService
     {
 
         try {
-            DB::beginTransaction();
                 $test = Test::create([
                     "number_of_questions_requested" => $data["number_of_questions_requested"],
                     "number_of_questions_generated" => $data["number_of_questions_requested"], // Se actualizará una vez se obtenga el numero real de preguntas disponibles
@@ -29,11 +28,8 @@ class TestsService
                     'opposition_id' => $data['opposition_id'],
                     'user_id' => $data['user_id'],
                 ]);
-            DB::commit();
-
             return $test;
         } catch (\Throwable $th) {
-            DB::rollBack();
             abort(500, $th->getMessage());
         }
     }
@@ -89,7 +85,6 @@ class TestsService
     public static function registerTopicsAndSubtopicsByTest (Test $test, array $topicsSelected_id, Opposition $opposition ): array
     {
         try {
-            DB::beginTransaction();
 
                 $subtopicsIdByTopic = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition);
 
@@ -110,11 +105,9 @@ class TestsService
                 $test->topics()->sync($topicsSelected_id);
                 $test->subtopics()->sync($subtopics_id);
 
-            DB::commit();
             return array_merge($topicsSelected_id, $subtopics_id);
 
         } catch (\Throwable $th) {
-            DB::rollBack();
             abort(500, $th->getMessage());
         }
     }

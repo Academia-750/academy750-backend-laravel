@@ -58,7 +58,6 @@ class DBApp implements TestsInterface
     {
         try {
 
-            DB::beginTransaction();
             $opposition = Opposition::findOrFail($request->get('opposition_id'));
             $testType = $request->get('test_type'); // test || card_memory
             $user = Auth::user();
@@ -67,6 +66,7 @@ class DBApp implements TestsInterface
                 abort(404);
             }
 
+            DB::beginTransaction();
             $questionnaire = TestsService::createTest([
                 "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
                 "opposition_id" => $opposition->getRouteKey(),
