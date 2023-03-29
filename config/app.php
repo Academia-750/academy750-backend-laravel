@@ -15,9 +15,9 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Academia 750'),
+    'name' => env('APP_NAME', 'Academia750'),
 
-    'app_url_logo' => env('APP_URL_LOGO', 'http://api-bomberos750.test/logo.png'),
+    'app_url_logo' => env('APP_URL_LOGO', 'https://academia750.es/logo.png'),
 
     'app_url_recaptcha_google' => env('APP_URL_GOOGLE_RECAPTCHA', 'https://www.google.com/recaptcha/api/siteverify'),
     'app_token_recaptcha_google' => env('APP_SECRET_TOKEN_GOOGLE_RECAPTCHA'),
@@ -59,11 +59,11 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'https://entrenamiento.academia750.es'),
 
     'asset_url' => env('ASSET_URL'),
 
-    'url_frontend' => env('APP_URL_FRONTEND'),
+    'url_frontend' => env('APP_URL_FRONTEND', 'https://academia750.es'),
 
     /*
     |--------------------------------------------------------------------------

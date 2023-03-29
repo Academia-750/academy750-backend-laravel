@@ -47,7 +47,7 @@ return [
     |
     */
 
-    'new_password_form_url' =>  env('FRONTEND_APP_URL', 'http://frontend.test') .'/new-password',
+    'new_password_form_url' =>  env('FRONTEND_APP_URL', 'https://academia750.es') .'/new-password',
 
     /*
     |--------------------------------------------------------------------------
@@ -85,8 +85,8 @@ return [
     |
     */
 
-    'email_account_was_already_verified_url' =>  env('FRONTEND_APP_URL', 'http://frontend.test') . '/already-verified',
+    'email_account_was_already_verified_url' =>  env('FRONTEND_APP_URL', 'https://academia750.es') . '/already-verified',
 
-    'email_account_just_verified_url' => env('FRONTEND_APP_URL', 'http://frontend.test') . '/verified',
+    'email_account_just_verified_url' => env('FRONTEND_APP_URL', 'https://academia750.es') . '/verified',
 
 ];
