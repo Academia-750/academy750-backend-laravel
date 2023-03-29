@@ -20,23 +20,18 @@ Artisan::command('inspire', function () {
 
 Artisan::command('bomberos750:clear', function () {
     $this->call('cache:clear');
-    $this->call('cache:clear');
+
     $this->call('config:clear');
-    $this->call('event:clear');
-    $this->call('route:clear');
-    $this->call('view:clear');
-    //$this->call('queue:clear');
-    $this->call('optimize:clear');
-
-
     $this->call('config:cache');
-    $this->call('view:cache');
-    $this->call('route:cache');
-    $this->call('optimize');
 
-    $this->call('cache:clear');
-    $this->call('config:clear');
     $this->call('route:clear');
+    $this->call('route:cache');
+
+    $this->call('view:clear');
+    $this->call('view:cache');
+
+    $this->call('optimize:clear');
+    $this->call('optimize');
 
 
 })->purpose('Optimiza la caché de la APP');
