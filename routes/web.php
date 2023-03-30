@@ -45,3 +45,7 @@ Route::get('/', function () {
     //dd(User::query()->limit(6)->paginate(2));
 });
 
+Route::get('/debug-sentry', function () {
+    throw new Exception('My first Sentry error!');
+});
+
