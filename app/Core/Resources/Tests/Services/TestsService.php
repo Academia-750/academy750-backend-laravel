@@ -63,15 +63,15 @@ class TestsService
      * @return array
      */
     public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, Opposition $opposition ): array {
-        $subtopics_id = [];
+        $subtopics_id = DB::select(
+            "call get_subtopics_ids_for_test(?,?)",
+            array($opposition->getRouteKey(), implode(',', $topicsSelected_id))
+        );
 
-        foreach ($topicsSelected_id as $topic_id) {
-            $topic = Topic::findOrFail($topic_id);
-
-            $subtopics_id[] = self::getSubtopicsByOppositionAndTopic($topic, $opposition);
-        }
-
-        return $subtopics_id;
+        return array_map(function($item) {
+            $itemCasted = (array) $item;
+            return $itemCasted['oppositionable_id'];
+        }, $subtopics_id);
     }
 
     /**
@@ -86,15 +86,7 @@ class TestsService
     {
         try {
 
-                $subtopicsIdByTopic = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition);
-
-                $subtopics_id = [];
-
-                foreach ( $subtopicsIdByTopic as $array_subtopics_by_topic ) {
-                    foreach ($array_subtopics_by_topic as $subtopic_id) {
-                        $subtopics_id[] = $subtopic_id;
-                    }
-                }
+                $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition);
 
                 /*$topics_id = array_map(static function ($topic_id) {
                     return Topic::query()->findOrFail($topic_id)?->getRouteKey();
@@ -103,9 +95,9 @@ class TestsService
                 // Vincular el Test creado con cada tema y sus subtemas
 
                 $test->topics()->sync($topicsSelected_id);
-                $test->subtopics()->sync($subtopics_id);
+                $test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
 
-            return array_merge($topicsSelected_id, $subtopics_id);
+            return array_merge($topicsSelected_id, $subtopicsEveryTopicAndOpposition);
 
         } catch (\Throwable $th) {
             abort(500, $th->getMessage());
