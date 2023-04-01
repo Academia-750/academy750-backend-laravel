@@ -73,7 +73,7 @@ class DBApp implements TestsInterface
                 abort(404);
             }
 
-            DB::beginTransaction();
+            //DB::beginTransaction();
 
             $start_time = microtime(true);
             $questionnaire = TestsService::createTest([
@@ -102,10 +102,10 @@ class DBApp implements TestsInterface
             $elapsed_time = microtime(true) - $start_time;
             \Log::debug("Time elapsed for QuestionsTestService::buildQuestionsTest(): $elapsed_time seconds");
 
-            DB::commit();
+            //DB::commit();
             return $questionnaire;
         } catch (\Exception $e) {
-            DB::rollback();
+            //DB::rollback();
             abort(500, $e->getMessage());
         }
 
