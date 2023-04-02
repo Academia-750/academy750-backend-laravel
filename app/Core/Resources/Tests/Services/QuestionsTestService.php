@@ -72,6 +72,8 @@ class QuestionsTestService
             $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory);
             // \Log::debug($topicsSelectedOrdered);
 
+            $start_time_getQuestionsByTestProcedure = microtime(true);
+
             foreach ($topicsSelectedOrdered as $topic_id) {
 
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
@@ -85,6 +87,7 @@ class QuestionsTestService
                 $questionsTotalForThisTopic = $dataQuestionsIdCasted;
 
                 // Si no me devolvió el número de preguntas que necesito de este tema, tocará buscar entre las preguntas visibles
+                $start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true);
                 if (GetQuestionsByTopicProceduresService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic($dataQuestionsIdCasted, $count_current_questions_per_topic)) {
                     // \Log::debug("Al parecer no hubo suficientes preguntas del procedure 1 para completar las que se necesitaban del tema");
 
@@ -110,7 +113,8 @@ class QuestionsTestService
 
                     $questionsTotalForThisTopic = GetQuestionsByTopicProceduresService::combineQuestionsOfFirstProcedureWithSecondProcedure($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
                 }
-
+                $elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true) - $start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic;
+                \Log::debug("Time elapsed for QuestionsTestService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic(): $elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic seconds");
                 // Creamos una referencia del array que almacena todas las preguntas absolutamente de todas las preguntas que se vayan recoletando de cada tema
                 $questionsCurrentID = $questions_id;
 
@@ -145,6 +149,8 @@ class QuestionsTestService
             }
 
 
+            $elapsed_time_getQuestionsByTestProcedure = microtime(true) - $start_time_getQuestionsByTestProcedure;
+            \Log::debug("Time elapsed for QuestionsTestService::getQuestionsByTestProcedure() foreach: {$elapsed_time_getQuestionsByTestProcedure} seconds");
             // Devolvemos todas los ID de las preguntas que hemos recolectado entre todos los temas seleccionados por el alumno
             return $questions_id;
         } catch (\Throwable $th) {
@@ -165,6 +171,7 @@ class QuestionsTestService
         try {
             $index = 0;
 
+            $start_time = microtime(true);
             foreach ($questions_id as $question_id) {
                 $index++;
 
@@ -177,6 +184,8 @@ class QuestionsTestService
                 ]);
 
             }
+            $elapsed_time = microtime(true) - $start_time;
+            \Log::debug("Time elapsed for QuestionsTestService::registerQuestionsHistoryByTest(): $elapsed_time seconds");
         } catch (\Throwable $th) {
             DB::rollBack();
             abort(500, $th->getMessage());
