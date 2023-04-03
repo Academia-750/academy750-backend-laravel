@@ -92,7 +92,7 @@ class GetQuestionsByTopicProceduresService
         );
 
         // \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO EN CRUDO--');
-        // \Log::debug((array) $topicsData);
+        \Log::debug(array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData));
 
         return array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData);
     }
@@ -101,7 +101,7 @@ class GetQuestionsByTopicProceduresService
     public static function sortTopicsAscByQuestionsTotal (array $topics_id, string $opposition_id, bool $isCardMemory): array
     {
 
-        $topicsDataForOrderByTotalQuestions = [];
+        /*$topicsDataForOrderByTotalQuestions = [];
 
         foreach ($topics_id as $topic_id) {
 
@@ -113,7 +113,8 @@ class GetQuestionsByTopicProceduresService
             $topicsDataForOrderByTotalQuestions[] = $resultProcedure;
         }
 
-        return collect($topicsDataForOrderByTotalQuestions)->sortBy('total_questions')->pluck('topic_id')->toArray();
+        return collect($topicsDataForOrderByTotalQuestions)->sortBy('total_questions')->pluck('topic_id')->toArray();*/
 
+        return self::getTopicsWithTotalQuestionsAvailable($isCardMemory, array( implode(',', $topics_id), $opposition_id ))[0];
     }
 }
