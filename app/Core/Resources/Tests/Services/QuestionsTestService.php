@@ -70,7 +70,7 @@ class QuestionsTestService
             // \Log::debug($topicsSelected_id);
 
             $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory);
-            // \Log::debug($topicsSelectedOrdered);
+            \Log::debug($topicsSelectedOrdered);
 
             $start_time_getQuestionsByTestProcedure = microtime(true);
 
