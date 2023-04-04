@@ -74,10 +74,9 @@ class QuestionsTestService
 
             $start_time_getQuestionsByTestProcedure = microtime(true);
 
-            foreach ($topicsSelectedOrdered as $topic_id) {
-
+            foreach ($topicsSelectedOrdered as $topic_data) {
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
-                $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_id, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
+                $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_data["topic_id"], $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
 
                 // \Log::debug("----Preguntas Procedure 1----");
                 // \Log::debug($dataQuestionsIdCasted);
@@ -97,7 +96,7 @@ class QuestionsTestService
                     $questionsIdProcedure2CompleteCasted = GetQuestionsByTopicProceduresService::callSecondProcedure(
                         $nameProcedureProcedure,
                         array(
-                            $topic_id,
+                            $topic_data["topic_id"],
                             $opposition_id,
                             $user->getRouteKey(),
                             (int) ( $count_current_questions_per_topic - count($dataQuestionsIdCasted) ), // Ejemplo: Si se requiere 5 preguntas por tema, y el procedure 1 me dió 2 (preguntas no visibles), entonces al procedure 2 solo le pediré lo que falta para la meta, que son 2 preguntas, pero buscará entre las preguntas visibles
