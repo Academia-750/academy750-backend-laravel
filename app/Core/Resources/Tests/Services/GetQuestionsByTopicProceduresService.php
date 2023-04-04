@@ -92,7 +92,7 @@ class GetQuestionsByTopicProceduresService
         );
 
         // \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO EN CRUDO--');
-        \Log::debug(array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData));
+        //\Log::debug(array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData));
 
         return array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData);
     }
