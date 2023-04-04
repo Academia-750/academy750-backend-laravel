@@ -115,6 +115,6 @@ class GetQuestionsByTopicProceduresService
 
         return collect($topicsDataForOrderByTotalQuestions)->sortBy('total_questions')->pluck('topic_id')->toArray();*/
 
-        return self::getTopicsWithTotalQuestionsAvailable($isCardMemory, array( implode(',', $topics_id), $opposition_id ))[0];
+        return self::getTopicsWithTotalQuestionsAvailable($isCardMemory, array( implode(',', $topics_id), $opposition_id ))/*[0]*/;
     }
 }
