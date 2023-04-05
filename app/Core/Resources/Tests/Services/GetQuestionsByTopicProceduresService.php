@@ -49,6 +49,7 @@ class GetQuestionsByTopicProceduresService
         $itemCasted = (array) $item;
         return [
             'topic_id' => $itemCasted['topic_id'],
+            'topic_name' => $itemCasted['nombre_del_tema'],
             'total_questions' => $itemCasted['total_questions']
         ];
     }

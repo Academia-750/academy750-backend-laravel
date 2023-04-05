@@ -115,7 +115,7 @@ class QuestionsTestService
                     $questionsTotalForThisTopic = GetQuestionsByTopicProceduresService::combineQuestionsOfFirstProcedureWithSecondProcedure($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
                 }
 
-                \Log::debug("----Total Preguntas recolectadas del tema {$topic_data["topic_id"]} del alumno: {$user->full_name}----");
+                \Log::debug("----Total Preguntas recolectadas del tema {$topic_data["topic_name"]} del alumno: {$user->full_name}----");
                 \Log::debug(count($questionsTotalForThisTopic));
                 /*$elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true) - $start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic;
                 \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic(): $elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic seconds");*/
@@ -124,11 +124,6 @@ class QuestionsTestService
 
                 // Unimos todas las preguntas que hemos juntado hasta ahora de los demás temas, con las nuevas preguntas de este tema
                 $questions_id = array_merge($questionsCurrentID, $questionsTotalForThisTopic);
-                $asfafsa = count($questions_id);
-                // \Log::debug("Cantidad de preguntas que se recojieron de este tema en total: {$asfafsa}");
-
-                $ahuifsa0fa = count($questionsTotalForThisTopic);
-                // \Log::debug("Cantidad de preguntas que llevamos ya recolectadas entre los anteriores temas: {$ahuifsa0fa}");
 
                 // Aquí llevamos el conteo de cuantas preguntas ya hemos acumulado por cada tema, para así saber cuantas preguntas necesitaremos para el siguiente tema
                 $count_current_questions_got_procedure+= count($questionsTotalForThisTopic);
