@@ -71,7 +71,7 @@ class QuestionsTestService
 
             $start_time_topics_ordered = microtime(true);
             $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory);
-            \Log::debug("Time elapsed {$user->full_name} for GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal() Ordenar temas ASC: {$start_time_topics_ordered} seconds");
+            \Log::debug("Time elapsed {$user->full_name} Ordenar temas ASC: {$start_time_topics_ordered} seconds");
             \Log::debug($topicsSelectedOrdered);
 
             $start_time_getQuestionsByTestProcedure = microtime(true);
