@@ -61,6 +61,12 @@ class DBApp implements TestsInterface
             $start_time = microtime(true);
             $testType = $request->get('test_type');
             $user = Auth::user();
+
+            if (!$user) {
+                abort(404);
+            }
+
+            \Log::debug("________________________________________________________________start: {$user->full_name}__________________________________________________________________________________");
             $elapsed_time = microtime(true) - $start_time;
             \Log::debug("Time elapsed {$user->full_name} for getting testType and user: $elapsed_time seconds");
 
@@ -69,12 +75,6 @@ class DBApp implements TestsInterface
             $opposition = Opposition::findOrFail($request->get('opposition_id'));
             $elapsed_time = microtime(true) - $start_time;
             \Log::debug("Time elapsed {$user->full_name} for Opposition::findOrFail(): $elapsed_time seconds");
-
-
-
-            if (!$user) {
-                abort(404);
-            }
 
             //DB::beginTransaction();
 
@@ -104,6 +104,7 @@ class DBApp implements TestsInterface
             );
             $elapsed_time = microtime(true) - $start_time;
             \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::buildQuestionsTest(): $elapsed_time seconds");
+            \Log::debug("________________________________________________________________end: {$user->full_name}__________________________________________________________________________________");
 
             //DB::commit();
             return $questionnaire;
