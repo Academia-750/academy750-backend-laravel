@@ -69,16 +69,16 @@ class QuestionsTestService
             // \Log::debug("Cantidad de temas seleccionados: {$count_current_remaining_topics_requested}");
             // \Log::debug($topicsSelected_id);
 
-            /*$start_time_topics_ordered = microtime(true);
+            $start_time_topics_ordered = microtime(true);
             $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory);
             \Log::debug("Time elapsed {$user->full_name} Ordenar temas ASC: {$start_time_topics_ordered} seconds");
-            \Log::debug($topicsSelectedOrdered);*/
+            \Log::debug($topicsSelectedOrdered);
 
             $start_time_getQuestionsByTestProcedure = microtime(true);
 
-            foreach ($topicsSelected_id as $topic_data) {
+            foreach ($topicsSelectedOrdered as $topic_data) {
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
-                $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_data/*["topic_id"]*/, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
+                $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_data["topic_id"], $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
 
                  \Log::debug("----Total Preguntas Procedure 1 de {$user->full_name}----");
                 \Log::debug(count($dataQuestionsIdCasted));
@@ -98,7 +98,7 @@ class QuestionsTestService
                     $questionsIdProcedure2CompleteCasted = GetQuestionsByTopicProceduresService::callSecondProcedure(
                         $nameProcedureProcedure,
                         array(
-                            $topic_data/*["topic_id"]*/,
+                            $topic_data["topic_id"],
                             $opposition_id,
                             $user->getRouteKey(),
                             (int) ( $count_current_questions_per_topic - count($dataQuestionsIdCasted) ), // Ejemplo: Si se requiere 5 preguntas por tema, y el procedure 1 me dió 2 (preguntas no visibles), entonces al procedure 2 solo le pediré lo que falta para la meta, que son 2 preguntas, pero buscará entre las preguntas visibles
@@ -117,7 +117,7 @@ class QuestionsTestService
                     $questionsTotalForThisTopic = GetQuestionsByTopicProceduresService::combineQuestionsOfFirstProcedureWithSecondProcedure($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
                 }
 
-                \Log::debug("----Total Preguntas recolectadas del tema {$topic_data/*["topic_name"]*/} del alumno: {$user->full_name}----");
+                \Log::debug("----Total Preguntas recolectadas del tema {$topic_data["topic_name"]} del alumno: {$user->full_name}----");
                 \Log::debug(count($questionsTotalForThisTopic));
                 /*$elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true) - $start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic;
                 \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic(): $elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic seconds");*/
