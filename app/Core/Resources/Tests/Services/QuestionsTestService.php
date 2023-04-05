@@ -78,8 +78,8 @@ class QuestionsTestService
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
                 $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_data["topic_id"], $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
 
-                // \Log::debug("----Preguntas Procedure 1----");
-                // \Log::debug($dataQuestionsIdCasted);
+                 \Log::debug("----Total Preguntas Procedure 1----");
+                \Log::debug(count($dataQuestionsIdCasted));
                 // \Log::debug(count($dataQuestionsIdCasted));
 
                 // Aquí será la variable que almacenará las preguntas del procedure 1 y en caso de no haber suficientes preguntas para este tema, se usará para almacenar también las del prcoedure 2
@@ -88,7 +88,7 @@ class QuestionsTestService
                 // Si no me devolvió el número de preguntas que necesito de este tema, tocará buscar entre las preguntas visibles
                 //$start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true);
                 if (GetQuestionsByTopicProceduresService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic($dataQuestionsIdCasted, $count_current_questions_per_topic)) {
-                    // \Log::debug("Al parecer no hubo suficientes preguntas del procedure 1 para completar las que se necesitaban del tema");
+                     \Log::debug("Al parecer no hubo suficientes preguntas del procedure 1 para completar las que se necesitaban del tema");
 
                     $nameProcedureProcedure = GetQuestionsByTopicProceduresService::getNameSecondProcedure($isCardMemory);
                     // \Log::debug("Nombre del segundo Procedure ejecutado {$nameProcedureProcedure}");
@@ -109,9 +109,14 @@ class QuestionsTestService
                     // \Log::debug(count($questionsIdProcedure2CompleteCasted));
 
                     // Unimos las preguntas del procedure 1 y las del procedure 2
+                    \Log::debug("----Total Preguntas Procedure 2----");
+                    \Log::debug(count($questionsIdProcedure2CompleteCasted));
 
                     $questionsTotalForThisTopic = GetQuestionsByTopicProceduresService::combineQuestionsOfFirstProcedureWithSecondProcedure($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
                 }
+
+                \Log::debug("----Total Preguntas recolectadas del tema {$topic_data["nombre_del_tema"]}----");
+                \Log::debug(count($questionsTotalForThisTopic));
                 /*$elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true) - $start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic;
                 \Log::debug("Time elapsed {$user->first_name} for QuestionsTestService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic(): $elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic seconds");*/
                 // Creamos una referencia del array que almacena todas las preguntas absolutamente de todas las preguntas que se vayan recoletando de cada tema
