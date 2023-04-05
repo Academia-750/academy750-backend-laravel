@@ -78,7 +78,7 @@ class QuestionsTestService
 
             foreach ($topicsSelected_id as $topic_data) {
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
-                $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_data["topic_id"], $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
+                $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_data/*["topic_id"]*/, $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
 
                  \Log::debug("----Total Preguntas Procedure 1 de {$user->full_name}----");
                 \Log::debug(count($dataQuestionsIdCasted));
@@ -98,7 +98,7 @@ class QuestionsTestService
                     $questionsIdProcedure2CompleteCasted = GetQuestionsByTopicProceduresService::callSecondProcedure(
                         $nameProcedureProcedure,
                         array(
-                            $topic_data["topic_id"],
+                            $topic_data/*["topic_id"]*/,
                             $opposition_id,
                             $user->getRouteKey(),
                             (int) ( $count_current_questions_per_topic - count($dataQuestionsIdCasted) ), // Ejemplo: Si se requiere 5 preguntas por tema, y el procedure 1 me dió 2 (preguntas no visibles), entonces al procedure 2 solo le pediré lo que falta para la meta, que son 2 preguntas, pero buscará entre las preguntas visibles
@@ -117,7 +117,7 @@ class QuestionsTestService
                     $questionsTotalForThisTopic = GetQuestionsByTopicProceduresService::combineQuestionsOfFirstProcedureWithSecondProcedure($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
                 }
 
-                \Log::debug("----Total Preguntas recolectadas del tema {$topic_data["topic_name"]} del alumno: {$user->full_name}----");
+                \Log::debug("----Total Preguntas recolectadas del tema {$topic_data/*["topic_name"]*/} del alumno: {$user->full_name}----");
                 \Log::debug(count($questionsTotalForThisTopic));
                 /*$elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true) - $start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic;
                 \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic(): $elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic seconds");*/
