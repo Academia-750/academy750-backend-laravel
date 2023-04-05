@@ -69,7 +69,9 @@ class QuestionsTestService
             // \Log::debug("Cantidad de temas seleccionados: {$count_current_remaining_topics_requested}");
             // \Log::debug($topicsSelected_id);
 
+            $start_time_topics_ordered = microtime(true);
             $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory);
+            \Log::debug("Time elapsed {$user->full_name} for GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal() Ordenar temas ASC: {$start_time_topics_ordered} seconds");
             \Log::debug($topicsSelectedOrdered);
 
             $start_time_getQuestionsByTestProcedure = microtime(true);
@@ -87,7 +89,7 @@ class QuestionsTestService
 
                 // Si no me devolvió el número de preguntas que necesito de este tema, tocará buscar entre las preguntas visibles
                 //$start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true);
-                /*if (GetQuestionsByTopicProceduresService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic($dataQuestionsIdCasted, $count_current_questions_per_topic)) {
+                if (GetQuestionsByTopicProceduresService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic($dataQuestionsIdCasted, $count_current_questions_per_topic)) {
                      \Log::debug("Al parecer no hubo suficientes preguntas del procedure 1 para completar las que se necesitaban del tema, así que se ejecuta procedure 2 para completar de: {$user->full_name}");
 
                     $nameProcedureProcedure = GetQuestionsByTopicProceduresService::getNameSecondProcedure($isCardMemory);
@@ -113,7 +115,7 @@ class QuestionsTestService
                     \Log::debug(count($questionsIdProcedure2CompleteCasted));
 
                     $questionsTotalForThisTopic = GetQuestionsByTopicProceduresService::combineQuestionsOfFirstProcedureWithSecondProcedure($dataQuestionsIdCasted, $questionsIdProcedure2CompleteCasted);
-                }*/
+                }
 
                 \Log::debug("----Total Preguntas recolectadas del tema {$topic_data["topic_name"]} del alumno: {$user->full_name}----");
                 \Log::debug(count($questionsTotalForThisTopic));
