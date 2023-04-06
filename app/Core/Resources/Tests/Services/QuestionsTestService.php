@@ -71,7 +71,7 @@ class QuestionsTestService
 
             $start_time_topics_ordered = microtime(true);
             //$topicsTestSelectedOrdered = [];
-            $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory);
+            $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory, $amountQuestionsRequestedByTest);
 
             //$topicsTestSelectedOrdered[] = $topicsSelectedOrdered;
 

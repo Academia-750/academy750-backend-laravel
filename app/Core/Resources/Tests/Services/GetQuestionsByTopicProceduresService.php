@@ -99,7 +99,7 @@ class GetQuestionsByTopicProceduresService
     }
 
 
-    public static function sortTopicsAscByQuestionsTotal (array $topics_id, string $opposition_id, bool $isCardMemory): array
+    public static function sortTopicsAscByQuestionsTotal (array $topics_id, string $opposition_id, bool $isCardMemory, int $amountQuestionsRequestedByTest): array
     {
 
         /*$topicsDataForOrderByTotalQuestions = [];
@@ -116,6 +116,9 @@ class GetQuestionsByTopicProceduresService
 
         return collect($topicsDataForOrderByTotalQuestions)->sortBy('total_questions')->pluck('topic_id')->toArray();*/
 
-        return self::getTopicsWithTotalQuestionsAvailable($isCardMemory, array( implode(',', $topics_id), $opposition_id ));
+        return self::getTopicsWithTotalQuestionsAvailable(
+            $isCardMemory,
+            array( implode(',', $topics_id), $opposition_id, $amountQuestionsRequestedByTest )
+        );
     }
 }
