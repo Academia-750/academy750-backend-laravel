@@ -25,13 +25,12 @@ class QuestionsTestService
     public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
     {
 
-        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
+        $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $testType === 'card_memory', $amountQuestionsRequestedByTest);
+
+        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelectedOrdered, $testType === 'card_memory', $opposition_id);
 
         $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
         $test->save();
-
-        // Desordenamos array de preguntas
-        shuffle($TotalQuestionsGottenByAllTopicsSelected);
 
         // Registramos que todas las preguntas disponibles recolectadas, se registren en el Test a generar
         self::registerQuestionsHistoryByTest($TotalQuestionsGottenByAllTopicsSelected, $test, $testType, $user);
@@ -49,7 +48,7 @@ class QuestionsTestService
      * @param string $opposition_id
      * @return array|void
      */
-    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
+    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, array $topicsSelectedOrdered, bool $isCardMemory, string $opposition_id ) {
         try {
 
             //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
@@ -60,18 +59,17 @@ class QuestionsTestService
             $questions_id = [];
 
             $count_current_questions_got_procedure = 0;
-            $count_current_remaining_topics_requested = count($topicsSelected_id);
+            $count_current_remaining_topics_requested = count($topicsSelectedOrdered);
 
             $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, 0, $count_current_remaining_topics_requested);
             // \Log::debug("_________________________________________________________________________________________________");
             // \Log::debug("Primera ves obtenemos la cantidad de preguntas por tema que necesitaremos extraer del primer tema");
             // \Log::debug("Cantidad de preguntas que necesitaremos del tema 1: {$count_current_questions_per_topic}");
             // \Log::debug("Cantidad de temas seleccionados: {$count_current_remaining_topics_requested}");
-            // \Log::debug($topicsSelected_id);
+            // \Log::debug($topicsSelectedOrdered);
 
             $start_time_topics_ordered = microtime(true);
             //$topicsTestSelectedOrdered = [];
-            $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory, $amountQuestionsRequestedByTest);
 
             //$topicsTestSelectedOrdered[] = $topicsSelectedOrdered;
 
@@ -156,7 +154,10 @@ class QuestionsTestService
 
             $elapsed_time_getQuestionsByTestProcedure = microtime(true) - $start_time_getQuestionsByTestProcedure;
             \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::getQuestionsByTestProcedure() foreach: {$elapsed_time_getQuestionsByTestProcedure} seconds");
-            // Devolvemos todas los ID de las preguntas que hemos recolectado entre todos los temas seleccionados por el alumno
+            // Devolvemos todas los ID de las preguntas que hemos recolectado entre todos los temas seleccionados por el alumno ordenado de forma aleatoria
+
+            shuffle($questions_id);
+
             return $questions_id;
         } catch (\Throwable $th) {
             // \Log::debug("SE PRODUJO UN ERROR JUSTO DESPUÉS DE EJECUTAR EL PROCEDURE");

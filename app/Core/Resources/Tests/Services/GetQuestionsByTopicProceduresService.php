@@ -43,17 +43,6 @@ class GetQuestionsByTopicProceduresService
         return $itemCasted['id'];
     }
 
-    public static function clean_object_std_by_procedure_topics_data_order_by_questions_total_available ($item): array {
-        // Una función para que el resultado del procedure sea compatible con un array de PHP
-
-        $itemCasted = (array) $item;
-        return [
-            'topic_id' => $itemCasted['topic_id'],
-            'topic_name' => $itemCasted['nombre_del_tema'],
-            'total_questions' => $itemCasted['total_questions']
-        ];
-    }
-
     public static function countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic (array $dataQuestionsIdCasted, int $count_current_questions_per_topic): bool
     {
         return count($dataQuestionsIdCasted) < $count_current_questions_per_topic;
@@ -88,37 +77,34 @@ class GetQuestionsByTopicProceduresService
         $nameProcedure = self::getNameOrderByTopicsASCProcedure($isCardMemory);
 
         $topicsData = DB::select(
-            "call {$nameProcedure}(?,?)",
+            "call {$nameProcedure}(?,?,?)",
             $data
         );
 
         // \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO EN CRUDO--');
         //\Log::debug(array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData));
 
-        return array_map(array(__CLASS__, 'clean_object_std_by_procedure_topics_data_order_by_questions_total_available'), (array) $topicsData);
+        return array_map(function ($item) {
+            $itemCasted = (array) $item;
+            return [
+                'topic_id' => $itemCasted['topic_id'],
+                'topic_name' => $itemCasted['nombre_del_tema'],
+                'total_questions' => $itemCasted['total_questions']
+            ];
+
+        }, (array) $topicsData);
     }
 
 
     public static function sortTopicsAscByQuestionsTotal (array $topics_id, string $opposition_id, bool $isCardMemory, int $amountQuestionsRequestedByTest): array
     {
-
-        /*$topicsDataForOrderByTotalQuestions = [];
-
-        foreach ($topics_id as $topic_id) {
-
-            $resultProcedure = self::getTopicsWithTotalQuestionsAvailable($isCardMemory, array( $topic_id, $opposition_id ))[0];
-
-            // \Log::debug('--IMPRIMIR RESULTADOS DEL PROCEDURE NUEVO--');
-            // \Log::debug($resultProcedure);
-
-            $topicsDataForOrderByTotalQuestions[] = $resultProcedure;
-        }
-
-        return collect($topicsDataForOrderByTotalQuestions)->sortBy('total_questions')->pluck('topic_id')->toArray();*/
-
         return self::getTopicsWithTotalQuestionsAvailable(
             $isCardMemory,
-            array( implode(',', $topics_id), $opposition_id, $amountQuestionsRequestedByTest )
+            array(
+                implode(',', $topics_id),
+                $opposition_id,
+                $amountQuestionsRequestedByTest
+            )
         );
     }
 }
