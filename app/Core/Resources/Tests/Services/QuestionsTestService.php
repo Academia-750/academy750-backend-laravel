@@ -70,13 +70,17 @@ class QuestionsTestService
             // \Log::debug($topicsSelected_id);
 
             $start_time_topics_ordered = microtime(true);
+            $topicsTestSelectedOrdered = [];
             $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $isCardMemory);
+
+            $topicsTestSelectedOrdered[] = $topicsSelectedOrdered;
+
             \Log::debug("Time elapsed {$user->full_name} Ordenar temas ASC: {$start_time_topics_ordered} seconds");
             \Log::debug($topicsSelectedOrdered);
 
             $start_time_getQuestionsByTestProcedure = microtime(true);
 
-            foreach ($topicsSelectedOrdered as $topic_data) {
+            foreach (/*$topicsSelectedOrdered*/$topicsTestSelectedOrdered as $topic_data) {
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
                 $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_data["topic_id"], $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
 
