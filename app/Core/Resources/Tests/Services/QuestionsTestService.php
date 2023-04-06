@@ -174,21 +174,23 @@ class QuestionsTestService
      */
     public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType, User $user): void {
         try {
-            $index = 0;
-
             $start_time = microtime(true);
+
+            $index = 0;
+            $pivotData = [];
+
             foreach ($questions_id as $question_id) {
                 $index++;
-
-                $test->questions()->attach($question_id, [
+                $pivotData[$question_id] = [
                     'index' => $index,
                     'have_been_show_test' => 'no',
                     'have_been_show_card_memory' => $testType === 'card_memory' ? 'yes' : 'no',
                     'answer_id' => null,
-                    'status_solved_question' => 'unanswered'
-                ]);
-
+                    'status_solved_question' => 'unanswered',
+                ];
             }
+
+            $test->questions()->attach($pivotData);
             $elapsed_time = microtime(true) - $start_time;
             \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::registerQuestionsHistoryByTest(): $elapsed_time seconds");
         } catch (\Throwable $th) {
