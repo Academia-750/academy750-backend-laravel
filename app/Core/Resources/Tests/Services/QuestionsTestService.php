@@ -62,16 +62,8 @@ class QuestionsTestService
             $count_current_remaining_topics_requested = count($topicsSelectedOrdered);
 
             $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, 0, $count_current_remaining_topics_requested);
-            // \Log::debug("_________________________________________________________________________________________________");
-            // \Log::debug("Primera ves obtenemos la cantidad de preguntas por tema que necesitaremos extraer del primer tema");
-            // \Log::debug("Cantidad de preguntas que necesitaremos del tema 1: {$count_current_questions_per_topic}");
-            // \Log::debug("Cantidad de temas seleccionados: {$count_current_remaining_topics_requested}");
-            // \Log::debug($topicsSelectedOrdered);
 
             $start_time_topics_ordered = microtime(true);
-            //$topicsTestSelectedOrdered = [];
-
-            //$topicsTestSelectedOrdered[] = $topicsSelectedOrdered;
 
             \Log::debug("Time elapsed {$user->full_name} Ordenar temas ASC: {$start_time_topics_ordered} seconds");
             \Log::debug($topicsSelectedOrdered);
@@ -84,7 +76,6 @@ class QuestionsTestService
 
                  \Log::debug("----Total Preguntas Procedure 1 de {$user->full_name}----");
                 \Log::debug(count($dataQuestionsIdCasted));
-                // \Log::debug(count($dataQuestionsIdCasted));
 
                 // Aquí será la variable que almacenará las preguntas del procedure 1 y en caso de no haber suficientes preguntas para este tema, se usará para almacenar también las del prcoedure 2
                 $questionsTotalForThisTopic = $dataQuestionsIdCasted;
@@ -95,8 +86,7 @@ class QuestionsTestService
                      \Log::debug("Al parecer no hubo suficientes preguntas del procedure 1 para completar las que se necesitaban del tema, así que se ejecuta procedure 2 para completar de: {$user->full_name}");
 
                     $nameProcedureProcedure = GetQuestionsByTopicProceduresService::getNameSecondProcedure($isCardMemory);
-                    // \Log::debug("Nombre del segundo Procedure ejecutado {$nameProcedureProcedure}");
-                    //$questionsIdProcedure2Complete = (array) $questionsIdProcedure2Complete;
+
                     $questionsIdProcedure2CompleteCasted = GetQuestionsByTopicProceduresService::callSecondProcedure(
                         $nameProcedureProcedure,
                         array(
@@ -107,10 +97,6 @@ class QuestionsTestService
                             implode(',', $dataQuestionsIdCasted) // Paso las preguntas que ya me dió el procedure 1 para evitar que el procedure 2 me las vaya a devolver nuevamente
                         )
                     );
-
-                    // \Log::debug("----Preguntas Procedure 2----");
-                    // \Log::debug($questionsIdProcedure2CompleteCasted);
-                    // \Log::debug(count($questionsIdProcedure2CompleteCasted));
 
                     // Unimos las preguntas del procedure 1 y las del procedure 2
                     \Log::debug("----Total Preguntas Procedure 2 terminado del alumno: {$user->full_name}----");
@@ -147,14 +133,11 @@ class QuestionsTestService
 
                 // En caso de que todavía queden temas disponibles, hacemos el cálculo nuevamente de cuantas preguntas necesitaremos del siguiente tema
                 $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, $count_current_questions_got_procedure, $count_current_remaining_topics_requested);
-
-                // \Log::debug("En este punto hemos recorrido el tema, por lo que para el siguiente tema tenemos que recojer: {$count_current_questions_per_topic} preguntas");
             }
 
 
             $elapsed_time_getQuestionsByTestProcedure = microtime(true) - $start_time_getQuestionsByTestProcedure;
             \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::getQuestionsByTestProcedure() foreach: {$elapsed_time_getQuestionsByTestProcedure} seconds");
-            // Devolvemos todas los ID de las preguntas que hemos recolectado entre todos los temas seleccionados por el alumno ordenado de forma aleatoria
 
             shuffle($questions_id);
 
@@ -195,7 +178,6 @@ class QuestionsTestService
             $elapsed_time = microtime(true) - $start_time;
             \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::registerQuestionsHistoryByTest(): $elapsed_time seconds");
         } catch (\Throwable $th) {
-            DB::rollBack();
             abort(500, $th->getMessage());
         }
     }

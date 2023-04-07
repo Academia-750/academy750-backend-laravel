@@ -126,7 +126,7 @@ class DBApp implements TestsInterface
     {
         try {
 
-            DB::beginTransaction();
+            //DB::beginTransaction();
             $test = Test::findOrFail($request->get('test_id'));
 
             $question = $test->questions()->findOrFail($request->get('question_id'));
@@ -153,11 +153,11 @@ class DBApp implements TestsInterface
 
 
 
-            DB::commit();
+            //DB::commit();
 
 
         } catch (\Exception $e) {
-            DB::rollback();
+            //DB::rollback();
             abort(500,$e->getMessage());
         }
     }
@@ -166,7 +166,7 @@ class DBApp implements TestsInterface
     {
         try {
 
-            DB::beginTransaction();
+            //DB::beginTransaction();
             $test = Test::query()->findOrFail($test->getRouteKey());
             //// \Log::debug($test);
 
@@ -209,11 +209,11 @@ class DBApp implements TestsInterface
                 ]);
             }
 
-            DB::commit();
+            //DB::commit();
 
             return $test;
         } catch (\Exception $e) {
-            DB::rollback();
+            //DB::rollback();
             abort($e->getCode(),$e->getMessage());
         }
     }
