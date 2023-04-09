@@ -36,11 +36,13 @@ class GetQuestionsByTopicProceduresService
         return 'get_topic_questions_quantity_test';
     }
 
-    public static function clean_object_std_by_procedure ($item) {
+    public static function clean_object_std_by_procedure ($questions_procedure) {
         // Una función para que el resultado del procedure sea compatible con un array de PHP
 
-        $itemCasted = (array) $item;
-        return $itemCasted['question_id'];
+        return array_map(function ($item) {
+            $itemCasted = (array) $item;
+            return $itemCasted['question_id'];
+        }, (array) $questions_procedure);
     }
 
     public static function countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic (array $dataQuestionsIdCasted, int $count_current_questions_per_topic): bool
@@ -55,7 +57,12 @@ class GetQuestionsByTopicProceduresService
             $data
         );
 
-        return array_map(array(__CLASS__, 'clean_object_std_by_procedure'), (array) $questionsDataIDFirstProcedure);
+        $start_time_clean_object_std_by_procedure = microtime(true);
+        $questions_id = self::clean_object_std_by_procedure($questionsDataIDFirstProcedure);
+        $elapsed_time_clean_object_std_by_procedure = microtime(true) - $start_time_clean_object_std_by_procedure;
+        \Log::debug("Time elapsed for GetQuestionsByTopicProceduresService::clean_object_std_by_procedure() foreach: {$elapsed_time_clean_object_std_by_procedure} seconds");
+
+        return $questions_id;
     }
 
     public static function callSecondProcedure (string $nameProcedureProcedure, array $data): array
