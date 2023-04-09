@@ -137,7 +137,7 @@ class QuestionsTestService
             \Log::debug($questions_id);
 
             $elapsed_time_getQuestionsByTestProcedure = microtime(true) - $start_time_getQuestionsByTestProcedure;
-            \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::getQuestionsByTestProcedure() foreach: {$elapsed_time_getQuestionsByTestProcedure} seconds");
+            \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::getQuestionsByTestProcedure(): {$elapsed_time_getQuestionsByTestProcedure} seconds");
 
             shuffle($questions_id);
 
