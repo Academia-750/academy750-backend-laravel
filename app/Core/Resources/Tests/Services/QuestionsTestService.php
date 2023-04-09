@@ -27,6 +27,8 @@ class QuestionsTestService
 
         //$topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $testType === 'card_memory', $amountQuestionsRequestedByTest);
 
+        \Log::debug($topicsSelected_id);
+
         $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
 
         $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
