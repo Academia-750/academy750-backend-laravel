@@ -40,7 +40,7 @@ class GetQuestionsByTopicProceduresService
         // Una función para que el resultado del procedure sea compatible con un array de PHP
 
         $itemCasted = (array) $item;
-        return $itemCasted['id'];
+        return $itemCasted['question_id'];
     }
 
     public static function countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic (array $dataQuestionsIdCasted, int $count_current_questions_per_topic): bool
