@@ -25,9 +25,9 @@ class QuestionsTestService
     public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
     {
 
-        $topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $testType === 'card_memory', $amountQuestionsRequestedByTest);
+        //$topicsSelectedOrdered = GetQuestionsByTopicProceduresService::sortTopicsAscByQuestionsTotal($topicsSelected_id, $opposition_id, $testType === 'card_memory', $amountQuestionsRequestedByTest);
 
-        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $testType, $user, $topicsSelectedOrdered, $testType === 'card_memory', $opposition_id);
+        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
 
         $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
         $test->save();
@@ -48,7 +48,7 @@ class QuestionsTestService
      * @param string $opposition_id
      * @return array|void
      */
-    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, string $testType, User $user, array $topicsSelectedOrdered, bool $isCardMemory, string $opposition_id ) {
+    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, User $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
         try {
 
             //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
@@ -56,21 +56,20 @@ class QuestionsTestService
 
             // \Log::debug("Nombre del primer Procedure ejecutado {$nameProcedure}");
 
-            $questions_id = [];
+            /*$questions_id = [];
 
             $count_current_questions_got_procedure = 0;
             $count_current_remaining_topics_requested = count($topicsSelectedOrdered);
 
-            $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, 0, $count_current_remaining_topics_requested);
+            $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, 0, $count_current_remaining_topics_requested);*/
 
             $start_time_topics_ordered = microtime(true);
 
             \Log::debug("Time elapsed {$user->full_name} Ordenar temas ASC: {$start_time_topics_ordered} seconds");
-            \Log::debug($topicsSelectedOrdered);
 
             $start_time_getQuestionsByTestProcedure = microtime(true);
 
-            foreach ($topicsSelectedOrdered as $topic_data) {
+            /*foreach ($topicsSelectedOrdered as $topic_data) {
                 // procedure 1 (Pedimos que busque todas las preguntas disponibles y no visibles para este tema)
                 $dataQuestionsIdCasted = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array($topic_data["topic_id"], $opposition_id, $user->getRouteKey(), (int) $count_current_questions_per_topic));
 
@@ -107,8 +106,7 @@ class QuestionsTestService
 
                 \Log::debug("----Total Preguntas recolectadas del tema {$topic_data["topic_name"]} del alumno: {$user->full_name}----");
                 \Log::debug(count($questionsTotalForThisTopic));
-                /*$elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic = microtime(true) - $start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic;
-                \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic(): $elapsed_time_start_time_countQuestionsFirstProcedureLessThanCountQuestionsRequestedByTopic seconds");*/
+
                 // Creamos una referencia del array que almacena todas las preguntas absolutamente de todas las preguntas que se vayan recoletando de cada tema
                 $questionsCurrentID = $questions_id;
 
@@ -133,8 +131,10 @@ class QuestionsTestService
 
                 // En caso de que todavía queden temas disponibles, hacemos el cálculo nuevamente de cuantas preguntas necesitaremos del siguiente tema
                 $count_current_questions_per_topic = GetQuestionsByTopicProceduresService::getNumbersQuestionPerTopic($amountQuestionsRequestedByTest, $count_current_questions_got_procedure, $count_current_remaining_topics_requested);
-            }
+            }*/
 
+            $questions_id = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array(implode(',',$topicsSelected_id), $opposition_id, $user->getRouteKey(), (int) $amountQuestionsRequestedByTest));
+            \Log::debug($questions_id);
 
             $elapsed_time_getQuestionsByTestProcedure = microtime(true) - $start_time_getQuestionsByTestProcedure;
             \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::getQuestionsByTestProcedure() foreach: {$elapsed_time_getQuestionsByTestProcedure} seconds");
