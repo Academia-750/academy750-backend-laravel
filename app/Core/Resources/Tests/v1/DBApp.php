@@ -58,7 +58,6 @@ class DBApp implements TestsInterface
     {
         try {
 
-            $start_time = microtime(true);
             $testType = $request->get('test_type');
             $user = Auth::user();
 
@@ -66,34 +65,15 @@ class DBApp implements TestsInterface
                 abort(404);
             }
 
-            \Log::debug("________________________________________________________________start: {$user->full_name}__________________________________________________________________________________");
-            $elapsed_time = microtime(true) - $start_time;
-            \Log::debug("Time elapsed {$user->full_name} for getting testType and user: $elapsed_time seconds");
-
-            $start_time = microtime(true);
-
-            $opposition = Opposition::findOrFail($request->get('opposition_id'));
-            $elapsed_time = microtime(true) - $start_time;
-            \Log::debug("Time elapsed {$user->full_name} for Opposition::findOrFail(): $elapsed_time seconds");
-
-            //DB::beginTransaction();
-
-            $start_time = microtime(true);
             $questionnaire = TestsService::createTest([
                 "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
-                "opposition_id" => $opposition->getRouteKey(),
+                "opposition_id" => $request->get('opposition_id'),
                 "test_type" => $testType,
                 "user_id" => $user?->getRouteKey()
             ]);
-            $elapsed_time = microtime(true) - $start_time;
-            \Log::debug("Time elapsed {$user->full_name} for TestsService::createTest(): $elapsed_time seconds");
 
-            $start_time = microtime(true);
-            TestsService::registerTopicsAndSubtopicsByTest($questionnaire, $request->get('topics_id'), $opposition);
-            $elapsed_time = microtime(true) - $start_time;
-            \Log::debug("Time elapsed {$user->full_name} for TestsService::registerTopicsAndSubtopicsByTest(): $elapsed_time seconds");
+            TestsService::registerTopicsAndSubtopicsByTest($questionnaire, $request->get('topics_id'), $request->get('opposition_id'));
 
-            $start_time = microtime(true);
             QuestionsTestService::buildQuestionsTest(
                 (int) $request->get('count_questions_for_test'),
                 $testType,
@@ -102,9 +82,6 @@ class DBApp implements TestsInterface
                 $request->get('topics_id'),
                 $request->get('opposition_id')
             );
-            $elapsed_time = microtime(true) - $start_time;
-            \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::buildQuestionsTest(): $elapsed_time seconds");
-            \Log::debug("________________________________________________________________end: {$user->full_name}__________________________________________________________________________________");
 
             //DB::commit();
             return $questionnaire;

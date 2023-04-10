@@ -52,19 +52,12 @@ class GetQuestionsByTopicProceduresService
 
     public static function callFirstProcedure (string $nameProcedure, array $data): array
     {
-        $start_time_callFirstProcedure = microtime(true);
-
         $questionsDataIDFirstProcedure = DB::select(
             "call {$nameProcedure}(?,?,?,?)",
             $data
         );
-        $elapsed_time_callFirstProcedure = microtime(true) - $start_time_callFirstProcedure;
-        \Log::debug("Time elapsed for GetQuestionsByTopicProceduresService::questionsDataIDFirstProcedure(): {$elapsed_time_callFirstProcedure} seconds");
 
-        $start_time_clean_object_std_by_procedure = microtime(true);
         $questions_id = self::clean_object_std_by_procedure($questionsDataIDFirstProcedure);
-        $elapsed_time_clean_object_std_by_procedure = microtime(true) - $start_time_clean_object_std_by_procedure;
-        \Log::debug("Time elapsed for GetQuestionsByTopicProceduresService::clean_object_std_by_procedure(): {$elapsed_time_clean_object_std_by_procedure} seconds");
 
         return $questions_id;
     }

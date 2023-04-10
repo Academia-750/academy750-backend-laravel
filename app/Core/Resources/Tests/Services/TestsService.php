@@ -59,13 +59,13 @@ class TestsService
      * Dado un arreglo de temas seleccionados, vamos obteniendo los subtemas de cada tema que coinciden con la Oposición dada
      *
      * @param array $topicsSelected_id
-     * @param Opposition $opposition
+     * @param string $opposition_id
      * @return array
      */
-    public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, Opposition $opposition ): array {
+    public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, string $opposition_id ): array {
         $subtopics_id = DB::select(
             "call get_subtopics_ids_for_test(?,?)",
-            array($opposition->getRouteKey(), implode(',', $topicsSelected_id))
+            array($opposition_id, implode(',', $topicsSelected_id))
         );
 
         return array_map(function($item) {
@@ -79,14 +79,14 @@ class TestsService
      *
      * @param Test $test
      * @param array $topicsSelected_id
-     * @param Opposition $opposition
-     * @return array
+     * @param string $opposition_id
+     * @return void
      */
-    public static function registerTopicsAndSubtopicsByTest (Test $test, array $topicsSelected_id, Opposition $opposition ): array
+    public static function registerTopicsAndSubtopicsByTest (Test $test, array $topicsSelected_id, string $opposition_id )
     {
         try {
 
-                $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition);
+                $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition_id);
 
                 /*$topics_id = array_map(static function ($topic_id) {
                     return Topic::query()->findOrFail($topic_id)?->getRouteKey();
@@ -96,8 +96,6 @@ class TestsService
 
                 $test->topics()->sync($topicsSelected_id);
                 $test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
-
-            return array_merge($topicsSelected_id, $subtopicsEveryTopicAndOpposition);
 
         } catch (\Throwable $th) {
             abort(500, $th->getMessage());
