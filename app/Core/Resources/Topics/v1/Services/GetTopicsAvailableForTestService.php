@@ -18,10 +18,10 @@ class GetTopicsAvailableForTestService
         }, $topics_id_data);
     }
 
-    public static function executeQueryFilterTopicsAvailableByOppositionAndTopicGroup (string $opposition_id, string $topic_group_id): array {
+    public static function executeQueryFilterTopicsAvailableByOppositionAndTopicGroup (string $opposition_id, string $topics_group_id): array {
         $topic_data = DB::select(
             "call topics_available_for_create_test(?,?)",
-            array($opposition_id, $topic_group_id)
+            array($opposition_id, $topics_group_id)
         );
 
         // \Log::debug("---------------------Topic Data Procedure---------------------");

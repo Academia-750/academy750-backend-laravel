@@ -40,11 +40,11 @@ class DBApp implements TopicsInterface
         // \Log::debug("---------------------Data Request---------------------");
         // \Log::debug($request);
         //// \Log::debug(implode(',', $request->get('topics-group-id')));
-        $topics_id = [];
+
 
         $topics_procedure_results = [];
 
-        foreach ($request->get('topics-group-id') as $topicGroupId) {
+        /*foreach ($request->get('topics-group-id') as $topicGroupId) {
             // \Log::debug("---------------------Iteración {$topicGroupId}---------------------");
             // \Log::debug($topicGroupId);
 
@@ -57,7 +57,12 @@ class DBApp implements TopicsInterface
             );
 
 
-        }
+        }*/
+
+        $topics_id = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup(
+            $request->get('opposition-id'),
+            implode(',', (array) $request->get('topics-group-id'))
+        );
 
 
         // \Log::debug("---------------------Final Array Topics ID---------------------");
