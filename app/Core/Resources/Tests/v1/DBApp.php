@@ -56,8 +56,6 @@ class DBApp implements TestsInterface
 
     public function create_a_quiz( $request )
     {
-        try {
-
             $testType = $request->get('test_type');
             $user = Auth::user();
 
@@ -83,12 +81,7 @@ class DBApp implements TestsInterface
                 $request->get('opposition_id')
             );
 
-            //DB::commit();
             return $questionnaire;
-        } catch (\Exception $e) {
-            //DB::rollback();
-            abort(500, $e->getMessage());
-        }
 
     }
 

@@ -22,7 +22,6 @@ class QuestionsTestService
      */
     public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
     {
-
         $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
 
         $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
@@ -46,30 +45,18 @@ class QuestionsTestService
      */
     public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, User $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
 
-        $maxRetries = 3;
-        $retryDelay = 100; // Tiempo de espera entre reintentos en milisegundos
+        try {
+            //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
+            $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
 
-        for ($i = 0; $i < $maxRetries; $i++) {
-            try {
-                //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
-                $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
+            $questions_id = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array(implode(',',$topicsSelected_id), $opposition_id, $user->getRouteKey(), (int) $amountQuestionsRequestedByTest));
 
-                $questions_id = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array(implode(',',$topicsSelected_id), $opposition_id, $user->getRouteKey(), (int) $amountQuestionsRequestedByTest));
+            shuffle($questions_id);
 
-                shuffle($questions_id);
+            return $questions_id;
+        } catch (Exception $e) {
+            abort(500, "Error Ejecutar Procedure para obtener las preguntas por cada Tema -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
 
-                return $questions_id;
-                break; // Si se ejecuta correctamente, sale del bucle
-            } catch (Exception $e) {
-                // Verifica si el error es un Deadlock
-                if (str_contains($e->getMessage(), 'Deadlock')) {
-                    usleep($retryDelay * 1000); // Espera antes de reintentar
-                    continue;
-                }
-
-                // Si es otro tipo de error, lanza la excepción
-                throw $e;
-            }
         }
     }
 
@@ -102,8 +89,8 @@ class QuestionsTestService
             $test->questions()->attach($pivotData);
             $elapsed_time = microtime(true) - $start_time;
             \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::registerQuestionsHistoryByTest(): $elapsed_time seconds");
-        } catch (\Throwable $th) {
-            abort(500, $th->getMessage());
+        } catch (Exception $e) {
+            abort(500, "Error Registrar preguntas obtenidas del procedure -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
         }
     }
 

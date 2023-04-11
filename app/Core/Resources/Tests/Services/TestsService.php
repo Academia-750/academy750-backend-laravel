@@ -29,8 +29,8 @@ class TestsService
                     'user_id' => $data['user_id'],
                 ]);
             return $test;
-        } catch (\Throwable $th) {
-            abort(500, $th->getMessage());
+        } catch (\Exception $e) {
+            abort(500, "Error Crear la cabecera del Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
         }
     }
 
@@ -97,8 +97,8 @@ class TestsService
                 $test->topics()->sync($topicsSelected_id);
                 $test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
 
-        } catch (\Throwable $th) {
-            abort(500, $th->getMessage());
+        } catch (\Exception $e) {
+            abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
         }
     }
 }
