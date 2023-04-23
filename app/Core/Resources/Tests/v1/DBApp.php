@@ -55,8 +55,6 @@ class DBApp implements TestsInterface
     public function create_a_quiz( $request )
     {
             $user = Auth::user();
-            Log::debug("");
-            Log::debug("");
             Log::debug("-------------------Inicia todo el proceso de Crear un Test del alumno Nombre completo: {$user?->full_name} con id: {$user?->id}-------------------");
             $start_time__create_a_quiz = microtime(true);
             $testType = $request->get('test_type');
@@ -85,7 +83,7 @@ class DBApp implements TestsInterface
             Log::debug("--Aqui se termina el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__TestsService__registerTopicsAndSubtopicsByTest} segundos");
 
             $start_time__QuestionsTestService__buildQuestionsTest = microtime(true);
-            Log::debug("++Aqui se ejecuta el proceso de obtener todas las preguntas en total para el Test del alumno: {$user?->full_name} con id {$user?->id}");
+            Log::debug("+++++++++++++++++++++++++++++++Aqui se ejecuta todos los procesos para obtener y registrar todas las preguntas para el Test del alumno: {$user?->full_name} con id {$user?->id}");
             QuestionsTestService::buildQuestionsTest(
                 (int) $request->get('count_questions_for_test'),
                 $testType,
@@ -95,10 +93,12 @@ class DBApp implements TestsInterface
                 $request->get('opposition_id')
             );
             $elapsed_time__QuestionsTestService__buildQuestionsTest = microtime(true) - $start_time__QuestionsTestService__buildQuestionsTest;
-            Log::debug("--Aqui se termina el proceso de obtener todas las preguntas en total para el Test del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__QuestionsTestService__buildQuestionsTest} segundos");
+            Log::debug("-----------------------------Aqui se termina todos los procesos para obtener y registrar todas las preguntas para el Test del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__QuestionsTestService__buildQuestionsTest} segundos");
 
             $elapsed_time__create_a_quiz = microtime(true) - $start_time__create_a_quiz;
             \Log::debug("-------------------Ha terminado el proceso de Crear un Test para el alumno con Nombre completo: {$user?->full_name} con id: {$user?->id} -- Ha tardado un total de {$elapsed_time__create_a_quiz} segundos-------------------");
+        Log::debug("");
+        Log::debug("");
 
             return $questionnaire;
 
