@@ -5,14 +5,12 @@ use App\Core\Resources\Tests\Services\QuestionsTestService;
 use App\Core\Resources\Tests\Services\TestsQuestionsService;
 use App\Core\Resources\Tests\Services\TestsService;
 use App\Models\Answer;
-use App\Models\Opposition;
 use App\Models\Question;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
-use App\Models\TestType;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 
 class DBApp implements TestsInterface
@@ -56,12 +54,20 @@ class DBApp implements TestsInterface
 
     public function create_a_quiz( $request )
     {
-            $testType = $request->get('test_type');
             $user = Auth::user();
+            Log::debug("");
+            Log::debug("");
+            Log::debug("-------------------Inicia todo el proceso de Crear un Test del alumno Nombre completo: {$user?->full_name} con id: {$user?->id}-------------------");
+            $start_time__create_a_quiz = microtime(true);
+            $testType = $request->get('test_type');
+
 
             if (!$user) {
                 abort(404);
             }
+
+            $start_time__TestsService__createTest = microtime(true);
+            Log::debug("++Aqui se ejecuta el proceso de solo registrar en la tabla 'tests' la referencia de un nuevo Test con toda su información y la del alumno {$user?->full_name} con id {$user?->id}");
 
             $questionnaire = TestsService::createTest([
                 "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
@@ -69,9 +75,17 @@ class DBApp implements TestsInterface
                 "test_type" => $testType,
                 "user_id" => $user?->getRouteKey()
             ]);
+            $elapsed_time__TestsService__createTest = microtime(true) - $start_time__TestsService__createTest;
+            Log::debug("--Aqui se termina el proceso de solo registrar en la tabla 'tests' la referencia de un nuevo Test con toda su información y la del alumno {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__TestsService__createTest} segundos");
 
+            $start_time__TestsService__registerTopicsAndSubtopicsByTest = microtime(true);
+            Log::debug("++Aqui se ejecuta el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id}");
             TestsService::registerTopicsAndSubtopicsByTest($questionnaire, $request->get('topics_id'), $request->get('opposition_id'));
+            $elapsed_time__TestsService__registerTopicsAndSubtopicsByTest = microtime(true) - $start_time__TestsService__registerTopicsAndSubtopicsByTest;
+            Log::debug("--Aqui se termina el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__TestsService__registerTopicsAndSubtopicsByTest} segundos");
 
+            $start_time__QuestionsTestService__buildQuestionsTest = microtime(true);
+            Log::debug("++Aqui se ejecuta el proceso de obtener todas las preguntas en total para el Test del alumno: {$user?->full_name} con id {$user?->id}");
             QuestionsTestService::buildQuestionsTest(
                 (int) $request->get('count_questions_for_test'),
                 $testType,
@@ -80,6 +94,11 @@ class DBApp implements TestsInterface
                 $request->get('topics_id'),
                 $request->get('opposition_id')
             );
+            $elapsed_time__QuestionsTestService__buildQuestionsTest = microtime(true) - $start_time__QuestionsTestService__buildQuestionsTest;
+            Log::debug("--Aqui se termina el proceso de obtener todas las preguntas en total para el Test del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__QuestionsTestService__buildQuestionsTest} segundos");
+
+            $elapsed_time__create_a_quiz = microtime(true) - $start_time__create_a_quiz;
+            \Log::debug("-------------------Ha terminado el proceso de Crear un Test para el alumno con Nombre completo: {$user?->full_name} con id: {$user?->id} -- Ha tardado un total de {$elapsed_time__create_a_quiz} segundos-------------------");
 
             return $questionnaire;
 

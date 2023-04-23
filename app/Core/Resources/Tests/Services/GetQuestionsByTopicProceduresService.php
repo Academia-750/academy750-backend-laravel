@@ -3,6 +3,7 @@
 namespace App\Core\Resources\Tests\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GetQuestionsByTopicProceduresService
 {
@@ -52,12 +53,25 @@ class GetQuestionsByTopicProceduresService
 
     public static function callFirstProcedure (string $nameProcedure, array $data): array
     {
+        $user = auth()?->user();
+
+        $start_time__callFirstProcedure = microtime(true);
+        Log::debug("++++Aqui se ejecuta el proceso de realizar la petición para ejecutar el procedimiento almacenado {$nameProcedure} del alumno: {$user?->full_name} con id {$user?->id}");
+
         $questionsDataIDFirstProcedure = DB::select(
             "call {$nameProcedure}(?,?,?,?)",
             $data
         );
 
+        $elapsed_time__callFirstProcedure = microtime(true) - $start_time__callFirstProcedure;
+        Log::debug("----Aqui se termina el proceso de realizar la petición para ejecutar el procedimiento almacenado {$nameProcedure} del alumno el cuál ha tardado: {$elapsed_time__callFirstProcedure} segundos");
+
+
+        $start_time__clean_object_std_by_procedure = microtime(true);
+        Log::debug("++++Aqui se ejecuta el proceso de mapear los datos que devuelve el Procedimiento de SQL para que sea compatible con el Backend en PHP del alumno: {$user?->full_name} con id {$user?->id}");
         $questions_id = self::clean_object_std_by_procedure($questionsDataIDFirstProcedure);
+        $elapsed_time__clean_object_std_by_procedure = microtime(true) - $start_time__clean_object_std_by_procedure;
+        Log::debug("----Aqui se termina el proceso de mapear los datos que devuelve el Procedimiento de SQL para que sea compatible con el Backend en PHP del alumno el cuál ha tardado: {$elapsed_time__clean_object_std_by_procedure} segundos");
 
         return $questions_id;
     }

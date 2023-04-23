@@ -5,7 +5,7 @@ namespace App\Core\Resources\Tests\Services;
 use App\Models\Test;
 use App\Models\TestType;
 use App\Models\User;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Exception;
 
 class QuestionsTestService
@@ -22,13 +22,26 @@ class QuestionsTestService
      */
     public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
     {
+
+
         $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
+
+        $start_time__update_field_number_of_questions_generated_test = microtime(true);
+        Log::debug("+++Aqui se ejecuta el proceso de actualizar el campo 'number_of_questions_generated' el cuál significa cuantas preguntas de forma precisa tendrá este test del alumno: {$user?->full_name} con id {$user?->id}");
 
         $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
         $test->save();
 
+        $elapsed_time__update_field_number_of_questions_generated_test = microtime(true) - $start_time__update_field_number_of_questions_generated_test;
+        Log::debug("---Aqui se termina el proceso de actualizar el campo 'number_of_questions_generated' el cuál significa cuantas preguntas de forma precisa tendrá este test del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__update_field_number_of_questions_generated_test} segundos");
+
         // Registramos que todas las preguntas disponibles recolectadas, se registren en el Test a generar
+
+        $start_time__registerQuestionsHistoryByTest = microtime(true);
+        Log::debug("+++Aqui se ejecuta el proceso de registrar las preguntas en la tabla 'question_test' para relacionar cada test con sus respectivas preguntas del alumno: {$user?->full_name} con id {$user?->id}");
         self::registerQuestionsHistoryByTest($TotalQuestionsGottenByAllTopicsSelected, $test, $testType, $user);
+        $elapsed_time__registerQuestionsHistoryByTest = microtime(true) - $start_time__registerQuestionsHistoryByTest;
+        Log::debug("---Aqui se termina el proceso de registrar las preguntas en la tabla 'question_test' para relacionar cada test con sus respectivas preguntas del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__registerQuestionsHistoryByTest} segundos");
 
         return $TotalQuestionsGottenByAllTopicsSelected;
     }
@@ -51,7 +64,11 @@ class QuestionsTestService
 
             $questions_id = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array(implode(',',$topicsSelected_id), $opposition_id, $user->getRouteKey(), (int) $amountQuestionsRequestedByTest));
 
+            $start_time__shuffle_questions = microtime(true);
+            Log::debug("+++Aqui se ejecuta el proceso de desordenar las preguntas mapeadas que ya son compatibles en este momento con el Backend PHP del alumno: {$user?->full_name} con id {$user?->id}");
             shuffle($questions_id);
+            $elapsed_time__shuffle_questions = microtime(true) - $start_time__shuffle_questions;
+            Log::debug("---Aqui se termina el proceso de desordenar las preguntas mapeadas que ya son compatibles en este momento con el Backend PHP del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__shuffle_questions} segundos");
 
             return $questions_id;
         } catch (Exception $e) {
@@ -70,8 +87,6 @@ class QuestionsTestService
      */
     public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType, User $user): void {
         try {
-            $start_time = microtime(true);
-
             $index = 0;
             $pivotData = [];
 
@@ -87,8 +102,6 @@ class QuestionsTestService
             }
 
             $test->questions()->attach($pivotData);
-            $elapsed_time = microtime(true) - $start_time;
-            \Log::debug("Time elapsed {$user->full_name} for QuestionsTestService::registerQuestionsHistoryByTest(): $elapsed_time seconds");
         } catch (Exception $e) {
             abort(500, "Error Registrar preguntas obtenidas del procedure -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
         }
