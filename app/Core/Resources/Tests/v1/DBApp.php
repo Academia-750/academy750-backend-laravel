@@ -10,6 +10,7 @@ use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 
@@ -157,6 +158,7 @@ class DBApp implements TestsInterface
 
             //DB::beginTransaction();
             $test = Test::query()->findOrFail($test->getRouteKey());
+            $user = auth()?->user();
             //// \Log::debug($test);
 
             $total_questions_test = $test->questions->count();
@@ -197,6 +199,17 @@ class DBApp implements TestsInterface
                     'have_been_show_test' => 'yes'
                 ]);
             }
+
+            Log::debug("");
+            Log::debug("Ejecutar procedimiento almacenado de update_used_questions para el usuario: '{$user->full_name}' con id: '{$user->id}'");
+            $start_time__call_procedure_update_used_questions = microtime(true);
+            DB::select(
+                "call update_used_questions(?)",
+                array($test->getRouteKey())
+            );
+
+            $end_time__call_procedure_update_used_questions = (microtime(true)) - $start_time__call_procedure_update_used_questions;
+            Log::debug("Ha terminado de ejecutarse el procedimiento update_used_questions para el usuario: '{$user->full_name}' con id: '{$user->id}' que ha durado: {$end_time__call_procedure_update_used_questions} segundos");
 
             //DB::commit();
 
