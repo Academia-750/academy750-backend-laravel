@@ -13,6 +13,11 @@ class ActionsAccountUser
         }
 
         DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
+
+        $tests = $user->tests()->pluck('id')->toArray();
+
+        //DB::select("CALL ")
+
         //$user->forceDelete();
         $user->delete();
 
