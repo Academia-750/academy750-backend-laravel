@@ -76,6 +76,8 @@ class CacheApp implements QuestionsInterface
             return $this->dbApp->topic_relationship_questions_read($topic, $question);
         });*/
 
+        \Log::debug('CacheApp->topic_relationship_questions_read');
+
         return $this->dbApp->topic_relationship_questions_read($topic, $question);
 
     }

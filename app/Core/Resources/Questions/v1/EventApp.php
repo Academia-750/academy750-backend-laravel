@@ -46,6 +46,8 @@ class EventApp implements QuestionsInterface
 
     public function topic_relationship_questions_read($topic, $question)
     {
+        \Log::debug('EventApp->topic_relationship_questions_read');
+
         return $this->cacheApp->topic_relationship_questions_read($topic, $question);
     }
 

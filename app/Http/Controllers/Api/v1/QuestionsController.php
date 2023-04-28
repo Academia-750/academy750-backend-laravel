@@ -46,6 +46,9 @@ class QuestionsController extends Controller
         return $this->questionsInterface->topics_relationship_get_questions($topic);
     }
     public function topic_relationship_questions_read( Topic $topic, Question $question ) {
+
+        \Log::debug('QuestionsController->topic_relationship_questions_read');
+
         return $this->questionsInterface->topic_relationship_questions_read( $topic, $question );
     }
     public function topic_relationship_questions_create( CreateQuestionRequest $request, Topic $topic, Question $question ) {

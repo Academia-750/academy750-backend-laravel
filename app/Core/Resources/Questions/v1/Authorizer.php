@@ -68,6 +68,9 @@ class Authorizer implements QuestionsInterface
         if (!$topic->questions()->firstWhere('id', '=', $question->getRouteKey())) {
             abort(403);
         }
+
+        \Log::debug('Authorizer->topic_relationship_questions_read');
+
         return $this->schemaJson->topic_relationship_questions_read($topic, $question);
     }
 

@@ -145,6 +145,8 @@ class DBApp implements QuestionsInterface
 
     public function topic_relationship_questions_read($topic, $question)
     {
+        \Log::debug('DBApp->topic_relationship_questions_read');
+
         return $topic->questions()->applyIncludes()->firstWhere("id", "=", $question->getRouteKey());
     }
 
