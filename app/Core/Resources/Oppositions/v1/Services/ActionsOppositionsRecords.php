@@ -3,6 +3,7 @@
 namespace App\Core\Resources\Oppositions\v1\Services;
 
 use App\Models\Opposition;
+use Illuminate\Support\Facades\DB;
 
 class ActionsOppositionsRecords
 {
@@ -10,6 +11,19 @@ class ActionsOppositionsRecords
         if ( !($opposition instanceof Opposition) ) {
             $opposition = Opposition::query()->find($opposition);
         }
+
+        $countTestsByOpposition = $opposition->tests()->count();
+
+        if ($countTestsByOpposition > 0) {
+            $opposition->is_available = 'yes';
+        } else {
+            $opposition->topics()->detach();
+            $opposition->subtopics()->detach();
+            DB::table('questions_used_test')
+                ->where('opposition_id', $opposition->id)
+                ->delete();
+        }
+
 
         $opposition->delete();
 
