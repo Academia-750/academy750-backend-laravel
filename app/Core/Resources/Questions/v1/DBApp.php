@@ -217,7 +217,19 @@ class DBApp implements QuestionsInterface
     {
         try {
             DB::beginTransaction();
-            $question->delete();
+
+            $countTestsCreatedByThisQuestion = $question->tests()->count();
+
+            if ($countTestsCreatedByThisQuestion) {
+                $question->is_visible = 'no';
+                $question->save();
+            } else {
+                $question->delete();
+            }
+
+            DB::table('questions_used_test')
+                ->where('question_id', $question->id)
+                ->delete();
 
             DB::commit();
 
