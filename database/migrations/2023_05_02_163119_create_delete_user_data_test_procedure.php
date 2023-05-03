@@ -21,23 +21,26 @@ return new class extends Migration
             IN `id_usuario` VARCHAR(36),
         )
 
-        BEGIN
-
-        DELETE te
-        FROM tests t
-        INNER JOIN testables te on te.test_id = t.id
-        WHERE t.user_id = id_usuario;
-
-        DELETE qt FROM tests t
-        INNER JOIN question_test qt on qt.test_id = t.id
-        WHERE t.user_id = id_usuario;
-
-        DELETE FROM tests
-        WHERE user_id = id_usuario;
-
-        DELETE FROM questions_used_test
-        WHERE user_id = id_usuario;
-
+        BEGIN DELETE te
+        FROM
+          tests t
+          INNER JOIN testables te on te.test_id = t.id
+        WHERE
+          t.user_id = id_usuario;
+        DELETE qt
+        FROM
+          tests t
+          INNER JOIN question_test qt on qt.test_id = t.id
+        WHERE
+          t.user_id = id_usuario;
+        DELETE FROM
+          tests
+        WHERE
+          user_id = id_usuario;
+        DELETE FROM
+          questions_used_test
+        WHERE
+          user_id = id_usuario;
         END
         ";
 
