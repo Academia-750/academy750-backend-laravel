@@ -288,12 +288,31 @@ class DBApp implements TopicsInterface
                 abort(404);
             }
 
-            DB::beginTransaction();
+            $countTestsOfThisSubtopic = $subtopicRecord->tests()->count();
 
-            // \Log::debug($subtopic);
-            $subtopic->delete();
+            if ($countTestsOfThisSubtopic > 0) {
+                $subtopicRecord->is_available = 'no';
+                $subtopicRecord->save();
 
-            DB::commit();
+                $subtopicRecord->questions->each(function ($question) {
+                    $question->update(['visible' => 'no']);
+                });
+            } else {
+                DB::table('oppositionables')
+                    ->where(function ($query) use ($subtopicRecord) {
+                        $query->where(function ($query) use ($subtopicRecord) {
+                            $query->where('oppositionable_type', Subtopic::class)
+                                ->where('oppositionable_id', $subtopicRecord->id);
+                        });
+                    })
+                    ->delete();
+
+                $subtopic->questions()->delete();
+
+                $subtopic->delete();
+            }
+
+            ActionsTopicsRecords::deleteQuestionsUsedInTestsByTopic($subtopic->id, "subtopic_id");
 
             return;
 

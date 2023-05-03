@@ -27,8 +27,7 @@ class ActionsTopicsRecords
 
         } else {
             self::deleteOppositionsByTopicAndSubtopic($topic);
-            self::deleteQuestionsUsedInTestsByTopic($topic);
-
+            self::deleteQuestionsUsedInTestsByTopic($topic->id, 'topic_id');
             $topic->subtopics->each(function ($subtopic) {
                 $subtopic = Subtopic::query()->findOrFail($subtopic?->id);
                 $subtopic?->questions()->delete();
@@ -90,9 +89,9 @@ class ActionsTopicsRecords
             ->delete();
     }
 
-    public static function deleteQuestionsUsedInTestsByTopic ($topic) {
+    public static function deleteQuestionsUsedInTestsByTopic (string $id, string $field) {
         DB::table('questions_used_test')
-            ->where('topic_id', $topic->id)
+            ->where($field, $id)
             ->delete();
     }
 }
