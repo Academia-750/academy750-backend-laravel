@@ -20,12 +20,12 @@ class ActionsOppositionsRecords
         } else {
             $opposition->topics()->detach();
             $opposition->subtopics()->detach();
-            DB::table('questions_used_test')
-                ->where('opposition_id', $opposition->id)
-                ->delete();
-
             $opposition->delete();
         }
+
+        DB::table('questions_used_test')
+            ->where('opposition_id', $opposition->id)
+            ->delete();
 
         return $opposition;
     }

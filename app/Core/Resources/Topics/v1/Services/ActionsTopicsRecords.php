@@ -17,11 +17,14 @@ class ActionsTopicsRecords
         $countTestsOfThisTopic = $topic->tests()->count();
 
         if ($countTestsOfThisTopic > 0) {
-            $topic->is_available = 'no';
-            $topic->save();
+
             $topic->subtopics->each(function ($subtopic) {
                 $subtopic->update(['is_available' => 'no']);
             });
+
+            $topic->is_available = 'no';
+            $topic->save();
+
         } else {
             self::deleteOppositionsByTopicAndSubtopic($topic);
             self::deleteQuestionsUsedInTestsByTopic($topic);
@@ -37,9 +40,8 @@ class ActionsTopicsRecords
 
 
             $topic->subtopics()->delete();
+            $topic->delete();
         }
-
-        $topic->delete();
 
         return $topic;
     }
