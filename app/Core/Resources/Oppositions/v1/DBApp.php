@@ -5,13 +5,9 @@ use App\Core\Resources\Oppositions\v1\Services\ActionForMultipleRecordsService;
 use App\Core\Resources\Oppositions\v1\Services\ActionsOppositionsRecords;
 use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
-use App\Models\Subtopic;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
-//use App\Imports\Api\Oppositions\v1\OppositionsImport;
 
 
 class DBApp implements OppositionsInterface
