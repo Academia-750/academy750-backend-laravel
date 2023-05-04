@@ -319,9 +319,9 @@ class DBApp implements TopicsInterface
 
     public function get_oppositions_available_of_topic($topic)
     {
-        $oppositions_id = $topic->oppositions()->where('oppositions.is_available', 'yes')?->pluck('oppositions.id');
+        $oppositions_id = $topic->oppositions()->pluck('oppositions.id');
 
-        return (new Opposition)->whereNotIn('id', $oppositions_id->toArray())->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return (new Opposition)->whereNotIn('id', $oppositions_id->toArray())->where('is_available', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function assign_opposition_with_subtopics_to_topic($request, $topic)
