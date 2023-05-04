@@ -15,8 +15,12 @@ class ActionsOppositionsRecords
         $countTestsByOpposition = $opposition->tests()->count();
 
         if ($countTestsByOpposition > 0) {
-            $opposition->is_available = 'no';
-            $opposition->save();
+            /*$opposition->is_available = 'no';
+            $opposition->save();*/
+
+            $opposition->update([
+                'is_available' => 'no'
+            ]);
         } else {
             $opposition->topics()->detach();
             $opposition->subtopics()->detach();
