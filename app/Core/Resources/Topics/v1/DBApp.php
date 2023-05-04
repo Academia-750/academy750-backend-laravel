@@ -4,8 +4,6 @@ namespace App\Core\Resources\Topics\v1;
 use App\Core\Resources\Topics\v1\Services\GetTopicsAvailableForTestService;
 use App\Imports\Api\v1\SubtopicsImport;
 use App\Imports\Api\v1\TopicsImport;
-use App\Jobs\Api\v1\ImportSubtopicsJob;
-use App\Jobs\Api\v1\ImportTopicsJob;
 use App\Models\Answer;
 use App\Models\Opposition;
 use App\Models\Question;
@@ -15,12 +13,9 @@ use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Core\Resources\Topics\v1\Services\ActionForMultipleRecordsService;
 use App\Core\Resources\Topics\v1\Services\ActionsTopicsRecords;
-//use App\Imports\Api\Topics\v1\TopicsImport;
-use App\Exports\Api\Topics\v1\TopicsExport;
 
 
 class DBApp implements TopicsInterface
@@ -324,7 +319,7 @@ class DBApp implements TopicsInterface
 
     public function get_oppositions_available_of_topic($topic)
     {
-        $oppositions_id = $topic->oppositions->pluck('id');
+        $oppositions_id = $topic->oppositions()->where('oppositions.is_available', 'yes')?->pluck('oppositions.id');
 
         return (new Opposition)->whereNotIn('id', $oppositions_id->toArray())->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }

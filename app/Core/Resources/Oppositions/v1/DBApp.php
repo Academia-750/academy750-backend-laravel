@@ -23,7 +23,7 @@ class DBApp implements OppositionsInterface
     }
 
     public function index(){
-        $queryResults = $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        $queryResults = $this->model::applyFilters()->applySorts()->where('is_available', 'yes')->applyIncludes()->jsonPaginate();
 
         return $queryResults;
     }
