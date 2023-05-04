@@ -102,9 +102,9 @@ class CacheApp implements TopicsInterface
         return $this->dbApp->get_relationship_a_subtopic($topic, $subtopic);
     }
 
-    public function get_relationship_a_opposition($topic, $opposition)
+    public function get_relationship_subtopics_by_opposition($topic, $opposition)
     {
-        return $this->dbApp->get_relationship_a_opposition( $topic, $opposition );
+        return $this->dbApp->get_relationship_subtopics_by_opposition( $topic, $opposition );
     }
 
     public function get_relationship_questions($topic)

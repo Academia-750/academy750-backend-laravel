@@ -170,7 +170,7 @@ class DBApp implements TopicsInterface
         return (new Opposition)->whereIn("id", $oppositions_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function get_relationship_a_opposition($topic, $opposition)
+    public function get_relationship_subtopics_by_opposition($topic, $opposition)
     {
         $subtopics_id = [];
 

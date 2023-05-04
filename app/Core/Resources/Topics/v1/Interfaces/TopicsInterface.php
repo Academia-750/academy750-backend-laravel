@@ -18,7 +18,7 @@ interface TopicsInterface
     public function get_relationship_subtopics( $topic );
     public function get_relationship_oppositions( $topic );
     public function get_relationship_a_subtopic( $topic, $subtopic );
-    public function get_relationship_a_opposition( $topic, $opposition );
+    public function get_relationship_subtopics_by_opposition( $topic, $opposition ); // get_relationship_a_opposition
     public function get_relationship_questions( $topic );
     public function get_relationship_a_question( $topic, $question );
     public function subtopics_get_relationship_questions($topic, $subtopic);

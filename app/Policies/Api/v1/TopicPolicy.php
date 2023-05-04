@@ -53,7 +53,7 @@ class TopicPolicy
     public function get_relationship_a_subtopic (User $user, Topic $topic): bool {
         return $user->can("see-a-topic");
     }
-    public function get_relationship_a_opposition (User $user, Topic $topic): bool {
+    public function get_relationship_subtopics_by_opposition (User $user, Topic $topic): bool {
         return $user->can("see-a-topic");
     }
 

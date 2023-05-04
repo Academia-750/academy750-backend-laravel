@@ -125,10 +125,10 @@ class SchemaJson implements TopicsInterface
         );
     }
 
-    public function get_relationship_a_opposition($topic, $opposition)
+    public function get_relationship_subtopics_by_opposition($topic, $opposition)
     {
         return SubtopicCollection::make(
-            $this->eventApp->get_relationship_a_opposition($topic, $opposition)
+            $this->eventApp->get_relationship_subtopics_by_opposition($topic, $opposition)
         )->additional([
             'meta' => [
                 'topic' => TopicResource::make($topic),

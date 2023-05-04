@@ -94,8 +94,8 @@ class TopicsController extends Controller
     public function get_relationship_a_subtopic (Topic $topic, Subtopic $subtopic) {
         return $this->topicsInterface->get_relationship_a_subtopic($topic, $subtopic);
     }
-    public function get_relationship_a_opposition (Topic $topic, Opposition $opposition) {
-        return $this->topicsInterface->get_relationship_a_opposition($topic, $opposition);
+    public function get_relationship_subtopics_by_opposition (Topic $topic, Opposition $opposition) {
+        return $this->topicsInterface->get_relationship_subtopics_by_opposition($topic, $opposition);
     }
 
     public function get_relationship_questions (Topic $topic) {

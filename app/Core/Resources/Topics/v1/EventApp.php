@@ -77,9 +77,9 @@ class EventApp implements TopicsInterface
         return $this->cacheApp->get_relationship_a_subtopic($topic, $subtopic);
     }
 
-    public function get_relationship_a_opposition($topic, $opposition)
+    public function get_relationship_subtopics_by_opposition($topic, $opposition)
     {
-        return $this->cacheApp->get_relationship_a_opposition($topic, $opposition);
+        return $this->cacheApp->get_relationship_subtopics_by_opposition($topic, $opposition);
     }
 
     public function get_relationship_questions($topic)
