@@ -13,29 +13,8 @@ Route::patch('topics/update/{topic}', [TopicsController::class, 'update'])->name
 Route::delete('topics/delete/{topic}', [TopicsController::class, 'delete'])->name('api.v1.topics.soft-delete');
 Route::post('topics/actions-on-multiple-records', [TopicsController::class, 'action_for_multiple_records'])->name('api.v1.topics.actions-on-multiple-records');
 Route::post('topics/import', [TopicsController::class, 'import_records'])->name('api.v1.topics.import');
-Route::post('topics/subtopics/import', [TopicsController::class, 'import_subtopics_by_topics'])->name('api.v1.topics.import.subtopics');
-
-Route::get("topics/{topic}/oppositions-available", [TopicsController::class, 'get_oppositions_available_of_topic'])->name('api.v1.topics.oppositions-available');
-
-Route::get("topics/{topic}/relationship/subtopics", [TopicsController::class, 'get_relationship_subtopics'])->name('api.v1.topics.relationships.subtopics');
-Route::get("topics/{topic}/relationship/subtopics/{subtopic}", [TopicsController::class, 'get_relationship_a_subtopic'])->name('api.v1.topics.relationships.subtopics.record');
-Route::post("topics/{topic}/relationship/subtopics/create", [TopicsController::class, 'create_relationship_subtopic'])->name('api.v1.topics.create.relationships.subtopic');
-Route::patch("topics/{topic}/relationship/subtopics/{subtopic}/update", [TopicsController::class, 'update_relationship_subtopic'])->name('api.v1.topics.update.relationships.subtopic');
-Route::delete("topics/{topic}/relationship/subtopics/{subtopic}/delete", [TopicsController::class, 'delete_relationship_subtopic'])->name('api.v1.topics.delete.relationships.subtopic');
-
-Route::get("topics/{topic}/relationship/subtopics/{subtopic}/relationship/questions", [TopicsController::class, 'subtopics_get_relationship_questions'])->name('api.v1.topics.relationships.subtopics.relationships.questions');
-Route::get("topics/{topic}/relationship/subtopics/{subtopic}/relationship/questions/{question}", [TopicsController::class, 'subtopics_get_relationship_a_question'])->name('api.v1.topics.relationships.subtopics.relationships.questions.record');
-
-Route::get("topics/{topic}/relationship/oppositions", [TopicsController::class, 'get_relationship_oppositions'])->name('api.v1.topics.relationships.oppositions');
-Route::get("topics/{topic}/relationship/oppositions/{opposition}/subtopics", [TopicsController::class, 'get_relationship_subtopics_by_opposition'])->name('api.v1.topics.relationships.oppositions.record.subtopics');
-Route::post("topics/{topic}/relationship/oppositions/assign", [TopicsController::class, 'assign_opposition_with_subtopics_to_topic'])->name('api.v1.topics.relationships.oppositions.assign');
-Route::patch("topics/{topic}/relationship/oppositions/{opposition}/update/subtopics", [TopicsController::class, 'update_subtopics_opposition_by_topic'])->name('api.v1.topics.relationships.oppositions.update.subtopics');
-Route::delete("topics/{topic}/relationship/oppositions/{opposition}/delete", [TopicsController::class, 'delete_opposition_by_topic'])->name('api.v1.topics.relationships.oppositions.delete');
-
-Route::get('topics/relationship/questions', [TopicsController::class, 'topic_relationship_questions'])->name('api.v1.topics.relationship.questions');
 
 Route::get('topics/import/template', [TopicsController::class, 'download_template_import_records'])->name('api.v1.topics.import.template');
-Route::get('subtopics/import/template', [TopicsController::class, 'download_template_import_subtopics_records'])->name('api.v1.topics.import.subtopics.template');
 
 Route::get('topics/student/get-worst-topics', [TopicsController::class, 'topics_get_worst_topics_of_student'])->name('api.v1.topics.worsts-in-test.student');
 /*

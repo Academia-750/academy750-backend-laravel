@@ -35,6 +35,10 @@ Route::prefix('v1')->group(static function(){
         require __DIR__ . '/routes/users.routes.php';
         require __DIR__ . '/routes/oppositions.routes.php';
         require __DIR__ . '/routes/topics.routes.php';
+        require __DIR__ . '/routes/topics.subtopics.routes.php';
+        require __DIR__ . '/routes/topics.subtopics.questions.routes.php';
+        require __DIR__ . '/routes/topics.questions.routes.php';
+        require __DIR__ . '/routes/topics.oppositions.routes.php';
         /*require __DIR__ . '/routes/subtopics.routes.php';*/
         require __DIR__ . '/routes/topic-groups.routes.php';
         require __DIR__ . '/routes/questions.routes.php';
