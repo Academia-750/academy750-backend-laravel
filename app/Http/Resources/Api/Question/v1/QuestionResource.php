@@ -50,7 +50,7 @@ class QuestionResource extends JsonResource
                 //     })
             ],
             'meta' => [
-                'can_this_question_be_affected' => $this->resource->tests()->count() === 0 || $this->resource->is_visible === 'yes'
+                'can_this_question_be_affected' => $this->resource->tests()->count() === 0 && $this->resource->is_visible === 'yes'
             ]
         ];
     }
