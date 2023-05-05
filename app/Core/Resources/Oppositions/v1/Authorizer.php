@@ -3,7 +3,6 @@ namespace App\Core\Resources\Oppositions\v1;
 
 use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
 
 class Authorizer implements OppositionsInterface
@@ -42,16 +41,6 @@ class Authorizer implements OppositionsInterface
     public function mass_selection_for_action( $request ){
         Gate::authorize('mass_selection_for_action', Opposition::class );
         return $this->schemaJson->mass_selection_for_action( $request );
-    }
-
-    public function export_records( $request ){
-        Gate::authorize('export_records', Opposition::class );
-        return $this->schemaJson->export_records( $request );
-    }
-
-    public function import_records( $request ){
-        Gate::authorize('import_records', Opposition::class );
-        return $this->schemaJson->import_records( $request );
     }
 
     public function get_relationship_syllabus($opposition)

@@ -1,13 +1,10 @@
 <?php
 namespace App\Core\Resources\Oppositions\v1;
 
-use App\Http\Resources\Api\Subtopic\v1\SubtopicCollection;
-use App\Http\Resources\Api\Topic\v1\TopicCollection;
-use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
 use App\Http\Resources\Api\Opposition\v1\OppositionCollection;
 use App\Http\Resources\Api\Opposition\v1\OppositionResource;
-use Illuminate\Support\Str;
+
 
 class SchemaJson implements OppositionsInterface
 {
@@ -50,14 +47,6 @@ class SchemaJson implements OppositionsInterface
         return response()->json([
             'information' => $this->eventApp->mass_selection_for_action( $request )
         ]);
-    }
-
-    public function export_records( $request ){
-        return $this->eventApp->export_records( $request );
-    }
-
-    public function import_records( $request ){
-        return $this->eventApp->import_records( $request );
     }
 
     public function get_relationship_syllabus($opposition): \Illuminate\Http\JsonResponse

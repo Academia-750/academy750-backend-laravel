@@ -102,32 +102,6 @@ class DBApp implements OppositionsInterface
 
     }
 
-    public function export_records( $request ): \Symfony\Component\HttpFoundation\BinaryFileResponse{
-        if ($request->get('type') === 'pdf') {
-            $domPDF = App::make('dompdf.wrapper');
-            $oppositions = $this->model->query()->whereIn('id', $request->get('oppositions'))->get();
-            $domPDF->loadView('resources.export.templates.pdf.oppositions', compact('oppositions'))->setPaper('a4', 'landscape')->setWarnings(false);
-            return $domPDF->download('report-oppositions.pdf');
-        }
-        return Excel::download(new OppositionsExport($request->get('oppositions')), 'oppositions.'. $request->get('type'));
-    }
-
-    public function import_records( $request ): string{
-        //Proceso de importacion con Queues - El archivo debe tener
-        //(new OppositionsImport(Auth::user()))->import($request->file('oppositions'));
-
-         /*
-         // Lanzamiento de errores en caso de validacion sin uso de Queues
-         if ($importInstance->failures()->isNotEmpty()) {
-             throw ValidationException::withMessages([
-                 'errors' => [
-                     $importInstance->failures()
-                 ]
-             ]);
-         }*/
-        return "Proceso de importación iniciado";
-    }
-
     public function get_relationship_syllabus($opposition)
     {
         $syllabus = [

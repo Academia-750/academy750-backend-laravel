@@ -1,10 +1,8 @@
 <?php
 namespace App\Core\Resources\Oppositions\v1;
 
-use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+
 
 class EventApp implements OppositionsInterface
 {
@@ -40,22 +38,7 @@ class EventApp implements OppositionsInterface
     }
 
     public function mass_selection_for_action( $request ): array{
-
-        /* $records = Opposition::whereIn('id', $request->get('oppositions'));
-
-        broadcast(
-            new ActionForMassiveSelectionOppositionEvent( $request->get('action'), $records )
-        ); */
-
         return $this->cacheApp->mass_selection_for_action( $request );
-    }
-
-    public function export_records( $request ){
-        return $this->cacheApp->export_records( $request );
-    }
-
-    public function import_records( $request ){
-        $this->cacheApp->import_records( $request );
     }
 
     public function get_relationship_syllabus($opposition)

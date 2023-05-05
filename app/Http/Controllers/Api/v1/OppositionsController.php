@@ -4,14 +4,9 @@ namespace App\Http\Controllers\Api\v1;
 use App\Models\Opposition;
 use App\Core\Resources\Oppositions\v1\Interfaces\OppositionsInterface;
 use App\Http\Controllers\Controller;
-use App\Models\Topic;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Api\v1\Oppositions\CreateOppositionRequest;
 use App\Http\Requests\Api\v1\Oppositions\UpdateOppositionRequest;
 use App\Http\Requests\Api\v1\Oppositions\ActionForMassiveSelectionOppositionsRequest;
-use App\Http\Requests\Api\v1\Oppositions\ExportOppositionsRequest;
 use App\Http\Requests\Api\v1\Oppositions\ImportOppositionsRequest;
 
 class OppositionsController extends Controller
@@ -44,18 +39,6 @@ class OppositionsController extends Controller
 
     public function mass_selection_for_action(ActionForMassiveSelectionOppositionsRequest $request): string{
         return $this->oppositionsInterface->mass_selection_for_action( $request );
-    }
-
-    public function export_records(ExportOppositionsRequest $request){
-        return $this->oppositionsInterface->export_records( $request );
-    }
-
-    public function import_records(ImportOppositionsRequest $request){
-        return $this->oppositionsInterface->import_records( $request );
-    }
-
-    public function download_template_import_records (): \Symfony\Component\HttpFoundation\StreamedResponse {
-        return Storage::disk('public')->download('templates_import/opposition.csv', 'template_import_opposition');
     }
 
     public function get_relationship_syllabus (Opposition $opposition) {

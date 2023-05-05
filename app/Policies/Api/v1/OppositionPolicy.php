@@ -39,13 +39,4 @@ class OppositionPolicy
     {
         return $user->can('action-for-multiple-oppositions');
     }
-
-    public function export_records(User $user): bool
-    {
-        return true;
-    }
-    public function import_records(User $user): bool
-    {
-        return true;
-    }
 }
