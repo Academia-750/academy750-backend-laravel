@@ -1,11 +1,7 @@
 <?php
 namespace App\Core\Resources\Questions\v1;
 
-use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use App\Core\Resources\Questions\v1\CacheApp;
 class EventApp implements QuestionsInterface
 {
     protected CacheApp $cacheApp;

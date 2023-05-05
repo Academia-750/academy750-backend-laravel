@@ -1,13 +1,9 @@
 <?php
 namespace App\Core\Resources\Questions\v1;
 
-use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
-use App\Http\Resources\Api\Question\v1\QuestionCollection;
-use App\Http\Resources\Api\Question\v1\QuestionResource;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
-use App\Core\Resources\Questions\v1\SchemaJson;
+
 class Authorizer implements QuestionsInterface
 {
     protected SchemaJson $schemaJson;

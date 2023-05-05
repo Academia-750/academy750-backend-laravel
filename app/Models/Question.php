@@ -88,6 +88,15 @@ class Question extends Model
         'id' => 'string'
      ];
 
+    public function isVisible(): bool
+    {
+        if (!$this?->exists) {
+            throw new \Exception('No es válido acceder a la propiedad isVisible de un registro que no existe');
+        }
+
+        return $this?->is_visible === 'yes';
+    }
+
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
 

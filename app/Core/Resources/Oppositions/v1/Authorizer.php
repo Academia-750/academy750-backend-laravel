@@ -9,7 +9,7 @@ class Authorizer implements OppositionsInterface
 {
     protected $schemaJson;
 
-    public function __construct(\App\Core\Resources\Oppositions\v1\SchemaJson $schemaJson ){
+    public function __construct(SchemaJson $schemaJson ){
         $this->schemaJson = $schemaJson;
     }
 

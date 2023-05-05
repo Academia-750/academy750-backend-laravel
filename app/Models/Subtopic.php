@@ -2,16 +2,16 @@
 
 namespace App\Models;
 
+use App\Core\Services\StateAvailableTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Core\Services\UUIDTrait;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
 
 class Subtopic extends Model
 {
     use HasFactory;
-    //use SoftDeletes;
+    use StateAvailableTrait;
     use UUIDTrait;
 
     protected $fillable = [

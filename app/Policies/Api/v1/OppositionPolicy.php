@@ -27,12 +27,12 @@ class OppositionPolicy
 
     public function update(User $user, Opposition $opposition): bool
     {
-        return $user->can('edit-opposition');
+        return $user->can('edit-opposition') && $opposition->isAvailable();
     }
 
     public function delete(User $user, Opposition $opposition): bool
     {
-        return $user->can('delete-opposition');
+        return $user->can('delete-opposition') && $opposition->isAvailable();
     }
 
     public function mass_selection_for_action(User $user): bool

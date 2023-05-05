@@ -3,12 +3,9 @@ namespace App\Core\Resources\Questions\v1;
 
 use App\Http\Resources\Api\Subtopic\v1\SubtopicResource;
 use App\Http\Resources\Api\Topic\v1\TopicResource;
-use App\Models\Question;
 use App\Core\Resources\Questions\v1\Interfaces\QuestionsInterface;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Question\v1\QuestionResource;
-use App\Core\Resources\Questions\v1\EventApp;
-use Illuminate\Support\Str;
 
 class SchemaJson implements QuestionsInterface
 {
