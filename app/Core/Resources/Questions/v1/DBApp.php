@@ -30,7 +30,7 @@ class DBApp implements QuestionsInterface
 
     public function subtopic_relationship_questions_read($subtopic, $question)
     {
-        return $subtopic->questions()->applyIncludes()->firstWhere("id", "=", $question->getRouteKey());
+        return $subtopic->questions()/*->applyIncludes()*/->firstWhere("id", "=", $question->getRouteKey());
     }
 
     public function subtopic_relationship_questions_create($request, $subtopic)
@@ -146,7 +146,7 @@ class DBApp implements QuestionsInterface
 
     public function topic_relationship_questions_read($topic, $question)
     {
-        return $topic->questions()->applyIncludes()->firstWhere("id", "=", $question->getRouteKey());
+        return $topic->questions()/*->applyIncludes()*/->firstWhere("id", "=", $question->getRouteKey());
     }
 
     public function topic_relationship_questions_create($request, $topic)
