@@ -75,8 +75,8 @@ class TopicPolicy
         return $user->can("see-a-topic") && $topic->isAvailable() && $subtopic->isAvailable();
     }
 
-    public function create_relationship_subtopic (User $user, Topic $topic, Subtopic $subtopic): bool {
-        return $user->can("see-a-topic") && $topic->isAvailable() && $subtopic->isAvailable();
+    public function create_relationship_subtopic (User $user, Topic $topic): bool {
+        return $user->can("see-a-topic") && $topic->isAvailable();
     }
 
     public function update_relationship_subtopic (User $user, Topic $topic, Subtopic $subtopic): bool {
