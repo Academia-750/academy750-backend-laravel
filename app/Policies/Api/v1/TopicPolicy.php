@@ -49,7 +49,7 @@ class TopicPolicy
 
 
     public function get_relationship_oppositions (User $user, Topic $topic): bool {
-        return $user->can("see-a-topic") && $topic->isAvailable();
+        return $user->can("see-a-topic");
     }
 
     public function get_relationship_a_subtopic (User $user, Topic $topic): bool {
