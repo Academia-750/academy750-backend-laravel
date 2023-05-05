@@ -25,7 +25,7 @@ class DBApp implements QuestionsInterface
 
         $questions_id = $subtopic->questions()->pluck("id");
 
-        return $this->model->query()->whereIn('id', $questions_id->toArray())->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model->query()->whereIn('id', $questions_id->toArray())->where('is_visible', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function subtopic_relationship_questions_read($subtopic, $question)
@@ -101,7 +101,18 @@ class DBApp implements QuestionsInterface
         try {
             DB::beginTransaction();
 
+            $countTestsCreatedByThisQuestion = $question->tests()->count();
+
+            if ($countTestsCreatedByThisQuestion) {
+                $question->is_visible = 'no';
+                $question->save();
+            } else {
                 $question->delete();
+            }
+
+            DB::table('questions_used_test')
+                ->where('question_id', $question->id)
+                ->delete();
 
             DB::commit();
 
@@ -127,16 +138,14 @@ class DBApp implements QuestionsInterface
 
             $questions_id = collect($questions_id)->pluck('id')->toArray();
 
-            return Question::query()->whereIn('id', $questions_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+            return Question::query()->whereIn('id', $questions_id)->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
         }
 
-        return $topic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $topic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function topic_relationship_questions_read($topic, $question)
     {
-        \Log::debug('DBApp->topic_relationship_questions_read');
-
         return $topic->questions()->applyIncludes()->firstWhere("id", "=", $question->getRouteKey());
     }
 

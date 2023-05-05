@@ -181,7 +181,7 @@ class DBApp implements TopicsInterface
             }
 
         }
-        return Subtopic::query()->whereIn('id', $subtopics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return Subtopic::query()->whereIn('id', $subtopics_id)->where('is_available', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function get_relationship_a_subtopic($topic, $subtopic)
@@ -197,7 +197,7 @@ class DBApp implements TopicsInterface
 
     public function get_relationship_questions($topic)
     {
-        return $topic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $topic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function get_relationship_a_question($topic, $question)
@@ -213,7 +213,7 @@ class DBApp implements TopicsInterface
 
     public function subtopics_get_relationship_questions($topic, $subtopic)
     {
-        return $subtopic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $subtopic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function subtopics_get_relationship_a_question($topic, $subtopic, $question)
@@ -431,7 +431,7 @@ class DBApp implements TopicsInterface
     {
 
 
-        return $topic->questions()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $topic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function topic_get_a_question($topic, $question)
@@ -506,7 +506,7 @@ class DBApp implements TopicsInterface
 
     public function topic_relationship_questions()
     {
-        return Topic::applyFilters()->applySorts()->applyIncludes()->get();
+        return Topic::applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->get();
     }
 
     public function import_records( $request ): void{
