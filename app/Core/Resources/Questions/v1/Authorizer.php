@@ -14,13 +14,13 @@ class Authorizer implements QuestionsInterface
 
     public function subtopics_relationship_get_questions($subtopic)
     {
-        abort_if(!$subtopic->isAvailable(), 403);
+        //abort_if(!$subtopic->isAvailable(), 403);
         return $this->schemaJson->subtopics_relationship_get_questions($subtopic);
     }
 
     public function subtopic_relationship_questions_read($subtopic, $question)
     {
-        abort_if(!$subtopic->questions()->firstWhere('id', '=', $question->getRouteKey()) || !$subtopic->isAvailable() || !$question->isVisible(), 403);
+        abort_if(!$subtopic->questions()->firstWhere('id', '=', $question->getRouteKey())/* || !$subtopic->isAvailable() || !$question->isVisible()*/, 403);
 
         return $this->schemaJson->subtopic_relationship_questions_read($subtopic, $question);
     }
@@ -57,8 +57,7 @@ class Authorizer implements QuestionsInterface
 
     public function topic_relationship_questions_read($topic, $question)
     {
-
-        abort_if(!$topic->questions()->firstWhere('id', '=', $question->getRouteKey()) || !$topic->isAvailable() || !$question->isVisible() || !$question->isVisible(), 403);
+        abort_if(!$topic->questions()->firstWhere('id', '=', $question->getRouteKey())/* || !$topic->isAvailable() || !$question->isVisible() || !$question->isVisible()*/, 403);
 
         return $this->schemaJson->topic_relationship_questions_read($topic, $question);
     }

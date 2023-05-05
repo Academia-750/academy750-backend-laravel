@@ -35,7 +35,7 @@ class TopicPolicy
 
     public function delete(User $user, Topic $topic): bool
     {
-        return $user->can('delete-topic') && $topic->subtopics->count() === 0 && $topic->isAvailable();
+        return $user->can('delete-topic') && $topic->isAvailable();
     }
 
     public function mass_selection_for_action(User $user): bool
@@ -44,7 +44,7 @@ class TopicPolicy
     }
 
     public function get_relationship_subtopics (User $user, Topic $topic): bool {
-        return $user->can("see-a-topic") && $topic->isAvailable();
+        return $user->can("see-a-topic");
     }
 
 
@@ -60,19 +60,19 @@ class TopicPolicy
     }
 
     public function get_relationship_questions (User $user, Topic $topic): bool {
-        return $user->can("see-a-topic") && $topic->isAvailable();
+        return $user->can("see-a-topic") /*&& $topic->isAvailable()*/;
     }
 
     public function get_relationship_a_question (User $user, Topic $topic): bool {
-        return $user->can("see-a-topic") && $topic->isAvailable();
+        return $user->can("see-a-topic")/* && $topic->isAvailable()*/;
     }
 
     public function subtopics_get_relationship_questions (User $user, Topic $topic, Subtopic $subtopic): bool {
-        return $user->can("see-a-topic") && $topic->isAvailable() && $subtopic->isAvailable();
+        return $user->can("see-a-topic")/* && $topic->isAvailable() && $subtopic->isAvailable()*/;
     }
 
     public function subtopics_get_relationship_a_question (User $user, Topic $topic, Subtopic $subtopic): bool {
-        return $user->can("see-a-topic") && $topic->isAvailable() && $subtopic->isAvailable();
+        return $user->can("see-a-topic") /*&& $topic->isAvailable() && $subtopic->isAvailable()*/;
     }
 
     public function create_relationship_subtopic (User $user, Topic $topic): bool {
