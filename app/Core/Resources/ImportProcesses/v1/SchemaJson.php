@@ -2,12 +2,9 @@
 namespace App\Core\Resources\ImportProcesses\v1;
 
 use App\Http\Resources\Api\ImportRecord\v1\ImportRecordCollection;
-use App\Models\ImportProcess;
 use App\Core\Resources\ImportProcesses\v1\Interfaces\ImportProcessesInterface;
 use App\Http\Resources\Api\ImportProcess\v1\ImportProcessCollection;
 use App\Http\Resources\Api\ImportProcess\v1\ImportProcessResource;
-use Illuminate\Support\Str;
-
 class SchemaJson implements ImportProcessesInterface
 {
     protected CacheApp $cacheApp;
