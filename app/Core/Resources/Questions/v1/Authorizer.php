@@ -50,7 +50,7 @@ class Authorizer implements QuestionsInterface
 
     public function topics_relationship_get_questions($topic)
     {
-        abort_if(!$topic->isAvailable(), 403);
+        //abort_if(!$topic->isAvailable(), 403);
 
         return $this->schemaJson->topics_relationship_get_questions($topic);
     }
