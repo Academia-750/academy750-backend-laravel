@@ -99,9 +99,12 @@ class DBApp implements QuestionsInterface
     public function subtopic_relationship_questions_delete($subtopic, $question)
     {
         try {
-            DB::beginTransaction();
 
             $countTestsCreatedByThisQuestion = $question->tests()->count();
+
+            DB::table('questions_used_test')
+                ->where('question_id', $question->id)
+                ->delete();
 
             if ($countTestsCreatedByThisQuestion) {
                 $question->is_visible = 'no';
@@ -109,12 +112,6 @@ class DBApp implements QuestionsInterface
             } else {
                 $question->delete();
             }
-
-            DB::table('questions_used_test')
-                ->where('question_id', $question->id)
-                ->delete();
-
-            DB::commit();
 
             return "Successfully";
         } catch (\Exception $e) {
@@ -215,9 +212,12 @@ class DBApp implements QuestionsInterface
     public function topic_relationship_questions_delete($topic, $question)
     {
         try {
-            DB::beginTransaction();
 
             $countTestsCreatedByThisQuestion = $question->tests()->count();
+
+            DB::table('questions_used_test')
+                ->where('question_id', $question->id)
+                ->delete();
 
             if ($countTestsCreatedByThisQuestion) {
                 $question->is_visible = 'no';
@@ -225,12 +225,6 @@ class DBApp implements QuestionsInterface
             } else {
                 $question->delete();
             }
-
-            DB::table('questions_used_test')
-                ->where('question_id', $question->id)
-                ->delete();
-
-            DB::commit();
 
             return "Successfully";
         } catch (\Exception $e) {
