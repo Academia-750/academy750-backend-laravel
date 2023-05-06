@@ -12,6 +12,8 @@ class TopicResource extends JsonResource
 {
     public function toArray($request): array
     {
+        $totalSubtopicsThisTopic = $this->resource->subtopics()->count();
+
         return [
             'type' => 'topics',
             'id' => $this->resource->getRouteKey(),
@@ -40,7 +42,8 @@ class TopicResource extends JsonResource
                     }),
             ],
             'meta' => [
-                'has_subtopics' => $this->resource->subtopics->count() > 0
+                'has_subtopics' =>  $totalSubtopicsThisTopic > 0,
+                'count_subtopics_this_topic' => $totalSubtopicsThisTopic,
             ]
         ];
     }
