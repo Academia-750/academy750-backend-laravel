@@ -290,7 +290,7 @@ class DBApp implements TopicsInterface
                 $subtopicRecord->save();
 
                 $subtopicRecord->questions->each(function ($question) {
-                    $question->update(['visible' => 'no']);
+                    $question->update(['is_visible' => 'no']);
                 });
             } else {
                 DB::table('oppositionables')
