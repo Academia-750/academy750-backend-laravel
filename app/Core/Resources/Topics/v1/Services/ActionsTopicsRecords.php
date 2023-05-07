@@ -22,7 +22,13 @@ class ActionsTopicsRecords
             // A todos los subtemas de ese tema se les cambia el estado a "no disponible"
             $topic->subtopics->each(function ($subtopic) {
                 $subtopic->update(['is_available' => 'no']);
+
+                $subtopic->questions->each(function ($question) {
+                    $question->update(['is_visible' => 'no']);
+                });
             });
+
+
 
             // A todas las preguntas de ese tema se les cambia el estado a "no visible"
             $topic->questions->each(function ($question) {
