@@ -86,9 +86,12 @@ class QuestionsController extends Controller
         $question->is_visible = $request->get('is-visible-question');
         $question->save();
 
-        DB::table('questions_used_test')
-            ->where('question_id', $question->id)
-            ->delete();
+        if ($request->get('is-visible-question') === 'no') {
+            DB::table('questions_used_test')
+                ->where('question_id', $question->id)
+                ->delete();
+
+        }
 
         return response()->json([
             'message' => 'successfully'
