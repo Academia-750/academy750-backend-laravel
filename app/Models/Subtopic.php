@@ -89,7 +89,7 @@ class Subtopic extends Model
     }
 
     public function filterIsAvailable(Builder $query, $value): void{
-        $query->whereDate('is_available', $value);
+        $query->where('is_available', $value);
     }
 
     public function filterSearch(Builder $query, $value): void{
