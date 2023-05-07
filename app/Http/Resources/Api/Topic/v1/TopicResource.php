@@ -24,10 +24,7 @@ class TopicResource extends JsonResource
                 "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
-                'topic_group' => $this->when(collect($this->resource)->has('topic_group'),
-                    function () {
-                        return TopicGroupResource::make($this->resource->topic_group);
-                    }),
+                'topic_group' => TopicGroupResource::make($this->resource->topic_group),
                 'subtopics' => $this->when(collect($this->resource)->has('subtopics'),
                     function () {
                         return SubtopicCollection::make($this->resource->subtopics);
