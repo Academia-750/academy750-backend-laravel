@@ -18,7 +18,7 @@ return new class extends Migration
             IN `topic_uuids` LONGTEXT,
             IN `id_oposicion` VARCHAR(36),
             IN `id_usuario` VARCHAR(36),
-            IN `n_pregs ` INT
+            IN `n_pregs` INT
         )
         BEGIN
     DECLARE index_loop INTEGER;
@@ -127,7 +127,7 @@ FROM(
           INNER JOIN questions qu ON qu.id = q.question_id
           WHERE topic_id = v_id
           AND user_id = id_usuario
-          AND opossition_id = id_oposicion
+          AND opposition_id = id_oposicion
           AND result = 0
           AND qu.is_visible = 'yes';
 
@@ -141,7 +141,7 @@ FROM(
                 INNER JOIN questions qu ON qu.id = q.question_id
                 WHERE topic_id = v_id
                 AND user_id = id_usuario
-                AND opossition_id = id_oposicion
+                AND opposition_id = id_oposicion
                 AND qu.is_visible = 'yes')
               AND op.opposition_id = id_oposicion
               AND q.questionable_id = v_id
@@ -161,10 +161,11 @@ FROM(
                 INNER JOIN questions qu ON qu.id = q.question_id
                 WHERE topic_id = v_id
                 AND user_id = id_usuario
-                AND opossition_id = id_oposicion
+                AND opposition_id = id_oposicion
                 AND qu.is_visible = 'yes')
               AND op.opposition_id = id_oposicion
               AND st.topic_id = v_id
+              AND st.is_available = 'yes'
               AND q.questionable_type = 'App\\Models\\Subtopic'
               AND q.question_in_edit_mode = 'no'
               AND q.is_visible = 'yes'
@@ -181,7 +182,7 @@ FROM(
               INNER JOIN questions qu ON qu.id = q.question_id
               WHERE topic_id = v_id
               AND user_id = id_usuario
-              AND opossition_id = id_oposicion
+              AND opposition_id = id_oposicion
               AND result = 1
               AND qu.is_visible = 'yes'
               ORDER BY RAND() LIMIT c;
