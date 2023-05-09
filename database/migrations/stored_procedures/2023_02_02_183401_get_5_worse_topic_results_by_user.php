@@ -7,6 +7,8 @@ use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
+    public function __construct(Public string $nameProcedure = 'get_5_worse_topic_results_by_user_procedure'){}
+
     /**
      * Run the migrations.
      *
@@ -14,34 +16,80 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure1 = "DROP PROCEDURE IF EXISTS `get_5_worse_topic_results_by_user`;
-        CREATE PROCEDURE `get_5_worse_topic_results_by_user`(
+        $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
+        CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `id_usuario` VARCHAR(255)
         )
         BEGIN
-        select aux_tb.TOPIC_ID, aux_tb.TOPIC_NAME,
-        sum( case when aux_tb.STATUS= 'correct' then 1 else 0 end ) as CORRECT_ANS,
-        sum( case when aux_tb.STATUS= 'wrong' then 1 else 0 end ) as INCORRECT_ANS,
-        sum( case when aux_tb.STATUS= 'unanswered' then 1 else 0 end ) as UNANSWERED_ANS,
-        ((sum( case when aux_tb.STATUS= 'correct' then 1 else 0 end ) * 100)/ (sum( case when aux_tb.STATUS= 'correct' then 1 else 0 end ) + sum( case when aux_tb.STATUS= 'wrong' then 1 else 0 end ) + sum( case when aux_tb.STATUS= 'unanswered' then 1 else 0 end ))) as PERCENTAGE
-        from (
-        select D.id as TOPIC_ID, D.name as TOPIC_NAME, A.id as TEST_ID, C.id as QUESTION_ID, B.status_solved_question as STATUS
-        from tests as A
-        inner join question_test as B on B.test_id = A.id
-        inner join questions as C on C.id = B.question_id
-        inner join topics as D on D.id = C.questionable_id
-        where A.user_id = id_usuario and A.finished_at is not null
-        union
-        select E.id as TOPIC_ID, E.name as TOPIC_NAME, A.id as TEST_ID, C.id as QUESTION_ID, B.status_solved_question as STATUS
-        from tests as A
-        inner join question_test as B on B.test_id = A.id
-        inner join questions as C on C.id = B.question_id
-        inner join subtopics as D on D.id = C.questionable_id
-        inner join topics as E on E.id = D.topic_id
-        where A.user_id = id_usuario and A.finished_at is not null) as aux_tb
-        group by aux_tb.TOPIC_ID, aux_tb.TOPIC_NAME
-        order by PERCENTAGE limit 5;
-        END";
+            SELECT
+              aux_tb.TOPIC_ID,
+              aux_tb.TOPIC_NAME,
+              SUM(
+                CASE WHEN aux_tb.STATUS = 'correct' THEN 1 ELSE 0 END
+              ) AS CORRECT_ANS,
+              SUM(
+                CASE WHEN aux_tb.STATUS = 'wrong' THEN 1 ELSE 0 END
+              ) AS INCORRECT_ANS,
+              SUM(
+                CASE WHEN aux_tb.STATUS = 'unanswered' THEN 1 ELSE 0 END
+              ) AS UNANSWERED_ANS,
+              (
+                (
+                  SUM(
+                    CASE WHEN aux_tb.STATUS = 'correct' THEN 1 ELSE 0 END
+                  ) * 100
+                ) / (
+                  SUM(
+                    CASE WHEN aux_tb.STATUS = 'correct' THEN 1 ELSE 0 END
+                  ) + SUM(
+                    CASE WHEN aux_tb.STATUS = 'wrong' THEN 1 ELSE 0 END
+                  ) + SUM(
+                    CASE WHEN aux_tb.STATUS = 'unanswered' THEN 1 ELSE 0 END
+                  )
+                )
+              ) AS PERCENTAGE
+            FROM
+              (
+                SELECT
+                  D.id AS TOPIC_ID,
+                  D.name AS TOPIC_NAME,
+                  A.id AS TEST_ID,
+                  C.id AS QUESTION_ID,
+                  B.status_solved_question AS STATUS
+                FROM
+                  tests AS A
+                  INNER JOIN question_test AS B ON B.test_id = A.id
+                  INNER JOIN questions AS C ON C.id = B.question_id
+                  INNER JOIN topics AS D ON D.id = C.questionable_id
+                WHERE
+                  A.user_id = id_usuario
+                  AND A.finished_at IS NOT NULL
+                UNION
+                SELECT
+                  E.id AS TOPIC_ID,
+                  E.name AS TOPIC_NAME,
+                  A.id AS TEST_ID,
+                  C.id AS QUESTION_ID,
+                  B.status_solved_question AS STATUS
+                FROM
+                  tests AS A
+                  INNER JOIN question_test AS B ON B.test_id = A.id
+                  INNER JOIN questions AS C ON C.id = B.question_id
+                  INNER JOIN subtopics AS D ON D.id = C.questionable_id
+                  INNER JOIN topics AS E ON E.id = D.topic_id
+                WHERE
+                  A.user_id = id_usuario
+                  AND A.finished_at IS NOT NULL
+              ) AS aux_tb
+            GROUP BY
+              aux_tb.TOPIC_ID,
+              aux_tb.TOPIC_NAME
+            ORDER BY
+              PERCENTAGE
+            LIMIT
+              5;
+        END
+            ";
 
         DB::unprepared($procedure1);
     }
@@ -53,7 +101,7 @@ return new class extends Migration
      */
     public function down()
     {
-        $procedure1 = "DROP PROCEDURE IF EXISTS `get_5_worse_topic_results_by_user`";
+        $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
 
         DB::unprepared($procedure1);
     }

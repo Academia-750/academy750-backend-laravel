@@ -16,25 +16,25 @@ class GetQuestionsByTopicProceduresService
     public static function getNameFirstProcedure (bool $isCardMemory): string
     {
         if ($isCardMemory) {
-            return 'get_questions_card_memory_by_topic';
+            return 'get_questions_card_memory_by_topic_procedure';
         }
-        return 'get_questions_test_by_topic';
+        return 'get_questions_test_by_topic_procedure';
     }
 
     public static function getNameSecondProcedure (bool $isCardMemory): string
     {
         if ($isCardMemory) {
-            return 'complete_questions_card_memory_by_topic';
+            return 'complete_questions_card_memory_by_topic_procedure';
         }
-        return 'complete_questions_test_by_topic';
+        return 'complete_questions_test_by_topic_procedure';
     }
 
     public static function getNameOrderByTopicsASCProcedure (bool $isCardMemory): string
     {
         if ($isCardMemory) {
-            return 'get_topic_questions_quantity_card_memory';
+            return 'get_topic_questions_quantity_card_memory_procedure';
         }
-        return 'get_topic_questions_quantity_test';
+        return 'get_topic_questions_quantity_test_procedure';
     }
 
     public static function clean_object_std_by_procedure ($questions_procedure) {

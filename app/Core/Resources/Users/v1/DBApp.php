@@ -414,7 +414,7 @@ class DBApp implements UsersInterface
 
             $last_date = date('Y-m-d', strtotime($today . StatisticsDataHistoryStudent::getPeriodInKey( request('key-period-date') )));
 
-            $tests_id_by_procedure = DB::select('call get_tests_of_student_by_period_date(?,?,?)',
+            $tests_id_by_procedure = DB::select('call get_tests_of_student_by_period_date_procedure(?,?,?)',
             array($student->getRouteKey(), $last_date, $today));
 
 

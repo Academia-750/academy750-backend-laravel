@@ -5,34 +5,70 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
+    public function __construct(Public string $nameProcedure = 'topics_available_for_create_test_procedure'){}
+
     public function up()
     {
-        $procedure = "DROP PROCEDURE IF EXISTS `topics_available_for_create_test`;
-        CREATE PROCEDURE `topics_available_for_create_test`(
+        $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
+        CREATE PROCEDURE `{$this->nameProcedure}`(
             IN oposicion_id VARCHAR(255),
             IN grupo_id VARCHAR(255)
         )
         BEGIN
-        SELECT t.id, count(*) as 'cantidad'
-        FROM topics t, subtopics s, questions p, oppositionables o
-        WHERE t.id=s.topic_id and (o.oppositionable_id=t.id or o.oppositionable_id=s.id) AND
-         (p.questionable_id=t.id or p.questionable_id=s.id) and o.opposition_id=oposicion_id and
-          t.topic_group_id=grupo_id and p.is_visible='yes'
-          group by t.id having count(*)>0
-UNION
-SELECT t2.id, count(*) as 'cantidad'
-        FROM topics t2, questions p2, oppositionables o2
-        WHERE o2.oppositionable_id=t2.id AND p2.questionable_id=t2.id  and o2.opposition_id=oposicion_id and
-          t2.topic_group_id=grupo_id and p2.is_visible='yes'
-          group by t2.id having count(*)>0;
-        END";
+            SELECT
+              t.id,
+              COUNT(*) as 'cantidad'
+            FROM
+              topics t,
+              subtopics s,
+              questions p,
+              oppositionables o
+            WHERE
+              t.id = s.topic_id
+              AND (
+                o.oppositionable_id = t.id
+                OR o.oppositionable_id = s.id
+              )
+              AND (
+                p.questionable_id = t.id
+                OR p.questionable_id = s.id
+              )
+              AND o.opposition_id = oposicion_id
+              AND FIND_IN_SET(t.topic_group_id, grupos_ids) > 0
+              AND t.is_available = 'yes'
+              AND p.is_visible = 'yes'
+            GROUP BY
+              t.id
+            HAVING
+              COUNT(*) > 0
+            UNION
+            SELECT
+              t2.id,
+              COUNT(*) as 'cantidad'
+            FROM
+              topics t2,
+              questions p2,
+              oppositionables o2
+            WHERE
+              o2.oppositionable_id = t2.id
+              AND p2.questionable_id = t2.id
+              AND o2.opposition_id = oposicion_id
+              AND FIND_IN_SET(t2.topic_group_id, grupos_ids) > 0
+              AND t2.is_available = 'yes'
+              AND p2.is_visible = 'yes'
+            GROUP BY
+              t2.id
+            HAVING
+              COUNT(*) > 0;
+            END
+            ";
 
         DB::unprepared($procedure);
     }
 
     public function down()
     {
-        $procedure= "DROP PROCEDURE IF EXISTS topics_available_for_create_test";
+        $procedure= "DROP PROCEDURE IF EXISTS {$this->nameProcedure}";
         DB::unprepared($procedure);
     }
 };

@@ -7,6 +7,8 @@ use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
+    public function __construct(Public string $nameProcedure = 'get_subtopics_ids_for_test_procedure'){}
+
     /**
      * Run the migrations.
      *
@@ -14,14 +16,22 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure1 = "DROP PROCEDURE IF EXISTS `get_subtopics_ids_for_test`;
-        CREATE PROCEDURE `get_subtopics_ids_for_test`(
+        $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
+        CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `oposicion` TEXT,
             IN `temas` TEXT
         )
         BEGIN
-        SELECT o.oppositionable_id FROM oppositionables o JOIN subtopics s ON o.oppositionable_id = s.id WHERE o.opposition_id=oposicion AND FIND_IN_SET(s.topic_id,temas);
-        END";
+            SELECT
+              o.oppositionable_id
+            FROM
+              oppositionables o
+              JOIN subtopics s ON o.oppositionable_id = s.id
+            WHERE
+              o.opposition_id = oposicion
+              AND FIND_IN_SET(s.topic_id, temas);
+            END
+            ";
 
         DB::unprepared($procedure1);
     }
@@ -33,7 +43,7 @@ return new class extends Migration
      */
     public function down()
     {
-        $procedure1 = "DROP PROCEDURE IF EXISTS `get_subtopics_ids_for_test`";
+        $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
 
         DB::unprepared($procedure1);
     }

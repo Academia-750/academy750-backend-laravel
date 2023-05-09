@@ -561,7 +561,7 @@ class DBApp implements TopicsInterface
     public function topics_get_worst_topics_of_student()
     {
         $topics_data = DB::select(
-            "call get_5_worse_topic_results_by_user(?)",
+            "call get_5_worse_topic_results_by_user_procedure(?)",
             array(Auth::user()?->getRouteKey())
         ); //search_question_in_topics_and_subtopics
 

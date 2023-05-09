@@ -128,7 +128,7 @@ class DBApp implements QuestionsInterface
 
         if (request()?->query('filter') && request()?->query('filter')['search']) {
             $questions_id = DB::select(
-                "call search_question_in_topics_and_subtopics(?,?)",
+                "call search_question_in_topics_and_subtopics_procedure(?,?)",
                 array(request()?->query('filter')['search'], $topic->getRouteKey())
             ); //search_question_in_topics_and_subtopics
 
