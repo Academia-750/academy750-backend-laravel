@@ -43,10 +43,12 @@ class StatisticsDataHistoryStudent
                 $arguments = array(
                     $topic_id, $data['student_id']
                 );
+                $topicsDataStatistic[] = DB::select("call {$nameProcedure}(?,?)", $arguments)[0];
             } else {
                 $arguments = array(
                     $topic_id, $data['student_id'], $data['last_date'], $data['today']
                 );
+                $topicsDataStatistic[] = DB::select("call {$nameProcedure}(?,?,?,?)", $arguments)[0];
             }
 
             /* // \Log::debug($nameProcedure);
@@ -54,7 +56,7 @@ class StatisticsDataHistoryStudent
             // \Log::debug("{$data['last_date']} 00:00:00");
             // \Log::debug("{$data['today']} 00:00:00"); */
 ;
-            $topicsDataStatistic[] = DB::select("call {$nameProcedure}(?,?,?,?)", $arguments)[0];
+
             //// \Log::debug($topicsDataStatistic);
         }
 
