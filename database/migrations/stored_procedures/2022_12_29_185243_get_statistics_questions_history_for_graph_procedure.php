@@ -25,63 +25,73 @@ return new class extends Migration
         )
         BEGIN
             SELECT
-              id_topic as 'topic_id',
-              IFNULL(
-                SUM(
-                  if(
-                    q.status_solved_question = 'correct',
-                    1, 0
+              aux_tb.TOPIC_ID,
+              aux_tb.TOPIC_NAME,
+              SUM(
+                CASE WHEN aux_tb.STATUS = 'correct' THEN 1 ELSE 0 END
+              ) AS CORRECT_ANS,
+              SUM(
+                CASE WHEN aux_tb.STATUS = 'wrong' THEN 1 ELSE 0 END
+              ) AS INCORRECT_ANS,
+              SUM(
+                CASE WHEN aux_tb.STATUS = 'unanswered' THEN 1 ELSE 0 END
+              ) AS UNANSWERED_ANS,
+              (
+                (
+                  SUM(
+                    CASE WHEN aux_tb.STATUS = 'correct' THEN 1 ELSE 0 END
+                  ) * 100
+                ) / (
+                  SUM(
+                    CASE WHEN aux_tb.STATUS = 'correct' THEN 1 ELSE 0 END
+                  ) + SUM(
+                    CASE WHEN aux_tb.STATUS = 'wrong' THEN 1 ELSE 0 END
+                  ) + SUM(
+                    CASE WHEN aux_tb.STATUS = 'unanswered' THEN 1 ELSE 0 END
                   )
-                ),
-                0
-              ) AS 'correct',
-              IFNULL(
-                SUM(
-                  if(
-                    q.status_solved_question = 'wrong',
-                    1, 0
-                  )
-                ),
-                0
-              ) AS 'wrong',
-              IFNULL(
-                SUM(
-                  if(
-                    q.status_solved_question = 'unanswered',
-                    1, 0
-                  )
-                ),
-                0
-              ) AS 'unanswered'
+                )
+              ) AS PERCENTAGE
             FROM
-              question_test q,
-              tests t,
-              questions p
-            WHERE
-              q.test_id = t.id
-              and t.user_id = id_user
-              and t.test_type = 'test'
-              and (
-                DATE_FORMAT(t.finished_at, '%Y-%m-%d') BETWEEN min_date
-                and max_date
-              )
-              and p.id = q.question_id
-              and p.questionable_id in (
+              (
                 SELECT
-                  id
+                  D.id AS TOPIC_ID,
+                  D.name AS TOPIC_NAME,
+                  A.id AS TEST_ID,
+                  C.id AS QUESTION_ID,
+                  B.status_solved_question AS STATUS
                 FROM
-                  `subtopics` s
+                  tests AS A
+                  INNER JOIN question_test AS B ON B.test_id = A.id
+                  INNER JOIN questions AS C ON C.id = B.question_id
+                  INNER JOIN topics AS D ON D.id = C.questionable_id
                 WHERE
-                  s.topic_id = id_topic
-                union
-                select
-                  id
-                from
-                  topics t
-                where
-                  t.id = id_topic
-              );
-        END";
+                  A.user_id = id_user
+                  AND A.finished_at IS NOT NULL
+                UNION
+                SELECT
+                  E.id AS TOPIC_ID,
+                  E.name AS TOPIC_NAME,
+                  A.id AS TEST_ID,
+                  C.id AS QUESTION_ID,
+                  B.status_solved_question AS STATUS
+                FROM
+                  tests AS A
+                  INNER JOIN question_test AS B ON B.test_id = A.id
+                  INNER JOIN questions AS C ON C.id = B.question_id
+                  INNER JOIN subtopics AS D ON D.id = C.questionable_id
+                  INNER JOIN topics AS E ON E.id = D.topic_id
+                WHERE
+                  A.user_id = id_user
+                  AND A.finished_at IS NOT NULL
+              ) AS aux_tb
+            GROUP BY
+              aux_tb.TOPIC_ID,
+              aux_tb.TOPIC_NAME
+            ORDER BY
+              PERCENTAGE
+            LIMIT
+              5;
+            END";
 
         DB::unprepared($procedure1);
 
