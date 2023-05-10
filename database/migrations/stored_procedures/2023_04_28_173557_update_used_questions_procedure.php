@@ -11,7 +11,7 @@ return new class extends Migration
 
     public function __construct()
     {
-        $this->nameProcedure = 'update_used_questions';
+        $this->nameProcedure = 'update_used_questions_procedure';
     }
 
     /**
