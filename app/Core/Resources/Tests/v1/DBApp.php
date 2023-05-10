@@ -204,7 +204,7 @@ class DBApp implements TestsInterface
             Log::debug("Ejecutar procedimiento almacenado de update_used_questions para el usuario: '{$user->full_name}' con id: '{$user->id}'");
             $start_time__call_procedure_update_used_questions = microtime(true);
             DB::select(
-                "call update_used_questions(?)",
+                "call update_used_questions_procedure(?)",
                 array($test->getRouteKey())
             );
 
