@@ -286,6 +286,9 @@ class DBApp implements UsersInterface
 
             $topics = [];
 
+            \Log::debug("Topics Data Resultados por tema");
+            \Log::debug($topicsData);
+
             foreach ($topicsData as $topicData) {
                 $topicDataArray = (array) $topicData;
 
