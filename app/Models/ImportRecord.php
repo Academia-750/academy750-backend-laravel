@@ -55,7 +55,7 @@ class ImportRecord extends Model
     public array $adapterIncludes = [];
 
      protected $casts = [
-         'id' => 'string',
+         'uuid' => 'string',
          'number_of_row' => 'string',
          'errors_validation' => 'array',
          'import_process_id' => 'string'

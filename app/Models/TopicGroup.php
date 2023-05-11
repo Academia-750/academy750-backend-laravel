@@ -50,7 +50,7 @@ class TopicGroup extends Model
     public array $adapterIncludes = [];
 
      protected $casts = [
-        'id' => 'string'
+        'uuid' => 'string'
      ];
 
     /* -------------------------------------------------------------------------------------------------------------- */

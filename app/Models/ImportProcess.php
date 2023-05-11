@@ -64,7 +64,7 @@ class ImportProcess extends Model
     public array $adapterIncludes = [];
 
      protected $casts = [
-        'id' => 'string',
+        'uuid' => 'string',
          'name_file' => 'string',
          'user_id' => 'string',
          'total_number_of_records' => 'integer'

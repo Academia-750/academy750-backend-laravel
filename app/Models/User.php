@@ -77,7 +77,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
-        'id' => 'string'
+        'uuid' => 'string'
     ];
 
     public array $allowedSorts = [
