@@ -15,27 +15,27 @@ return new class extends Migration
     {
         Schema::create('questions_used_test', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('topic_id')
+            $table->foreignId('topic_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('subtopic_id')
+            $table->foreignId('subtopic_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('user_id')
+            $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('opposition_id')
+            $table->foreignId('opposition_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('question_id')
+            $table->foreignId('question_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();

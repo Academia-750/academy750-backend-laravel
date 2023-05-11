@@ -28,13 +28,13 @@ return new class extends Migration
 
             $table->enum('test_type', ['test', 'card_memory'])->comment('Tipo de cuestionario');
 
-            $table->foreignUuid("opposition_id")
+            $table->foreignId("opposition_id")
                 ->comment('El ID de la Oposición')
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
 
-            $table->foreignUuid("user_id")
+            $table->foreignId("user_id")
                 ->comment("El alumno que resolverá la prueba")
                 ->nullable()
                 ->constrained()

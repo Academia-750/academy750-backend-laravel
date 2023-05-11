@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string("number_of_row");
             $table->enum("has_errors", ['yes', 'no']);
             $table->json("errors_validation");
-            $table->foreignUuid('import_process_id')
+            $table->foreignId('import_process_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();

@@ -19,14 +19,14 @@ return new class extends Migration
 
             $table->uuidMorphs('testable');
 
-            $table->foreignUuid('test_id')
+            $table->foreignId('test_id')
                 ->comment('El ID del Test al que pertenece el tema o subtema')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
 
-            /*$table->foreignUuid('topic_id')
+            /*$table->foreignId('topic_id')
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();*/

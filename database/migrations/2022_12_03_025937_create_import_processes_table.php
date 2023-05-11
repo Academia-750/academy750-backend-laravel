@@ -17,7 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary()->comment('Identificador UUID');
             //$table->softDeletes();
             $table->text("name_file");
-            $table->foreignUuid('user_id')
+            $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();

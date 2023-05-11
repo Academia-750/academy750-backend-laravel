@@ -20,7 +20,7 @@ return new class extends Migration
 
             $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
-            $table->foreignUuid('topic_id')
+            $table->foreignId('topic_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();

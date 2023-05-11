@@ -18,7 +18,7 @@ return new class extends Migration
 
             $table->string("name");
             // Relationship for group of topics
-            $table->foreignUuid("topic_group_id")
+            $table->foreignId("topic_group_id")
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();
