@@ -59,6 +59,11 @@ class Image extends Model
         $query->orderBy('created_at', $direction);
     }
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     /* -------------------------------------------------------------------------------------------------------------- */
     // Filters functions
 

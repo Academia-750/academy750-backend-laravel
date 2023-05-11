@@ -66,9 +66,13 @@ class ImportProcess extends Model
      protected $casts = [
         'uuid' => 'string',
          'name_file' => 'string',
-         'user_id' => 'string',
          'total_number_of_records' => 'integer'
      ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions

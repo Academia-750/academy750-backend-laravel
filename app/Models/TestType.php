@@ -50,6 +50,11 @@ class TestType extends Model
         'uuid' => 'string'
      ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
 

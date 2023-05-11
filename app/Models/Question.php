@@ -88,6 +88,11 @@ class Question extends Model
         'uuid' => 'string'
      ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     public function isVisible(): bool
     {
         if (!$this?->exists) {

@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tests', function (Blueprint $table) {
-            $table->uuid('id')->primary()->comment('Identificador UUID');
+            $table->id();
+$table->uuid()->comment('Identificador UUID');
 
             $table->string("number_of_questions_requested")->comment('Numero total de preguntas solicitidas');
             $table->string("number_of_questions_generated")->comment('Numero total de preguntas generadas');

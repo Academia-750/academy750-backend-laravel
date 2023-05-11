@@ -61,6 +61,11 @@ class ImportRecord extends Model
          'import_process_id' => 'string'
      ];
 
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
 

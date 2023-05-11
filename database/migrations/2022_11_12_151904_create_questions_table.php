@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('questions', function (Blueprint $table) {
-            $table->uuid('id')->primary()->comment('Identificador UUID');
+            $table->id();
+$table->uuid()->comment('Identificador UUID');
             $table->uuidMorphs('questionable');
 
             $table->text("question")->comment("La pregunta");

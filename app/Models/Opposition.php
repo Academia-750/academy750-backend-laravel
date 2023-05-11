@@ -14,9 +14,6 @@ class Opposition extends Model
     use UUIDTrait;
     use StateAvailableTrait;
 
-    public $keyType = "string";
-    public $incrementing = false;
-
     protected $fillable = [
         'id',
         'name',
@@ -65,6 +62,11 @@ class Opposition extends Model
      protected $casts = [
          'uuid' => 'string'
      ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions

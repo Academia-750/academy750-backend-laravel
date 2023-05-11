@@ -39,9 +39,6 @@ class User extends Authenticatable
     use HasFactory;
     use HasRoles;
 
-    public $keyType = "string";
-    public $incrementing = false;
-
     /**
      * The attributes that are mass assignable.
      *
@@ -153,6 +150,11 @@ class User extends Authenticatable
     public array $adapterIncludes = [
         'roles-permissions' => 'roles.permissions'
     ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
