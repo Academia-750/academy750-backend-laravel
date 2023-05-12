@@ -91,7 +91,8 @@ return new class extends Migration
               PERCENTAGE
             LIMIT
               5;
-            END";
+            END
+            ";
 
         DB::unprepared($procedure1);
 
