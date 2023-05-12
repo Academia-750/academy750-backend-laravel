@@ -17,7 +17,7 @@ class GinesCredentials implements  CredentialsInterface
         $roleAdmin = Role::query()->where('name', '=', 'admin')->first();
 
         $adminGines = User::query()->create([
-            'id' => UuidGeneratorService::getUUIDUnique(User::class),
+            'uuid' => UuidGeneratorService::getUUIDUnique(User::class),
             'email' => 'ginesRJ88@gmail.com',
             'first_name' => 'Gines',
             'last_name' => 'Rabasco',
@@ -41,7 +41,7 @@ class GinesCredentials implements  CredentialsInterface
         $roleStudent = Role::query()->where('name', '=', 'student')->first();
 
         $studentGines = User::query()->create([
-            'id' => UuidGeneratorService::getUUIDUnique(User::class),
+            'uuid' => UuidGeneratorService::getUUIDUnique(User::class),
             'email' => 'gines.rabasco.student@academia750.com',
             'first_name' => 'Gines',
             'last_name' => 'Moheno',

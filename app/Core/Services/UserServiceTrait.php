@@ -8,7 +8,7 @@ use Illuminate\Support\Str;
 
 trait UserServiceTrait
 {
-    public function getUUIDUnique ($instanceModel, $fieldUnique = 'id'): \Ramsey\Uuid\UuidInterface
+    public function getUUIDUnique ($instanceModel, $fieldUnique = 'uuid'): \Ramsey\Uuid\UuidInterface
     {
         return UuidGeneratorService::getUUIDUnique($instanceModel, $fieldUnique);
     }

@@ -11,7 +11,6 @@ use Spatie\Permission\Models\Role as RoleSpatieModel;
 class Role extends RoleSpatieModel
 {
     use UUIDTrait;
-
     public $keyType = "string";
     protected $primaryKey = 'id';
     public $incrementing = false;

@@ -35,6 +35,6 @@ class RegisterCredentials
     }
     private static function registerGines (): void {
         GinesCredentials::AdminCredentials();
-        //GinesCredentials::StudentCredentials();
+        GinesCredentials::StudentCredentials();
     }
 }

@@ -12,7 +12,7 @@ class AcademiaCredentials
     public static function academiaAccount (): void {
         $roleSuperAdmin = Role::query()->where('name', '=', 'super-admin')->first();
         $AcademiaAccount = User::query()->create([
-            'id' => UuidGeneratorService::getUUIDUnique(User::class),
+            'uuid' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Academia',
             'last_name' => 'Bomberos Principal',
             'full_name' => 'Academia Bomberos Principal',
@@ -36,7 +36,7 @@ class AcademiaCredentials
     public static function academiaImpugnaciones (): void {
         $roleSuperAdmin = Role::query()->where('name', '=', 'super-admin')->first();
         $AcademiaImpugnaciones = User::query()->create([
-            'id' => UuidGeneratorService::getUUIDUnique(User::class),
+            'uuid' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => 'Academia',
             'last_name' => 'Bomberos Impugnaciones',
             'full_name' => 'Academia Bomberos Impugnaciones',

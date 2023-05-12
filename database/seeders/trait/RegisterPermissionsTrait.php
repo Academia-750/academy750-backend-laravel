@@ -14,7 +14,6 @@ trait RegisterPermissionsTrait
     {
         if (!$this->existsPermission($permissionKey)) {
             Permission::query()->create([
-                'id' => UuidGeneratorService::getUUIDUnique(Permission::class),
                 'name' => $permissionKey,
                 'alias_name' => $aliasName,
             ]);
