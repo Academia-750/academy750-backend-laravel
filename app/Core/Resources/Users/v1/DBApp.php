@@ -245,7 +245,7 @@ class DBApp implements UsersInterface
                 $student->save();
 
                 DB::table('password_resets')->where('email', $student->email)->delete();
-                DB::table('personal_access_tokens')->where('tokenable_id', '=', $student->getRouteKey())->delete();
+                DB::table('personal_access_tokens')->where('tokenable_id', '=', $student->getKey())->delete();
 
                 DB::commit();
                 $student->notify(new ResetPasswordStudentNotification(compact('password_generated')));

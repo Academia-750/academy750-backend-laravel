@@ -34,7 +34,9 @@ class ResetPasswordStudentNotification extends Notification implements ShouldQue
             ->greeting("<span class='greeting-text-default-mailable typography-greeting-text text-size-18'>Hola! {$namePerson}</span>")
             ->line("Tus nuevos datos de acceso son:")
             ->line("<b>Usuario</b>: {$dni}")
-            ->line("<b>Contraseña</b>: {$password_generated}")
+            /*->line("<b>Contraseña</b>: {$password_generated}")*/
+            ->line("<b>Contraseña</b>: <span id='password' style='display: none;'>{$password_generated}</span>")
+            ->line('<button id="show-password">Mostrar contraseña</button>')
             ->salutation("Atentamente:");
     }
 
