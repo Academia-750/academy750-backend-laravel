@@ -27,7 +27,7 @@ class DBQuery implements ProfileInterface
         try {
 
             DB::beginTransaction();
-                $user = $this->model->find(auth()->user()->getRouteKey());
+                $user = $this->model->find(auth()->user()->getKey());
 
                 //$user->dni = $request->get('dni');
                 $user->first_name = $request->get('first-name') ?? $user->first_name;
@@ -38,7 +38,7 @@ class DBQuery implements ProfileInterface
 
             DB::commit();
 
-            return $this->model->applyIncludes()->find($user->getRouteKey());
+            return $this->model->applyIncludes()->find($user->getKey());
         } catch (\Exception $e) {
             DB::rollback();
             abort(500,$e->getMessage());
@@ -50,7 +50,7 @@ class DBQuery implements ProfileInterface
         try {
 
                 DB::beginTransaction();
-                $user = User::query()->findOr(Auth::user()?->getRouteKey());
+                $user = User::query()->findOr(Auth::user()?->getKey());
 
                 ActionsAccountUser::disableAccountUser($user);
 
