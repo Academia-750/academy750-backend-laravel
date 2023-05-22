@@ -20,7 +20,7 @@ class DBQuery implements ProfileInterface
 
     public function getDataMyProfile()
     {
-        return $this->model->applyIncludes()->find(auth()->user()->getRouteKey());
+        return $this->model->applyIncludes()->find(auth()->user()->getKey());
     }
     public function updateDataMyProfile($request)
     {

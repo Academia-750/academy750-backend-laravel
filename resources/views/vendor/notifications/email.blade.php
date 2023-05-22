@@ -1,20 +1,3 @@
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var showPasswordButton = document.getElementById('show-password');
-        var passwordElement = document.getElementById('password');
-
-        showPasswordButton.addEventListener('click', function () {
-            if (passwordElement.style.display === 'none') {
-                passwordElement.style.display = 'inline';
-                showPasswordButton.innerText = 'Ocultar contraseña';
-            } else {
-                passwordElement.style.display = 'none';
-                showPasswordButton.innerText = 'Mostrar contraseña';
-            }
-        });
-    });
-</script>
-
 <x-mail::message>
 {{-- Greeting --}}
 @if (! empty($greeting))
