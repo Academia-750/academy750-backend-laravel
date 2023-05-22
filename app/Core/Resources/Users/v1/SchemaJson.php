@@ -101,14 +101,18 @@ class SchemaJson implements UsersInterface
     public function fetch_history_questions_by_type_and_period()
     {
 
-        $test = Test::query()->findOrFail(request('test-id'));
+        $test = Test::query()->where('uuid', request('test-id'));
+
+        if (!$test) {
+            abort(404, 'Test not found');
+        }
 
         $questions = collect([]);
 
         $count = 0;
 
         $questionsQuery = Question::query()->whereIn(
-            'id', $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->pluck('questions.id')->toArray()
+            'id', $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->pluck('questions.uuid')->toArray()
         )->get();
 
         foreach ($questionsQuery as $question) {
@@ -120,7 +124,7 @@ class SchemaJson implements UsersInterface
                 "index" => $count,
                 "status_question" => $questionPivotTest?->pivot?->status_solved_question,
                 "question" => $question->question,
-                'question_id' => $question->id,
+                'question_id' => $question->getRouteKey(),
                 'answer_id' => $questionPivotTest?->pivot?->answer_id,
             ]);
         }

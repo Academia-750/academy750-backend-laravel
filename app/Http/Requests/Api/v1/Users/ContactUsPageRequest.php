@@ -34,7 +34,7 @@ class ContactUsPageRequest extends FormRequest
             'email' => [
                 'required', 'email', Rule::when($this->get('reason') === 'inscription', [
                     Rule::unique('users', 'email')
-                ])
+            ])
             ],
             'message' => [
                 'required', 'max:500'

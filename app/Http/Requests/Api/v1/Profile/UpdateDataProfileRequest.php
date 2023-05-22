@@ -18,7 +18,6 @@ class UpdateDataProfileRequest extends FormRequest
     #[ArrayShape(['dni' => "array", 'first-name' => "string[]", 'last-name' => "string[]", 'phone' => "array", 'email' => "array"])] public function rules(): array
     {
         return [
-            //'dni' => ['required', 'alpha_num', Rule::unique('users', 'dni')->ignore(auth()->user()->id), new ValidateCorrectDNISpain],
             'first-name' => [
                 'nullable',
                 Rule::when( $this->get('first-name') !== null ,
@@ -47,7 +46,7 @@ class UpdateDataProfileRequest extends FormRequest
                     [
                         'numeric',
                         'regex:/^[6789]\d{8}$/',
-                        Rule::unique('users', 'phone')->ignore(auth()->user()->id)
+                        Rule::unique('users', 'phone')->ignore(auth()->user()->id, 'uuid')
                     ]
                 )
             ],
@@ -57,7 +56,7 @@ class UpdateDataProfileRequest extends FormRequest
                     $this->get('email') !== null,
                     [
                         'email',
-                        Rule::unique('users', 'email')->ignore(auth()->user()->id)
+                        Rule::unique('users', 'email')->ignore(auth()->user()->id, 'uuid')
                     ]
                 )
             ],
