@@ -12,6 +12,6 @@ class ManageUsersInformation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['ip', 'has_accept_cookies'];
+    protected $fillable = ['ip', 'user_agent', 'has_accept_cookies'];
 
 }

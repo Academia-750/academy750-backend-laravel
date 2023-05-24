@@ -14,37 +14,50 @@ Route::prefix('v1')->group(callback: static function(){
     });
 
     Route::post('guest/user/accept-cookies', function (\Illuminate\Http\Request $request) {
-        $userIp = ManageUsersInformation::query()->where('ip', $request->ip())->first();
+        $userIp = ManageUsersInformation::query()
+            ->where('ip', $request->ip() ?? $request->getClientIp() )
+            ->where('user_agent', $request->header('User-Agent'))
+            ->first();
 
         if (!$userIp) {
             ManageUsersInformation::query()->create([
-                'ip' => $request->ip(),
-                'has_accept_cookies' => true
+                'has_accept_cookies' => true,
+                'user_agent' => $request->header('User-Agent'),
+                'ip' => $request->ip() ?? $request->getClientIp()
             ]);
         } else {
             $userIp->update([
-                'has_accept_cookies' => true
+                'has_accept_cookies' => true,
+                'user_agent' => $request->header('User-Agent'),
+                'ip' => $request->ip() ?? $request->getClientIp()
             ]);
         }
 
         return response()->json([
-            'has_accept_cookies' => true
+            'has_accept_cookies' => true,
+            'user_agent' => $request->header('User-Agent'),
+                'ip' => $request->ip() ?? $request->getClientIp()
         ]);
     })->name('api.v1.users.home-page.form.accept-cookies');
 
     Route::post('guest/user/has-accept-cookies', function (\Illuminate\Http\Request $request) {
         $userIp = ManageUsersInformation::query()
-            ->where('ip', $request->ip())
+            ->where('ip', $request->ip() ?? $request->getClientIp())
+            ->where('user_agent', $request->header('User-Agent') )
             ->where('has_accept_cookies', true)
             ->first();
 
         if (!$userIp) {
             return response()->json([
-                'has_accept_cookies' => false
+                'has_accept_cookies' => false,
+                'user_agent' => $request->header('User-Agent'),
+                'ip' => $request->ip() ?? $request->getClientIp()
             ]);
         } else {
             return response()->json([
-                'has_accept_cookies' => $userIp->has_accept_cookies
+                'has_accept_cookies' => $userIp->has_accept_cookies,
+                'user_agent' => $request->header('User-Agent'),
+                'ip' => $request->ip() ?? $request->getClientIp()
             ]);
         }
     })->name('api.v1.users.home-page.form.has-accept-cookies');
