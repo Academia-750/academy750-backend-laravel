@@ -30,7 +30,7 @@ trait QuestionsHelpersTrait
 
             $answers = [
                 [
-                    'answer' => "Answer - 1 (Correct) Q ({$question->getRouteKey()})",
+                    'answer' => "Answer - 1 (Correct) Q ({$question->getKey()})",
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'yes',
                     'question_id' => $question->getRouteKey(),

@@ -63,7 +63,7 @@ class DBApp implements UsersInterface
             DB::commit();
 
             return [
-                'user' => $this->model->applyIncludes()->find($userCreated->id),
+                'user' => $this->model->applyIncludes()->find($userCreated->getKey()),
                 'password_generated' => $secureRandomPassword
             ];
 
@@ -76,7 +76,7 @@ class DBApp implements UsersInterface
 
     public function read( $user ){
         //dump($user->id);
-        return $this->model->applyIncludes()->find($user->getRouteKey());
+        return $this->model->applyIncludes()->find($user->getKey());
     }
 
     public function update( $request, $user ): \App\Models\User{
@@ -102,7 +102,7 @@ class DBApp implements UsersInterface
 
             DB::commit();
 
-            return $this->model->applyIncludes()->find($user->getRouteKey());
+            return $this->model->applyIncludes()->find($user->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();

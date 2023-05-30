@@ -14,7 +14,7 @@ class MyProfileAuthController extends Controller
 {
     public function get_data_my_profile(): UserResource
     {
-        $user = User::applyIncludes()->find(auth()->user()->getRouteKey());
+        $user = User::applyIncludes()->find(auth()->user()->getKey());
 
         return UserResource::make($user);
     }

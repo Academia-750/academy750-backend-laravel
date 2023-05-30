@@ -12,11 +12,11 @@ class ActionsAccountUser
             $user = User::query()->findOrFail($user);
         }
 
-        DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
+        DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getKey())->delete();
 
         DB::select(
             "CALL delete_user_data_test_procedure(?)",
-            array($user->id)
+            array($user->getKey())
         );
 
         $user->delete();
@@ -27,10 +27,10 @@ class ActionsAccountUser
 
         if ( !($user instanceof User) ) {
             $user = User::query()->findOrFail($user);
-            DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
+            DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getKey())->delete();
         }
 
-        DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
+        DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getKey())->delete();
 
         $user->state = 'disable';
         $user->save();
@@ -45,7 +45,7 @@ class ActionsAccountUser
 
         if ( !($user instanceof User) ) {
             $user = User::query()->findOrFail($user);
-            DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
+            DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getKey())->delete();
         }
 
         $user->state = 'enable';

@@ -46,7 +46,7 @@ class UpdateDataProfileRequest extends FormRequest
                     [
                         'numeric',
                         'regex:/^[6789]\d{8}$/',
-                        Rule::unique('users', 'phone')->ignore(auth()->user()->id, 'uuid')
+                        Rule::unique('users', 'phone')->ignore(auth()->user()->getRouteKey(), auth()->user()->getRouteKeyName())
                     ]
                 )
             ],
@@ -56,7 +56,7 @@ class UpdateDataProfileRequest extends FormRequest
                     $this->get('email') !== null,
                     [
                         'email',
-                        Rule::unique('users', 'email')->ignore(auth()->user()->id, 'uuid')
+                        Rule::unique('users', 'email')->ignore(auth()->user()->getRouteKey(), auth()->user()->getRouteKeyName())
                     ]
                 )
             ],

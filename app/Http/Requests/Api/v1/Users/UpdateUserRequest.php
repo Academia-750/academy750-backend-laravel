@@ -21,7 +21,7 @@ class UpdateUserRequest extends FormRequest
             'dni' => [
                 'nullable',
                 Rule::when($this->get('dni') !== null, [
-                    'alpha_num', Rule::unique('users', 'dni')->ignore($this->route('user')?->getRouteKey(), 'uuid'), new ValidateCorrectDNISpain()
+                    'alpha_num', Rule::unique('users', 'dni')->ignore($this->route('user')?->getRouteKey(), $this->route('user')->getRouteKeyName()), new ValidateCorrectDNISpain()
                 ])
             ],
             'first-name' => [
@@ -52,7 +52,7 @@ class UpdateUserRequest extends FormRequest
                     [
                         'numeric',
                         'regex:/^[6789]\d{8}$/',
-                        Rule::unique('users', 'phone')->ignore($this->route('user')?->getRouteKey(), 'uuid')
+                        Rule::unique('users', 'phone')->ignore($this->route('user')?->getRouteKey(), $this->route('user')->getRouteKeyName())
                     ]
                 )
             ],
@@ -62,7 +62,7 @@ class UpdateUserRequest extends FormRequest
                     $this->get('email') !== null,
                     [
                         'email',
-                        Rule::unique('users', 'email')->ignore($this->route('user')?->getRouteKey(), 'uuid')
+                        Rule::unique('users', 'email')->ignore($this->route('user')?->getRouteKey(), $this->route('user')->getRouteKeyName())
                     ]
                 )
             ],
