@@ -35,7 +35,7 @@ class TestPolicy
         return $user->can('resolve-a-tests') &&
             $test?->is_solved_test === 'no' &&
             $test?->test_type === 'test' &&
-            $test->user?->getRouteKey() === $user->getRouteKey();
+            $test->user?->getKey() === $user->getKey();
     }
 
 
@@ -51,7 +51,7 @@ class TestPolicy
     {
         return $user->can('resolve-a-tests') &&
             $test?->test_type === 'card_memory' &&
-            $test->user?->getRouteKey() === $user->getRouteKey();
+            $test->user?->getKey() === $user->getKey();
     }
 
     /**
@@ -68,10 +68,10 @@ class TestPolicy
         // \Log::debug('create a quiz Policy Test');
         $topicsBelongsToOpposition = true;
 
-        $topics_id_by_opposition = $opposition->topics()->pluck('id')->toArray();
+        $topics_uuids_by_opposition = $opposition->topics()->pluck('uuid')->toArray();
 
-        foreach ($request->get('topics') as $topic_id) {
-            if ( !in_array($topic_id, $topics_id_by_opposition, true) ) {
+        foreach ($request->get('topics') as $topic_uuid) {
+            if ( !in_array($topic_uuid, $topics_uuids_by_opposition, true) ) {
                 $topicsBelongsToOpposition = false;
             }
         }
@@ -85,6 +85,7 @@ class TestPolicy
      * @return bool
      */
     public function fetch_test_completed (User $user, Test $test): bool {
-        return $user->hasRole('student') && (bool) $user->tests()->find($test->getRouteKey()) && $test->is_solved_test === 'yes';
+        return $user->hasRole('student') &&
+            (bool) $user->tests()->find($test->getKey()) && $test->is_solved_test === 'yes';
     }
 }

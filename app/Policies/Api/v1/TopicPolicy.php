@@ -110,7 +110,7 @@ class TopicPolicy
 
     public function topic_get_a_question(User $user, Topic $topic, Question $question): bool
     {
-        if (!in_array($question->getRouteKey(), $topic->questions->pluck('id')->toArray(), true)) {
+        if (!in_array($question->getKey(), $topic->questions->pluck('id')->toArray(), true)) {
             abort(404);
         }
 

@@ -11,8 +11,6 @@ class QuestionResource extends JsonResource
 {
     public function toArray($request): array
     {
-        \Log::debug('QuestionResource');
-
         return [
             'type' => 'questions',
             'id' => $this->resource->getRouteKey(),
