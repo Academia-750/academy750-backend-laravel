@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
+use App\Core\Resources\Users\v1\Services\ActionsAccountUser;
 use App\Core\Services\UserService;
 use App\Http\Requests\Api\v1\Users\ContactUsPageRequest;
 use App\Http\Requests\Api\v1\Users\FetchHistoryQuestionsByTypeAndPeriodOfStudentRequest;
@@ -94,7 +95,7 @@ class UsersController extends Controller
         $student->save();
 
         DB::table('password_resets')->where('email', $student->email)->delete();
-        DB::table('personal_access_tokens')->where('tokenable_id', '=', $student->getRouteKey())->delete();
+        ActionsAccountUser::removeAllTokensByUserReally($student);
 
         DB::commit();
         $student->notify(new ResetPasswordStudentNotification(compact('password_generated')));

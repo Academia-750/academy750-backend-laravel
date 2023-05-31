@@ -147,29 +147,7 @@ class DBApp implements UsersInterface
 
     }
 
-    public function export_records( $request ): \Symfony\Component\HttpFoundation\BinaryFileResponse{
-        if ($request->get('type') === 'pdf') {
-            $domPDF = App::make('dompdf.wrapper');
-            $users = $this->model->query()->whereIn('id', $request->get('students'))->get();
-            $domPDF->loadView('resources.export.templates.pdf.students', compact('users'))->setPaper('a4', 'landscape')->setWarnings(false);
-            return $domPDF->download('report-students.pdf');
-        }
-        return Excel::download(new UsersExport($request->get('students')), 'students.'. $request->get('type'));
-    }
-
     public function import_records( $request ): string{
-        //Proceso de importacion con Queues - El archivo debe tener
-        //(new UserImport(Auth::user()))->import($request->file('students'));
-
-         /*
-         // Lanzamiento de errores en caso de validacion sin uso de Queues
-         if ($importInstance->failures()->isNotEmpty()) {
-             throw ValidationException::withMessages([
-                 'errors' => [
-                     $importInstance->failures()
-                 ]
-             ]);
-         }*/
         return "Proceso de importación iniciado";
     }
 
@@ -245,7 +223,7 @@ class DBApp implements UsersInterface
                 $student->save();
 
                 DB::table('password_resets')->where('email', $student->email)->delete();
-                DB::table('personal_access_tokens')->where('tokenable_id', '=', $student->getKey())->delete();
+                ActionsAccountUser::removeAllTokensByUserReally($student);
 
                 DB::commit();
                 $student->notify(new ResetPasswordStudentNotification(compact('password_generated')));
@@ -278,16 +256,13 @@ class DBApp implements UsersInterface
             $topicsData = StatisticsDataHistoryStudent::getCollectGroupsStatisticsQuestionsTopic(
                 $request->get('topics_id'),
                 $request->get('period'), [
-                    'student_id' => $student?->getRouteKey(),
+                    'student_id' => $student?->getKey(),
                     'last_date' => $last_date,
                     'today' => $today,
                 ]
             );
 
             $topics = [];
-
-            \Log::debug("Topics Data Resultados por tema");
-            \Log::debug($topicsData);
 
             foreach ($topicsData as $topicData) {
                 $topicDataArray = (array) $topicData;
@@ -340,7 +315,9 @@ class DBApp implements UsersInterface
 
             //$questions_id  = array_unique(TopicsStatisticsService::getQuestionsFailedBelongsToTopicAndTest($topic));
             $questions_id_results_procedure  = DB::select('call get_questions_wrong_history_by_topic_and_tests_student_procedure(?,?)',
-            array($user->getRouteKey(), $topic->getRouteKey()));
+            array(
+                $user->getKey(), $topic->getKey()
+            ));
 
             return  array_map(static function ($item) {
                 $questionItem = (array) $item;
@@ -366,7 +343,13 @@ class DBApp implements UsersInterface
     {
         try {
 
-            return Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+            return Auth::user()?->tests()
+                ->where('test_type', '=', 'test')
+                ->where('is_solved_test', '=', 'yes')
+                ->applyFilters()
+                ->applySorts()
+                ->applyIncludes()
+                ->jsonPaginate();
         } catch (\Exception $e) {
             DB::rollback();
             abort($e->getCode(), $e->getMessage());
@@ -377,9 +360,16 @@ class DBApp implements UsersInterface
     {
         try {
 
-            $topicsData = array_unique(TopicsStatisticsService::getTopicsByTestsCompleted());
+            $topicsData = array_unique(
+                TopicsStatisticsService::getTopicsByTestsCompleted()
+            );
 
-            return Topic::query()->whereIn('id', $topicsData)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+            return Topic::query()
+                ->whereIn('id', $topicsData)
+                ->applyFilters()
+                ->applySorts()
+                ->applyIncludes()
+                ->jsonPaginate();
         } catch (\Exception $e) {
             DB::rollback();
             abort($e->getCode(), $e->getMessage());
@@ -409,16 +399,25 @@ class DBApp implements UsersInterface
 
             if (request('key-period-date') === 'all') {
                 return $student?->tests()
-                    ->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')
-                    ->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+                    ->where('test_type', '=', 'test')
+                    ->where('is_solved_test', '=', 'yes')
+                    ->applyFilters()
+                    ->applySorts()
+                    ->applyIncludes()
+                    ->jsonPaginate();
             }
 
             $today = date('Y-m-d');
 
-            $last_date = date('Y-m-d', strtotime($today . StatisticsDataHistoryStudent::getPeriodInKey( request('key-period-date') )));
+            $last_date = date(
+                'Y-m-d',
+                strtotime(
+                    $today . StatisticsDataHistoryStudent::getPeriodInKey( request('key-period-date') )
+                )
+            );
 
             $tests_id_by_procedure = DB::select('call get_tests_of_student_by_period_date_procedure(?,?,?)',
-            array($student->getRouteKey(), $last_date, $today));
+            array($student->getKey(), $last_date, $today));
 
 
             $tests_id = array_map(static function ($test) {
@@ -429,9 +428,13 @@ class DBApp implements UsersInterface
 
 
             return Test::query()
-                ->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')
+                ->where('test_type', '=', 'test')
+                ->where('is_solved_test', '=', 'yes')
                 ->whereIn('id', $tests_id)
-                ->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+                ->applyFilters()
+                ->applySorts()
+                ->applyIncludes()
+                ->jsonPaginate();
 
         } catch (\Exception $e) {
             DB::rollback();

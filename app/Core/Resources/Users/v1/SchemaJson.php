@@ -112,12 +112,12 @@ class SchemaJson implements UsersInterface
         $count = 0;
 
         $questionsQuery = Question::query()->whereIn(
-            'id', $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->pluck('questions.uuid')->toArray()
+            'id', $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->pluck('questions.id')->toArray()
         )->get();
 
         foreach ($questionsQuery as $question) {
 
-            $questionPivotTest = $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->find($question->getRouteKey());
+            $questionPivotTest = $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->find($question->getKey());
 
             $count++;
             $questions->push([
