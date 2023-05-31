@@ -2,6 +2,8 @@
 
 namespace App\Core\Resources\Oppositions\v1\Services;
 
+use App\Models\Opposition;
+
 class ActionForMultipleRecordsService
 {
     public static function actionForMultipleRecords ($action, $oppositions): array {
@@ -15,8 +17,9 @@ class ActionForMultipleRecordsService
     public static function deleteMultipleOppositions ($oppositions): array {
         $information = [];
 
-        foreach ($oppositions as $opposition_id) {
-            $opposition = ActionsOppositionsRecords::deleteOpposition($opposition_id);
+        foreach ($oppositions as $opposition_uuid) {
+            $oppositionEloquentOrm = Opposition::query()->firstWhere('uuid', '=', $opposition_uuid);
+            $opposition = ActionsOppositionsRecords::deleteOpposition($oppositionEloquentOrm->getKey());
             $information[] = "'Oposicion {$opposition->getRouteKey()}' ha sido eliminado con éxito";
         }
 

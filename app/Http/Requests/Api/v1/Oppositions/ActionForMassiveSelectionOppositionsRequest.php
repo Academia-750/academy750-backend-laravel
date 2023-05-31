@@ -22,7 +22,7 @@ class ActionForMassiveSelectionOppositionsRequest extends FormRequest
                 Rule::in(['delete'])
             ],
             "oppositions" => ['required', 'array', 'min:2'],
-            "oppositions.*" => ['uuid', 'distinct:strict', 'exists:oppositions,id']
+            "oppositions.*" => ['uuid', 'distinct:strict', 'exists:oppositions,uuid']
         ];
     }
 

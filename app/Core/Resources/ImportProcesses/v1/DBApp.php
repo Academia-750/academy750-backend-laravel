@@ -16,7 +16,7 @@ class DBApp implements ImportProcessesInterface
     public function index(){
         return (new ImportProcess)
             ->query()
-            ->where('user_id', '=', Auth::user()->getRouteKey())
+            ->where('user_id', '=', Auth::user()->getKey())
             ->where('status_process_file', '=', 'complete')
             ->applyFilters()
             ->applySorts()
