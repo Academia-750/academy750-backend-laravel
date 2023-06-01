@@ -88,7 +88,7 @@ class QuestionsController extends Controller
 
         if ($request->get('is-visible-question') === 'no') {
             DB::table('questions_used_test')
-                ->where('question_id', $question->id)
+                ->where('question_id', $question->getKey())
                 ->delete();
 
         }

@@ -25,12 +25,20 @@ class DBApp implements QuestionsInterface
 
         $questions_id = $subtopic->questions()->pluck("id");
 
-        return $this->model->query()->whereIn('id', $questions_id->toArray())/*->where('is_visible', 'yes')*/->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model
+            ->query()
+            ->whereIn('id', $questions_id->toArray())
+            ->applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function subtopic_relationship_questions_read($subtopic, $question)
     {
-        return $subtopic->questions()/*->applyIncludes()*/->firstWhere("id", "=", $question->getRouteKey());
+        return $subtopic
+            ->questions()
+            ->firstWhere("id", "=", $question->getKey());
     }
 
     public function subtopic_relationship_questions_create($request, $subtopic)
@@ -50,14 +58,15 @@ class DBApp implements QuestionsInterface
             ]);
         }
 
-        return $this->model->query()->applyIncludes()->find($question->getRouteKey());
+        return $this->model->query()->applyIncludes()->find($question->getKey());
     }
 
     public function subtopic_relationship_questions_update($request, $subtopic, $question)
     {
         // Delete Alternatives
 
-        $question = Question::query()->findOrFail($question->id);
+        $question = Question::query()
+            ->findOrFail($question->getKey());
 
         foreach ($question->answers()->pluck('id')->toArray() as $answer_id) {
             $answer = Answer::query()->findOrFail($answer_id);
@@ -85,14 +94,19 @@ class DBApp implements QuestionsInterface
                 'answer' => $answerData["answer"],
                 'is_grouper_answer' => $answerData["is_grouper_answer"],
                 'is_correct_answer' => $answerData["is_correct_answer"],
-                'question_id' => $answerData["question_id"],
+                'question_id' => Question::query()
+                    ->firstWhere('uuid', '=', $answerData["question_id"])
+                    ->getKey()
             ]);
         }
 
         $question->question_in_edit_mode = 'no';
         $question->save();
 
-        return $this->model->query()->applyIncludes()->find($question->getRouteKey());
+        return $this->model
+            ->query()
+            ->applyIncludes()
+            ->find($question->getKey());
 
     }
 
@@ -103,7 +117,7 @@ class DBApp implements QuestionsInterface
             $countTestsCreatedByThisQuestion = $question->tests()->count();
 
             DB::table('questions_used_test')
-                ->where('question_id', $question->id)
+                ->where('question_id', $question->getKey())
                 ->delete();
 
             if ($countTestsCreatedByThisQuestion) {
@@ -123,27 +137,36 @@ class DBApp implements QuestionsInterface
 
     public function topics_relationship_get_questions($topic)
     {
-        //$questions_id = $topic->questions()->pluck("id");
-
-
         if (request()?->query('filter') && request()?->query('filter')['search']) {
             $questions_id = DB::select(
                 "call search_question_in_topics_and_subtopics_procedure(?,?)",
-                array(request()?->query('filter')['search'], $topic->getRouteKey())
+                array(request()?->query('filter')['search'], $topic->getKey())
             ); //search_question_in_topics_and_subtopics
 
+           $questions_id = collect($questions_id)->pluck('id')->toArray();
 
-            $questions_id = collect($questions_id)->pluck('id')->toArray();
-
-            return Question::query()->whereIn('id', $questions_id)->applyFilters()/*->where('is_visible', 'yes')*/->applySorts()->applyIncludes()->jsonPaginate();
+            return Question::query()
+                ->whereIn('id', $questions_id)
+                ->applyFilters()
+                ->applySorts()
+                ->applyIncludes()
+                ->jsonPaginate();
         }
 
-        return $topic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
+        return $topic
+            ->questions()
+            ->applyFilters()
+            ->where('is_visible', 'yes')
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function topic_relationship_questions_read($topic, $question)
     {
-        return $topic->questions()/*->applyIncludes()*/->firstWhere("id", "=", $question->getRouteKey());
+        return $topic
+            ->questions()
+            ->firstWhere("id", "=", $question->getKey());
     }
 
     public function topic_relationship_questions_create($request, $topic)
@@ -159,11 +182,14 @@ class DBApp implements QuestionsInterface
                 'answer' => $answerData["answer"],
                 'is_grouper_answer' => $answerData["is_grouper_answer"],
                 'is_correct_answer' => $answerData["is_correct_answer"],
-                'question_id' => $answerData["question_id"],
+                'question_id' => Question::query()->firstWhere('uuid', '=', $answerData["question_id"])->getKey()
             ]);
         }
 
-        return $this->model->query()->applyIncludes()->find($question->getRouteKey());
+        return $this->model
+            ->query()
+            ->applyIncludes()
+            ->find($question->getKey());
     }
 
     public function topic_relationship_questions_update($request, $topic, $question)
@@ -171,7 +197,7 @@ class DBApp implements QuestionsInterface
 
         // Delete Alternatives
 
-        $question = Question::query()->findOrFail($question->id);
+        $question = Question::query()->findOrFail($question->getKey());
 
         foreach ($question->answers()->pluck('id')->toArray() as $answer_id) {
             $answer = Answer::query()->findOrFail($answer_id);
@@ -199,14 +225,14 @@ class DBApp implements QuestionsInterface
                 'answer' => $answerData["answer"],
                 'is_grouper_answer' => $answerData["is_grouper_answer"],
                 'is_correct_answer' => $answerData["is_correct_answer"],
-                'question_id' => $answerData["question_id"],
+                'question_id' => Question::query()->firstWhere('uuid', '=', $answerData["question_id"])->getKey()
             ]);
         }
 
         $question->question_in_edit_mode = 'no';
         $question->save();
 
-        return $this->model->query()->applyIncludes()->find($question->getRouteKey());
+        return $this->model->query()->applyIncludes()->find($question->getKey());
     }
 
     public function topic_relationship_questions_delete($topic, $question)
@@ -216,7 +242,7 @@ class DBApp implements QuestionsInterface
             $countTestsCreatedByThisQuestion = $question->tests()->count();
 
             DB::table('questions_used_test')
-                ->where('question_id', $question->id)
+                ->where('question_id', $question->getKey())
                 ->delete();
 
             if ($countTestsCreatedByThisQuestion) {
