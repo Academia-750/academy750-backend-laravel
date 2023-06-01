@@ -16,11 +16,11 @@ class CreateTestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'opposition_id' => ['required', 'uuid', 'exists:oppositions,id'],
+            'opposition_id' => ['required', 'uuid', 'exists:oppositions,uuid'],
             'count_questions_for_test' => ['required', Rule::in(['25', '50', '100', '120'])],
             'test_type' => ['required', Rule::in(['test', 'card_memory'])],
             'topics_id' => ['required', 'array'],
-            'topics_id.*' => ['required', 'uuid', 'exists:topics,id']
+            'topics_id.*' => ['required', 'uuid', 'exists:topics,uuid']
         ];
     }
 
