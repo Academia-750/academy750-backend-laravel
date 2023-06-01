@@ -71,7 +71,7 @@ class DBApp implements TopicsInterface
             ]);
             DB::commit();
 
-            return $this->model->applyIncludes()->find($topicCreated->id);
+            return $this->model->applyIncludes()->find($topicCreated->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -181,7 +181,7 @@ class DBApp implements TopicsInterface
 
         foreach ($opposition->subtopics as $opposition_subtopic) {
             $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
-            if (in_array($opposition_subtopic->getRouteKey(), $subtopics_id_of_topic, true)) {
+            if (in_array($opposition_subtopic->getKey(), $subtopics_id_of_topic, true)) {
                 $subtopics_id[] = $opposition_subtopic->getKey();
             }
 
@@ -429,7 +429,7 @@ class DBApp implements TopicsInterface
 
         foreach ($opposition->subtopics as $opposition_subtopic) {
             $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
-            if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
+            if (in_array($opposition_subtopic->getKey(), $subtopics_id_of_topic, true)) {
                 $subtopics_id_of_this_topic->push($opposition_subtopic->getKey());
             }
         }
@@ -456,8 +456,8 @@ class DBApp implements TopicsInterface
 
         foreach ($opposition->subtopics as $opposition_subtopic) {
             $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
-            if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
-                $subtopics_id_of_this_topic[] = $opposition_subtopic->getKey;
+            if (in_array($opposition_subtopic->getKey(), $subtopics_id_of_topic, true)) {
+                $subtopics_id_of_this_topic[] = $opposition_subtopic->getKey();
             }
         }
 
