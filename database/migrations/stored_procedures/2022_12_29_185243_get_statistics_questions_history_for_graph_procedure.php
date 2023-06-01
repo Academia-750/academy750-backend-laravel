@@ -18,8 +18,8 @@ return new class extends Migration
     {
         $procedure1= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
-            IN `id_topic` VARCHAR(255),
-            IN `id_user` VARCHAR(255),
+            IN `id_topic` INT,
+            IN `id_user` INT,
             IN `min_date` DATE,
             IN `max_date` DATE
         )

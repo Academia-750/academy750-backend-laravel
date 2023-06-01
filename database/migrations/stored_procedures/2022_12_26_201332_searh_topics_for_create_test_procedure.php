@@ -11,8 +11,8 @@ return new class extends Migration {
     {
         $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
-            IN oposicion_id VARCHAR(255),
-            IN grupo_id VARCHAR(255)
+            IN oposicion_id INT,
+            IN grupo_id INT
         )
         BEGIN
             SELECT

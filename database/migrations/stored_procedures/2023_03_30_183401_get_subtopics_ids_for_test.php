@@ -18,8 +18,8 @@ return new class extends Migration
     {
         $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
-            IN `oposicion` TEXT,
-            IN `temas` TEXT
+            IN `__id_oposicion` INT,
+            IN `__temas_ids` TEXT
         )
         BEGIN
             SELECT
@@ -28,8 +28,8 @@ return new class extends Migration
               oppositionables o
               JOIN subtopics s ON o.oppositionable_id = s.id
             WHERE
-              o.opposition_id = oposicion
-              AND FIND_IN_SET(s.topic_id, temas);
+              o.opposition_id = __id_oposicion
+              AND FIND_IN_SET(s.topic_id, __temas_ids);
             END
             ";
 

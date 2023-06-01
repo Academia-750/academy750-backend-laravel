@@ -17,9 +17,9 @@ return new class extends Migration
     {
         $procedure= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
-            IN `topic_uuids` LONGTEXT,
-            IN `id_oposicion` VARCHAR(36),
-            IN `id_usuario` VARCHAR(36),
+            IN `__topic__ids` LONGTEXT,
+            IN `id_oposicion` INT,
+            IN `id_usuario` INT,
             IN `n_pregs` INT
         )
         BEGIN
@@ -30,7 +30,7 @@ return new class extends Migration
             DECLARE num_preguntas INTEGER;
             DECLARE questions_by_topic INTEGER;
             DECLARE v_done INTEGER DEFAULT FALSE;
-            DECLARE v_id VARCHAR(36);
+            DECLARE v_id INT;
             DECLARE cur1 CURSOR FOR SELECT topic_uuid FROM tmp_topics_selected;
             DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_done = TRUE;
 
@@ -38,20 +38,20 @@ return new class extends Migration
             DROP TEMPORARY TABLE IF EXISTS tmp_topics;
             CREATE TEMPORARY TABLE tmp_topics (
                 topic_id LONGTEXT,
-                topic_uuid VARCHAR(36),
+                topic_uuid INT,
                 nombre_del_tema VARCHAR(255),
                 total_questions INT
             );
 
             DROP TEMPORARY TABLE IF EXISTS tmp_topics_selected;
             CREATE TEMPORARY TABLE tmp_topics_selected (
-                topic_uuid VARCHAR(36),
+                topic_uuid INT,
                 total_questions INT
             );
 
             DROP TEMPORARY TABLE IF EXISTS tmp_selected_questions;
             CREATE TEMPORARY TABLE tmp_selected_questions (
-                question_id VARCHAR(36)
+                question_id INT
             );
 
             SET num_preguntas := n_pregs;
@@ -86,7 +86,7 @@ return new class extends Migration
             AND q.questionable_type = 'App\\Models\\Subtopic'
             ) as TB
             WHERE
-                FIND_IN_SET(TB.topic_id, topic_uuids) > 0
+                FIND_IN_SET(TB.topic_id, __topic__ids) > 0
                 AND TB.topic_id IN (
                     SELECT
                         t2.id

@@ -17,9 +17,9 @@ return new class extends Migration
     {
         $procedure= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
-            IN `topic_uuids` LONGTEXT,
-            IN `id_oposicion` VARCHAR(36),
-            IN `id_usuario` VARCHAR(36),
+            IN `topic_ids` LONGTEXT,
+            IN `id_oposicion` INT,
+            IN `id_usuario` INT,
             IN `n_pregs` INT
         )
         BEGIN
@@ -43,14 +43,14 @@ return new class extends Migration
               TEMPORARY TABLE IF EXISTS tmp_topics;
             CREATE TEMPORARY TABLE tmp_topics (
               topic_id LONGTEXT,
-              topic_uuid VARCHAR(36),
+              topic_uuid INT,
               nombre_del_tema VARCHAR(255),
               total_questions INT
             );
             DROP
               TEMPORARY TABLE IF EXISTS tmp_topics_selected;
             CREATE TEMPORARY TABLE tmp_topics_selected (
-              topic_uuid VARCHAR(36),
+              topic_uuid INT,
               total_questions INT
             );
             DROP
@@ -99,7 +99,7 @@ return new class extends Migration
                   AND q.questionable_type = 'App\\Models\\Subtopic'
               ) as TB
             WHERE
-              FIND_IN_SET(TB.topic_id, topic_uuids) > 0
+              FIND_IN_SET(TB.topic_id, topic_ids) > 0
               AND TB.topic_id IN (
                 SELECT
                   t2.id
