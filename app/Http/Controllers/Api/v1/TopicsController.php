@@ -36,8 +36,8 @@ class TopicsController extends Controller
 
         $request->validate([
             'topics-group-id' => ['required', 'array'],
-            'topics-group-id.*' => ['required', 'uuid', 'exists:topic_groups,id'],
-            'opposition-id' => ['required', 'exists:oppositions,id']
+            'topics-group-id.*' => ['required', 'uuid', 'exists:topic_groups,uuid'],
+            'opposition-id' => ['required', 'uuid', 'exists:oppositions,uuid']
         ]);
 
         return $this->topicsInterface->get_topics_available_for_create_test($request);

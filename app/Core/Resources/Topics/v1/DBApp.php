@@ -10,6 +10,7 @@ use App\Models\Question;
 use App\Models\Subtopic;
 use App\Models\Topic;
 use App\Core\Resources\Topics\v1\Interfaces\TopicsInterface;
+use App\Models\TopicGroup;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\App;
@@ -27,47 +28,36 @@ class DBApp implements TopicsInterface
     }
 
     public function index(){
-        return $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model::applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function get_topics_available_for_create_test($request){
+        $opposition_uuid = $request->get('opposition-id');
 
-        // \Log::debug("---------------------Data Request---------------------");
-        // \Log::debug($request);
-        //// \Log::debug(implode(',', $request->get('topics-group-id')));
+        $opposition = Opposition::where('uuid', $opposition_uuid)->first();
 
+        $topics_groups_id = [];
 
-        $topics_procedure_results = [];
+        foreach ($request->get('topics-group-id') as $topic_group_uuid) {
+            $topics_groups_id[] = TopicGroup::where('uuid', $topic_group_uuid)->first()->getKey();
+        }
 
-        /*foreach ($request->get('topics-group-id') as $topicGroupId) {
-            // \Log::debug("---------------------Iteración {$topicGroupId}---------------------");
-            // \Log::debug($topicGroupId);
-
-            $topics_procedure_results = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup($request->get('opposition-id'), $topicGroupId);
-            // \Log::debug($topics_procedure_results);
-
-            $topics_id = array_merge(
-                $topics_id,
-                $topics_procedure_results
-            );
-
-
-        }*/
 
         $topics_id = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup(
-            $request->get('opposition-id'),
-            implode(',', (array) $request->get('topics-group-id'))
+            $opposition->getKey(),
+            implode(',', (array) $topics_groups_id)
         );
 
-
-        // \Log::debug("---------------------Final Array Topics ID---------------------");
-        // \Log::debug($topics_id);
-
-        //$topics_id = collect($topics_id)->pluck('id')->toArray();
-        //// \Log::debug($topics_id);
-
-        return $this->model->query()->whereIn('id', $topics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
-        //return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model
+            ->query()
+            ->whereIn('id', $topics_id)
+            ->applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function create( $request ): \App\Models\Topic{
@@ -77,7 +67,7 @@ class DBApp implements TopicsInterface
             DB::beginTransaction();
             $topicCreated = $this->model->query()->create([
                 'name' => $request->get('name'),
-                'topic_group_id' => $request->get('topic-group-id')
+                'topic_group_id' => TopicGroup::query()->where('uuid', $request->get('topic-group-id'))->first()->getKey(),
             ]);
             DB::commit();
 
@@ -90,7 +80,9 @@ class DBApp implements TopicsInterface
     }
 
     public function read( $topic ): \App\Models\Topic{
-        return $this->model->applyIncludes()->find($topic->getRouteKey());
+        return $this->model
+            ->applyIncludes()
+            ->find($topic->getKey());
     }
 
     public function update( $request, $topic ): \App\Models\Topic{
@@ -98,11 +90,15 @@ class DBApp implements TopicsInterface
 
             DB::beginTransaction();
                 $topic->name = $request->get('name') ?? $topic->name;
-                $topic->topic_group_id = $request->get('topic-group-id') ?? $topic->topic_group_id;
+                $topic->topic_group_id = $request->get('topic-group-id')
+                    ? TopicGroup::query()->where('uuid', $request->get('topic-group-id'))->first()->getKey()
+                    : $topic->topic_group_id;
                 $topic->save();
             DB::commit();
 
-            return $this->model->applyIncludes()->find($topic->getRouteKey());
+            return $this->model
+                ->applyIncludes()
+                ->find($topic->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -160,14 +156,23 @@ class DBApp implements TopicsInterface
 
     public function get_relationship_subtopics($topic)
     {
-        return $topic->subtopics()->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $topic->subtopics()
+            ->applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function get_relationship_oppositions($topic)
     {
         $oppositions_id = $topic->oppositions->pluck("id");
 
-        return (new Opposition)->whereIn("id", $oppositions_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return (new Opposition)
+            ->whereIn("id", $oppositions_id)
+            ->applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function get_relationship_subtopics_by_opposition($topic, $opposition)
@@ -176,17 +181,25 @@ class DBApp implements TopicsInterface
 
         foreach ($opposition->subtopics as $opposition_subtopic) {
             $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
-            if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
-                $subtopics_id[] = $opposition_subtopic->id;
+            if (in_array($opposition_subtopic->getRouteKey(), $subtopics_id_of_topic, true)) {
+                $subtopics_id[] = $opposition_subtopic->getKey();
             }
 
         }
-        return Subtopic::query()->whereIn('id', $subtopics_id)->where('is_available', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return Subtopic::query()
+            ->whereIn('id', $subtopics_id)
+            ->where('is_available', 'yes')
+            ->applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function get_relationship_a_subtopic($topic, $subtopic)
     {
-        $subtopicRecord = $topic->subtopics()->firstWhere('id', '=', $subtopic->getRouteKey());
+        $subtopicRecord = $topic
+            ->subtopics()
+            ->firstWhere('id', '=', $subtopic->getKey());
 
         if (!$subtopicRecord) {
             abort(404);
@@ -197,12 +210,19 @@ class DBApp implements TopicsInterface
 
     public function get_relationship_questions($topic)
     {
-        return $topic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
+        return $topic->questions()
+            ->applyFilters()
+            ->where('is_visible', 'yes')
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function get_relationship_a_question($topic, $question)
     {
-        $question = $topic->questions()->firstWhere('id', '=', $question->getRouteKey());
+        $question = $topic
+            ->questions()
+            ->firstWhere('id', '=', $question->getKey());
 
         if (!$question) {
             abort(404);
@@ -213,12 +233,20 @@ class DBApp implements TopicsInterface
 
     public function subtopics_get_relationship_questions($topic, $subtopic)
     {
-        return $subtopic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
+        return $subtopic
+            ->questions()
+            ->applyFilters()
+            ->where('is_visible', 'yes')
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function subtopics_get_relationship_a_question($topic, $subtopic, $question)
     {
-        $questionRecord = $subtopic->questions()->firstWhere('id', '=', $question->getRouteKey());
+        $questionRecord = $subtopic
+            ->questions()
+            ->firstWhere('id', '=', $question->getKey());
 
         if (!$questionRecord) {
             abort(404);
@@ -235,12 +263,14 @@ class DBApp implements TopicsInterface
 
                 $subtopicCreated = Subtopic::query()->create([
                     'name' => $request->get('name'),
-                    'topic_id' => $topic->getRouteKey()
+                    'topic_id' => $topic->getKey()
                 ]);
 
             DB::commit();
 
-            return (new Subtopic)->applyIncludes()->find($subtopicCreated->id);
+            return (new Subtopic)
+                ->applyIncludes()
+                ->find($subtopicCreated->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -252,7 +282,9 @@ class DBApp implements TopicsInterface
     {
         try {
 
-            $subtopicRecord = $topic->subtopics()->firstWhere('id', '=', $subtopic->getRouteKey());
+            $subtopicRecord = $topic
+                ->subtopics()
+                ->firstWhere('id', '=', $subtopic->getKey());
 
             if (!$subtopicRecord) {
                 abort(404);
@@ -265,7 +297,9 @@ class DBApp implements TopicsInterface
 
             DB::commit();
 
-            return (new Subtopic)->applyIncludes()->find($subtopic->getRouteKey());
+            return (new Subtopic)
+                ->applyIncludes()
+                ->find($subtopic->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -277,7 +311,9 @@ class DBApp implements TopicsInterface
     {
         try {
 
-            $subtopicRecord = $topic->subtopics()->firstWhere('id', '=', $subtopic->getRouteKey());
+            $subtopicRecord = $topic
+                ->subtopics()
+                ->firstWhere('id', '=', $subtopic->getKey());
 
             if (!$subtopicRecord) {
                 abort(404);
@@ -297,7 +333,7 @@ class DBApp implements TopicsInterface
                     ->where(function ($query) use ($subtopicRecord) {
                         $query->where(function ($query) use ($subtopicRecord) {
                             $query->where('oppositionable_type', Subtopic::class)
-                                ->where('oppositionable_id', $subtopicRecord->id);
+                                ->where('oppositionable_id', $subtopicRecord->getKey());
                         });
                     })
                     ->delete();
@@ -307,7 +343,7 @@ class DBApp implements TopicsInterface
                 $subtopic->delete();
             }
 
-            ActionsTopicsRecords::deleteQuestionsUsedInTestsByTopic($subtopic->id, "subtopic_id");
+            ActionsTopicsRecords::deleteQuestionsUsedInTestsByTopic($subtopic->getKey(), "subtopic_id");
 
             return;
 
@@ -321,36 +357,42 @@ class DBApp implements TopicsInterface
     {
         $oppositions_id = $topic->oppositions()->pluck('oppositions.id');
 
-        return (new Opposition)->whereNotIn('id', $oppositions_id->toArray())->where('is_available', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return (new Opposition)
+            ->whereNotIn('id', $oppositions_id->toArray())
+            ->where('is_available', 'yes')
+            ->applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function assign_opposition_with_subtopics_to_topic($request, $topic)
     {
-        $opposition = Opposition::query()->findOrFail($request->get('opposition-id'));
+        $opposition = Opposition::query()->firstWhere('uuid', '=', $request->get('opposition-id'));
 
         $topics_id_by_opposition = $opposition->topics->pluck("id");
 
-        if (!in_array($topic->getRouteKey(), $topics_id_by_opposition->toArray(), true)) {
-            $opposition->topics()->attach($topic->getRouteKey());
+        if (!in_array($topic->getKey(), $topics_id_by_opposition->toArray(), true)) {
+            $opposition->topics()->attach($topic->getKey());
         }
 
-        $subtopics_id = $request->get('subtopics');
+        $subtopics_id = array_map(function ($subtopic__uuid) {
+            return Subtopic::query()->firstWhere('uuid', '=', $subtopic__uuid)->getKey();
+        }, $request->get('subtopics'));
         $subtopics_id_by_topic = $topic->subtopics->pluck("id");
         $subtopics_id_by_opposition = $opposition->subtopics->pluck("id");
 
-        if (is_array($subtopics_id)) {
-            foreach ($subtopics_id as $subtopic_id) {
-                if (!in_array($subtopic_id, $subtopics_id_by_topic->toArray(), true)) {
-                    abort(404);
-                }
+        foreach ($subtopics_id as $subtopic_id) {
+            if (!in_array($subtopic_id, $subtopics_id_by_topic->toArray(), true)) {
+                abort(404);
+            }
 
-                if (!in_array($subtopic_id, $subtopics_id_by_opposition->toArray(), true)) {
-                    $opposition->subtopics()->attach($subtopic_id);
-                }
+            if (!in_array($subtopic_id, $subtopics_id_by_opposition->toArray(), true)) {
+                $opposition->subtopics()->attach($subtopic_id);
             }
         }
 
-        return $this->model->applyIncludes()->find($topic->getRouteKey());
+        return $this->model->applyIncludes()->find($topic->getKey());
 
     }
 
@@ -358,85 +400,93 @@ class DBApp implements TopicsInterface
 
         $topics_id_by_opposition = $opposition->topics->pluck("id");
 
-        if (!in_array($topic->getRouteKey(), $topics_id_by_opposition->toArray(), true)) {
-            $opposition->topics()->attach($topic->getRouteKey());
+        if (!in_array($topic->getKey(), $topics_id_by_opposition->toArray(), true)) {
+            $opposition->topics()->attach($topic->getKey());
         }
 
         $subtopics_id_by_opposition = $opposition->subtopics->pluck("id");
         $subtopics_id_by_topic = $topic->subtopics->pluck("id");
-        $subtopics_id = $request->get('subtopics');
+        $subtopics_id = array_map(function ($subtopic__uuid) {
+            return Subtopic::query()->firstWhere('uuid', '=', $subtopic__uuid)->getKey();
+        }, $request->get('subtopics'));
 
-        if (is_array($subtopics_id)) {
-            foreach ($subtopics_id as $subtopic_id) {
-                // Validamos que los subtemas enviados pertenezcan al tema actual
-                if (!in_array($subtopic_id, $subtopics_id_by_topic->toArray(), true)) {
-                    abort(404);
-                }
 
-                // Si mandamos un subtema que no está agregado en la oposición, lo agregamos
-                if (!in_array($subtopic_id, $subtopics_id_by_opposition->toArray(), true)) {
-                    $opposition->subtopics()->attach($subtopic_id);
-                }
+        foreach ($subtopics_id as $subtopic_id) {
+            // Validamos que los subtemas enviados pertenezcan al tema actual
+            if (!in_array($subtopic_id, $subtopics_id_by_topic->toArray(), true)) {
+                abort(404);
             }
 
-            $opposition->refresh();
-
-            $subtopics_id_of_this_topic = collect([]);
-
-            foreach ($opposition->subtopics as $opposition_subtopic) {
-                $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
-                if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
-                    $subtopics_id_of_this_topic->push($opposition_subtopic->id);
-                }
+            // Si mandamos un subtema que no está agregado en la oposición, lo agregamos
+            if (!in_array($subtopic_id, $subtopics_id_by_opposition->toArray(), true)) {
+                $opposition->subtopics()->attach($subtopic_id);
             }
-            // Vamos a comparar directamente aquellos subtemas que mandamos vs los subtemas que tiene la oposicion
-            // Aquellos subtemas de la oposicion que no se encuentren en los subtemas que mandamos en la Request, se irán desvinculando los subtemas de su oposicion
-
-            $subtopics_id_for_detach = $subtopics_id_of_this_topic->diff($subtopics_id)->all();
-
-
-            //foreach ($subtopics_id_for_detach as $subtopic_id) {
-            if (is_array($subtopics_id_for_detach) && count($subtopics_id_for_detach) > 0) {
-                $opposition->subtopics()->detach($subtopics_id_for_detach);
-            }
-            //}
         }
 
-        return $this->model->applyIncludes()->find($topic->getRouteKey());
-    }
+        $opposition->refresh();
 
-    public function delete_opposition_by_topic($topic, $opposition): void
-    {
-        // Obtener los subtemas
         $subtopics_id_of_this_topic = collect([]);
 
         foreach ($opposition->subtopics as $opposition_subtopic) {
             $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
             if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
-                $subtopics_id_of_this_topic->push($opposition_subtopic->id);
+                $subtopics_id_of_this_topic->push($opposition_subtopic->getKey());
+            }
+        }
+        // Vamos a comparar directamente aquellos subtemas que mandamos vs los subtemas que tiene la oposicion
+        // Aquellos subtemas de la oposicion que no se encuentren en los subtemas que mandamos en la Request, se irán desvinculando los subtemas de su oposicion
+
+        $subtopics_id_for_detach = $subtopics_id_of_this_topic->diff($subtopics_id)->all();
+
+
+        //foreach ($subtopics_id_for_detach as $subtopic_id) {
+        if (is_array($subtopics_id_for_detach) && count($subtopics_id_for_detach) > 0) {
+            $opposition->subtopics()->detach($subtopics_id_for_detach);
+        }
+        //}
+
+
+        return $this->model->applyIncludes()->find($topic->getKey());
+    }
+
+    public function delete_opposition_by_topic($topic, $opposition): void
+    {
+        // Obtener los subtemas
+        $subtopics_id_of_this_topic = [];
+
+        foreach ($opposition->subtopics as $opposition_subtopic) {
+            $subtopics_id_of_topic = $topic->subtopics->pluck('id')->toArray();
+            if (in_array($opposition_subtopic->id, $subtopics_id_of_topic, true)) {
+                $subtopics_id_of_this_topic[] = $opposition_subtopic->getKey;
             }
         }
 
-        $opposition->subtopics()->detach($subtopics_id_of_this_topic->toArray());
+        $opposition->subtopics()->detach($subtopics_id_of_this_topic);
 
         $topics_id_by_opposition = $opposition->topics->pluck("id");
 
-        if (in_array($topic->getRouteKey(), $topics_id_by_opposition->toArray(), true)) {
-            $opposition->topics()->detach($topic->getRouteKey());
+        if (in_array($topic->getKey(), $topics_id_by_opposition->toArray(), true)) {
+            $opposition->topics()->detach($topic->getKey());
         }
 
     }
 
     public function topic_get_relationship_questions($topic)
     {
-
-
-        return $topic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
+        return $topic
+            ->questions()
+            ->applyFilters()
+            ->where('is_visible', 'yes')
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function topic_get_a_question($topic, $question)
     {
-        return (new Question)->applyIncludes()->find($question->getRouteKey());
+        return (new Question)
+            ->applyIncludes()
+            ->find($question->getKey());
     }
 
     public function topic_create_a_question($request, $topic)
@@ -455,12 +505,14 @@ class DBApp implements TopicsInterface
                         "answer" => $answer["answer-text"],
                         "is_grouper_answer" => $answer["is_grouper_answer"],
                         "is_correct_answer" => $answer["is_correct_answer"],
-                        "question_id" => $questionCreated->id,
+                        "question_id" => $questionCreated->getKey(),
                     ]);
                 }
             DB::commit();
 
-            return $this->model->applyIncludes()->find($topic->id);
+            return $this->model
+                ->applyIncludes()
+                ->find($topic->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -480,7 +532,7 @@ class DBApp implements TopicsInterface
             ]);
 
             foreach ( $request->get('answers') as $answer) {
-                $answer = Answer::query()->findOrFail($answer["id"]);
+                $answer = Answer::query()->firstWhere('uuid', '=', $answer["id"]);
 
                 $answer->answer = $answer["answer-text"];
                 $answer->is_grouper_answer = $answer["is_grouper_answer"];
@@ -491,7 +543,9 @@ class DBApp implements TopicsInterface
 
             DB::commit();
 
-            return $this->model->applyIncludes()->find($topic->id);
+            return $this->model
+                ->applyIncludes()
+                ->find($topic->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -506,7 +560,11 @@ class DBApp implements TopicsInterface
 
     public function topic_relationship_questions()
     {
-        return Topic::applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->get();
+        return Topic::applyFilters()
+            ->where('is_visible', 'yes')
+            ->applySorts()
+            ->applyIncludes()
+            ->get();
     }
 
     public function import_records( $request ): void{
@@ -517,15 +575,9 @@ class DBApp implements TopicsInterface
             $filesTopics = $request->file('filesTopics') ?? [];
 
             foreach ($filesTopics as $file) {
-
-                /*dispatch(
-                    new ImportTopicsJob( $file, Auth::user() )
-                );*/
-
                 (
                 new TopicsImport(Auth::user(), $file->getClientOriginalName())
                 )->import($file);
-
             }
 
         } catch (\Exception $e) {
@@ -542,15 +594,9 @@ class DBApp implements TopicsInterface
             $filesSubtopics = $request->file('filesSubtopics') ?? [];
 
             foreach ($filesSubtopics as $file) {
-
-                /*dispatch(
-                    new ImportSubtopicsJob( $file, Auth::user() )
-                );*/
-
                 (
                 new SubtopicsImport(Auth::user(), $file->getClientOriginalName())
                 )->import($file);
-
             }
 
         } catch (\Exception $e) {
@@ -562,7 +608,7 @@ class DBApp implements TopicsInterface
     {
         $topics_data = DB::select(
             "call get_5_worse_topic_results_by_user_procedure(?)",
-            array(Auth::user()?->getRouteKey())
+            array(Auth::user()?->getKey())
         ); //search_question_in_topics_and_subtopics
 
         // \Log::debug($topics_data);
@@ -580,11 +626,6 @@ class DBApp implements TopicsInterface
             ];
         }, (array) $topics_data);
 
-        // \Log::debug($topics_data_mapped);
-
         return $topics_data_mapped;
-        /*$topics_id = collect($topics_id)->pluck('id')->toArray();
-
-        return $this->model->query()->whereIn('id', $topics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();*/
     }
 }

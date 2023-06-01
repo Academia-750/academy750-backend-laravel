@@ -46,7 +46,7 @@ class ActionsTopicsRecords
 
             // A todos los subtemas de ese tema se les elimina las preguntas que tiene
             $topic->subtopics->each(function ($subtopic) {
-                $subtopic = Subtopic::query()->findOrFail($subtopic?->id);
+                $subtopic = Subtopic::query()->findOrFail($subtopic?->getKey());
                 $subtopic?->questions()->delete();
             });
 
@@ -64,7 +64,7 @@ class ActionsTopicsRecords
         }
 
         // Se eliminan todas las preguntas de used_questions_tests
-        self::deleteQuestionsUsedInTestsByTopic($topic->id, 'topic_id');
+        self::deleteQuestionsUsedInTestsByTopic($topic->getKey(), 'topic_id');
 
         return $topic;
     }
@@ -74,7 +74,7 @@ class ActionsTopicsRecords
 
     // Eliminando las relaciones entre el tema y sus oposiciones en la tabla "oppositionables"
         foreach ($oppositions as $opposition) {
-            $topic->oppositions()->detach($opposition->id);
+            $topic->oppositions()->detach($opposition->getKey());
         }
     }
 
@@ -88,13 +88,13 @@ class ActionsTopicsRecords
 
             // Eliminando las relaciones entre el subtema y sus oposiciones en la tabla "oppositionables"
             foreach ($oppositions as $opposition) {
-                $subtopic->oppositions()->detach($opposition->id);
+                $subtopic->oppositions()->detach($opposition->getKey());
             }
         }
     }
 
     public static function deleteOppositionsByTopicAndSubtopic ($topic) {
-        $topicId = $topic->id;
+        $topicId = $topic->getKey();
 
     // Obteniendo los IDs de los subtemas relacionados con el tema
         $subtopicIds = $topic->subtopics->pluck('id');
