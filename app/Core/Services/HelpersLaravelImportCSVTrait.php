@@ -17,7 +17,7 @@ trait HelpersLaravelImportCSVTrait
     {
          $importProcessRecord = ImportProcess::query()->create([
             "name_file" => $nameFile,
-            "user_id" => $userAuth->getRouteKey(),
+            "user_id" => $userAuth->getKey(),
             "category" => $category,
             "total_number_of_records" => '0',
             "total_number_failed_records" => '0',

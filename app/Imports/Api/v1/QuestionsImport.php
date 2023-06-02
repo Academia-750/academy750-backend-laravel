@@ -180,7 +180,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
             $question = QuestionsImportService::registerQuestion($subtopic, $dataQuestion, QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si');
 
-            $this->registerAnswersQuestion(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row, $question?->getRouteKey()));
+            $this->registerAnswersQuestion(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row, $question?->getKey()));
 
             // \Log::debug("Termino de registrar la pregunta en subtema");
 
@@ -197,7 +197,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
         $question = QuestionsImportService::registerQuestion($topic, $dataQuestion, QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si');
 
-        $this->registerAnswersQuestion(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row, $question?->getRouteKey()));
+        $this->registerAnswersQuestion(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row, $question?->getKey()));
 
         // \Log::debug("Termino de registrar la pregunta en tema");
         return $topic;

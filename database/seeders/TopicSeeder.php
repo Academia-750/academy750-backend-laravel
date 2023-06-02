@@ -24,7 +24,7 @@ class TopicSeeder extends Seeder
 
         $topic = Topic::query()->create([
             'name' => "Hidráulica",
-            'topic_group_id' => TopicGroup::query()->firstWhere('key', '=', 'generic')?->getRouteKey() /*TopicGroup::all()->random()->getRouteKey()*/,
+            'topic_group_id' => TopicGroup::query()->firstWhere('key', '=', 'generic')?->getKey() /*TopicGroup::all()->random()->getRouteKey()*/,
             'is_available' => 'yes'
         ]);
 

@@ -33,7 +33,11 @@ class DBApp implements TestsInterface
 
     public function fetch_unresolved_test( $test ){
 
-        $testQuery = Auth::user()->tests()->where('test_type', '=', 'test')->where('id', '=', $test->getRouteKey())->first();
+        $testQuery = Auth::user()
+            ->tests()
+            ->where('test_type', '=', 'test')
+            ->where('id', '=', $test->getKey())
+            ->first();
 
         if (!$testQuery) {
             abort(404);
@@ -44,7 +48,7 @@ class DBApp implements TestsInterface
 
     public function fetch_card_memory( $test ){
 
-        $testQuery = Auth::user()->tests()->where('test_type', '=', 'card_memory')->firstWhere('id', '=', $test->getRouteKey());
+        $testQuery = Auth::user()->tests()->where('test_type', '=', 'card_memory')->firstWhere('id', '=', $test->getKey());
 
         if (!$testQuery) {
             abort(404);
@@ -72,7 +76,7 @@ class DBApp implements TestsInterface
                 "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
                 "opposition_id" => $request->get('opposition_id'),
                 "test_type" => $testType,
-                "user_id" => $user?->getRouteKey()
+                "user_id" => $user?->getKey()
             ]);
             /*$elapsed_time__TestsService__createTest = microtime(true) - $start_time__TestsService__createTest;
             Log::debug("--Aqui se termina el proceso de solo registrar en la tabla 'tests' la referencia de un nuevo Test con toda su información y la del alumno {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__TestsService__createTest} segundos");*/
@@ -127,14 +131,14 @@ class DBApp implements TestsInterface
 
                 $stateQuestionAnswered = $answer->is_correct_answer === 'yes' ? 'correct' : 'wrong';
 
-                $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
-                   'answer_id' => $answer->getRouteKey(),
+                $test->questions()->wherePivot('question_id', $question->getKey())->updateExistingPivot($question->getKey(), [
+                   'answer_id' => $answer->getKey(),
                    'status_solved_question' => $stateQuestionAnswered,
                     /*'have_been_show_test' => $stateQuestionAnswered === 'wrong' ? 'no' : 'yes'*/
                 ]);
 
             } else {
-                $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->getRouteKey(), [
+                $test->questions()->wherePivot('question_id', $question->getKey())->updateExistingPivot($question->getKey(), [
                     'answer_id' => null,
                     'status_solved_question' => 'unanswered',
                     /*'have_been_show_test' => 'no'*/
@@ -157,7 +161,7 @@ class DBApp implements TestsInterface
         try {
 
             //DB::beginTransaction();
-            $test = Test::query()->findOrFail($test->getRouteKey());
+            $test = Test::query()->findOrFail($test->getKey());
             $user = auth()?->user();
             //// \Log::debug($test);
 
@@ -195,7 +199,7 @@ class DBApp implements TestsInterface
             $test->refresh();
 
             foreach ($test->questions()->wherePivot('status_solved_question', 'correct')->get() as $question) {
-                $test->questions()->wherePivot('question_id', $question->id)->updateExistingPivot($question->id, [
+                $test->questions()->wherePivot('question_id', $question->getKey())->updateExistingPivot($question->getKey(), [
                     'have_been_show_test' => 'yes'
                 ]);
             }
@@ -205,7 +209,7 @@ class DBApp implements TestsInterface
             $start_time__call_procedure_update_used_questions = microtime(true);
             DB::select(
                 "call update_used_questions_procedure(?)",
-                array($test->getRouteKey())
+                array($test->getKey())
             );
 
             $end_time__call_procedure_update_used_questions = (microtime(true)) - $start_time__call_procedure_update_used_questions;
@@ -222,7 +226,7 @@ class DBApp implements TestsInterface
 
     public function fetch_test_completed($test)
     {
-        $testQuery = Auth::user()->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->where('id', '=', $test->getRouteKey())->first();
+        $testQuery = Auth::user()->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->where('id', '=', $test->getKey())->first();
 
         if (!$testQuery) {
             abort(404);

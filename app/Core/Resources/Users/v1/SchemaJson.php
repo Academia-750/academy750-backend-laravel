@@ -124,7 +124,7 @@ class SchemaJson implements UsersInterface
                 "index" => $count,
                 "status_question" => $questionPivotTest?->pivot?->status_solved_question,
                 "question" => $question->question,
-                'question_id' => $question->getRouteKey(),
+                'question_id' => $question->getKey(),
                 'answer_id' => $questionPivotTest?->pivot?->answer_id,
             ]);
         }

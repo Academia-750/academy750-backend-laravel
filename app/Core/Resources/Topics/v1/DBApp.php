@@ -376,24 +376,24 @@ class DBApp implements TopicsInterface
             $opposition->topics()->attach($topic->getKey());
         }
 
-        $subtopics_id = array_map(function ($subtopic__uuid) {
-            return Subtopic::query()->firstWhere('uuid', '=', $subtopic__uuid)->getKey();
-        }, $request->get('subtopics'));
-        $subtopics_id_by_topic = $topic->subtopics->pluck("id");
-        $subtopics_id_by_opposition = $opposition->subtopics->pluck("id");
+        if (is_array($request->get('subtopics'))) {
+            $subtopics_id = array_map(function ($subtopic__uuid) {
+                return Subtopic::query()->firstWhere('uuid', '=', $subtopic__uuid)->getKey();
+            }, $request->get('subtopics') );
+            $subtopics_id_by_topic = $topic->subtopics->pluck("id");
+            $subtopics_id_by_opposition = $opposition->subtopics->pluck("id");
 
-        foreach ($subtopics_id as $subtopic_id) {
-            if (!in_array($subtopic_id, $subtopics_id_by_topic->toArray(), true)) {
-                abort(404);
-            }
+            foreach ($subtopics_id as $subtopic_id) {
+                if (!in_array($subtopic_id, $subtopics_id_by_topic->toArray(), true)) {
+                    abort(404);
+                }
 
-            if (!in_array($subtopic_id, $subtopics_id_by_opposition->toArray(), true)) {
-                $opposition->subtopics()->attach($subtopic_id);
+                if (!in_array($subtopic_id, $subtopics_id_by_opposition->toArray(), true)) {
+                    $opposition->subtopics()->attach($subtopic_id);
+                }
             }
         }
-
         return $this->model->applyIncludes()->find($topic->getKey());
-
     }
 
     public function update_subtopics_opposition_by_topic ($request, $topic, $opposition) {

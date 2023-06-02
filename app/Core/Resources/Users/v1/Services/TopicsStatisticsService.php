@@ -43,7 +43,7 @@ class TopicsStatisticsService
             $topic = Topic::query()->findOrFail($topic_id);
             $questions = $topic->questions()->cursor();
             foreach ( $questions as $question ) {
-                $questions_id[] = $question->getRouteKey();
+                $questions_id[] = $question->getKey();
             }
         }
 

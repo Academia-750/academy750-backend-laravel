@@ -62,7 +62,7 @@ class QuestionsTestService
             //$nameProcedure = $isCardMemory ? 'get_questions_by_card_memory' : 'get_questions_by_test';
             $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
 
-            $questions_id = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array(implode(',',$topicsSelected_id), $opposition_id, $user->getRouteKey(), (int) $amountQuestionsRequestedByTest));
+            $questions_id = GetQuestionsByTopicProceduresService::callFirstProcedure($nameProcedure, array(implode(',',$topicsSelected_id), $opposition_id, $user->getKey(), (int) $amountQuestionsRequestedByTest));
 
             $start_time__shuffle_questions = microtime(true);
             Log::debug("+++Aqui se ejecuta el proceso de desordenar las preguntas mapeadas que ya son compatibles en este momento con el Backend PHP del alumno: {$user?->full_name} con id {$user?->id}");

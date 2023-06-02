@@ -12,6 +12,7 @@ class TopicResource extends JsonResource
 {
     public function toArray($request): array
     {
+
         $totalSubtopicsThisTopic = $this->resource->subtopics()->count();
 
         return [

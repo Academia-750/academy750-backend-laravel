@@ -33,25 +33,25 @@ trait QuestionsHelpersTrait
                     'answer' => "Answer - 1 (Correct) Q ({$question->getKey()})",
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'yes',
-                    'question_id' => $question->getRouteKey(),
+                    'question_id' => $question->getKey(),
                 ],
                 [
-                    'answer' => "Answer - 2 (Agrupadora) Q ({$question->getRouteKey()})",
+                    'answer' => "Answer - 2 (Agrupadora) Q ({$question->getKey()})",
                     'is_grouper_answer' => 'yes',
                     'is_correct_answer' => 'no',
-                    'question_id' => $question->getRouteKey(),
+                    'question_id' => $question->getKey(),
                 ],
                 [
-                    'answer' => "Answer - 3 Q ({$question->getRouteKey()})",
+                    'answer' => "Answer - 3 Q ({$question->getKey()})",
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'no',
-                    'question_id' => $question->getRouteKey(),
+                    'question_id' => $question->getKey(),
                 ],
                 [
-                    'answer' => "Answer - 4 Q ({$question->getRouteKey()})",
+                    'answer' => "Answer - 4 Q ({$question->getKey()})",
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'no',
-                    'question_id' => $question->getRouteKey(),
+                    'question_id' => $question->getKey(),
                 ]
             ];
 

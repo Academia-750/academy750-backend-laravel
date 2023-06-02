@@ -94,9 +94,7 @@ class DBApp implements QuestionsInterface
                 'answer' => $answerData["answer"],
                 'is_grouper_answer' => $answerData["is_grouper_answer"],
                 'is_correct_answer' => $answerData["is_correct_answer"],
-                'question_id' => Question::query()
-                    ->firstWhere('uuid', '=', $answerData["question_id"])
-                    ->getKey()
+                'question_id' => $answerData["question_id"]
             ]);
         }
 
@@ -182,7 +180,7 @@ class DBApp implements QuestionsInterface
                 'answer' => $answerData["answer"],
                 'is_grouper_answer' => $answerData["is_grouper_answer"],
                 'is_correct_answer' => $answerData["is_correct_answer"],
-                'question_id' => Question::query()->firstWhere('uuid', '=', $answerData["question_id"])->getKey()
+                'question_id' => $answerData["question_id"]
             ]);
         }
 
@@ -225,7 +223,8 @@ class DBApp implements QuestionsInterface
                 'answer' => $answerData["answer"],
                 'is_grouper_answer' => $answerData["is_grouper_answer"],
                 'is_correct_answer' => $answerData["is_correct_answer"],
-                'question_id' => Question::query()->firstWhere('uuid', '=', $answerData["question_id"])->getKey()
+                //'question_id' => Question::query()->firstWhere('uuid', '=', $answerData["question_id"])->getKey()
+                'question_id' => $answerData["question_id"]
             ]);
         }
 
