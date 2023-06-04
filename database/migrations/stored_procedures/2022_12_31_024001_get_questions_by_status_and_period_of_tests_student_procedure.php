@@ -23,21 +23,22 @@ return new class extends Migration
             IN `min_date` DATE,
             IN `max_date` DATE
         )
-        BEGIN
 
-        SELECT
-          t.id
-        FROM
-          tests t
-        WHERE
-          t.user_id = id_user
-          AND (
-            DATE_FORMAT(t.finished_at, '%Y-%m-%d') BETWEEN min_date
-            and max_date
-          )
-          and is_solved_test = 'yes'
-          and test_type = 'test'
-        END";
+        BEGIN
+            SELECT
+              t.id
+            FROM
+              tests t
+            WHERE
+              t.user_id = id_user
+              AND (
+                DATE_FORMAT(t.finished_at, '%Y-%m-%d') BETWEEN min_date
+                and max_date
+              )
+              and is_solved_test = 'yes'
+              and test_type = 'test';
+              END
+            ";
 
         DB::unprepared($procedure2);
 
