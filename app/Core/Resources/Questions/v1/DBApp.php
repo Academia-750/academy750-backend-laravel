@@ -58,7 +58,7 @@ class DBApp implements QuestionsInterface
             ]);
         }
 
-        return $this->model->query()->applyIncludes()->find($question->getKey());
+        return $this->model->query()->applyIncludes()->findOrFail($question->getKey());
     }
 
     public function subtopic_relationship_questions_update($request, $subtopic, $question)
@@ -104,7 +104,7 @@ class DBApp implements QuestionsInterface
         return $this->model
             ->query()
             ->applyIncludes()
-            ->find($question->getKey());
+            ->findOrFail($question->getKey());
 
     }
 
@@ -187,7 +187,7 @@ class DBApp implements QuestionsInterface
         return $this->model
             ->query()
             ->applyIncludes()
-            ->find($question->getKey());
+            ->findOrFail($question->getKey());
     }
 
     public function topic_relationship_questions_update($request, $topic, $question)
@@ -231,7 +231,7 @@ class DBApp implements QuestionsInterface
         $question->question_in_edit_mode = 'no';
         $question->save();
 
-        return $this->model->query()->applyIncludes()->find($question->getKey());
+        return $this->model->query()->applyIncludes()->findOrFail($question->getKey());
     }
 
     public function topic_relationship_questions_delete($topic, $question)

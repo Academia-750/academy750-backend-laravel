@@ -11,7 +11,7 @@ class ActionsTopicsRecords
 {
     public static function deleteRecord ($topic) {
         if ( !($topic instanceof Topic) ) {
-            $topic = Topic::query()->find($topic);
+            $topic = Topic::query()->findOrFail($topic);
         }
 
         $countTestsOfThisTopic = $topic->tests()->count();

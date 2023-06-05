@@ -71,7 +71,7 @@ class DBApp implements TopicsInterface
             ]);
             DB::commit();
 
-            return $this->model->applyIncludes()->find($topicCreated->getKey());
+            return $this->model->applyIncludes()->findOrFail($topicCreated->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -82,7 +82,7 @@ class DBApp implements TopicsInterface
     public function read( $topic ): \App\Models\Topic{
         return $this->model
             ->applyIncludes()
-            ->find($topic->getKey());
+            ->findOrFail($topic->getKey());
     }
 
     public function update( $request, $topic ): \App\Models\Topic{
@@ -98,7 +98,7 @@ class DBApp implements TopicsInterface
 
             return $this->model
                 ->applyIncludes()
-                ->find($topic->getKey());
+                ->findOrFail($topic->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -270,7 +270,7 @@ class DBApp implements TopicsInterface
 
             return (new Subtopic)
                 ->applyIncludes()
-                ->find($subtopicCreated->getKey());
+                ->findOrFail($subtopicCreated->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -299,7 +299,7 @@ class DBApp implements TopicsInterface
 
             return (new Subtopic)
                 ->applyIncludes()
-                ->find($subtopic->getKey());
+                ->findOrFail($subtopic->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -393,7 +393,7 @@ class DBApp implements TopicsInterface
                 }
             }
         }
-        return $this->model->applyIncludes()->find($topic->getKey());
+        return $this->model->applyIncludes()->findOrFail($topic->getKey());
     }
 
     public function update_subtopics_opposition_by_topic ($request, $topic, $opposition) {
@@ -446,7 +446,7 @@ class DBApp implements TopicsInterface
         //}
 
 
-        return $this->model->applyIncludes()->find($topic->getKey());
+        return $this->model->applyIncludes()->findOrFail($topic->getKey());
     }
 
     public function delete_opposition_by_topic($topic, $opposition): void
@@ -486,7 +486,7 @@ class DBApp implements TopicsInterface
     {
         return (new Question)
             ->applyIncludes()
-            ->find($question->getKey());
+            ->findOrFail($question->getKey());
     }
 
     public function topic_create_a_question($request, $topic)
@@ -512,7 +512,7 @@ class DBApp implements TopicsInterface
 
             return $this->model
                 ->applyIncludes()
-                ->find($topic->getKey());
+                ->findOrFail($topic->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -545,7 +545,7 @@ class DBApp implements TopicsInterface
 
             return $this->model
                 ->applyIncludes()
-                ->find($topic->getKey());
+                ->findOrFail($topic->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();

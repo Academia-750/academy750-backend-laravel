@@ -8,6 +8,7 @@ use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
 use App\Models\Opposition;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
@@ -68,22 +69,31 @@ class Authorizer implements TestsInterface
         return $this->schemaJson->get_cards_memory();
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function resolve_a_question_of_test($request)
     {
         $test = Test::findOrFail($request->get('test_id'));
 
-        $question = $test->questions()->find($request->get('question_id'));
+        $question_id = $request->get('question_id');
 
-        if (!$question) {
-            abort(403);
-        }
+        $questionQuery = $test->questions()
+            ->where('id', $question_id)
+            ->orWhere('uuid', $question_id)
+            ->first();
+
+        throw_if(!$questionQuery, new ModelNotFoundException("La pregunta con Identificador {$question_id} no fue encontrado."));
 
         if ($request->get('answer_id')) {
-            $answer = $question->answers()->find($request->get('answer_id'));
+            $answer_id = $request->get('answer_id');
 
-            if (!$answer) {
-                abort(403);
-            }
+            $answerQuery = $questionQuery->answers()
+                ->where('id', $answer_id)
+                ->orWhere('uuid', $answer_id)
+                ->first();
+
+            throw_if(!$answerQuery, new ModelNotFoundException("La alternativa con Identificador {$answer_id} no fue encontrado."));
         }
 
         return $this->schemaJson->resolve_a_question_of_test($request);
@@ -92,7 +102,7 @@ class Authorizer implements TestsInterface
     public function grade_a_test($request, $test)
     {
         // \Log::debug($test);
-        if (!Auth::user()->hasRole('student') || !Auth::user()->tests()->find($test->getKey())) {
+        if (!Auth::user()->hasRole('student') || !Auth::user()->tests()->findOrFail($test->getKey())) {
             abort(403);
         }
 

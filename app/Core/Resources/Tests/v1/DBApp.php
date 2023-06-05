@@ -125,7 +125,7 @@ class DBApp implements TestsInterface
 
             $question = $test->questions()->findOrFail($request->get('question_id'));
 
-            $answer = Answer::query()->find($request->get('answer_id'));
+            $answer = Answer::query()->findOrFail($request->get('answer_id'));
 
             if ($request->get('answer_id')) {
 

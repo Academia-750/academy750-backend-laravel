@@ -117,7 +117,7 @@ class SchemaJson implements UsersInterface
 
         foreach ($questionsQuery as $question) {
 
-            $questionPivotTest = $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->find($question->getKey());
+            $questionPivotTest = $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->findOrFail($question->getKey());
 
             $count++;
             $questions->push([

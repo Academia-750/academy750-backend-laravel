@@ -25,6 +25,6 @@ class DBApp implements TopicGroupsInterface
         return $this
             ->model
             ->applyIncludes()
-            ->find($topic_group->getKey());
+            ->findOrFail($topic_group->getKey());
     }
 }

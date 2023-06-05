@@ -86,6 +86,6 @@ class TestPolicy
      */
     public function fetch_test_completed (User $user, Test $test): bool {
         return $user->hasRole('student') &&
-            (bool) $user->tests()->find($test->getKey()) && $test->is_solved_test === 'yes';
+            (bool) $user->tests()->findOrFail($test->getKey()) && $test->is_solved_test === 'yes';
     }
 }

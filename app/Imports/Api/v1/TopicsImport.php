@@ -135,7 +135,7 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
 
         $importProcessesRecord = $event->getConcernable()->setStatusCompleteImportHistory($event);
 
-        $user = User::query()->find($event->getConcernable()->userAuth->id);
+        $user = User::query()->findOrFail($event->getConcernable()->userAuth->id);
 
         $user?->notify(new ImportProcessFileFinishedNotification([
             "import-processes-id" => $event->getConcernable()->importProcessRecord->id,

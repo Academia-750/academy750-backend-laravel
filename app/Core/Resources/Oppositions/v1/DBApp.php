@@ -39,7 +39,7 @@ class DBApp implements OppositionsInterface
                 ]);
             DB::commit();
 
-            return $this->model->applyIncludes()->find($oppositionCreated->getKey());
+            return $this->model->applyIncludes()->findOrFail($oppositionCreated->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -49,7 +49,7 @@ class DBApp implements OppositionsInterface
     }
 
     public function read( $opposition ): \App\Models\Opposition{
-        return $this->model->applyIncludes()->find($opposition->getKey());
+        return $this->model->applyIncludes()->findOrFail($opposition->getKey());
     }
 
     public function update( $request, $opposition ): \App\Models\Opposition{
@@ -61,7 +61,7 @@ class DBApp implements OppositionsInterface
                 $opposition->save();
             DB::commit();
 
-            return $this->model->applyIncludes()->find($opposition->getKey());
+            return $this->model->applyIncludes()->findOrFail($opposition->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();

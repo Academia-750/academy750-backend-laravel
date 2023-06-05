@@ -76,7 +76,7 @@ class SchemaJson implements TestsInterface
     {
         $this->eventApp->resolve_a_question_of_test($request);
 
-        $test = Test::query()->find($request->get('test_id'));
+        $test = Test::query()->findOrFail($request->get('test_id'));
 
         $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
 

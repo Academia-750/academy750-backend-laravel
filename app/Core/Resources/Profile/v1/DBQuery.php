@@ -20,14 +20,14 @@ class DBQuery implements ProfileInterface
 
     public function getDataMyProfile()
     {
-        return $this->model->applyIncludes()->find(auth()->user()->getKey());
+        return $this->model->applyIncludes()->findOrFail(auth()->user()->getKey());
     }
     public function updateDataMyProfile($request)
     {
         try {
 
             DB::beginTransaction();
-                $user = $this->model->find(auth()->user()->getKey());
+                $user = $this->model->findOrFail(auth()->user()->getKey());
 
                 //$user->dni = $request->get('dni');
                 $user->first_name = $request->get('first-name') ?? $user->first_name;
@@ -38,7 +38,7 @@ class DBQuery implements ProfileInterface
 
             DB::commit();
 
-            return $this->model->applyIncludes()->find($user->getKey());
+            return $this->model->applyIncludes()->findOrFail($user->getKey());
         } catch (\Exception $e) {
             DB::rollback();
             abort(500,$e->getMessage());
@@ -50,7 +50,7 @@ class DBQuery implements ProfileInterface
         try {
 
                 DB::beginTransaction();
-                $user = User::query()->findOr(Auth::user()?->getKey());
+                $user = User::query()->findOrFailOr(Auth::user()?->getKey());
 
                 ActionsAccountUser::disableAccountUser($user);
 

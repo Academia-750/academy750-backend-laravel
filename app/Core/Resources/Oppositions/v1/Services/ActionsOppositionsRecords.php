@@ -9,7 +9,7 @@ class ActionsOppositionsRecords
 {
     public static function deleteOpposition ($opposition) {
         if ( !($opposition instanceof Opposition) ) {
-            $opposition = Opposition::query()->find($opposition);
+            $opposition = Opposition::query()->findOrFail($opposition);
         }
         $countTestsByOpposition = $opposition->tests()->count();
 

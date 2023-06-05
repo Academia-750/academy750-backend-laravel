@@ -63,7 +63,7 @@ class DBApp implements UsersInterface
             DB::commit();
 
             return [
-                'user' => $this->model->applyIncludes()->find($userCreated->getKey()),
+                'user' => $this->model->applyIncludes()->findOrFail($userCreated->getKey()),
                 'password_generated' => $secureRandomPassword
             ];
 
@@ -76,7 +76,7 @@ class DBApp implements UsersInterface
 
     public function read( $user ){
         //dump($user->id);
-        return $this->model->applyIncludes()->find($user->getKey());
+        return $this->model->applyIncludes()->findOrFail($user->getKey());
     }
 
     public function update( $request, $user ): \App\Models\User{
@@ -102,7 +102,7 @@ class DBApp implements UsersInterface
 
             DB::commit();
 
-            return $this->model->applyIncludes()->find($user->getKey());
+            return $this->model->applyIncludes()->findOrFail($user->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -268,7 +268,7 @@ class DBApp implements UsersInterface
                 $topicDataArray = (array) $topicData;
 
                  $topics[] = [
-                    'topic' => Topic::query()->find($topicDataArray['topic_id']),
+                    'topic' => Topic::query()->findOrFail($topicDataArray['topic_id']),
                     'correct' => $topicDataArray['correct'],
                     'wrong' => $topicDataArray['wrong'],
                     'unanswered' => $topicDataArray['unanswered'],
