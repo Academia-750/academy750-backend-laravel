@@ -44,7 +44,15 @@ class Authorizer implements TestsInterface
     public function create_a_quiz( $request )
     {
         //Gate::authorize('create_a_quiz', [Auth::user(), Test::class, Opposition::findOrFail($request->get('opposition_id')), $request] );
-        $opposition = Opposition::findOrFail($request->get('opposition_id'));
+
+        $opposition_id = $request->get('opposition_id');
+
+        $opposition = Opposition::query()
+            ->where('id', $opposition_id)
+            ->where('uuid', $opposition_id)
+            ->first();
+
+        abort_if(!$opposition, new ModelNotFoundException("La oposicion con Identificador {$opposition_id} no fue encontrado."));
 
         $topicsBelongsToOpposition = true;
 
@@ -74,7 +82,14 @@ class Authorizer implements TestsInterface
      */
     public function resolve_a_question_of_test($request)
     {
-        $test = Test::findOrFail($request->get('test_id'));
+        $test_id = $request->get('test_id');
+
+        $test = Test::query()
+            ->where('id', $test_id)
+            ->where('uuid', $test_id)
+            ->first();
+
+        abort_if(!$test, new ModelNotFoundException("El Test o Cuestionario con Identificador {$test_id} no fue encontrado."));
 
         $question_id = $request->get('question_id');
 

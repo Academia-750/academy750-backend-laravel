@@ -15,6 +15,7 @@ use App\Models\Topic;
 use App\Models\User;
 use App\Notifications\Api\ContactUsHomeNotification;
 use App\Notifications\Api\ResetPasswordStudentNotification;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -292,7 +293,14 @@ class DBApp implements UsersInterface
                 abort(500, 'No se encuentra al usuario autenticado');
             }
 
-            $test = Test::query()->findOrFail(request('test-id'));
+            $test_id_request = request('test-id');
+
+            $test = Test::query()
+                ->where('id', $test_id_request)
+                ->where('uuid', $test_id_request)
+                ->first();
+
+            abort_if(!$test, new ModelNotFoundException("No existe el Test o cuestionario con identificador {$test_id_request}"));
 
             return Question::query()->whereIn('id',
                 $test->questions()->wherePivot('status_solved_question', '=', request('type-question')

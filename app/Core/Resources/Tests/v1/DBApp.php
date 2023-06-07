@@ -9,6 +9,7 @@ use App\Models\Question;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -121,11 +122,25 @@ class DBApp implements TestsInterface
         try {
 
             //DB::beginTransaction();
-            $test = Test::findOrFail($request->get('test_id'));
+            $test = Test::query()
+                ->where('id', $request->get('test_id'))
+                ->where('uuid', $request->get('test_id'))
+                ->first();
 
-            $question = $test->questions()->findOrFail($request->get('question_id'));
+            abort_if(!$test, new ModelNotFoundException("No existe el Test con identificador {$request->get('test_id')}"));
 
-            $answer = Answer::query()->findOrFail($request->get('answer_id'));
+            $question = $test->questions()
+                ->where('id', $request->get('question_id'))
+                ->where('uuid', $request->get('question_id'))
+                ->first();
+            abort_if(!$test, new ModelNotFoundException("No existe la Pregunta con identificador {$request->get('question_id')}"));
+
+            $answer = Answer::query()
+                ->where('id', $request->get('answer_id'))
+                ->where('uuid', $request->get('answer_id'))
+                ->first();
+
+            abort_if(!$answer, new ModelNotFoundException("No existe la Alternativa con identificador {$request->get('answer_id')}"));
 
             if ($request->get('answer_id')) {
 
