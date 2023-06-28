@@ -48,7 +48,7 @@ class DBApp implements TopicsInterface
 
         $topics_id = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup(
             $opposition->getKey(),
-            implode(',', (array) $topics_groups_id)
+            implode(',', $topics_groups_id)
         );
 
         return $this->model

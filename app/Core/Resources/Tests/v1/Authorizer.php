@@ -49,23 +49,25 @@ class Authorizer implements TestsInterface
 
         $opposition = Opposition::query()
             ->where('id', $opposition_id)
-            ->where('uuid', $opposition_id)
+            ->orWhere('uuid', $opposition_id)
             ->first();
 
-        abort_if(!$opposition, new ModelNotFoundException("La oposicion con Identificador {$opposition_id} no fue encontrado."));
+        if (!$opposition) {
+            throw new ModelNotFoundException("La oposicion con Identificador {$opposition_id} no fue encontrado.");
+        }
 
         $topicsBelongsToOpposition = true;
 
-        $topics_id_by_opposition = $opposition->topics()->pluck('topics.id')->toArray();
+        $topics_uuid_by_opposition = $opposition->topics()->pluck('topics.uuid')->toArray();
 
-        foreach ($request->get('topics_id') as $topic_id) {
-            if ( !in_array($topic_id, $topics_id_by_opposition, true) ) {
+        foreach ($request->get('topics_id') as $topic_uuid) {
+            if ( !in_array($topic_uuid, $topics_uuid_by_opposition, true) ) {
                 $topicsBelongsToOpposition = false;
             }
         }
 
         if (!(Auth::user()->can('create-tests-for-resolve') && (bool) $topicsBelongsToOpposition)) {
-            abort(403);
+            abort(403, "Posiblemente algunos o todos los temas seleccionados no pertenecen a la Oposición Seleccionada");
         }
 
         return $this->schemaJson->create_a_quiz( $request );

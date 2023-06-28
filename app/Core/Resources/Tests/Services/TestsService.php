@@ -62,7 +62,7 @@ class TestsService
      * @param string $opposition_id
      * @return array
      */
-    public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, string $opposition_id ): array {
+    public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, int $opposition_id ): array {
         $subtopics_id = DB::select(
             "call get_subtopics_ids_for_test_procedure(?,?)",
             array($opposition_id, implode(',', $topicsSelected_id))
@@ -82,7 +82,7 @@ class TestsService
      * @param string $opposition_id
      * @return void
      */
-    public static function registerTopicsAndSubtopicsByTest (Test $test, array $topicsSelected_id, string $opposition_id )
+    public static function registerTopicsAndSubtopicsByTest (Test $test, array $topicsSelected_id, int $opposition_id )
     {
         try {
 

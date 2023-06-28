@@ -81,7 +81,6 @@ class UserService
         foreach ($roles_id as $role_id) {
             $roleQuery = Role::query()
                 ->where('id', $role_id)
-                ->orWhere('uuid', $role_id)
                 ->first();
 
             throw_if(!$roleQuery, new ModelNotFoundException("El rol con Identificador {$role_id} no fue encontrado."));

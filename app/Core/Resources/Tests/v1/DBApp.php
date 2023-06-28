@@ -5,9 +5,11 @@ use App\Core\Resources\Tests\Services\QuestionsTestService;
 use App\Core\Resources\Tests\Services\TestsQuestionsService;
 use App\Core\Resources\Tests\Services\TestsService;
 use App\Models\Answer;
+use App\Models\Opposition;
 use App\Models\Question;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
+use App\Models\Topic;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
@@ -75,7 +77,9 @@ class DBApp implements TestsInterface
 
             $questionnaire = TestsService::createTest([
                 "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
-                "opposition_id" => $request->get('opposition_id'),
+                "opposition_id" => Opposition::query()
+                    ->firstWhere('uuid', $request->get('opposition_id'))
+                    ?->getKey(),
                 "test_type" => $testType,
                 "user_id" => $user?->getKey()
             ]);
@@ -84,7 +88,15 @@ class DBApp implements TestsInterface
 
             /*$start_time__TestsService__registerTopicsAndSubtopicsByTest = microtime(true);
             Log::debug("++Aqui se ejecuta el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id}");*/
-            TestsService::registerTopicsAndSubtopicsByTest($questionnaire, $request->get('topics_id'), $request->get('opposition_id'));
+            TestsService::registerTopicsAndSubtopicsByTest(
+                $questionnaire,
+                array_map(function ($__topic_uuid) {
+                    return Topic::query()->firstWhere('uuid', $__topic_uuid)?->getKey();
+                }, $request->get('topics_id')),
+                Opposition::query()
+                    ->firstWhere('uuid', $request->get('opposition_id'))
+                    ?->getKey()
+            );
             /*$elapsed_time__TestsService__registerTopicsAndSubtopicsByTest = microtime(true) - $start_time__TestsService__registerTopicsAndSubtopicsByTest;
             Log::debug("--Aqui se termina el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__TestsService__registerTopicsAndSubtopicsByTest} segundos");*/
 
