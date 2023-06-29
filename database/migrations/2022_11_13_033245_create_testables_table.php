@@ -15,10 +15,10 @@ return new class extends Migration
     {
         Schema::create('testables', function (Blueprint $table) {
             //$table->id();
-$table->uuid()->comment('Identificador UUID');
+            $table->uuid()->comment('Identificador UUID');
             $table->id();
 
-            $table->uuidMorphs('testable');
+            $table->morphs('testable');
 
             $table->foreignId('test_id')
                 ->comment('El ID del Test al que pertenece el tema o subtema')

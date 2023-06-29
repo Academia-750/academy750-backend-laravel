@@ -65,7 +65,10 @@ class TestsService
     public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, int $opposition_id ): array {
         $subtopics_id = DB::select(
             "call get_subtopics_ids_for_test_procedure(?,?)",
-            array($opposition_id, implode(',', $topicsSelected_id))
+            array(
+                $opposition_id,
+                implode(',', $topicsSelected_id)
+            )
         );
 
         return array_map(function($item) {
@@ -98,7 +101,9 @@ class TestsService
                 $test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
 
         } catch (\Exception $e) {
-            abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
+            //abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
+            //abort(500, $e);
+            throw new $e;
         }
     }
 }
