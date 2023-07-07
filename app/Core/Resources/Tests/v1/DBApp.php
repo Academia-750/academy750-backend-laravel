@@ -88,6 +88,8 @@ class DBApp implements TestsInterface
 
             /*$start_time__TestsService__registerTopicsAndSubtopicsByTest = microtime(true);
             Log::debug("++Aqui se ejecuta el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id}");*/
+            \Log::debug($request->get('topics_id'));
+
             TestsService::registerTopicsAndSubtopicsByTest(
                 $questionnaire,
                 array_map(function ($__topic_uuid) {

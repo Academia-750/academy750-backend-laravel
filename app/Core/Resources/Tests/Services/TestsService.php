@@ -2,6 +2,7 @@
 
 namespace App\Core\Resources\Tests\Services;
 
+use App\Core\Services\UuidGeneratorService;
 use App\Models\Opposition;
 use App\Models\Test;
 use App\Models\Topic;
@@ -20,6 +21,7 @@ class TestsService
 
         try {
                 $test = Test::create([
+                    //'uuid' => UuidGeneratorService::getUUIDUnique(Test::class),
                     "number_of_questions_requested" => $data["number_of_questions_requested"],
                     "number_of_questions_generated" => $data["number_of_questions_requested"], // Se actualizará una vez se obtenga el numero real de preguntas disponibles
                     "test_result" => "0",
@@ -97,8 +99,11 @@ class TestsService
 
                 // Vincular el Test creado con cada tema y sus subtemas
 
-                $test->topics()->sync($topicsSelected_id);
-                $test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
+                \Log::debug($topicsSelected_id);
+                //\Log::debug($test->topics);
+                //\Log::debug($test->topics->sync);
+                $test->topics()->syncWithPivotValues($topicsSelected_id, ['test_id' => $test->getKey()]);
+                $test->subtopics()->syncWithPivotValues($subtopicsEveryTopicAndOpposition, ['test_id' => $test->getKey()]);
 
         } catch (\Exception $e) {
             //abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
