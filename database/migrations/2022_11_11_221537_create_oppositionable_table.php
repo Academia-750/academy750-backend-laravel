@@ -21,7 +21,7 @@ return new class extends Migration
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->uuidMorphs("oppositionable");
+            $table->morphs("oppositionable");
 
             $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
