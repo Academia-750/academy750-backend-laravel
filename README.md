@@ -26,6 +26,8 @@ face-to-face and online
 If something fails install the php required extensions.
 
 
+
+
 ### Set Up the database
 
 1 - Install MYSQL
@@ -54,6 +56,9 @@ USE mindkind
 
 > php artisan db:seed
 
+## Run locally
+
+> yarn serve 
 ## Server Installation
 
 [Notion Guide](https://www.notion.so/tianlu/Academy-750-Code-Base-5833b818639448cea5607f6a7fa86ee5?pvs=4)
