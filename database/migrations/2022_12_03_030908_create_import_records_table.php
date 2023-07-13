@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('import_records', function (Blueprint $table) {
             $table->id();
-$table->uuid()->comment('Identificador UUID');
+            $table->uuid()->comment('Identificador UUID');
             $table->string("number_of_row");
             $table->enum("has_errors", ['yes', 'no']);
             $table->json("errors_validation");

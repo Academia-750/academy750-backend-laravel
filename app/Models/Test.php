@@ -19,6 +19,7 @@ class Test extends Model
 
     protected $fillable = [
         'id',
+        'uuid',
         "number_of_questions_requested",
         "number_of_questions_generated",
         "test_result",

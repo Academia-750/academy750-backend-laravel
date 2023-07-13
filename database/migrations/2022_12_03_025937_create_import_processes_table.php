@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('import_processes', function (Blueprint $table) {
             $table->id();
-$table->uuid()->comment('Identificador UUID');
+            $table->uuid()->comment('Identificador UUID');
             //$table->softDeletes();
             $table->text("name_file");
             $table->foreignId('user_id')

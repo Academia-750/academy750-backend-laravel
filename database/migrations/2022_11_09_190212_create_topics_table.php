@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('topics', static function (Blueprint $table) {
             $table->id();
-$table->uuid()->comment('Identificador UUID');
+            $table->uuid()->comment('Identificador UUID');
 
             $table->string("name");
             // Relationship for group of topics

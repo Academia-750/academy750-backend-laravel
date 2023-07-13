@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('subtopics', function (Blueprint $table) {
             $table->id();
-$table->uuid()->comment('Identificador UUID');
+            $table->uuid()->comment('Identificador UUID');
 
             $table->string("name");
 

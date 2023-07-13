@@ -62,6 +62,7 @@ class DBApp implements TestsInterface
 
     public function create_a_quiz( $request )
     {
+        try {
             $user = Auth::user();
             /*Log::debug("-------------------Inicia todo el proceso de Crear un Test del alumno Nombre completo: {$user?->full_name} con id: {$user?->id}-------------------");*/
             /*$start_time__create_a_quiz = microtime(true);*/
@@ -88,10 +89,10 @@ class DBApp implements TestsInterface
 
             /*$start_time__TestsService__registerTopicsAndSubtopicsByTest = microtime(true);
             Log::debug("++Aqui se ejecuta el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id}");*/
-            \Log::debug($request->get('topics_id'));
+            //\Log::debug($request->get('topics_id'));
 
             TestsService::registerTopicsAndSubtopicsByTest(
-                $questionnaire,
+                $questionnaire->getKey(),
                 array_map(function ($__topic_uuid) {
                     return Topic::query()->firstWhere('uuid', $__topic_uuid)?->getKey();
                 }, $request->get('topics_id')),
@@ -117,10 +118,13 @@ class DBApp implements TestsInterface
 
             $elapsed_time__create_a_quiz = microtime(true) - $start_time__create_a_quiz;
             \Log::debug("-------------------Ha terminado el proceso de Crear un Test para el alumno con Nombre completo: {$user?->full_name} con id: {$user?->id} -- Ha tardado un total de {$elapsed_time__create_a_quiz} segundos-------------------");*/
-        /*Log::debug("");
-        Log::debug("");*/
+            /*Log::debug("");
+            Log::debug("");*/
 
             return $questionnaire;
+        } catch (\Exception $e) {
+            abort(500, $e);
+        }
 
     }
 

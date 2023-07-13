@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('test_types', function (Blueprint $table) {
             $table->id();
-$table->uuid()->comment('Identificador UUID');
+            $table->uuid()->comment('Identificador UUID');
             $table->string("name");
             $table->string("alias_name");
             $table->timestamps();

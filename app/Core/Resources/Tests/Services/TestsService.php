@@ -79,20 +79,17 @@ class TestsService
         }, $subtopics_id);
     }
 
-    /**
-     * Vincular los temas y subtemas con un Cuestionario generado
-     *
-     * @param Test $test
-     * @param array $topicsSelected_id
-     * @param string $opposition_id
-     * @return void
-     */
-    public static function registerTopicsAndSubtopicsByTest (Test $test, array $topicsSelected_id, int $opposition_id )
+
+    public static function registerTopicsAndSubtopicsByTest ($testID, array $topicsSelected_id, int $opposition_id )
     {
         try {
 
-                $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition_id);
+            $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition_id);
 
+            \Log::debug("Id del Test: {$testID}");
+
+                $test = Test::query()->findOrFail($testID);
+            \Log::debug($test->topics);
                 /*$topics_id = array_map(static function ($topic_id) {
                     return Topic::query()->findOrFail($topic_id)?->getRouteKey();
                 }, $topicsSelected_id);*/
@@ -102,13 +99,13 @@ class TestsService
                 \Log::debug($topicsSelected_id);
                 //\Log::debug($test->topics);
                 //\Log::debug($test->topics->sync);
-                $test->topics()->syncWithPivotValues($topicsSelected_id, ['test_id' => $test->getKey()]);
-                $test->subtopics()->syncWithPivotValues($subtopicsEveryTopicAndOpposition, ['test_id' => $test->getKey()]);
+                $test->topics()->sync($topicsSelected_id);
+                //$test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
 
         } catch (\Exception $e) {
             //abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
-            //abort(500, $e);
-            throw new $e;
+            abort(500, $e->getMessage());
+            //throw new $e;
         }
     }
 }

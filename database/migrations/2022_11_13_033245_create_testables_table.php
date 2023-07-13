@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('testables', function (Blueprint $table) {
             //$table->id();
-            $table->uuid()->comment('Identificador UUID');
             $table->id();
 
             $table->morphs('testable');

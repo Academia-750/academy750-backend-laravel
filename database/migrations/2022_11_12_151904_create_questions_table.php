@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('questions', function (Blueprint $table) {
             $table->id();
-$table->uuid()->comment('Identificador UUID');
-            $table->uuidMorphs('questionable');
+            $table->uuid()->comment('Identificador UUID');
+            $table->morphs('questionable');
 
             $table->text("question")->comment("La pregunta");
             $table->text("reason")->nullable()->comment("La explicacion");

@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('oppositions', function (Blueprint $table) {
-            $table->id(); $table->uuid()->comment('Identificador UUID');
+            $table->id();
+            $table->uuid()->comment('Identificador UUID');
             $table->string('name')->unique();
             $table->string('period', 100)->nullable()->default(null);
             $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
