@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,7 +12,10 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure= "DROP PROCEDURE IF EXISTS `search_question_in_topics_and_subtopics`;
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure = "DROP PROCEDURE IF EXISTS `search_question_in_topics_and_subtopics`;
         CREATE PROCEDURE `search_question_in_topics_and_subtopics`(
           IN buscado VARCHAR(255),
           IN tema_id VARCHAR(255)
@@ -40,6 +42,9 @@ return new class extends Migration
      */
     public function down()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         $procedure = "DROP PROCEDURE IF EXISTS `search_question_in_topics_and_subtopics`";
         DB::unprepared($procedure);
     }

@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -14,7 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure1= "DROP PROCEDURE IF EXISTS `get_questions_by_status_and_period_of_tests_student`;
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure1 = "DROP PROCEDURE IF EXISTS `get_questions_by_status_and_period_of_tests_student`;
         CREATE PROCEDURE `get_questions_by_status_and_period_of_tests_student`(
             IN `id_user` VARCHAR(255),
             IN `status_question` VARCHAR(50),
@@ -54,8 +56,11 @@ return new class extends Migration
      */
     public function down()
     {
-        $procedure1= "DROP PROCEDURE IF EXISTS `get_questions_by_status_and_period_of_tests_student`";
-        $procedure2= "DROP PROCEDURE IF EXISTS `get_tests_of_student_by_period_date`";
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure1 = "DROP PROCEDURE IF EXISTS `get_questions_by_status_and_period_of_tests_student`";
+        $procedure2 = "DROP PROCEDURE IF EXISTS `get_tests_of_student_by_period_date`";
 
 
         DB::unprepared($procedure1);

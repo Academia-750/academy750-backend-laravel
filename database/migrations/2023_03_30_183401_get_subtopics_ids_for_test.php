@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -14,6 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
+
         $procedure1 = "DROP PROCEDURE IF EXISTS `get_subtopics_ids_for_test`;
         CREATE PROCEDURE `get_subtopics_ids_for_test`(
             IN `oposicion` TEXT,
@@ -33,6 +36,9 @@ return new class extends Migration
      */
     public function down()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         $procedure1 = "DROP PROCEDURE IF EXISTS `get_subtopics_ids_for_test`";
 
         DB::unprepared($procedure1);

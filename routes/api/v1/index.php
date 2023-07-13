@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\v1\UsersController;
 
-Route::prefix('v1')->group(static function(){
+Route::prefix('v1')->group(static function () {
     require __DIR__ . '/routes/json-api-auth.php';
     Route::post('/test/errors-validation/manually', static function (\Illuminate\Http\Request $request) {
         $validator = Validator::make($request->all(), [
@@ -46,6 +46,8 @@ Route::prefix('v1')->group(static function(){
         //require __DIR__ . '/routes/answers.routes.php';
         //require __DIR__ . '/routes/images.routes.php';
         require __DIR__ . '/routes/import-processes.routes.php';
-    // [EndOfLineMethodRegister]
+        require __DIR__ . '/routes/groups.routes.php';
+
+        // [EndOfLineMethodRegister]
     });
 });

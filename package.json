@@ -1,9 +1,8 @@
 {
     "private": true,
     "scripts": {
-        "dev": "vite",
-        "build": "vite build",
-        "serve": "tail -f storage/logs/laravel.log & php artisan serve"
+        "dev": "tail -f storage/logs/laravel.log & php artisan serve",
+        "test": "php artisan test"
     },
     "devDependencies": {
         "axios": "^0.27",
