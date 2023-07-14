@@ -42,7 +42,7 @@ class GroupListTest extends TestCase
 
 
     /** @test */
-    public function not_logged_422(): void
+    public function wrong_params_422(): void
     {
         $this->get("api/v1/group/list?" . Arr::query(['names' => 123]))->assertStatus(422);
         $this->get("api/v1/group/list?" . Arr::query(['colors' => 123]))->assertStatus(422);

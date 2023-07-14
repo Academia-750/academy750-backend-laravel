@@ -197,5 +197,23 @@ class GroupController extends Controller
         }
     }
 
+    public function getColorsAvailable()
+    {
+        try {
+            $colors = config('data.group_colors');
+            $usedColorCodes = Group::query()->select('color')->distinct()->get()->pluck('color')->toArray();
+            $availableColors = array_diff($colors, $usedColorCodes);
+
+            return response()->json([
+                'status' => 'successfully',
+                'results' => $availableColors,
+            ])->send();
+        } catch (\Exception $err) {
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500)->send();
+        }
+    }
 
 }
