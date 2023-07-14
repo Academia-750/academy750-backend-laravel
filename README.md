@@ -39,12 +39,8 @@ If something fails install the php required extensions.
 ```
 mysql -u root
 CREATE DATABASE bomberosapimysql;
-CREATE DATABASE bomberos_test;
 CREATE USER 'bomberos'@'localhost' IDENTIFIED WITH mysql_native_password BY '123456';
 GRANT ALL ON `bomberosapimysql`.* TO `bomberos`@`localhost`;
-GRANT ALL ON `bomberos_test`.* TO `mindkind`@`localhost`;
-
-USE mindkind
 ```
 
 
