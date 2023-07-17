@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure= "DROP PROCEDURE IF EXISTS `get_questions_test_by_topic`;
-        CREATE PROCEDURE `get_questions_test_by_topic`(
+        $procedure= "
+        DROP PROCEDURE IF EXISTS `get_questions_test_by_topic`;
+        CREATE PROCEDURE `get_questions_test_by_topic` (
             IN `topic_uuids` LONGTEXT,
             IN `id_oposicion` VARCHAR(36),
             IN `id_usuario` VARCHAR(36),
-            IN `n_pregs ` INT
+            IN `n_pregs` INT
         )
         BEGIN
     DECLARE index_loop INTEGER;
