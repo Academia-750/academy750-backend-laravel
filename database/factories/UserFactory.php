@@ -8,11 +8,12 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use JetBrains\PhpStorm\ArrayShape;
+
 
 class UserFactory extends Factory
 {
     use UserServiceTrait;
+
     /**
      * Define the model's default state.
      *
@@ -20,6 +21,7 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+
         $firstName = $this->faker->firstName();
         $lastName = $this->faker->lastName();
 
@@ -38,17 +40,22 @@ class UserFactory extends Factory
         ];
     }
 
-    /**
-     * Indicate that the model's email address should be unverified.
-     *
-     * @return \Illuminate\Database\Eloquent\Factories\Factory
-     */
-    public function unverified(): Factory
+    public function admin(): Factory
     {
         return $this->state(function (array $attributes) {
-            return [
-                'email_verified_at' => null,
-            ];
+            return [];
+        })->afterCreating(function (User $user) {
+            $user->assignRole('admin');
         });
     }
+
+    public function student(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [];
+        })->afterCreating(function (User $user) {
+            $user->assignRole('student');
+        });
+    }
+
 }

@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         $procedure = "DROP PROCEDURE IF EXISTS `topics_available_for_create_test`;
         CREATE PROCEDURE `topics_available_for_create_test`(
             IN oposicion_id VARCHAR(255),
@@ -32,7 +35,10 @@ SELECT t2.id, count(*) as 'cantidad'
 
     public function down()
     {
-        $procedure= "DROP PROCEDURE IF EXISTS topics_available_for_create_test";
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure = "DROP PROCEDURE IF EXISTS topics_available_for_create_test";
         DB::unprepared($procedure);
     }
 };
