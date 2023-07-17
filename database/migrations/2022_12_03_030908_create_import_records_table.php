@@ -14,11 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('import_records', function (Blueprint $table) {
-            $table->uuid('id')->primary()->comment('Identificador UUID');
+            $table->id();
+            $table->uuid()->comment('Identificador UUID');
             $table->string("number_of_row");
             $table->enum("has_errors", ['yes', 'no']);
             $table->json("errors_validation");
-            $table->foreignUuid('import_process_id')
+            $table->foreignId('import_process_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();

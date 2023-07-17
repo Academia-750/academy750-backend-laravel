@@ -92,7 +92,7 @@ class Authorizer implements UsersInterface
         ];
 
         $validateData = Validator::make($data,[
-            'test_id' => ['required', 'exists:tests,id'],
+            'test_id' => ['required', 'exists:tests,uuid'],
             'type_question' => ['required', Rule::in(['correct','wrong', 'unanswered'])],
         ]);
 

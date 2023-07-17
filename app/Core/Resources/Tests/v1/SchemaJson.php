@@ -11,6 +11,7 @@ use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
 
 use App\Core\Resources\Tests\v1\EventApp;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Str;
 
 class SchemaJson implements TestsInterface
@@ -76,7 +77,12 @@ class SchemaJson implements TestsInterface
     {
         $this->eventApp->resolve_a_question_of_test($request);
 
-        $test = Test::query()->find($request->get('test_id'));
+        $test = Test::query()
+            ->where('id', $request->get('test_id'))
+            ->where('uuid', $request->get('test_id'))
+            ->first();
+
+        abort_if(!$test, new ModelNotFoundException("No existe el Test o cuestionario con identificador {$request->get('test_id')}"));
 
         $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
 

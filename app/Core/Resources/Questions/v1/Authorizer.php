@@ -20,7 +20,7 @@ class Authorizer implements QuestionsInterface
 
     public function subtopic_relationship_questions_read($subtopic, $question)
     {
-        abort_if(!$subtopic->questions()->firstWhere('id', '=', $question->getRouteKey())/* || !$subtopic->isAvailable() || !$question->isVisible()*/, 403);
+        abort_if(!$subtopic->questions()->firstWhere('id', '=', $question->getKey())/* || !$subtopic->isAvailable() || !$question->isVisible()*/, 403);
 
         return $this->schemaJson->subtopic_relationship_questions_read($subtopic, $question);
     }
@@ -33,7 +33,7 @@ class Authorizer implements QuestionsInterface
 
     public function subtopic_relationship_questions_update($request, $subtopic, $question)
     {
-        abort_if(!$subtopic->questions()->firstWhere('id', '=', $question->getRouteKey()) || !$subtopic->isAvailable() || $question->tests()->count() > 0 || !$question->isVisible(), 403);
+        abort_if(!$subtopic->questions()->firstWhere('id', '=', $question->getKey()) || !$subtopic->isAvailable() || $question->tests()->count() > 0 || !$question->isVisible(), 403);
 
         return $this->schemaJson->subtopic_relationship_questions_update($request, $subtopic, $question);
     }
@@ -42,7 +42,7 @@ class Authorizer implements QuestionsInterface
     {
 
         abort_if(
-            !$subtopic->questions()->firstWhere('id', '=', $question->getRouteKey()) || !$subtopic->isAvailable() || !$question->isVisible()
+            !$subtopic->questions()->firstWhere('id', '=', $question->getKey()) || !$subtopic->isAvailable() || !$question->isVisible()
             , 403);
 
         return $this->schemaJson->subtopic_relationship_questions_delete($subtopic, $question);
@@ -57,7 +57,7 @@ class Authorizer implements QuestionsInterface
 
     public function topic_relationship_questions_read($topic, $question)
     {
-        abort_if(!$topic->questions()->firstWhere('id', '=', $question->getRouteKey())/* || !$topic->isAvailable() || !$question->isVisible() || !$question->isVisible()*/, 403);
+        abort_if(!$topic->questions()->firstWhere('id', '=', $question->getKey())/* || !$topic->isAvailable() || !$question->isVisible() || !$question->isVisible()*/, 403);
 
         return $this->schemaJson->topic_relationship_questions_read($topic, $question);
     }
@@ -70,7 +70,7 @@ class Authorizer implements QuestionsInterface
 
     public function topic_relationship_questions_update($request, $topic, $question)
     {
-        abort_if(!$topic->questions()->firstWhere('id', '=', $question->getRouteKey()) || $question->tests()->count() > 0 || !$topic->isAvailable() || !$question->isVisible(), 403);
+        abort_if(!$topic->questions()->firstWhere('id', '=', $question->getKey()) || $question->tests()->count() > 0 || !$topic->isAvailable() || !$question->isVisible(), 403);
 
         return $this->schemaJson->topic_relationship_questions_update($request, $topic, $question);
     }
@@ -78,7 +78,7 @@ class Authorizer implements QuestionsInterface
     public function topic_relationship_questions_delete($topic, $question)
     {
         abort_if(
-            !$topic->questions()->firstWhere('id', '=', $question->getRouteKey()) || !$topic->isAvailable() || !$question->isVisible()
+            !$topic->questions()->firstWhere('id', '=', $question->getKey()) || !$topic->isAvailable() || !$question->isVisible()
             ,403);
 
         return $this->schemaJson->topic_relationship_questions_delete($topic, $question);

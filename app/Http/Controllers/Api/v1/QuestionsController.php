@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Subtopic;
 use App\Models\Topic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\Api\v1\Questions\CreateQuestionRequest;
@@ -84,6 +85,13 @@ class QuestionsController extends Controller
 
         $question->is_visible = $request->get('is-visible-question');
         $question->save();
+
+        if ($request->get('is-visible-question') === 'no') {
+            DB::table('questions_used_test')
+                ->where('question_id', $question->getKey())
+                ->delete();
+
+        }
 
         return response()->json([
             'message' => 'successfully'

@@ -18,7 +18,6 @@ class SaveQuestionsService
             'is_visible' => (bool) $request->get('is-visible') ? 'yes' : 'no',
             "its_for_test" => (bool) $request->get('is-test') ? 'yes' : 'no',
             "its_for_card_memory" => (bool) $request->get('is-card-memory') ? 'yes' : 'no',
-
             "show_reason_text_in_test" => $request->get("show_reason_text_in_test"),
             "show_reason_text_in_card_memory" => $request->get("show_reason_text_in_card_memory"),
             "show_reason_image_in_test" => $request->get("show_reason_image_in_test"),
@@ -105,7 +104,7 @@ class SaveQuestionsService
                     'answer' => $request->get('answer-correct'),
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'yes',
-                    'question_id' => $question->getRouteKey(),
+                    'question_id' => $question->getKey(),
                 ]
             ];
 
@@ -120,14 +119,14 @@ class SaveQuestionsService
                     'answer' => $request->get('answer-correct'),
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'yes',
-                    'question_id' => $question->getRouteKey(),
+                    'question_id' => $question->getKey(),
                 ],
                 [
                     'id' => $request->get('another-answer-binary-alternative-id'),
                     'answer' => $request->get('another-answer-binary-alternative'),
                     'is_grouper_answer' => 'no',
                     'is_correct_answer' => 'no',
-                    'question_id' => $question->getRouteKey(),
+                    'question_id' => $question->getKey(),
                 ]
             ];
 
@@ -142,28 +141,28 @@ class SaveQuestionsService
                 'answer' => $request->get('answer-correct'),
                 'is_grouper_answer' => $request->get('is-grouper-answer-correct') ? 'yes' : 'no',
                 'is_correct_answer' => 'yes',
-                'question_id' => $question->getRouteKey(),
+                'question_id' => $question->getKey(),
             ],
             [
                 'id' => $request->get('answer-one-id'),
                 'answer' => $request->get('answer-one'),
                 'is_grouper_answer' => $request->get('is-grouper-answer-one') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
+                'question_id' => $question->getKey(),
             ],
             [
                 'id' => $request->get('answer-two-id'),
                 'answer' => $request->get('answer-two'),
                 'is_grouper_answer' => $request->get('is-grouper-answer-two') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
+                'question_id' => $question->getKey(),
             ],
             [
                 'id' => $request->get('answer-three-id'),
                 'answer' => $request->get('answer-three'),
                 'is_grouper_answer' => $request->get('is-grouper-answer-three') ? 'yes' : 'no',
                 'is_correct_answer' => 'no',
-                'question_id' => $question->getRouteKey(),
+                'question_id' => $question->getKey(),
             ],
         ];
 

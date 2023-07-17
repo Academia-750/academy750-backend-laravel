@@ -22,7 +22,7 @@ class TopicsStatisticsService
             $topics = $test->topics()->cursor();
 
             foreach ( $topics as $topic) {
-                $topicsIdData[] = $topic->getRouteKey();
+                $topicsIdData[] = $topic->getKey();
             }
 
         }
@@ -43,7 +43,7 @@ class TopicsStatisticsService
             $topic = Topic::query()->findOrFail($topic_id);
             $questions = $topic->questions()->cursor();
             foreach ( $questions as $question ) {
-                $questions_id[] = $question->getRouteKey();
+                $questions_id[] = $question->getKey();
             }
         }
 
@@ -96,7 +96,11 @@ class TopicsStatisticsService
      *
      */
     public static function getTestsCompletedByStudent () {
-        return Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'yes')->cursor();
+        return Auth::user()
+            ?->tests()
+            ->where('test_type', '=', 'test')
+            ->where('is_solved_test', '=', 'yes')
+            ->cursor();
     }
 
 }

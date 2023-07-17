@@ -17,7 +17,7 @@ trait HelpersLaravelImportCSVTrait
     {
          $importProcessRecord = ImportProcess::query()->create([
             "name_file" => $nameFile,
-            "user_id" => $userAuth->getRouteKey(),
+            "user_id" => $userAuth->getKey(),
             "category" => $category,
             "total_number_of_records" => '0',
             "total_number_failed_records" => '0',
@@ -42,7 +42,7 @@ trait HelpersLaravelImportCSVTrait
     }
 
     public function getCurrentRow () {
-        $importProcess = ImportProcess::query()->find($this->importProcessRecord->id);
+        $importProcess = ImportProcess::query()->findOrFail($this->importProcessRecord->id);
 
         if (!$importProcess) {
             return 0;
@@ -54,7 +54,7 @@ trait HelpersLaravelImportCSVTrait
 
     public function updateDataImportHistory ($event): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
     {
-        $importProcess = ImportProcess::query()->find($event->getConcernable()->importProcessRecord->id);
+        $importProcess = ImportProcess::query()->findOrFail($event->getConcernable()->importProcessRecord->id);
         $importProcess->total_number_of_records = (int) $importProcess->total_number_of_records + (int) $event->getConcernable()->count_row_current_sheet;
         $importProcess->total_number_successful_records = (int) $importProcess->total_number_successful_records + (int) $event->getConcernable()->count_rows_successfully;
         $importProcess->total_number_failed_records = (int) $importProcess->total_number_failed_records + (int) $event->getConcernable()->count_rows_failed;
@@ -66,7 +66,7 @@ trait HelpersLaravelImportCSVTrait
 
     public function setStatusCompleteImportHistory ($event): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|\Illuminate\Database\Eloquent\Builder|array|null
     {
-        $importProcess = ImportProcess::query()->find($event->getConcernable()->importProcessRecord->id);
+        $importProcess = ImportProcess::query()->findOrFail($event->getConcernable()->importProcessRecord->id);
         $importProcess->status_process_file = "complete";
         $importProcess->save();
 

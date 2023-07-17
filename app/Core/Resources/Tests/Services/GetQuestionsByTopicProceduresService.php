@@ -16,25 +16,25 @@ class GetQuestionsByTopicProceduresService
     public static function getNameFirstProcedure (bool $isCardMemory): string
     {
         if ($isCardMemory) {
-            return 'get_questions_card_memory_by_topic';
+            return 'get_questions_card_memory_by_topic_procedure';
         }
-        return 'get_questions_test_by_topic';
+        return 'get_questions_test_by_topic_procedure';
     }
 
     public static function getNameSecondProcedure (bool $isCardMemory): string
     {
         if ($isCardMemory) {
-            return 'complete_questions_card_memory_by_topic';
+            return 'complete_questions_card_memory_by_topic_procedure';
         }
-        return 'complete_questions_test_by_topic';
+        return 'complete_questions_test_by_topic_procedure';
     }
 
     public static function getNameOrderByTopicsASCProcedure (bool $isCardMemory): string
     {
         if ($isCardMemory) {
-            return 'get_topic_questions_quantity_card_memory';
+            return 'get_topic_questions_quantity_card_memory_procedure';
         }
-        return 'get_topic_questions_quantity_test';
+        return 'get_topic_questions_quantity_test_procedure';
     }
 
     public static function clean_object_std_by_procedure ($questions_procedure) {
@@ -55,23 +55,13 @@ class GetQuestionsByTopicProceduresService
     {
         $user = auth()?->user();
 
-        $start_time__callFirstProcedure = microtime(true);
-        Log::debug("++++Aqui se ejecuta el proceso de realizar la petición para ejecutar el procedimiento almacenado {$nameProcedure} del alumno: {$user?->full_name} con id {$user?->id}");
 
         $questionsDataIDFirstProcedure = DB::select(
             "call {$nameProcedure}(?,?,?,?)",
             $data
         );
 
-        $elapsed_time__callFirstProcedure = microtime(true) - $start_time__callFirstProcedure;
-        Log::debug("----Aqui se termina el proceso de realizar la petición para ejecutar el procedimiento almacenado {$nameProcedure} del alumno el cuál ha tardado: {$elapsed_time__callFirstProcedure} segundos");
-
-
-        $start_time__clean_object_std_by_procedure = microtime(true);
-        Log::debug("++++Aqui se ejecuta el proceso de mapear los datos que devuelve el Procedimiento de SQL para que sea compatible con el Backend en PHP del alumno: {$user?->full_name} con id {$user?->id}");
         $questions_id = self::clean_object_std_by_procedure($questionsDataIDFirstProcedure);
-        $elapsed_time__clean_object_std_by_procedure = microtime(true) - $start_time__clean_object_std_by_procedure;
-        Log::debug("----Aqui se termina el proceso de mapear los datos que devuelve el Procedimiento de SQL para que sea compatible con el Backend en PHP del alumno el cuál ha tardado: {$elapsed_time__clean_object_std_by_procedure} segundos");
 
         return $questions_id;
     }

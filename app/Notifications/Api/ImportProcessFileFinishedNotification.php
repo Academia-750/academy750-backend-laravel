@@ -28,7 +28,7 @@ class ImportProcessFileFinishedNotification extends Notification/* implements Sh
     public function toDatabase($notifiable): array
     {
         //$urlFrontend = config('app.url_frontend');
-        $importProcessesRecord = ImportProcess::query()->find($this->data["import-processes-id"]);
+        $importProcessesRecord = ImportProcess::query()->findOrFail($this->data["import-processes-id"]);
         $route = $this->data["route"] ?? "/imports/files/{$importProcessesRecord->getRouteKey()}/records";
         $icon = $this->data["icon"] ?? "mdi-database-import";
         $colorIcon = $this->data["color-icon"] ?? "success";
@@ -48,7 +48,7 @@ class ImportProcessFileFinishedNotification extends Notification/* implements Sh
 
     public function toMail($notifiable): MailMessage
     {
-        $importProcessesRecord = ImportProcess::query()->find($this->data["import-processes-id"]);
+        $importProcessesRecord = ImportProcess::query()->findOrFail($this->data["import-processes-id"]);
         $titleNotification = $this->data["title-notification"];
 
         return (new MailMessage)

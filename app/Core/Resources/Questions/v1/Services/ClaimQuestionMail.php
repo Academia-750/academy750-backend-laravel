@@ -22,13 +22,13 @@ class ClaimQuestionMail
             abort(500, 'No se puede encontrar el correo de la academia');
         }
 
-        $test = Test::findOrFail($test_id);
-        $question = Question::findOrFail($question_id);
+        $test = Test::firstWhere('uuid', '=' ,$test_id);
+        $question = Question::firstWhere('uuid', '=' ,$question_id);
 
         $model = $question->questionable;
 
         if ( $model instanceof Subtopic) {
-            $topic = Topic::findOrFail($model->topic->id);
+            $topic = Topic::findOrFail($model->topic->getKey());
         } else {
             $topic = $model;
         }

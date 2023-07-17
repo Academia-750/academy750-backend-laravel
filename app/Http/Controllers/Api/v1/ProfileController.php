@@ -57,7 +57,7 @@ class ProfileController extends Controller
         if ($user && Hash::check($password, $user->password)) {
             $invalidCredentials = false;
             $sessionPrevious = DB::table('personal_access_tokens')
-                ->where('tokenable_id', '=', $user->id)
+                ->where('tokenable_id', '=', $user->getKey())
                 ->get();
 
             if ($sessionPrevious->count() > 0) {

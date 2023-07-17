@@ -16,7 +16,7 @@ class AssignOppositionWithSubtopicsToTopicRequest extends FormRequest
     {
         return [
             'opposition-id' => [
-                'required', 'exists:oppositions,id'
+                'required', 'exists:oppositions,uuid'
             ],
             'subtopics' => [
                 'nullable',

@@ -16,8 +16,8 @@ class ClaimQuestionMailRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'test_id' => ['required', 'uuid', 'exists:tests,id'],
-            'question_id' => ['required', 'uuid', 'exists:questions,id'],
+            'test_id' => ['required', 'uuid', 'exists:tests,uuid'],
+            'question_id' => ['required', 'uuid', 'exists:questions,uuid'],
             'claim_text' => ['required', 'string', 'max:400'],
         ];
     }

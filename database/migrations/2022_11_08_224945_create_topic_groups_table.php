@@ -14,7 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('topic_groups', function (Blueprint $table) {
-            $table->uuid('id')->primary()->comment('Identificador UUID');
+            $table->id();
+            $table->uuid()->comment('Identificador UUID');
             $table->string("name");
             $table->string("key");
             $table->text("description");

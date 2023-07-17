@@ -16,12 +16,12 @@ return new class extends Migration
         Schema::create('oppositionables', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignUuid("opposition_id")
+            $table->foreignId("opposition_id")
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->uuidMorphs("oppositionable");
+            $table->morphs("oppositionable");
 
             $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 

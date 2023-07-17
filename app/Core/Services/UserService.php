@@ -6,6 +6,7 @@ use App\Models\Role;
 use App\Models\User;
 use Faker\Provider\es_ES\Person;
 use Hackzilla\PasswordGenerator\Generator\ComputerPasswordGenerator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class UserService
 {
@@ -66,6 +67,9 @@ class UserService
         return $generator->generatePassword();
     }
 
+    /**
+     * @throws \Throwable
+     */
     public static function syncRolesToUser ($roles_id, $user): array
     {
         if ($roles_id === null) {
@@ -75,7 +79,14 @@ class UserService
         $roles = [];
 
         foreach ($roles_id as $role_id) {
-            $roles[] = Role::query()->find($role_id);
+            $roleQuery = Role::query()
+                ->where('id', $role_id)
+                ->first();
+
+            throw_if(!$roleQuery, new ModelNotFoundException("El rol con Identificador {$role_id} no fue encontrado."));
+
+
+            $roles[] = $roleQuery;
         }
 
         $user->syncRoles($roles);

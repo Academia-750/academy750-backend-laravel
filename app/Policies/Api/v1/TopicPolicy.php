@@ -49,7 +49,7 @@ class TopicPolicy
 
 
     public function get_relationship_oppositions (User $user, Topic $topic): bool {
-        return $user->can("see-a-topic") && $topic->isAvailable();
+        return $user->can("see-a-topic");
     }
 
     public function get_relationship_a_subtopic (User $user, Topic $topic): bool {
@@ -110,7 +110,7 @@ class TopicPolicy
 
     public function topic_get_a_question(User $user, Topic $topic, Question $question): bool
     {
-        if (!in_array($question->getRouteKey(), $topic->questions->pluck('id')->toArray(), true)) {
+        if (!in_array($question->getKey(), $topic->questions->pluck('id')->toArray(), true)) {
             abort(404);
         }
 

@@ -15,7 +15,7 @@ class QuestionPolicy
     }
     public function subtopic_relationship_questions_read (User $user, $subtopic, $question): bool {
 
-        return $subtopic->questions()->pluck("id")->contains($question->id);
+        return $subtopic->questions()->pluck($question?->getKeyName())->contains($question->getKey());
     }
     public function subtopic_relationship_questions_create (User $user, $subtopic): bool {
         return true;
@@ -30,7 +30,7 @@ class QuestionPolicy
         return true;
     }
     public function topic_relationship_questions_read (User $user, $topic, $question): bool {
-        return $topic->questions()->pluck("id")->contains($question->id);
+        return $topic->questions()->pluck($question?->getKeyName())->contains($question->getKey());
     }
     public function topic_relationship_questions_create (User $user, $topic): bool {
         return true;

@@ -85,8 +85,13 @@ class Question extends Model
     ];
 
      protected $casts = [
-        'id' => 'string'
+        'uuid' => 'string'
      ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 
     public function isVisible(): bool
     {

@@ -21,7 +21,11 @@ class UpdateOppositionRequest extends FormRequest
                 Rule::when( $this->get('name') !== null ,
                     [
                         'max:100',
-                        Rule::unique('oppositions', 'name')->ignore($this->route('opposition')?->getRouteKey())
+                        Rule::unique('oppositions', 'name')
+                            ->ignore(
+                                $this->route('opposition')?->getRouteKey(),
+                                $this->route('opposition')?->getRouteKeyName()
+                            )
                     ]
                 )
             ],
