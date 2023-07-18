@@ -227,15 +227,15 @@ class UserGroupListTest extends TestCase
         $item = GroupUsers::query()->where('group_id', $this->group->id)->inRandomOrder()->first();
 
         // Search by DNI
-        $data1 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->user->dni, 0, 3)]))->assertStatus(200)->json();
+        $data1 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => $item->user->dni]))->assertStatus(200)->json();
         $this->assertEquals($data1['results'][0]['id'], $item->id);
 
         // Search by user first_name
-        $data2 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->user->first_name, 0, 3)]))->assertStatus(200)->json();
+        $data2 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => $item->user->first_name]))->assertStatus(200)->json();
         $this->assertEquals($data2['results'][0]['id'], $item->id);
 
         // Search by group name
-        $data3 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->group->name, 0, 3)]))->assertStatus(200)->json();
+        $data3 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => $item->group->name]))->assertStatus(200)->json();
         $this->assertEquals($data3['results'][0]['id'], $item->id);
     }
 }

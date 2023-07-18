@@ -107,13 +107,18 @@ class GroupUsersController extends Controller
             $conditions = removeNull([
                 parseFilter('group_id', $groupId),
                 parseFilter('discharged_at', is_null($request->get('discharged')) ? true : !$request->get('discharged'), 'isNull'),
-                parseFilter(['users.first_name', 'users.dni', 'groups.name'], $request->get('content'), 'or_like')
+                parseFilter([
+                    'users.first_name',
+                    'users.last_name',
+                    'users.dni',
+                    'groups.name'
+                ], $request->get('content'), 'or_like')
             ]);
 
 
             $query = GroupUsers::query()->join('users', 'group_users.user_id', '=', 'users.id')
                 ->join('groups', 'group_users.group_id', '=', 'groups.id')
-                ->select('group_users.*', 'users.dni', 'users.first_name', 'groups.name')
+                ->select('group_users.*', 'users.dni', 'users.first_name', 'users.last_name', 'groups.name')
                 ->where(function ($query) use ($conditions) {
                     foreach ($conditions as $condition) {
                         $condition($query);

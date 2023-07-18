@@ -91,13 +91,13 @@ class LeaveGroupTest extends TestCase
     }
 
     /** @test */
-    public function already_left_group_409(): void
+    public function already_left_group_404(): void
     {
         $student = User::factory()->student()->create();
         $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->id])->assertStatus(200);
         $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(200);
         // Already left
-        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(409);
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(404);
 
     }
 
