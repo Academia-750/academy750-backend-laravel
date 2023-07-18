@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\GroupController;
+use App\Http\Controllers\Api\v1\GroupUsersController;
 
 // Rutas del recurso Users
 
@@ -10,6 +11,7 @@ Route::get('group/colors', [GroupController::class, 'getColorsAvailable'])->midd
 Route::get('group/{id}', [GroupController::class, 'getGroup']);
 Route::put('group/{id}', [GroupController::class, 'putEditGroup'])->middleware('onlyAdmin');
 Route::delete('group/{id}', [GroupController::class, 'deleteGroup'])->middleware('onlyAdmin');
-// TODO:
-// Route::post('group/{id}/join', [UsersController::class, 'index'])
-// Route::post('group/{id}/leave', [UsersController::class, 'index'])
+
+Route::post('group/{id}/join', [GroupUsersController::class, 'join'])->middleware('onlyAdmin');
+Route::post('group/{id}/leave', [GroupUsersController::class, 'leave'])->middleware('onlyAdmin');
+Route::get('group/{id}/list', [GroupUsersController::class, 'list'])->middleware('onlyAdmin');

@@ -160,113 +160,144 @@ class User extends Authenticatable
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
 
-    public function sortID (Builder $query, $direction): void {
+    public function sortID(Builder $query, $direction): void
+    {
         $query->orderBy('id', $direction);
     }
-    public function sortDNI (Builder $query, $direction): void {
+    public function sortDNI(Builder $query, $direction): void
+    {
         $query->orderBy('dni', $direction);
     }
-    public function sortFirstName (Builder $query, $direction): void {
+    public function sortFirstName(Builder $query, $direction): void
+    {
         $query->orderBy('first_name', $direction);
     }
-    public function sortLastName (Builder $query, $direction): void {
+    public function sortLastName(Builder $query, $direction): void
+    {
         $query->orderBy('last_name', $direction);
     }
-    public function sortPhone (Builder $query, $direction): void {
+    public function sortPhone(Builder $query, $direction): void
+    {
         $query->orderBy('phone', $direction);
     }
-    public function sortLastSession (Builder $query, $direction): void {
+    public function sortLastSession(Builder $query, $direction): void
+    {
         $query->orderBy('last_session', $direction);
     }
-    public function sortStateAccount (Builder $query, $direction): void {
+    public function sortStateAccount(Builder $query, $direction): void
+    {
         $query->orderBy('state', $direction);
     }
-    public function sortEmail (Builder $query, $direction): void {
+    public function sortEmail(Builder $query, $direction): void
+    {
         $query->orderBy('email', $direction);
     }
-    public function sortEmailVerifiedAt (Builder $query, $direction): void {
+    public function sortEmailVerifiedAt(Builder $query, $direction): void
+    {
         $query->orderBy('email_verified_at', $direction);
     }
 
-    public function sortCreatedAt(Builder $query, $direction): void{
+    public function sortCreatedAt(Builder $query, $direction): void
+    {
         $query->orderBy('created_at', $direction);
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Filters functions
 
-    public function filterID (Builder $query, $value): void {
+    public function filterID(Builder $query, $value): void
+    {
         $query->where('id', 'LIKE', "%{$value}%");
     }
-    public function filterDNI (Builder $query, $value): void {
+    public function filterDNI(Builder $query, $value): void
+    {
         $query->where('dni', 'LIKE', "%{$value}%");
     }
-    public function filterFirstName (Builder $query, $value): void {
+    public function filterFirstName(Builder $query, $value): void
+    {
         $query->where('first_name', 'LIKE', "%{$value}%");
     }
-    public function filterLastName (Builder $query, $value): void {
+    public function filterLastName(Builder $query, $value): void
+    {
         $query->where('last_name', 'LIKE', "%{$value}%");
     }
-    public function filterPhone (Builder $query, $value): void {
+    public function filterPhone(Builder $query, $value): void
+    {
         $query->where('phone', 'LIKE', "%{$value}%");
     }
-    public function filterLastSession (Builder $query, $value): void {
-        $query->whereDate('last_session',$value);
+    public function filterLastSession(Builder $query, $value): void
+    {
+        $query->whereDate('last_session', $value);
     }
-    public function filterCreatedAt (Builder $query, $value): void {
-        $query->whereDate('created_at',$value);
+    public function filterCreatedAt(Builder $query, $value): void
+    {
+        $query->whereDate('created_at', $value);
     }
-    public function filterStateAccount (Builder $query, $value): void {
+    public function filterStateAccount(Builder $query, $value): void
+    {
         $query->where('state', 'LIKE', "%{$value}%");
         //$query->where('state', $value);
     }
-    public function filterEmail (Builder $query, $value): void {
+    public function filterEmail(Builder $query, $value): void
+    {
         $query->where('email', 'LIKE', "%{$value}%");
     }
-    public function filterEmailVerifiedAt (Builder $query, $value): void {
+    public function filterEmailVerifiedAt(Builder $query, $value): void
+    {
         $query->where('email_verified_at', 'LIKE', "%{$value}%");
     }
 
-    public function filterYear(Builder $query, $value): void{
+    public function filterYear(Builder $query, $value): void
+    {
         $query->whereYear('created_at', $value);
     }
-    public function filterMonth(Builder $query, $value): void{
+    public function filterMonth(Builder $query, $value): void
+    {
         $query->whereMonth('created_at', $value);
     }
-    public function filterDay(Builder $query, $value): void{
+    public function filterDay(Builder $query, $value): void
+    {
         $query->whereDay('created_at', $value);
     }
-    public function filterDate(Builder $query, $value): void{
+    public function filterDate(Builder $query, $value): void
+    {
         $query->whereDate('created_at', $value);
     }
 
-    public function filterSearch(Builder $query, $value): void{
-        $query->orWhere(function($query) use ($value) {
-            $query->where('dni', 'LIKE' , "%{$value}%")
+    public function filterSearch(Builder $query, $value): void
+    {
+        $query->orWhere(function ($query) use ($value) {
+            $query->where('dni', 'LIKE', "%{$value}%")
                 /*->orWhere('id', 'LIKE' , "%{$value}%")*/
-                ->orWhere('full_name', 'LIKE' , "%{$value}%")
+                ->orWhere('full_name', 'LIKE', "%{$value}%")
                 //->orWhere('last_name', 'LIKE' , "%{$value}%")
-                ->orWhere('phone', 'LIKE' , "%{$value}%")
-                ->orWhere('email', 'LIKE' , "%{$value}%")
+                ->orWhere('phone', 'LIKE', "%{$value}%")
+                ->orWhere('email', 'LIKE', "%{$value}%")
             ;
         });
     }
 
-    public function filterRole(Builder $query, $value): void{
-        $query->with("roles")->whereHas("roles", function($q) use ($value) {
+    public function filterRole(Builder $query, $value): void
+    {
+        $query->with("roles")->whereHas("roles", function ($q) use ($value) {
             $q->whereIn("name", explode(',', $value));
         });
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Relationships methods
-    public function image (): \Illuminate\Database\Eloquent\Relations\MorphOne
+    public function image(): \Illuminate\Database\Eloquent\Relations\MorphOne
     {
         return $this->morphOne(Image::class, 'imageable');
     }
 
-    public function tests (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function tests(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Test::class);
+    }
+
+    public function groups()
+    {
+        return $this->hasMany(GroupUsers::class);
     }
 }

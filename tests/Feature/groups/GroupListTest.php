@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Group;
+use App\Models\GroupUsers;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -196,6 +197,17 @@ class GroupListTest extends TestCase
 
 
         $this->assertEquals($data2['results'][0]['id'], $this->groups[2]->id);
+    }
+
+
+    /** @test */
+    public function return_number_active_students_200(): void
+    {
+        GroupUsers::factory()->group($this->groups[0])->count(4)->create();
+        GroupUsers::factory()->group($this->groups[0])->discharged()->count(2)->create();
+        $data = $this->get("api/v1/group/list?" . Arr::query(['content' => substr($this->groups[0]->name, 0, 3)]))->assertStatus(200)->decodeResponseJson();
+        $this->assertEquals(GroupUsers::query()->where('group_id', $this->groups[0]->id)->count(), 6);
+        $this->assertEquals($data['results'][0]['active_users'], 4);
     }
 
 

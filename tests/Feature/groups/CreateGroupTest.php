@@ -54,7 +54,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function only_admin_401(): void
+    public function only_admin_403(): void
     {
         $user = User::factory()->student()->create();
         $response = $this->actingAs($user)->post('api/v1/group', Group::factory()->raw());

@@ -19,26 +19,38 @@ class CreateUserRequest extends FormRequest
     {
         return [
             'dni' => [
-                'required', 'alpha_num', Rule::unique('users', 'dni'), new ValidateCorrectDNISpain()
+                'required',
+                'alpha_num', Rule::unique('users', 'dni'),
+                new ValidateCorrectDNISpain()
             ],
             'first-name' => [
-                'required', 'min:3', 'max:25', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
+                'required',
+                'min:3',
+                'max:25',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
             ],
             'last-name' => [
-                'required', 'min:3', 'max:25', 'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
+                'required',
+                'min:3',
+                'max:25',
+                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ ]+$/'
             ],
             'phone' => [
-                'required', 'numeric', 'regex:/^[6789]\d{8}$/', Rule::unique('users', 'phone')
+                'required',
+                'numeric',
+                'regex:/^[6789]\d{8}$/', Rule::unique('users', 'phone')
             ],
             'email' => [
-                'required', 'email', Rule::unique('users', 'email')
+                'required',
+                'email', Rule::unique('users', 'email')
             ],
             'roles' => ['required', 'array', 'min:1'],
-            'roles.*' => ['string','distinct:strict','exists:roles,id'],
+            'roles.*' => ['string', 'distinct:strict', 'exists:roles,id'],
         ];
     }
 
-    public function messages(): array {
+    public function messages(): array
+    {
         return [
             'dni.required' => 'Ingresa un n° de documento',
             'dni.alpha_num' => 'Comienza con  números y termina en letra',
@@ -62,7 +74,7 @@ class CreateUserRequest extends FormRequest
         ];
     }
 
-    #[ArrayShape(['dni' => "string", 'first-name' => "string", 'last-name' => "string", 'phone' => "string", 'email' => "string", 'roles' => "string"])] public function attributes():array
+    #[ArrayShape(['dni' => "string", 'first-name' => "string", 'last-name' => "string", 'phone' => "string", 'email' => "string", 'roles' => "string"])] public function attributes(): array
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [
