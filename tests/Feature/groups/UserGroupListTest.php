@@ -44,6 +44,15 @@ class UserGroupListTest extends TestCase
             }))
             ->create();
 
+        GroupUsers::factory()
+            ->group($this->group)
+            ->discharged()
+            ->state(new Sequence(function ($sequence) {
+                return ['user_id' => User::factory()->create()->id, 'created_at' => now()->addSeconds($sequence->index + 1)];
+            }))
+            ->count(3)
+            ->create();
+
         // To Make Noise
         GroupUsers::factory()
             ->count(2)
@@ -97,13 +106,15 @@ class UserGroupListTest extends TestCase
     public function group_users_200(): void
     {
 
-        $response = $this->get("api/v1/group/{$this->group->id}/list?", [])->assertStatus(200);
+        $response = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query([]))->assertStatus(200);
         $this->assertEquals($response['total'], 4);
 
         // All are in the same group
         array_map(function ($item) {
             $this->assertEquals($item['group_id'], $this->group->id);
             $this->assertEquals($item['name'], $this->group->name);
+            $this->assertEmpty($item['discharged_at']);
+
         }, $response['results']);
 
         // Check that the join works
@@ -111,6 +122,20 @@ class UserGroupListTest extends TestCase
         $this->assertNotEmpty($user1);
         $this->assertEquals($user1->first_name, $response['results'][0]['first_name']);
         $this->assertEquals($user1->dni, $response['results'][0]['dni']);
+
+    }
+
+    /** @test */
+    public function group_discharged_users_200(): void
+    {
+
+        $response = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['discharged' => true]))->assertStatus(200);
+        $this->assertEquals($response['total'], 3);
+
+        array_map(function ($item) {
+            $this->assertEquals($item['group_id'], $this->group->id);
+            $this->assertNotEmpty($item['discharged_at']);
+        }, $response['results']);
     }
 
 

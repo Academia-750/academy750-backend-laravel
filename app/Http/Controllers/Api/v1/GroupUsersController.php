@@ -102,9 +102,11 @@ class GroupUsersController extends Controller
 
     public function list(ListGroupUserRequest $request, string $groupId)
     {
+
         try {
             $conditions = removeNull([
                 parseFilter('group_id', $groupId),
+                parseFilter('discharged_at', is_null($request->get('discharged')) ? true : !$request->get('discharged'), 'isNull'),
                 parseFilter(['users.first_name', 'users.dni', 'groups.name'], $request->get('content'), 'or_like')
             ]);
 
@@ -118,7 +120,6 @@ class GroupUsersController extends Controller
                     }
                 });
 
-
             $results = $query
                 ->orderBy($request->get('orderBy') ?? 'created_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
@@ -127,9 +128,6 @@ class GroupUsersController extends Controller
 
 
             $total = $query->count();
-
-            dump($results[0]->user);
-
 
             return response()->json([
                 'status' => 'successfully',
