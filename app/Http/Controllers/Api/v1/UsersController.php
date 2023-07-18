@@ -180,14 +180,14 @@ class UsersController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'results' => $results,
-            ])->send();
+            ]);
 
 
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 }

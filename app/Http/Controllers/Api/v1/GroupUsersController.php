@@ -21,7 +21,7 @@ class GroupUsersController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'Group not found'
-                ], 404)->send();
+                ], 404);
             }
 
             $user = User::find($request->get('user_id'));
@@ -30,7 +30,7 @@ class GroupUsersController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'User not found'
-                ], 404)->send();
+                ], 404);
             }
 
             $userIsActive = GroupUsers::query()->where('group_id', $group->id)
@@ -42,7 +42,7 @@ class GroupUsersController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'The user is already active in this group'
-                ], 409)->send();
+                ], 409);
             }
 
             $member = GroupUsers::create([
@@ -53,12 +53,12 @@ class GroupUsersController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'result' => $member
-            ], 200)->send();
+            ], 200);
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 
@@ -74,14 +74,14 @@ class GroupUsersController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'User not found in this group'
-                ], 404)->send();
+                ], 404);
             }
 
             if ($member->discharged_at) {
                 return response()->json([
                     'status' => 'error',
                     'result' => 'This member was already discharged from the group'
-                ], 409)->send();
+                ], 409);
             }
 
             $member->discharged_at = now()->milliseconds(0);
@@ -91,12 +91,12 @@ class GroupUsersController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'result' => $member
-            ], 200)->send();
+            ], 200);
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 
@@ -137,7 +137,7 @@ class GroupUsersController extends Controller
                 'status' => 'successfully',
                 'results' => $results,
                 'total' => $total
-            ])->send();
+            ]);
 
 
         } catch (\Exception $err) {
@@ -145,7 +145,7 @@ class GroupUsersController extends Controller
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 
