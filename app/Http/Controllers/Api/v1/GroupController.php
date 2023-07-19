@@ -140,7 +140,7 @@ class GroupController extends Controller
             });
 
 
-            $results = $query
+            $results = (clone $query)
                 ->select('groups.*')
                 // Count Active Users
                 ->selectSub(function ($query) {
@@ -156,8 +156,7 @@ class GroupController extends Controller
                 ->get();
 
 
-            $total = $query->count();
-
+            $total = (clone $query)->count();
 
             return response()->json([
                 'status' => 'successfully',

@@ -144,9 +144,7 @@ class UserGroupListTest extends TestCase
     public function pagination_200(): void
     {
         $data = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['limit' => 1, 'offset' => 0]))->assertStatus(200)->decodeResponseJson();
-        $this->assertEquals(count($data['results']), 1);
-        // Check that despite we return 1 item the total is correct
-        $this->assertEquals($data['total'], 4);
+
 
         $data1 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['limit' => 1, 'offset' => 1]))->assertStatus(200)->decodeResponseJson();
         $data2 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['limit' => 1, 'offset' => 2]))->assertStatus(200)->decodeResponseJson();
@@ -156,6 +154,11 @@ class UserGroupListTest extends TestCase
         $ids = [$data1['results'][0]['id'], $data2['results'][0]['id'], $data3['results'][0]['id'], $data['results'][0]['id']];
 
         $this->assertEquals(count(array_unique($ids)), 4);
+        $this->assertEquals(count($data['results']), 1);
+        // Check that despite we return 1 item the total is correct
+        $this->assertEquals($data['total'], 4);
+        $this->assertEquals($data1['total'], 4);
+
 
     }
 

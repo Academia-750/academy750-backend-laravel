@@ -124,14 +124,14 @@ class GroupUsersController extends Controller
                     }
                 });
 
-            $results = $query
+            $results = (clone $query)
                 ->orderBy($request->get('orderBy') ?? 'created_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
                 ->get();
 
 
-            $total = $query->count();
+            $total = (clone $query)->count();
 
             return response()->json([
                 'status' => 'successfully',
