@@ -59,7 +59,7 @@ jobs:
           SOURCE: ""
           TARGET: "/var/www/${{ env.FOLDER_NAME }}"
           ARGS: "-rltgoDzvO --delete"
-          EXCLUDE: ".env, pm2.json"
+          EXCLUDE: ".env, pm2.json storage/*"
 
       - name: Installing the new version
         uses: appleboy/ssh-action@master

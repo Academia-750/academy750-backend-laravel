@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SERVER: ${{ vars.PRODUCTION_SERVER }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRODUCTION_KEY }}
       SSH_USER: ${{ secrets.SSH_USER }}
       SSH_PORT: ${{ secrets.SSH_PORT }}
       FOLDER_NAME: ${{ vars.FOLDER_NAME || '/var/www/academy750-backend' }}
