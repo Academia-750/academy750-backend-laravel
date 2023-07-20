@@ -1,8 +1,8 @@
 name: Deploy API
 on:
   push:
-    # tags:
-    #   - "*" # Everything that doesnt include  '/' character
+    tags:
+      - "*" # Everything that doesnt include  '/' character
 
 jobs:
 
@@ -16,31 +16,20 @@ jobs:
       FOLDER_NAME: ${{ vars.FOLDER_NAME || '/var/www/academy750-backend' }}
 
     steps:
-      # - name: Only Main branch
-      #   if: endsWith(github.ref, 'main') == false
-      #   run: exit -1
+      - name: Only Main branch
+        if: endsWith(github.ref, 'main') == false
+        run: exit -1
 
       - name: 🚚 Checkout code
         uses: actions/checkout@v2
-
-      - name: Checking SSH
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.SERVER }}
-          username: ${{ env.SSH_USER }}
-          key: ${{ env.SSH_PRIVATE_KEY }}
-          port: ${{ env.SSH_PORT }}
-          script: |
-            cd ${{ env.FOLDER_NAME }}
-            ls
 
       - name: Deploy to Production
         uses: easingthemes/ssh-deploy@v2.2.4
         with:
           SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
-          REMOTE_HOST: "academia750.es"
-          REMOTE_USER: "acade750"
-          REMOTE_PORT: 60606
+          REMOTE_HOST: ${{ env.SERVER }}
+          REMOTE_USER:  ${{ env.SSH_USER }}
+          REMOTE_PORT:  ${{ env.SSH_PORT }}
           SOURCE: ""
           TARGET: "${{ env.FOLDER_NAME }}"
           ARGS: "-rltgoDzvO --delete"

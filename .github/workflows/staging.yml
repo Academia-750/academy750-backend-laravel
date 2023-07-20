@@ -1,7 +1,6 @@
 name: Deploy API
 on:
-  # pull_request:
-  push:
+  pull_request:
     branches:
       - main
 
