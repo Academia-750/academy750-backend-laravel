@@ -25,7 +25,7 @@ class CreateGroupRequest extends FormRequest
                 'string',
                 'min:3',
                 'max:25',
-                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ _-]+$/'
+                'regex:/^[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ _-]+$/'
             ],
             'color' => [
                 'required',

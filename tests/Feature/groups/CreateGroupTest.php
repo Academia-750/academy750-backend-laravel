@@ -74,6 +74,22 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
+    public function different_group_names_200(): void
+    {
+
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "With Spaces"]))->assertStatus(200);
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "With Number 00"]))->assertStatus(200);
+        // Short
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "S"]))->assertStatus(422);
+        // Long
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "This is too long name for a group that shall not pass"]))->assertStatus(422);
+        // With Spanish Characters
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "áéíóúÁÉÍÓÚñÑ"]))->assertStatus(200);
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "With_Under-slashes"]))->assertStatus(200);
+
+    }
+
+    /** @test */
     public function code_duplicated_409(): void
     {
         $group1 = Group::factory()->create();
