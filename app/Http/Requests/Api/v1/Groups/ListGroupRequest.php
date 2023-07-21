@@ -20,14 +20,14 @@ class ListGroupRequest extends FormRequest
             ],
             'codes.*' => [
                 'string',
-                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ _-]+$/'
+                config('constants.string_request_regex')
             ],
             'names' => [
                 'array'
             ],
             'names.*' => [
                 'string',
-                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ _-]+$/'
+                config('constants.string_request_regex')
             ],
             'colors' => [
                 'array'
