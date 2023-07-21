@@ -5,12 +5,15 @@ on:
       - "*" # Everything that doesnt include  '/' character
 
 jobs:
+
   deploy:
     runs-on: ubuntu-latest
     env:
       SERVER: ${{ vars.PRODUCTION_SERVER }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-      FOLDER_NAME: "production"
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRODUCTION_KEY }}
+      SSH_USER: ${{ secrets.SSH_USER  || 'ubuntu' }}
+      SSH_PORT: ${{ secrets.SSH_PORT || 22  }}
+      FOLDER_NAME: ${{ vars.FOLDER_NAME || '/var/www/academy750-backend' }}
 
     steps:
       - name: Only Main branch
@@ -25,22 +28,22 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ env.SERVER }}
-          REMOTE_USER: ubuntu
-          REMOTE_PORT: 22
+          REMOTE_USER:  ${{ env.SSH_USER }}
+          REMOTE_PORT:  ${{ env.SSH_PORT }}
           SOURCE: ""
-          TARGET: "/var/www/${{ env.FOLDER_NAME }}"
+          TARGET: "${{ env.FOLDER_NAME }}"
           ARGS: "-rltgoDzvO --delete"
-          EXCLUDE: ".env, pm2.json"
+          EXCLUDE: ".env, pm2.json, stubs/*, storage/framework/cache/*, storage/framework/session/*, storage/framework/views/*, storage/logs/*, storage/app/*, bootstrap/cache/*"
 
       - name: Installing the new version
         uses: appleboy/ssh-action@master
         with:
           host: ${{ env.SERVER }}
-          username: ubuntu
+          username: ${{ env.SSH_USER }}
           key: ${{ env.SSH_PRIVATE_KEY }}
-          port: 22
+          port: ${{ env.SSH_PORT }}
           script: |
-            cd /var/www/${{ env.FOLDER_NAME }}
+            cd ${{ env.FOLDER_NAME }}
             (php artisan down) || true
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
             php artisan optimize
