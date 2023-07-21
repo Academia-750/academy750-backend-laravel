@@ -38,7 +38,7 @@ class ListGroupRequest extends FormRequest
             ],
             'orderBy' => [
                 'string',
-                Rule::in(['code', 'name', 'created_at'])
+                Rule::in(['code', 'name', 'created_at', 'active_users'])
             ],
             'order' => [
                 Rule::in([1, -1])

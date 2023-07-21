@@ -57,6 +57,10 @@ class AvailableColorsTest extends TestCase
     {
         $data = $this->get("api/v1/group/colors", [])->assertStatus(200)->decodeResponseJson();
         $this->assertEquals(count($data['results']), count($this->colors));
+        array_map(function ($info) {
+            $this->assertEquals($info['used'], false);
+        }, $data['results']);
+
 
     }
 
@@ -67,9 +71,16 @@ class AvailableColorsTest extends TestCase
         $this->post('api/v1/group', Group::factory()->raw(['color' => $this->colors[1]]))->assertStatus(200);
         $this->post('api/v1/group', Group::factory()->raw(['color' => $this->colors[3]]))->assertStatus(200);
 
-        $data = $this->get("api/v1/group/colors", [])->assertStatus(200)->decodeResponseJson();
-        $diff = array_diff($this->colors, $data['results']);
-        $usedColors = [$this->colors[1], $this->colors[3]];
-        $this->assertEquals(sort($diff), sort($usedColors));
+        $data = $this->get("api/v1/group/colors", [])->assertStatus(200)->json();
+
+        $usedColorsResponse = array_filter(
+            $data['results'],
+            function ($info) {
+                return $info['used'] === true;
+            },
+        );
+
+        $usedColorsList = [$this->colors[1], $this->colors[3]];
+        $this->assertEquals(sort($usedColorsResponse), sort($usedColorsList));
     }
 }

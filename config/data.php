@@ -48,11 +48,11 @@ return [
         // (Olive)
         '#C0C0C0',
         // (Silver)
-        '#F0F8FF',
+        '#B1F0F0',
         // (Alice Blue)
         '#FF69B4',
         // (Hot Pink)
-        '#800000',
+        '#828282',
         // (Maroon)
     ],
 

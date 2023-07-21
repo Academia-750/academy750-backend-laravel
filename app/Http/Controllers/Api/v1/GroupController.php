@@ -203,11 +203,14 @@ class GroupController extends Controller
         try {
             $colors = config('data.group_colors');
             $usedColorCodes = Group::query()->select('color')->distinct()->get()->pluck('color')->toArray();
-            $availableColors = array_diff($colors, $usedColorCodes);
+
+            $list = array_map(function ($color) use ($usedColorCodes) {
+                return ['color' => $color, 'used' => in_array($color, $usedColorCodes)];
+            }, $colors);
 
             return response()->json([
                 'status' => 'successfully',
-                'results' => $availableColors,
+                'results' => $list,
             ]);
         } catch (\Exception $err) {
             return response()->json([
