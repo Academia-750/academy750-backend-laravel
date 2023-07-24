@@ -4,9 +4,10 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
-    public function __construct(Public string $nameProcedure = 'get_questions_test_by_topic_procedure'){}
+return new class extends Migration {
+    public function __construct(public string $nameProcedure = 'get_questions_test_by_topic_procedure')
+    {
+    }
 
     /**
      * Run the migrations.
@@ -15,7 +16,10 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `__topic__ids` LONGTEXT,
             IN `id_oposicion` INT,

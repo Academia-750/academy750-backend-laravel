@@ -5,9 +5,10 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
-    public function __construct(Public string $nameProcedure = 'get_5_worse_topic_results_by_user_procedure'){}
+return new class extends Migration {
+    public function __construct(public string $nameProcedure = 'get_5_worse_topic_results_by_user_procedure')
+    {
+    }
 
     /**
      * Run the migrations.
@@ -16,6 +17,9 @@ return new class extends Migration
      */
     public function up()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `id_usuario` INT

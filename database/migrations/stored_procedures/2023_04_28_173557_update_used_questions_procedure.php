@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public string $nameProcedure;
 
     public function __construct()
@@ -21,7 +20,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        $procedure= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `id_test` INT
         )
@@ -167,7 +169,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        $procedure= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
+        $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
 
         DB::unprepared($procedure);
     }

@@ -5,10 +5,15 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
-    public function __construct(Public string $nameProcedure = 'topics_available_for_create_test_procedure'){}
+    public function __construct(public string $nameProcedure = 'topics_available_for_create_test_procedure')
+    {
+    }
 
     public function up()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
             IN oposicion_id INT,
@@ -68,7 +73,7 @@ return new class extends Migration {
 
     public function down()
     {
-        $procedure= "DROP PROCEDURE IF EXISTS {$this->nameProcedure}";
+        $procedure = "DROP PROCEDURE IF EXISTS {$this->nameProcedure}";
         DB::unprepared($procedure);
     }
 };

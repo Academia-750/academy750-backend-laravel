@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,6 +12,9 @@ return new class extends Migration
      */
     public function up()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         Schema::create('questions_used_test', function (Blueprint $table) {
             $table->id();
             $table->foreignId('topic_id')
@@ -53,6 +55,9 @@ return new class extends Migration
      */
     public function down()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         Schema::dropIfExists('questions_used_test');
     }
 };

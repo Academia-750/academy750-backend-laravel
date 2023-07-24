@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\v1\UsersController;
 use App\Models\ManageUsersInformation;
 
-Route::prefix('v1')->group(callback: static function(){
+Route::prefix('v1')->group(callback: static function () {
     require __DIR__ . '/routes/json-api-auth.php';
 
     Route::post('guest/user/contact-us', [UsersController::class, 'contactsUS'])->name('api.v1.users.home-page.form.contact-us');
@@ -15,7 +15,7 @@ Route::prefix('v1')->group(callback: static function(){
 
     Route::post('guest/user/accept-cookies', function (\Illuminate\Http\Request $request) {
         $userIp = ManageUsersInformation::query()
-            ->where('ip', $request->ip() ?? $request->getClientIp() )
+            ->where('ip', $request->ip() ?? $request->getClientIp())
             ->where('user_agent', $request->header('User-Agent'))
             ->first();
 
@@ -36,14 +36,14 @@ Route::prefix('v1')->group(callback: static function(){
         return response()->json([
             'has_accept_cookies' => true,
             'user_agent' => $request->header('User-Agent'),
-                'ip' => $request->ip() ?? $request->getClientIp()
+            'ip' => $request->ip() ?? $request->getClientIp()
         ]);
     })->name('api.v1.users.home-page.form.accept-cookies');
 
     Route::post('guest/user/has-accept-cookies', function (\Illuminate\Http\Request $request) {
         $userIp = ManageUsersInformation::query()
             ->where('ip', $request->ip() ?? $request->getClientIp())
-            ->where('user_agent', $request->header('User-Agent') )
+            ->where('user_agent', $request->header('User-Agent'))
             ->where('has_accept_cookies', true)
             ->first();
 
@@ -78,6 +78,8 @@ Route::prefix('v1')->group(callback: static function(){
         //require __DIR__ . '/routes/answers.routes.php';
         //require __DIR__ . '/routes/images.routes.php';
         require __DIR__ . '/routes/import-processes.routes.php';
-    // [EndOfLineMethodRegister]
+        require __DIR__ . '/routes/groups.routes.php';
+
+        // [EndOfLineMethodRegister]
     });
 });

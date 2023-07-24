@@ -5,9 +5,10 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
-    public function __construct(Public string $nameProcedure = 'complete_questions_card_memory_by_topic_procedure'){}
+return new class extends Migration {
+    public function __construct(public string $nameProcedure = 'complete_questions_card_memory_by_topic_procedure')
+    {
+    }
 
     /**
      * Run the migrations.
@@ -16,6 +17,9 @@ return new class extends Migration
      */
     public function up()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `id_tema` INT,
@@ -111,7 +115,7 @@ return new class extends Migration
      */
     public function down()
     {
-        $DropProcedure= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
+        $DropProcedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
 
         DB::unprepared($DropProcedure);
 

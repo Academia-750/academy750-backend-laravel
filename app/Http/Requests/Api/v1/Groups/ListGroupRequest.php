@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Requests\Api\v1\Groups;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class ListGroupRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'codes' => [
+                'array'
+            ],
+            'codes.*' => [
+                'string',
+                config('constants.string_request_regex')
+            ],
+            'names' => [
+                'array'
+            ],
+            'names.*' => [
+                'string',
+                config('constants.string_request_regex')
+            ],
+            'colors' => [
+                'array'
+            ],
+            'colors.*' => [
+                'string',
+                'regex:/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/'
+            ],
+            'orderBy' => [
+                'string',
+                Rule::in(['code', 'name', 'created_at', 'active_users'])
+            ],
+            'order' => [
+                Rule::in([1, -1])
+            ],
+            'limit' => [
+                'integer',
+                'min:0'
+            ],
+            'offset' => [
+                'integer',
+                'min:0'
+            ],
+            'content' => [
+                'string',
+            ]
+
+        ];
+    }
+}
