@@ -108,7 +108,6 @@ class GroupListTest extends TestCase
     {
         $data = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 0]))->assertStatus(200)->decodeResponseJson();
 
-
         $data1 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 1]))->assertStatus(200)->decodeResponseJson();
         $data2 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 2]))->assertStatus(200)->decodeResponseJson();
         $data3 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 3]))->assertStatus(200)->decodeResponseJson();
