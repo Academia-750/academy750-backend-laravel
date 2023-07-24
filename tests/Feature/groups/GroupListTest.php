@@ -51,11 +51,10 @@ class GroupListTest extends TestCase
         $this->get("api/v1/group/list?" . Arr::query(['colors' => ['9']]))->assertStatus(422);
         $this->get("api/v1/group/list?" . Arr::query(['codes' => ['???']]))->assertStatus(422);
         $this->get("api/v1/group/list?" . Arr::query(['names' => ['???']]))->assertStatus(422);
-        $this->get("api/v1/group/list?" . Arr::query(['orderBy' => 'random']))->assertStatus(422);
-        $this->get("api/v1/group/list?" . Arr::query(['order' => 0]))->assertStatus(422);
-        $this->get("api/v1/group/list?" . Arr::query(['order' => 2]))->assertStatus(422);
-        $this->get("api/v1/group/list?" . Arr::query(['offset' => -10]))->assertStatus(422);
-        $this->get("api/v1/group/list?" . Arr::query(['limit' => -10]))->assertStatus(422);
+
+        array_map(function ($input) {
+            $this->get("api/v1/workspace/list?" . Arr::query($input))->assertStatus(422);
+        }, $this->pagination_wrong_inputs);
     }
     /** @test */
     public function not_logged_401(): void

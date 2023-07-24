@@ -7,6 +7,7 @@ use App\Http\Requests\Api\v1\Groups\EditGroupRequest;
 use App\Http\Requests\Api\v1\Groups\ListGroupRequest;
 use App\Models\Group;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
@@ -42,6 +43,7 @@ class GroupController extends Controller
                 'result' => $groupCreated
             ]);
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
@@ -78,7 +80,13 @@ class GroupController extends Controller
                 ], 409);
             }
 
-            Group::query()->find($group->id)->update($request->all());
+            $data = removeNull([
+                'name' => $request->get('name'),
+                'color' => $request->get('color'),
+                'code' => $request->get('code')
+            ]);
+
+            Group::query()->find($group->id)->update($data);
             $updated = Group::query()->find($groupId);
 
             return response()->json([
@@ -87,6 +95,7 @@ class GroupController extends Controller
             ]);
 
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
@@ -115,6 +124,7 @@ class GroupController extends Controller
             ]);
 
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
@@ -125,20 +135,15 @@ class GroupController extends Controller
     public function getList(ListGroupRequest $request)
     {
         try {
-            $conditions = removeNull([
+            $conditions = [
                 parseFilter('color', $request->get('colors'), 'in'),
                 parseFilter('code', $request->get('codes'), 'in'),
                 parseFilter('name', $request->get('names'), 'in'),
                 parseFilter(['name', 'code'], $request->get('content'), 'or_like')
-            ]);
+            ];
 
 
-            $query = Group::query()->where(function ($query) use ($conditions) {
-                foreach ($conditions as $condition) {
-                    $condition($query);
-                }
-            });
-
+            $query = filterToQuery(Group::query(), $conditions);
 
             $results = (clone $query)
                 ->select('groups.*')
@@ -166,6 +171,7 @@ class GroupController extends Controller
 
 
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
@@ -191,6 +197,7 @@ class GroupController extends Controller
             ]);
 
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
@@ -213,6 +220,7 @@ class GroupController extends Controller
                 'results' => $list,
             ]);
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
