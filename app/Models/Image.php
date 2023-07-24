@@ -49,7 +49,7 @@ class Image extends Model
     public array $adapterIncludes = [];
 
      protected $casts = [
-        'id' => 'string'
+        'uuid' => 'string'
      ];
 
     /* -------------------------------------------------------------------------------------------------------------- */
@@ -57,6 +57,11 @@ class Image extends Model
 
     public function sortCreatedAt(Builder $query, $direction): void{
         $query->orderBy('created_at', $direction);
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */

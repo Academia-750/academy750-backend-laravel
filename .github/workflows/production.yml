@@ -5,7 +5,6 @@ on:
       - "*" # Everything that doesnt include  '/' character
 
 jobs:
-
   deploy:
     runs-on: ubuntu-latest
     env:
@@ -28,8 +27,8 @@ jobs:
         with:
           SSH_PRIVATE_KEY: ${{ env.SSH_PRIVATE_KEY }}
           REMOTE_HOST: ${{ env.SERVER }}
-          REMOTE_USER:  ${{ env.SSH_USER }}
-          REMOTE_PORT:  ${{ env.SSH_PORT }}
+          REMOTE_USER: ${{ env.SSH_USER }}
+          REMOTE_PORT: ${{ env.SSH_PORT }}
           SOURCE: ""
           TARGET: "${{ env.FOLDER_NAME }}"
           ARGS: "-rltgoDzvO --delete"

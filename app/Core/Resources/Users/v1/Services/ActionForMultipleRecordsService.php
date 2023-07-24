@@ -25,7 +25,9 @@ class ActionForMultipleRecordsService
     public static function deleteMultipleUsers ($users): array {
         $information = [];
 
-        foreach ($users as $user_id) {
+        foreach ($users as $user_uuid) {
+            $user_id = User::query()->firstWhere('uuid', $user_uuid)->getKey();
+
             $user = ActionsAccountUser::deleteUser($user_id);
             $information[] = "'Usuario {$user->getRouteKey()}' ha sido eliminado con éxito";
         }
@@ -38,7 +40,8 @@ class ActionForMultipleRecordsService
     public static function disableAccountMultipleUsers ($users): array {
         $information = [];
 
-        foreach ($users as $user_id) {
+        foreach ($users as $user_uuid) {
+            $user_id = User::query()->firstWhere('uuid', $user_uuid)->getKey();
             $user = ActionsAccountUser::disableAccountUser($user_id);
             $information[] = "La cuenta del 'Usuario {$user->getRouteKey()}' ha sido deshabilitada.";
         }
@@ -51,7 +54,8 @@ class ActionForMultipleRecordsService
     public static function enableAccountMultipleUsers ($users): array {
         $information = [];
 
-        foreach ($users as $user_id) {
+        foreach ($users as $user_uuid) {
+            $user_id = User::query()->firstWhere('uuid', $user_uuid)->getKey();
             $user = ActionsAccountUser::enableAccountUser($user_id);
             $information[] = "La cuenta del 'Usuario {$user->getRouteKey()}' ha sido habilitada.";
         }

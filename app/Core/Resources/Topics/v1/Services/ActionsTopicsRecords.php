@@ -11,36 +11,60 @@ class ActionsTopicsRecords
 {
     public static function deleteRecord ($topic) {
         if ( !($topic instanceof Topic) ) {
-            $topic = Topic::query()->find($topic);
+            $topic = Topic::query()->findOrFail($topic);
         }
 
         $countTestsOfThisTopic = $topic->tests()->count();
 
         if ($countTestsOfThisTopic > 0) {
+            // Aquí se indica que este tema tiene Tests ya creados
 
+            // A todos los subtemas de ese tema se les cambia el estado a "no disponible"
             $topic->subtopics->each(function ($subtopic) {
                 $subtopic->update(['is_available' => 'no']);
+
+                $subtopic->questions->each(function ($question) {
+                    $question->update(['is_visible' => 'no']);
+                });
             });
 
+
+
+            // A todas las preguntas de ese tema se les cambia el estado a "no visible"
+            $topic->questions->each(function ($question) {
+                $question->update(['is_visible' => 'no']);
+            });
+
+            // A este tema se le cambia el estado a "no disponible
             $topic->is_available = 'no';
             $topic->save();
 
         } else {
+
+            // Se borra la relación con Oposiciones de este tema y de cada uno de sus subtemas
             self::deleteOppositionsByTopicAndSubtopic($topic);
-            self::deleteQuestionsUsedInTestsByTopic($topic->id, 'topic_id');
+
+            // A todos los subtemas de ese tema se les elimina las preguntas que tiene
             $topic->subtopics->each(function ($subtopic) {
-                $subtopic = Subtopic::query()->findOrFail($subtopic?->id);
+                $subtopic = Subtopic::query()->findOrFail($subtopic?->getKey());
                 $subtopic?->questions()->delete();
             });
 
+            // Si este tema no tiene subtemas, se eliminan las preguntas que tiene
             if (!$topic->subtopics()->count()) {
                 $topic->questions()->delete();
             }
 
 
+            // Se elimina todos los subtemas de este tema
             $topic->subtopics()->delete();
+
+            // Se elimina fisicamente el tema
             $topic->delete();
         }
+
+        // Se eliminan todas las preguntas de used_questions_tests
+        self::deleteQuestionsUsedInTestsByTopic($topic->getKey(), 'topic_id');
 
         return $topic;
     }
@@ -50,7 +74,7 @@ class ActionsTopicsRecords
 
     // Eliminando las relaciones entre el tema y sus oposiciones en la tabla "oppositionables"
         foreach ($oppositions as $opposition) {
-            $topic->oppositions()->detach($opposition->id);
+            $topic->oppositions()->detach($opposition->getKey());
         }
     }
 
@@ -64,13 +88,13 @@ class ActionsTopicsRecords
 
             // Eliminando las relaciones entre el subtema y sus oposiciones en la tabla "oppositionables"
             foreach ($oppositions as $opposition) {
-                $subtopic->oppositions()->detach($opposition->id);
+                $subtopic->oppositions()->detach($opposition->getKey());
             }
         }
     }
 
     public static function deleteOppositionsByTopicAndSubtopic ($topic) {
-        $topicId = $topic->id;
+        $topicId = $topic->getKey();
 
     // Obteniendo los IDs de los subtemas relacionados con el tema
         $subtopicIds = $topic->subtopics->pluck('id');

@@ -2,6 +2,7 @@
 
 namespace App\Core\Resources\Tests\Services;
 
+use App\Core\Services\UuidGeneratorService;
 use App\Models\Opposition;
 use App\Models\Test;
 use App\Models\Topic;
@@ -20,6 +21,7 @@ class TestsService
 
         try {
                 $test = Test::create([
+                    //'uuid' => UuidGeneratorService::getUUIDUnique(Test::class),
                     "number_of_questions_requested" => $data["number_of_questions_requested"],
                     "number_of_questions_generated" => $data["number_of_questions_requested"], // Se actualizará una vez se obtenga el numero real de preguntas disponibles
                     "test_result" => "0",
@@ -47,8 +49,8 @@ class TestsService
         foreach ( $opposition->subtopics as $subtopic ) {
             $subtopics_id_by_topic = $topic->subtopics()->pluck('subtopics.id')->toArray();
 
-            if (in_array($subtopic?->getRouteKey(), $subtopics_id_by_topic, true)) {
-                $subtopics_id[] = $subtopic?->getRouteKey();
+            if (in_array($subtopic?->getKey(), $subtopics_id_by_topic, true)) {
+                $subtopics_id[] = $subtopic?->getKey();
             }
         }
 
@@ -62,10 +64,13 @@ class TestsService
      * @param string $opposition_id
      * @return array
      */
-    public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, string $opposition_id ): array {
+    public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, int $opposition_id ): array {
         $subtopics_id = DB::select(
-            "call get_subtopics_ids_for_test(?,?)",
-            array($opposition_id, implode(',', $topicsSelected_id))
+            "call get_subtopics_ids_for_test_procedure(?,?)",
+            array(
+                $opposition_id,
+                implode(',', $topicsSelected_id)
+            )
         );
 
         return array_map(function($item) {
@@ -74,31 +79,33 @@ class TestsService
         }, $subtopics_id);
     }
 
-    /**
-     * Vincular los temas y subtemas con un Cuestionario generado
-     *
-     * @param Test $test
-     * @param array $topicsSelected_id
-     * @param string $opposition_id
-     * @return void
-     */
-    public static function registerTopicsAndSubtopicsByTest (Test $test, array $topicsSelected_id, string $opposition_id )
+
+    public static function registerTopicsAndSubtopicsByTest ($testID, array $topicsSelected_id, int $opposition_id )
     {
         try {
 
-                $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition_id);
+            $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition_id);
 
+            \Log::debug("Id del Test: {$testID}");
+
+                $test = Test::query()->findOrFail($testID);
+            \Log::debug($test->topics);
                 /*$topics_id = array_map(static function ($topic_id) {
                     return Topic::query()->findOrFail($topic_id)?->getRouteKey();
                 }, $topicsSelected_id);*/
 
                 // Vincular el Test creado con cada tema y sus subtemas
 
+                \Log::debug($topicsSelected_id);
+                //\Log::debug($test->topics);
+                //\Log::debug($test->topics->sync);
                 $test->topics()->sync($topicsSelected_id);
-                $test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
+                //$test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
 
         } catch (\Exception $e) {
-            abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
+            //abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
+            abort(500, $e->getMessage());
+            //throw new $e;
         }
     }
 }

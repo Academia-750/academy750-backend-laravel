@@ -1,4 +1,4 @@
-name: Deploy API
+name: Deploy Staging
 on:
   pull_request:
     branches:

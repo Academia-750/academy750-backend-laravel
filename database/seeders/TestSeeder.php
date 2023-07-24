@@ -29,8 +29,8 @@ class TestSeeder extends Seeder
             $questionnaire = TestsService::createTest([
                 "number_of_questions_requested" => "25",
                 "test_type" => $testTypes[random_int(0,1)],
-                "opposition_id" => $opposition->getRouteKey(),
-                "user_id" => $user?->getRouteKey()
+                "opposition_id" => $opposition->getKey(),
+                "user_id" => $user?->getKey()
             ]);
 
             $topicsSelected = Topic::all()->random(5)->pluck('id')->toArray();

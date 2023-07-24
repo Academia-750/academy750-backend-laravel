@@ -19,7 +19,11 @@ class DBApp implements OppositionsInterface
     }
 
     public function index(){
-        $queryResults = $this->model::applyFilters()->applySorts()->where('is_available', 'yes')->applyIncludes()->jsonPaginate();
+        $queryResults = $this->model::applyFilters()
+            ->applySorts()
+            ->where('is_available', 'yes')
+            ->applyIncludes()
+            ->jsonPaginate();
 
         return $queryResults;
     }
@@ -35,7 +39,7 @@ class DBApp implements OppositionsInterface
                 ]);
             DB::commit();
 
-            return $this->model->applyIncludes()->find($oppositionCreated->id);
+            return $this->model->applyIncludes()->findOrFail($oppositionCreated->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -45,7 +49,7 @@ class DBApp implements OppositionsInterface
     }
 
     public function read( $opposition ): \App\Models\Opposition{
-        return $this->model->applyIncludes()->find($opposition->getRouteKey());
+        return $this->model->applyIncludes()->findOrFail($opposition->getKey());
     }
 
     public function update( $request, $opposition ): \App\Models\Opposition{
@@ -57,7 +61,7 @@ class DBApp implements OppositionsInterface
                 $opposition->save();
             DB::commit();
 
-            return $this->model->applyIncludes()->find($opposition->getRouteKey());
+            return $this->model->applyIncludes()->findOrFail($opposition->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -117,7 +121,7 @@ class DBApp implements OppositionsInterface
             foreach ($opposition->subtopics as $opposition_subtopic) {
                 $subtopics_id_by_topic = $opposition_topic->subtopics->pluck('id')->toArray();
 
-                if (in_array($opposition_subtopic->getRouteKey(), $subtopics_id_by_topic, true)) {
+                if (in_array($opposition_subtopic->getKey(), $subtopics_id_by_topic, true)) {
                     $subtopics[] = $opposition_subtopic;
                 }
             }

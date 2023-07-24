@@ -24,19 +24,19 @@ Route::get('/', function () {
 
     $instanceEloquentCollection->add(
         new User(
-            User::query()->find('106dd718-6141-4aa0-9cff-419d39a83517')?->toArray()
+            User::query()->findOrFail('106dd718-6141-4aa0-9cff-419d39a83517')?->toArray()
         )
     );
 
     $instanceEloquentCollection->add(
         new User(
-            User::query()->find('106dd718-6141-4aa0-9cff-419d39a83517')?->toArray()
+            User::query()->findOrFail('106dd718-6141-4aa0-9cff-419d39a83517')?->toArray()
         )
     );
 
     $instanceEloquentCollection->add(
         new User(
-            User::query()->find('12244763-0937-4709-916b-d85c344e198a')?->toArray()
+            User::query()->findOrFail('12244763-0937-4709-916b-d85c344e198a')?->toArray()
         )
     );*/
 

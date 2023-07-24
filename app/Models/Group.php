@@ -17,4 +17,9 @@ class Group extends Model
         'code'
     ];
 
+    public function users()
+    {
+        return $this->hasMany(GroupUsers::class);
+    }
+
 }

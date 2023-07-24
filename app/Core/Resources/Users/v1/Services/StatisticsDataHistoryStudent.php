@@ -2,6 +2,7 @@
 
 namespace App\Core\Resources\Users\v1\Services;
 
+use App\Models\Topic;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -22,42 +23,52 @@ class StatisticsDataHistoryStudent
         // \Log::debug($last_date);
         // \Log::debug($today);
 
-        return DB::select('call getResults_bytopic_date(?,?,?,?)', array(
+        return DB::select('call get_results_by_topic_date_procedure(?,?,?,?)', array(
             $topic_id, $student_id, $last_date, $today
         ));
     }
 
     public static function getStatisticsByTotal ($topic_id, $student_id) {
-        return DB::select('call getResults_bytopic_total(?,?,?,?)', array(
+        return DB::select('call get_results_by_topic_total_procedure(?,?,?,?)', array(
             $topic_id, $student_id
         ));
     }*/
 
-    public static function getCollectGroupsStatisticsQuestionsTopic ($topics_id, $period, $data): array {
+    public static function getCollectGroupsStatisticsQuestionsTopic ($topics_uuid, $period, $data): array {
         $topicsDataStatistic = [];
 
-        $nameProcedure = $period === 'total' ? 'getResults_bytopic_total' : 'getResults_bytopic_date';
+        $nameProcedure = $period === 'total' ? 'get_results_by_topic_total_procedure' : 'get_results_by_topic_date_procedure';
 
-        foreach ($topics_id as $topic_id) {
-            if ($nameProcedure === 'getResults_bytopic_total') {
-                $arguments = array(
-                    $topic_id, $data['student_id']
-                );
+        foreach ($topics_uuid as $topic_uuid) {
+
+            $topicEloquentOrm = Topic::query()->firstWhere('uuid', '=', $topic_uuid);
+
+            if ($nameProcedure === 'get_results_by_topic_total_procedure') {
+                $topicsDataStatistic[] = self::callProcedureGetResultsByTopicTotal(
+                    $topicEloquentOrm->getKey(), $data['student_id']
+                )[0];
             } else {
-                $arguments = array(
-                    $topic_id, $data['student_id'], $data['last_date'], $data['today']
-                );
+                $topicsDataStatistic[] = self::callProcedureGetResultsByTopicDate(
+                    $topicEloquentOrm->getKey(),
+                    $data['student_id'],
+                    $data['last_date'],
+                    $data['today']
+                )[0];
             }
-
-            /* // \Log::debug($nameProcedure);
-            // \Log::debug($arguments);
-            // \Log::debug("{$data['last_date']} 00:00:00");
-            // \Log::debug("{$data['today']} 00:00:00"); */
-;
-            $topicsDataStatistic[] = DB::select("call {$nameProcedure}(?,?,?,?)", $arguments)[0];
-            //// \Log::debug($topicsDataStatistic);
         }
 
         return $topicsDataStatistic;
     }
+    public static function callProcedureGetResultsByTopicTotal ($topic_id, $student_id) {
+        return DB::select('call get_results_by_topic_total_procedure(?,?,?,?)', array(
+            $topic_id, $student_id
+        ));
+    }
+
+    public static function callProcedureGetResultsByTopicDate ($topic_id, $student_id, $last_date, $today) {
+        return DB::select('call get_results_by_topic_date_procedure(?,?,?,?)', array(
+            $topic_id, $student_id, $last_date, $today
+        ));
+    }
+
 }

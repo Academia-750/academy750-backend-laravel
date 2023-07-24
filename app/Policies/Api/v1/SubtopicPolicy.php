@@ -48,7 +48,7 @@ class SubtopicPolicy
 
     public function subtopic_get_a_question(User $user, Subtopic $subtopic, Question $question): bool
     {
-        if (!in_array($question->getRouteKey(), $subtopic->questions->pluck('id')->toArray(), true)) {
+        if (!in_array($question->getKey(), $subtopic->questions->pluck('id')->toArray(), true)) {
             abort(404);
         }
 

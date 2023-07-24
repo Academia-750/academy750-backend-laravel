@@ -17,7 +17,7 @@ class TestsQuestionsService
             $questions->push([
                 "index" => $question_test?->pivot?->index,
                 "status_question" => $question_test?->pivot?->status_solved_question,
-                "question" => Question::query()->find($question_test?->pivot?->question_id),
+                "question" => Question::query()->findOrFail($question_test?->pivot?->question_id),
                 'question_id' => $question_test?->pivot?->question_id,
                 'answer_id' => $question_test?->pivot?->answer_id,
             ]);

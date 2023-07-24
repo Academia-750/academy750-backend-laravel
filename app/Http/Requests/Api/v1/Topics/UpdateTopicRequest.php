@@ -25,7 +25,7 @@ class UpdateTopicRequest extends FormRequest
             'topic-group-id' => [
                 'nullable',
                 Rule::when($this->get('topic-group-id') !== null, [
-                    'max:255', 'uuid', 'exists:topic_groups,id'
+                    'max:255', 'uuid', 'exists:topic_groups,uuid'
                 ])
             ]
         ];

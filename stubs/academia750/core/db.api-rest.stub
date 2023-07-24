@@ -35,7 +35,7 @@ class {{ class }} implements {{ interfaceName }}
                 ]);
             DB::commit();
 
-            return $this->model->applyIncludes()->find(${{ modelVariable }}Created->id);
+            return $this->model->applyIncludes()->findOrFail(${{ modelVariable }}Created->id);
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -45,7 +45,7 @@ class {{ class }} implements {{ interfaceName }}
     }
 
     public function read( ${{ modelVariable }} ): \App\Models\{{ modelName }}{
-        return $this->model->applyIncludes()->find(${{ modelVariable }}->getRouteKey());
+        return $this->model->applyIncludes()->findOrFail(${{ modelVariable }}->getRouteKey());
     }
 
     public function update( $request, ${{ modelVariable }} ): \App\Models\{{ modelName }}{
@@ -56,7 +56,7 @@ class {{ class }} implements {{ interfaceName }}
                 ${{ modelVariable }}->save();
             DB::commit();
 
-            return $this->model->applyIncludes()->find(${{ modelVariable }}->getRouteKey());
+            return $this->model->applyIncludes()->findOrFail(${{ modelVariable }}->getRouteKey());
 
         } catch (\Exception $e) {
             DB::rollback();

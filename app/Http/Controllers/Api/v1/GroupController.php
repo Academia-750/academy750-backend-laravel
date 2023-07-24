@@ -2,15 +2,11 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Helpers;
-use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
 use App\Http\Requests\Api\v1\Groups\CreateGroupRequest;
 use App\Http\Requests\Api\v1\Groups\EditGroupRequest;
 use App\Http\Requests\Api\v1\Groups\ListGroupRequest;
 use App\Models\Group;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class GroupController extends Controller
 {
@@ -22,7 +18,7 @@ class GroupController extends Controller
             return response()->json([
                 'status' => 'error',
                 'result' => 'A group with this color already exists'
-            ], 409)->send();
+            ], 409);
         }
 
         $duplicatedColor = Group::query()->where('color', $request->get('color'))->count();
@@ -30,7 +26,7 @@ class GroupController extends Controller
             return response()->json([
                 'status' => 'error',
                 'result' => 'A group with this color already exists'
-            ], 409)->send();
+            ], 409);
         }
 
         try {
@@ -44,12 +40,12 @@ class GroupController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'result' => $groupCreated
-            ])->send();
+            ]);
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 
@@ -62,7 +58,7 @@ class GroupController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'Group not found'
-                ], 404)->send();
+                ], 404);
             }
 
             $duplicatedCode = Group::query()->where('code', $request->get('code'))->where('id', '!=', $group->id)->count();
@@ -71,7 +67,7 @@ class GroupController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'A group with this color already exists'
-                ], 409)->send();
+                ], 409);
             }
 
             $duplicatedColor = Group::query()->where('color', $request->get('color'))->where('id', '!=', $group->id)->count();
@@ -79,7 +75,7 @@ class GroupController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'A group with this color already exists'
-                ], 409)->send();
+                ], 409);
             }
 
             Group::query()->find($group->id)->update($request->all());
@@ -88,13 +84,13 @@ class GroupController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'result' => $updated
-            ])->send();
+            ]);
 
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 
@@ -108,7 +104,7 @@ class GroupController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'Group not found'
-                ], 404)->send();
+                ], 404);
             }
 
 
@@ -116,13 +112,13 @@ class GroupController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'result' => $group
-            ])->send();
+            ]);
 
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 
@@ -144,28 +140,36 @@ class GroupController extends Controller
             });
 
 
-            $results = $query
-                ->orderBy(defaultValue($request->get('orderBy'), 'created_at'), ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
-                ->offset(defaultValue($request->get('offset'), 0))
-                ->limit(defaultValue($request->get('limit'), 20))
+            $results = (clone $query)
+                ->select('groups.*')
+                // Count Active Users
+                ->selectSub(function ($query) {
+                    $query->from('group_users')
+                        ->selectRaw('COUNT(*)')
+                        ->whereColumn('group_users.group_id', 'groups.id')
+                        ->whereNull('group_users.discharged_at');
+                }, 'active_users')
+                // --
+                ->orderBy($request->get('orderBy') ?? 'created_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->offset($request->get('offset') ?? 0)
+                ->limit($request->get('limit') ?? 20)
                 ->get();
 
 
-            $total = $query->count();
-
+            $total = (clone $query)->count();
 
             return response()->json([
                 'status' => 'successfully',
                 'results' => $results,
                 'total' => $total
-            ])->send();
+            ]);
 
 
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
     public function deleteGroup(Request $request, string $groupId)
@@ -177,23 +181,20 @@ class GroupController extends Controller
                 return response()->json([
                     'status' => 'error',
                     'result' => 'Group not found'
-                ], 404)->send();
+                ], 404);
             }
-
-
-            // TODO: Check if we have students enabled
 
             $group->delete();
 
             return response()->json([
                 'status' => 'successfully'
-            ])->send();
+            ]);
 
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 
@@ -202,17 +203,20 @@ class GroupController extends Controller
         try {
             $colors = config('data.group_colors');
             $usedColorCodes = Group::query()->select('color')->distinct()->get()->pluck('color')->toArray();
-            $availableColors = array_diff($colors, $usedColorCodes);
+
+            $list = array_map(function ($color) use ($usedColorCodes) {
+                return ['color' => $color, 'used' => in_array($color, $usedColorCodes)];
+            }, $colors);
 
             return response()->json([
                 'status' => 'successfully',
-                'results' => $availableColors,
-            ])->send();
+                'results' => $list,
+            ]);
         } catch (\Exception $err) {
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
-            ], 500)->send();
+            ], 500);
         }
     }
 

@@ -34,6 +34,9 @@ function parseFilter($key, $value, $operation = '=')
             case 'in':
                 $query->whereIn($key, $value);
                 break;
+            case 'isNull':
+                $value ? $query->whereNull($key) : $query->whereNotNull($key);
+                break;
             case 'or_like':
                 $query->where(function ($subQuery) use ($value, $key) {
                     array_map(function ($key) use ($value, $subQuery) {

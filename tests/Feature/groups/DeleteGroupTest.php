@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Group;
+use App\Models\GroupUsers;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -61,17 +62,16 @@ class DeleteGroupTest extends TestCase
     public function delete_empty_group_200(): void
     {
         $this->delete("api/v1/group/{$this->group->id}")->assertStatus(200);
+        $this->assertEmpty(GroupUsers::find($this->group->id));
     }
 
 
     /** @test */
-    public function delete_group_active_students_200(): void
+    public function delete_remove_students_200(): void
     {
-        $this->markTestSkipped();
-    }
-    /** @test */
-    public function delete_group_all_are_inactive_students_200(): void
-    {
-        $this->markTestSkipped();
+        GroupUsers::factory()->group($this->group)->count(4)->create();
+        GroupUsers::factory()->group($this->group)->discharged()->count(2)->create();
+        $this->delete("api/v1/group/{$this->group->id}")->assertStatus(200);
+        $this->assertEquals(GroupUsers::query()->where('group_id', $this->group->id)->count(), 0);
     }
 }

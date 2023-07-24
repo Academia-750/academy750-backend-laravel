@@ -80,6 +80,21 @@ class EditGroupTest extends TestCase
         $this->assertEquals($this->group['color'], $data['result']['color']);
         $this->assertEquals($this->group['id'], $data['result']['id']);
     }
+    /** @test */
+    public function different_group_names_200(): void
+    {
+
+        $this->put("api/v1/group/{$this->group->id}", Group::factory()->raw(["name" => "With Spaces"]))->assertStatus(200);
+        $this->put("api/v1/group/{$this->group->id}", Group::factory()->raw(["name" => "With Number 00"]))->assertStatus(200);
+        // Short
+        $this->put("api/v1/group/{$this->group->id}", Group::factory()->raw(["name" => "S"]))->assertStatus(422);
+        // Long
+        $this->put("api/v1/group/{$this->group->id}", Group::factory()->raw(["name" => "This is too long name for a group that shall not pass"]))->assertStatus(422);
+        // With Spanish Characters
+        $this->put("api/v1/group/{$this->group->id}", Group::factory()->raw(["name" => "áéíóúÁÉÍÓÚñÑ"]))->assertStatus(200);
+        $this->put("api/v1/group/{$this->group->id}", Group::factory()->raw(["name" => "With_Under-slashes"]))->assertStatus(200);
+
+    }
 
     /** @test */
     public function edit_all_item_200(): void

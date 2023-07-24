@@ -86,8 +86,6 @@ class SchemaJson implements QuestionsInterface
 
     public function topic_relationship_questions_read($topic, $question)
     {
-        \Log::debug('SchemaJson->topic_relationship_questions_read');
-
         return QuestionResource::make(
             $this->eventApp->topic_relationship_questions_read($topic, $question)
         )->additional([

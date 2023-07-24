@@ -27,7 +27,7 @@ class SubtopicSeeder extends Seeder
                 $subtopic = $topic->subtopics()->create([
                     'name' => "Subtema {$number} - {$topic->name}",
                     'is_available' => 'yes',
-                    'topic_id' => $topic->getRouteKey()
+                    'topic_id' => $topic->getKey()
                 ]);
 
                 //$this->syncOppositions($subtopic);

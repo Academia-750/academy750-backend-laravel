@@ -14,10 +14,17 @@ class DBApp implements TopicGroupsInterface
     }
 
     public function index(){
-        return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model
+            ->applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->jsonPaginate();
     }
 
     public function read( $topic_group ): \App\Models\TopicGroup{
-        return $this->model->applyIncludes()->find($topic_group->getRouteKey());
+        return $this
+            ->model
+            ->applyIncludes()
+            ->findOrFail($topic_group->getKey());
     }
 }

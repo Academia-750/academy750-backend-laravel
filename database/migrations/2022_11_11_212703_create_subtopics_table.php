@@ -14,13 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('subtopics', function (Blueprint $table) {
-            $table->uuid('id')->primary()->comment('Identificador UUID');
+            $table->id();
+            $table->uuid()->comment('Identificador UUID');
 
             $table->string("name");
 
             $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
 
-            $table->foreignUuid('topic_id')
+            $table->foreignId('topic_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();

@@ -26,7 +26,7 @@ class UserFactory extends Factory
         $lastName = $this->faker->lastName();
 
         return [
-            'id' => UuidGeneratorService::getUUIDUnique(User::class),
+            'uuid' => UuidGeneratorService::getUUIDUnique(User::class),
             'first_name' => $firstName,
             'last_name' => $lastName,
             'full_name' => "{$firstName} {$lastName}",

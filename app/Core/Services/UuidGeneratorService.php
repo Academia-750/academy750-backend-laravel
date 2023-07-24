@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 
 class UuidGeneratorService
 {
-    public static function getUUIDUnique ($instanceModel, $fieldUnique = 'id'): \Ramsey\Uuid\UuidInterface
+    public static function getUUIDUnique ($instanceModel, string $fieldUnique = 'uuid'): \Ramsey\Uuid\UuidInterface
     {
         $uuidGenerated = self::generateNewUUID();
 
@@ -18,7 +18,7 @@ class UuidGeneratorService
         return $uuidGenerated;
     }
 
-    public static function existUUIDInTableUser ($uuid, $instanceModel, $fieldUnique = "id"): bool {
+    public static function existUUIDInTableUser ($uuid, $instanceModel, $fieldUnique): bool {
         $existsUuid = $instanceModel::query()
             ->where($fieldUnique , "=", $uuid)
             ->first();

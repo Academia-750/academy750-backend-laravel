@@ -64,6 +64,7 @@ return [
             'driver' => 'single',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
+            'charset' => 'utf-8'
         ],
 
         'daily' => [

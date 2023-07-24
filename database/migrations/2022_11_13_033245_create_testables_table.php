@@ -14,19 +14,19 @@ return new class extends Migration
     public function up()
     {
         Schema::create('testables', function (Blueprint $table) {
-            //$table->uuid('id')->primary()->comment('Identificador UUID');
+            //$table->id();
             $table->id();
 
-            $table->uuidMorphs('testable');
+            $table->morphs('testable');
 
-            $table->foreignUuid('test_id')
+            $table->foreignId('test_id')
                 ->comment('El ID del Test al que pertenece el tema o subtema')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
 
-            /*$table->foreignUuid('topic_id')
+            /*$table->foreignId('topic_id')
                 ->nullable()
                 ->constrained()
                 ->nullOnDelete();*/

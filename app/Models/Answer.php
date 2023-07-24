@@ -53,8 +53,14 @@ class Answer extends Model
     public array $adapterIncludes = [];
 
      protected $casts = [
-        'id' => 'string'
+        'uuid' => 'string'
      ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions

@@ -17,10 +17,10 @@ class ResolveQuestionOfTestRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'question_id' => ['required', 'uuid', 'exists:questions,id'],
-            'test_id' => ['required', 'uuid', 'exists:tests,id'],
+            'question_id' => ['required', 'uuid', 'exists:questions,uuid'],
+            'test_id' => ['required', 'uuid', 'exists:tests,uuid'],
             'answer_id' => ['nullable', Rule::when((bool) $this->get('answer_id'), [
-                'uuid', 'exists:answers,id'
+                'uuid', 'exists:answers,uuid'
             ] )],
             /*'test_id' => ['required', 'uuid', 'exists:tests,id'],
             'questions' => ['required', 'array'],

@@ -20,14 +20,14 @@ class ListGroupRequest extends FormRequest
             ],
             'codes.*' => [
                 'string',
-                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ _-]+$/'
+                config('constants.string_request_regex')
             ],
             'names' => [
                 'array'
             ],
             'names.*' => [
                 'string',
-                'regex:/^[a-zA-ZáéíóúÁÉÍÓÚñÑ _-]+$/'
+                config('constants.string_request_regex')
             ],
             'colors' => [
                 'array'
@@ -38,7 +38,7 @@ class ListGroupRequest extends FormRequest
             ],
             'orderBy' => [
                 'string',
-                Rule::in(['code', 'name', 'created_at'])
+                Rule::in(['code', 'name', 'created_at', 'active_users'])
             ],
             'order' => [
                 Rule::in([1, -1])

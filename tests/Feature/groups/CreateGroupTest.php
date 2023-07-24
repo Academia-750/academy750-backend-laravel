@@ -54,7 +54,7 @@ class CreateGroupTest extends TestCase
     }
 
     /** @test */
-    public function only_admin_401(): void
+    public function only_admin_403(): void
     {
         $user = User::factory()->student()->create();
         $response = $this->actingAs($user)->post('api/v1/group', Group::factory()->raw());
@@ -71,6 +71,22 @@ class CreateGroupTest extends TestCase
         $this->assertEquals($group['name'], $data['result']['name']);
         $this->assertEquals($group['code'], $data['result']['code']);
         $this->assertEquals($group['color'], $data['result']['color']);
+    }
+
+    /** @test */
+    public function different_group_names_200(): void
+    {
+
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "With Spaces"]))->assertStatus(200);
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "With Number 00"]))->assertStatus(200);
+        // Short
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "S"]))->assertStatus(422);
+        // Long
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "This is too long name for a group that shall not pass"]))->assertStatus(422);
+        // With Spanish Characters
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "áéíóúÁÉÍÓÚñÑ"]))->assertStatus(200);
+        $this->post('api/v1/group', Group::factory()->raw(["name" => "With_Under-slashes"]))->assertStatus(200);
+
     }
 
     /** @test */

@@ -14,9 +14,6 @@ class Topic extends Model
     use StateAvailableTrait;
     use UUIDTrait;
 
-    public $keyType = "string";
-    public $incrementing = false;
-
     protected $fillable = [
         "id",
         "name",
@@ -65,8 +62,13 @@ class Topic extends Model
     ];
 
      protected $casts = [
-        'id' => 'string'
+        'uuid' => 'string'
      ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions

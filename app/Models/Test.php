@@ -17,11 +17,9 @@ class Test extends Model
     //use SoftDeletes;
     use UUIDTrait;
 
-    public $keyType = "string";
-    public $incrementing = false;
-
     protected $fillable = [
         'id',
+        'uuid',
         "number_of_questions_requested",
         "number_of_questions_generated",
         "test_result",
@@ -73,8 +71,13 @@ class Test extends Model
     public array $adapterIncludes = [];
 
      protected $casts = [
-        'id' => 'string'
+        'uuid' => 'string'
      ];
+
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
