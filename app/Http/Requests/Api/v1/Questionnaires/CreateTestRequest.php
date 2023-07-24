@@ -24,7 +24,7 @@ class CreateTestRequest extends FormRequest
         ];
     }
 
-    public function attributes():array
+    public function attributes(): array
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [

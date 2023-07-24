@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -14,7 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure1= "DROP PROCEDURE IF EXISTS `get_questions_by_card_memory`;
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure1 = "DROP PROCEDURE IF EXISTS `get_questions_by_card_memory`;
         CREATE PROCEDURE `get_questions_by_card_memory`(
             IN `id_usuario` VARCHAR(255),
             IN `id_test` VARCHAR(255),
@@ -51,7 +53,7 @@ return new class extends Migration
 
         END";
 
-        $procedure2= "DROP PROCEDURE IF EXISTS `get_questions_by_test`;
+        $procedure2 = "DROP PROCEDURE IF EXISTS `get_questions_by_test`;
         CREATE PROCEDURE `get_questions_by_test`(
             IN `id_usuario` VARCHAR(255),
             IN `id_test` VARCHAR(255),
@@ -102,8 +104,12 @@ return new class extends Migration
      */
     public function down()
     {
-        $procedure1= "DROP PROCEDURE IF EXISTS `get_questions_by_card_memory`";
-        $procedure2= "DROP PROCEDURE IF EXISTS `get_questions_by_test`";
+        if (app()->environment() === 'testing') {
+            return;
+        }
+
+        $procedure1 = "DROP PROCEDURE IF EXISTS `get_questions_by_card_memory`";
+        $procedure2 = "DROP PROCEDURE IF EXISTS `get_questions_by_test`";
 
         DB::unprepared($procedure1);
         DB::unprepared($procedure2);

@@ -5,8 +5,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -14,7 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure1= "DROP PROCEDURE IF EXISTS `complete_questions_card_memory_by_topic`;
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure1 = "DROP PROCEDURE IF EXISTS `complete_questions_card_memory_by_topic`;
         CREATE PROCEDURE `complete_questions_card_memory_by_topic`(
             IN `id_tema` VARCHAR(255),
             IN `id_oposicion` VARCHAR(255),
@@ -49,7 +51,10 @@ return new class extends Migration
      */
     public function down()
     {
-        $procedure1= "DROP PROCEDURE IF EXISTS `complete_questions_card_memory_by_topic`";
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure1 = "DROP PROCEDURE IF EXISTS `complete_questions_card_memory_by_topic`";
 
         DB::unprepared($procedure1);
 
