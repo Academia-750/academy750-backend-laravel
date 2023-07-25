@@ -12,31 +12,17 @@ class QuestionsTestService
 {
     public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
     {
-
-
         $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
-
-        $start_time__update_field_number_of_questions_generated_test = microtime(true);
-        Log::debug("+++Aqui se ejecuta el proceso de actualizar el campo 'number_of_questions_generated' el cuál significa cuantas preguntas de forma precisa tendrá este test del alumno: {$user?->full_name} con id {$user?->id}");
 
         $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
         $test->save();
 
-        $elapsed_time__update_field_number_of_questions_generated_test = microtime(true) - $start_time__update_field_number_of_questions_generated_test;
-        Log::debug("---Aqui se termina el proceso de actualizar el campo 'number_of_questions_generated' el cuál significa cuantas preguntas de forma precisa tendrá este test del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__update_field_number_of_questions_generated_test} segundos");
-
-        // Registramos que todas las preguntas disponibles recolectadas, se registren en el Test a generar
-
-        $start_time__registerQuestionsHistoryByTest = microtime(true);
-        Log::debug("+++Aqui se ejecuta el proceso de registrar las preguntas en la tabla 'question_test' para relacionar cada test con sus respectivas preguntas del alumno: {$user?->full_name} con id {$user?->id}");
-        self::registerQuestionsHistoryByTest($TotalQuestionsGottenByAllTopicsSelected, $test, $testType, $user);
-        $elapsed_time__registerQuestionsHistoryByTest = microtime(true) - $start_time__registerQuestionsHistoryByTest;
-        Log::debug("---Aqui se termina el proceso de registrar las preguntas en la tabla 'question_test' para relacionar cada test con sus respectivas preguntas del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__registerQuestionsHistoryByTest} segundos");
+        self::registerQuestionsHistoryByTest($TotalQuestionsGottenByAllTopicsSelected, $test, $testType);
 
         return $TotalQuestionsGottenByAllTopicsSelected;
     }
 
-    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, User $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
+    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
 
         $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
 
@@ -60,7 +46,7 @@ class QuestionsTestService
 
         return $questions_id;
     }
-    public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType, User $user): void {
+    public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType): void {
         $index = 0;
         $pivotData = [];
 
