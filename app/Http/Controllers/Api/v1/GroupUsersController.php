@@ -24,7 +24,7 @@ class GroupUsersController extends Controller
                 ], 404);
             }
 
-            $user = User::find($request->get('user_id'));
+            $user = User::query()->where('uuid', $request->get('user_id'))->first();
 
             if (!$user) {
                 return response()->json([
@@ -65,8 +65,17 @@ class GroupUsersController extends Controller
     public function leave(JoinGroupRequest $request, string $groupId)
     {
         try {
+            $user = User::query()->where('uuid', $request->get('user_id'))->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'User not found'
+                ], 404);
+            }
+
             $member = GroupUsers::query()->where('group_id', $groupId)
-                ->where('user_id', $request->get('user_id'))
+                ->where('user_id', $user->id)
                 ->whereNull('discharged_at')
                 ->first();
 

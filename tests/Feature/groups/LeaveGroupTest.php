@@ -44,7 +44,7 @@ class LeaveGroupTest extends TestCase
     public function not_logged_401(): void
     {
         Auth::logout();
-        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $this->student->id])->assertStatus(401);
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $this->student->uuid])->assertStatus(401);
     }
 
     /** @test */
@@ -64,13 +64,21 @@ class LeaveGroupTest extends TestCase
     /** @test */
     public function group_not_found_404(): void
     {
-        $this->post("api/v1/group/99/leave", ['user_id' => $this->student->id])->assertStatus(404);
+        $this->post("api/v1/group/99/leave", ['user_id' => $this->student->uuid])->assertStatus(404);
     }
 
     /** @test */
     public function user_not_found_404(): void
     {
-        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => 99])->assertStatus(404);
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $this->faker->uuid()])->assertStatus(404);
+    }
+
+
+    /** @test */
+    public function member_not_found_404(): void
+    {
+        $user = User::factory()->create();
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $user->uuid])->assertStatus(404);
     }
 
 
@@ -79,12 +87,12 @@ class LeaveGroupTest extends TestCase
     {
         $student = User::factory()->student()->create();
 
-        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->id])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->uuid])->assertStatus(200);
 
         $member = GroupUsers::where('group_id', $this->group->id)->where('user_id', $student->id)->first();
 
         $time = now()->milliseconds(0)->toISOString();
-        $response = $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(200)->json();
+        $response = $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->uuid])->assertStatus(200)->json();
 
         $this->assertEquals($response['result']['id'], $member->id);
         $this->assertEquals($response['result']['discharged_at'], $time); // Created At is the time he leaveed the group
@@ -94,10 +102,10 @@ class LeaveGroupTest extends TestCase
     public function already_left_group_404(): void
     {
         $student = User::factory()->student()->create();
-        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->id])->assertStatus(200);
-        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->uuid])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->uuid])->assertStatus(200);
         // Already left
-        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(404);
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->uuid])->assertStatus(404);
 
     }
 
@@ -105,11 +113,11 @@ class LeaveGroupTest extends TestCase
     public function can_join_and_leave_several_times(): void
     {
         $student = User::factory()->student()->create();
-        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->id])->assertStatus(200);
-        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(200);
-        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->id])->assertStatus(200);
-        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(200);
-        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->id])->assertStatus(200);
-        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->id])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->uuid])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->uuid])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->uuid])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->uuid])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->uuid])->assertStatus(200);
+        $this->post("api/v1/group/{$this->group->id}/leave", ['user_id' => $student->uuid])->assertStatus(200);
     }
 }

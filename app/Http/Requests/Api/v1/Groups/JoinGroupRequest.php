@@ -17,7 +17,7 @@ class JoinGroupRequest extends FormRequest
         return [
             'user_id' => [
                 'required',
-                'numeric',
+                'uuid',
             ],
         ];
     }
