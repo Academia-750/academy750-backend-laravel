@@ -79,33 +79,21 @@ class TestsService
         }, $subtopics_id);
     }
 
-
     public static function registerTopicsAndSubtopicsByTest ($testID, array $topicsSelected_id, int $opposition_id )
     {
         try {
 
             $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition_id);
 
-            \Log::debug("Id del Test: {$testID}");
+            $test = Test::query()->findOrFail($testID);
 
-                $test = Test::query()->findOrFail($testID);
-            \Log::debug($test->topics);
-                /*$topics_id = array_map(static function ($topic_id) {
-                    return Topic::query()->findOrFail($topic_id)?->getRouteKey();
-                }, $topicsSelected_id);*/
-
-                // Vincular el Test creado con cada tema y sus subtemas
-
-                \Log::debug($topicsSelected_id);
-                //\Log::debug($test->topics);
-                //\Log::debug($test->topics->sync);
-                $test->topics()->sync($topicsSelected_id);
-                //$test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
+            $test->topics()->sync($topicsSelected_id);
+            $test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
 
         } catch (\Exception $e) {
             //abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
             abort(500, $e->getMessage());
-            //throw new $e;
+
         }
     }
 }
