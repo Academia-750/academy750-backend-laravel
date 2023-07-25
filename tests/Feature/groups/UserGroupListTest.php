@@ -124,6 +124,7 @@ class UserGroupListTest extends TestCase
         $this->assertEquals($user1->dni, $response['results'][0]['dni']);
         $this->assertEquals($user1->phone, $response['results'][0]['phone']);
         $this->assertEquals($user1->email, $response['results'][0]['email']);
+        $this->assertEquals($user1->uuid, $response['results'][0]['uuid']);
 
 
     }
