@@ -77,8 +77,8 @@ class GroupListTest extends TestCase
         $data = $this->get("api/v1/group/list", [])->assertStatus(200)->decodeResponseJson();
         $this->assertEquals(count($data['results']), 4);
         $this->assertEquals($data['total'], 4);
-
     }
+
     /** @test */
     public function find_by_name_200(): void
     {

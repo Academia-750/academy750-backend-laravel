@@ -126,7 +126,7 @@ class GroupUsersController extends Controller
 
             $query = GroupUsers::query()->join('users', 'group_users.user_id', '=', 'users.id')
                 ->join('groups', 'group_users.group_id', '=', 'groups.id')
-                ->select('group_users.*', 'users.dni', 'users.full_name', 'groups.name');
+                ->select('group_users.*', 'users.dni', 'users.email', 'users.phone', 'users.full_name', 'groups.name');
 
             filterToQuery($query, $conditions);
 
