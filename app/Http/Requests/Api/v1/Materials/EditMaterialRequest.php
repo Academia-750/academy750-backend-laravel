@@ -3,8 +3,9 @@
 namespace App\Http\Requests\Api\v1\Materials;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class CreateTagRequest extends FormRequest
+class EditMaterialRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,9 +16,19 @@ class CreateTagRequest extends FormRequest
     {
         return [
             'name' => [
-                'required',
                 'string',
                 config('constants.string_request_regex')
+            ],
+            'tags' => [
+                'array'
+            ],
+            'tags.*' => [
+                'string',
+                config('constants.string_request_regex')
+            ],
+            'url' => [
+                'string',
+                'url'
             ],
         ];
     }

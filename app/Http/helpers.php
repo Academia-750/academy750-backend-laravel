@@ -40,7 +40,8 @@ function parseFilter($key, $value, $operation = '=')
             case 'or_like':
                 $query->where(function ($subQuery) use ($value, $key) {
                     array_map(function ($key) use ($value, $subQuery) {
-                        $subQuery->orWhere($key, 'like', '%' . $value . '%');
+                        $value = is_array($value) ? $value : [$value];
+                        array_map(fn($item) => $subQuery->orWhere($key, 'like', '%' . $item . '%'), $value);
                     }, $key);
                 });
                 break;

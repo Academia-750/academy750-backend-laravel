@@ -8,6 +8,7 @@ use App\Http\Requests\Api\v1\Groups\ListGroupUserRequest;
 use App\Models\Group;
 use App\Models\GroupUsers;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Facades\Log;
 
 
 class GroupUsersController extends Controller
@@ -55,6 +56,7 @@ class GroupUsersController extends Controller
                 'result' => $member
             ], 200);
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
@@ -93,6 +95,7 @@ class GroupUsersController extends Controller
                 'result' => $member
             ], 200);
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
@@ -138,7 +141,7 @@ class GroupUsersController extends Controller
 
 
         } catch (\Exception $err) {
-            dump($err);
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()

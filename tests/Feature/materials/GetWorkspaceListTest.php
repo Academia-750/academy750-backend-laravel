@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Material;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -93,7 +94,6 @@ class GetWorkspaceListTest extends TestCase
     }
 
     /** @test */
-
     public function default_order_200(): void
     {
         $dataResponse = $this->get("api/v1/workspace/list?")->assertStatus(200)->json();
@@ -139,17 +139,28 @@ class GetWorkspaceListTest extends TestCase
     /** @test */
     public function order_by_material_count_200(): void
     {
-        $response = $this->get("api/v1/workspace/list?" . Arr::query(['orderBy' => 'materials_count', 'order' => 1]))->assertStatus(200)->json();
+
+        Material::factory()->count(3)->create(['workspace_id' => $this->workspaces[0]->id]);
+        Material::factory()->state(['workspace_id' => $this->workspaces[1]->id])->count(2)->create();
+        Material::factory()->state(['workspace_id' => $this->workspaces[2]->id])->count(1)->create();
+
+
+        $response = $this->get("api/v1/workspace/list?" . Arr::query(['orderBy' => 'materials_count', 'order' => -1]))->assertStatus(200)->json();
+
+        $this->assertEquals($response['total'], 4);
 
         $attributeList = array_map(function ($data) {
             return $data['materials_count'];
-        }, $response['results'], );
+        }, $response['results']);
 
-        dump($response);
 
         $sorted = $attributeList;
-        sort($sorted);
+        rsort($sorted);
 
         $this->assertEquals($attributeList, $sorted);
+
+        $this->assertEquals($response['results'][0]['id'], $this->workspaces[0]->id);
+        $this->assertEquals($response['results'][1]['id'], $this->workspaces[1]->id);
+        $this->assertEquals($response['results'][2]['id'], $this->workspaces[2]->id);
     }
 }

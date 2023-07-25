@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Material;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -72,8 +73,9 @@ class GetWorkspaceInfoTest extends TestCase
     /** @test */
     public function get_material_count_200(): void
     {
-        // TODO when we get materials CRUD
-        $this->markTestSkipped();
+
+        Material::factory()->state(['workspace_id' => $this->workspace->id])->count(3)->create();
+
         $data = $this->get("api/v1/workspace/{$this->workspace->id}/info")->assertStatus(200)->json();
 
         $this->assertEquals($data['result']['materials_count'], 3);
