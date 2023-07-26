@@ -119,7 +119,8 @@ class GroupUsersController extends Controller
                 parseFilter([
                     'users.full_name',
                     'users.dni',
-                    'groups.name'
+                    'users.email',
+                    'users.phone',
                 ], $request->get('content'), 'or_like')
             ]);
 
