@@ -16,7 +16,6 @@ class SearchUserRequest extends FormRequest
     {
         return [
             'content' => [
-                'required',
                 'alpha_num',
             ],
 

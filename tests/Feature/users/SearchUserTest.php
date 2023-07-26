@@ -57,9 +57,6 @@ class SearchUserTest extends TestCase
     public function wrong_params_422(): void
     {
         $this->get("api/v1/users/search?" . Arr::query(['content' => ['aa', 'bb']]))->assertStatus(422);
-        $this->get("api/v1/users/search?" . Arr::query(['content' => null]))->assertStatus(422);
-        $this->get("api/v1/users/search?" . Arr::query([]))->assertStatus(422);
-
     }
 
 
