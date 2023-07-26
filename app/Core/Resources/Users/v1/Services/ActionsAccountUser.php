@@ -36,7 +36,7 @@ class ActionsAccountUser
     public static function disableAccountUser ($user) {
 
         if ( !($user instanceof User) ) {
-            $user = User::query()->findOrFail($user);
+            $user = User::query()->findOrFail($user->getKey());
         }
 
         self::removeAllTokensByUserReally($user);
@@ -53,7 +53,7 @@ class ActionsAccountUser
     public static function enableAccountUser ($user) {
 
         if ( !($user instanceof User) ) {
-            $user = User::query()->findOrFail($user);
+            $user = User::query()->findOrFail($user->getKey());
         }
 
         self::removeAllTokensByUserReally($user);
