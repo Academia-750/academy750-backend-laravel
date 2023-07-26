@@ -60,6 +60,13 @@ class SearchUserTest extends TestCase
     }
 
 
+
+    /** @test */
+    public function empty_search_200(): void
+    {
+        $this->get("api/v1/users/search?" . Arr::query(['content' => '']))->assertStatus(200);
+    }
+
     /** @test */
     public function find_user_by_first_name_200(): void
     {
