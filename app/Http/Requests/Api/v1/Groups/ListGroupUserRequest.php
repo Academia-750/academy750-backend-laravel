@@ -20,7 +20,7 @@ class ListGroupUserRequest extends FormRequest
             ],
             'orderBy' => [
                 'string',
-                Rule::in(['dni', 'full_name', 'created_at', 'discharged_at'])
+                Rule::in(['dni', 'full_name', 'created_at', 'discharged_at', 'updated_at', 'phone', 'email'])
             ],
             'order' => [
                 Rule::in([1, -1])
