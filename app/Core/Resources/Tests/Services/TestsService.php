@@ -6,64 +6,57 @@ use App\Core\Services\UuidGeneratorService;
 use App\Models\Opposition;
 use App\Models\Test;
 use App\Models\Topic;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class TestsService
 {
-    /**
-     * Crea un cuestionario nuevo
-     *
-     * @param $data
-     * @return \App\Models\Test
-     */
-    public static function createTest ( $data )
+    public static function getDataToCreateTests ( $requestCreateTest ): array
+    {
+        $IDOfTheTopicsSelectedForTheTest = array_map(function ($__topic_uuid) {
+            return Topic::query()->firstWhere('uuid', $__topic_uuid)?->getKey();
+        }, $requestCreateTest->get('topics_id'));
+
+        $oppositionIdToFindTheTopicsForTheTest = Opposition::query()
+            ->firstWhere('uuid', $requestCreateTest->get('opposition_id'))
+            ?->getKey();
+
+        $userAuth = Auth::user();
+
+        // DATA
+        return [
+            'userAuth' => $userAuth,
+            'testType' => $requestCreateTest->get('test_type'),
+            'topics_id' => $IDOfTheTopicsSelectedForTheTest,
+            'opposition_id' => $oppositionIdToFindTheTopicsForTheTest,
+            'userAuthID' => $userAuth?->getKey(),
+            'CountQuestionsTest' => (int) $requestCreateTest->get('count_questions_for_test'),
+            'RequestTestIsCardMemory' =>  $requestCreateTest->get('test_type') === 'card_memory'
+        ];
+    }
+
+    public static function createTestReference ( array $data ): array
     {
 
         try {
-                $test = Test::create([
-                    //'uuid' => UuidGeneratorService::getUUIDUnique(Test::class),
-                    "number_of_questions_requested" => $data["number_of_questions_requested"],
-                    "number_of_questions_generated" => $data["number_of_questions_requested"], // Se actualizará una vez se obtenga el numero real de preguntas disponibles
+                 $questionnaireReference = Test::query()->create([
+                    "number_of_questions_requested" => $data['CountQuestionsTest'],
+                    "number_of_questions_generated" => $data['CountQuestionsTest'], // Se actualizará una vez se obtenga el numero real de preguntas disponibles
                     "test_result" => "0",
                     "is_solved_test" => 'no',
-                    'test_type' => $data["test_type"],
+                    'test_type' => $data["testType"],
                     'opposition_id' => $data['opposition_id'],
-                    'user_id' => $data['user_id'],
+                    'user_id' => $data['userAuthID'],
                 ]);
-            return $test;
+
+                $data['testRecordReferenceCreated'] = $questionnaireReference;
+
+                return $data;
         } catch (\Exception $e) {
             abort(500, "Error Crear la cabecera del Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
         }
     }
 
-    /**
-     * Devuelve los subtemas de un tema dado, y solo aquellos que tienen vinculo con la Oposición dada
-     *
-     * @param Topic $topic
-     * @param Opposition $opposition
-     * @return array
-     */
-    public static function getSubtopicsByOppositionAndTopic (Topic $topic, Opposition $opposition ): array {
-        $subtopics_id = [];
-
-        foreach ( $opposition->subtopics as $subtopic ) {
-            $subtopics_id_by_topic = $topic->subtopics()->pluck('subtopics.id')->toArray();
-
-            if (in_array($subtopic?->getKey(), $subtopics_id_by_topic, true)) {
-                $subtopics_id[] = $subtopic?->getKey();
-            }
-        }
-
-        return $subtopics_id;
-    }
-
-    /**
-     * Dado un arreglo de temas seleccionados, vamos obteniendo los subtemas de cada tema que coinciden con la Oposición dada
-     *
-     * @param array $topicsSelected_id
-     * @param string $opposition_id
-     * @return array
-     */
     public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, int $opposition_id ): array {
         $subtopics_id = DB::select(
             "call get_subtopics_ids_for_test_procedure(?,?)",
@@ -79,21 +72,16 @@ class TestsService
         }, $subtopics_id);
     }
 
-    public static function registerTopicsAndSubtopicsByTest ($testID, array $topicsSelected_id, int $opposition_id )
+    public static function registerTopicsAndSubtopicsByTest ( array $data ): void
     {
         try {
+            $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($data['topics_id'], $data['opposition_id']);
 
-            $subtopicsEveryTopicAndOpposition = self::getSubtopicsByOppositionAndTopics($topicsSelected_id, $opposition_id);
-
-            $test = Test::query()->findOrFail($testID);
-
-            $test->topics()->sync($topicsSelected_id);
-            $test->subtopics()->sync($subtopicsEveryTopicAndOpposition);
+            $data['testRecordReferenceCreated']->topics()->sync($data['topics_id']);
+            $data['testRecordReferenceCreated']->subtopics()->sync($subtopicsEveryTopicAndOpposition);
 
         } catch (\Exception $e) {
-            //abort(500, "Error Registrar en Bitácora Temas y Subtemas de un Test -> File: {$e->getFile()} -> Line: {$e->getLine()} -> Code: {$e->getCode()} -> Trace: {$e->getTraceAsString()} -> Message: {$e->getMessage()}");
             abort(500, $e->getMessage());
-
         }
     }
 }

@@ -1,7 +1,7 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
-use App\Core\Resources\Tests\Services\TestsQuestionsService;
+use App\Core\Resources\Tests\Services\QueryParametersQuestionsForResolveTest;
 use App\Http\Resources\Api\Question\v1\QuestionByTestCollection;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
@@ -39,7 +39,7 @@ class SchemaJson implements TestsInterface
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => TestsQuestionsService::getQuestionsDataTestSortByIndexByTest($test),
+                'questions_data' => QueryParametersQuestionsForResolveTest::getQuestionsDataTestSortByIndexByTest($test),
                 'number_of_questions_answered_of_test' => $countQuestionsAnswered,
                 'total_questions_of_this_test' => $test->questions->count()
             ]
@@ -108,7 +108,7 @@ class SchemaJson implements TestsInterface
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => TestsQuestionsService::getQuestionsDataTestSortByIndexByTest($test)
+                'questions_data' => QueryParametersQuestionsForResolveTest::getQuestionsDataTestSortByIndexByTest($test)
             ]
         ]);
     }

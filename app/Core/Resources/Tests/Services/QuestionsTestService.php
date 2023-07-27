@@ -10,19 +10,31 @@ use Illuminate\Support\Facades\Log;
 
 class QuestionsTestService
 {
-    public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
+    public static function buildQuestionsTest ( array $data ): array
     {
-        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
+        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure(
+            $data['CountQuestionsTest'],
+            $data['userAuthID'],
+            $data['topics_id'],
+            $data['RequestTestIsCardMemory'],
+            $data['opposition_id']
+        );
 
-        $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
-        $test->save();
+        // Una vez obtenemos las preguntas disponibles para este Test, contamos cuantas preguntas obtuvimos y guardamos esa información en la referencia del Test
+        $data['testRecordReferenceCreated']->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
+        $data['testRecordReferenceCreated']->save();
 
-        self::registerQuestionsHistoryByTest($TotalQuestionsGottenByAllTopicsSelected, $test, $testType);
+        self::registerQuestionsHistoryByTest(
+            $TotalQuestionsGottenByAllTopicsSelected,
+            $data['testRecordReferenceCreated'],
+            $data['RequestTestIsCardMemory']
+        );
 
         return $TotalQuestionsGottenByAllTopicsSelected;
     }
 
-    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
+    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, int $user_id, array $topicsSelected_id, bool $isCardMemory, int $opposition_id ): array
+    {
 
         $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
 
@@ -30,23 +42,17 @@ class QuestionsTestService
             $nameProcedure,
             array(
                 implode(',',$topicsSelected_id),
-                Opposition::query()->firstWhere('uuid', $opposition_id)?->getKey(),
-                $user->getKey(),
+                $opposition_id,
+                $user_id,
                 $amountQuestionsRequestedByTest
             )
         );
 
-        //$questions_id = [];
-
-        //$start_time__shuffle_questions = microtime(true);
-        //Log::debug("+++Aqui se ejecuta el proceso de desordenar las preguntas mapeadas que ya son compatibles en este momento con el Backend PHP del alumno: {$user?->full_name} con id {$user?->id}");
         shuffle($questions_id);
-        //$elapsed_time__shuffle_questions = microtime(true) - $start_time__shuffle_questions;
-        //Log::debug("---Aqui se termina el proceso de desordenar las preguntas mapeadas que ya son compatibles en este momento con el Backend PHP del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__shuffle_questions} segundos");
 
         return $questions_id;
     }
-    public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType): void {
+    public static function registerQuestionsHistoryByTest (array $questions_id, $test, bool $TestRequestedIsCardMemory): void {
         $index = 0;
         $pivotData = [];
 
@@ -55,14 +61,13 @@ class QuestionsTestService
             $pivotData[$question_id] = [
                 'index' => $index,
                 'have_been_show_test' => 'no',
-                'have_been_show_card_memory' => $testType === 'card_memory' ? 'yes' : 'no',
+                'have_been_show_card_memory' => $TestRequestedIsCardMemory ? 'yes' : 'no',
                 'answer_id' => null,
                 'status_solved_question' => 'unanswered',
             ];
         }
 
         $test->questions()->attach($pivotData);
-
     }
 
 

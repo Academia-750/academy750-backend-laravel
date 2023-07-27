@@ -5,7 +5,7 @@ namespace App\Core\Resources\Tests\Services;
 use App\Models\Question;
 use Illuminate\Database\Eloquent\Collection;
 
-class TestsQuestionsService
+class QueryParametersQuestionsForResolveTest
 {
     public static function getQuestionsDataTestSortByIndexByTest ($test): array {
         $questions = collect([]);

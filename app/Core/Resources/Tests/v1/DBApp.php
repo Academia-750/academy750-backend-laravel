@@ -2,7 +2,7 @@
 namespace App\Core\Resources\Tests\v1;
 
 use App\Core\Resources\Tests\Services\QuestionsTestService;
-use App\Core\Resources\Tests\Services\TestsQuestionsService;
+use App\Core\Resources\Tests\Services\QueryParametersQuestionsForResolveTest;
 use App\Core\Resources\Tests\Services\TestsService;
 use App\Models\Answer;
 use App\Models\Opposition;
@@ -46,7 +46,7 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
-        return TestsQuestionsService::getQuestionsEloquentSortByIndexByTest($testQuery);
+        return QueryParametersQuestionsForResolveTest::getQuestionsEloquentSortByIndexByTest($testQuery);
     }
 
     public function fetch_card_memory( $test ){
@@ -64,49 +64,20 @@ class DBApp implements TestsInterface
     {
         try {
 
-            // Declaracion de data o variables
+            $dataForTheBuildTest = TestsService::getDataToCreateTests( $request );
 
-            $user = Auth::user();
-            $testType = $request->get('test_type');
+            abort_if(!$dataForTheBuildTest['userAuth'], 404);
 
-            $topics__id = array_map(function ($__topic_uuid) {
-                return Topic::query()->firstWhere('uuid', $__topic_uuid)?->getKey();
-            }, $request->get('topics_id'));
-
-            $opposition__id = Opposition::query()
-                ->firstWhere('uuid', $request->get('opposition_id'))
-                ?->getKey();
-
-
-            // posibles aborts o disparos de errores
-            abort_if(!$user, 404);
-
-            // acciones
-
-            $questionnaire = TestsService::createTest([
-                "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
-                "opposition_id" => Opposition::query()
-                    ->firstWhere('uuid', $request->get('opposition_id'))
-                    ?->getKey(),
-                "test_type" => $testType,
-                "user_id" => $user?->getKey()
-            ]);
+            $dataForTheBuildTest = TestsService::createTestReference( $dataForTheBuildTest );
 
             TestsService::registerTopicsAndSubtopicsByTest(
-                $questionnaire->getKey(),
-                $topics__id,
-                $opposition__id
+                $dataForTheBuildTest
             );
 
             QuestionsTestService::buildQuestionsTest(
-                (int) $request->get('count_questions_for_test'),
-                $testType,
-                $user,
-                $questionnaire,
-                $request->get('topics_id'),
-                $request->get('opposition_id')
+                $dataForTheBuildTest
             );
-            return $questionnaire;
+            return $dataForTheBuildTest['testRecordReferenceCreated'];
         } catch (\Exception $e) {
             abort(500, $e);
         }
@@ -243,6 +214,6 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
-        return TestsQuestionsService::getQuestionsEloquentSortByIndexByTest($testQuery);
+        return QueryParametersQuestionsForResolveTest::getQuestionsEloquentSortByIndexByTest($testQuery);
     }
 }
