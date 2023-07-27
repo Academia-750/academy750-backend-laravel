@@ -57,3 +57,24 @@ presencial y online
   * **Alumno**
     * DNI: ***14071663X***
     * Password: ***EcsN9HYA9)&***
+
+
+### Troubleshooting 
+
+### Sentry
+
+If you have PHP 8.1.0 and you can not do
+
+`php artisan sentry:test` 
+
+getting the error
+
+```
+There was an error sending the event.
+SDK: Failed to send the event to Sentry. Reason: "HTTP/2 stream 1 was reset for "https://o4505596447162368.ingest.sentry.io/api/4505596448210944/store/".".
+Please check the error message from the SDK above for further hints about what went wrong.
+```
+
+Is due a problem with PHP CURL with sentry, you can reinstall sentry this way
+
+composer update -W sentry/sentry-laravel
