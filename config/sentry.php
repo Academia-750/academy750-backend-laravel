@@ -10,8 +10,8 @@ if (!defined('CURL_SSLVERSION_TLSv1_2')) {
 
 return [
 
-    'dsn' => 'https://3713c550cc804f9f9aa2f10de296b676@o4505596447162368.ingest.sentry.io/4505596448210944',
-    // env('SENTRY_LARAVEL_DSN'),
+    'dsn' => env('SENTRY_LARAVEL_DSN'),
+
 
     // The release version of your application
     // Example with dynamic git hash: trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD'))
