@@ -189,8 +189,6 @@ class GetMaterialListTest extends TestCase
         $sorted = $createdAt;
         rsort($sorted);
 
-        dump($dataResponse);
-
         $this->assertEquals($createdAt, $sorted);
     }
 

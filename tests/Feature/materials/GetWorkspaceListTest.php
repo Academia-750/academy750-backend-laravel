@@ -35,10 +35,10 @@ class GetWorkspaceListTest extends TestCase
         $this->actingAs($this->user);
 
         $this->workspaces = Workspace::factory()->count(4)->sequence(
-            ['created_at' => now()->addSeconds(2)],
-            ['created_at' => now()->addSeconds(5)],
-            ['created_at' => now()->addSeconds(8)],
-            ['created_at' => now()->addSeconds(10)],
+            ['updated_at' => now()->addSeconds(2)],
+            ['updated_at' => now()->addSeconds(5)],
+            ['updated_at' => now()->addSeconds(8)],
+            ['updated_at' => now()->addSeconds(10)],
         )->type('material')->create();
     }
 
@@ -98,7 +98,7 @@ class GetWorkspaceListTest extends TestCase
     {
         $dataResponse = $this->get("api/v1/workspace/list?")->assertStatus(200)->json();
         $createdAt = array_map(function ($data) {
-            return $data['created_at'];
+            return $data['updated_at'];
         }, $dataResponse['results'], );
 
         $sorted = $createdAt;
@@ -112,7 +112,7 @@ class GetWorkspaceListTest extends TestCase
     {
         $dataResponse = $this->get("api/v1/workspace/list?" . Arr::query(['order' => 1]))->assertStatus(200)->json();
         $createdAt = array_map(function ($data) {
-            return $data['created_at'];
+            return $data['updated_at'];
         }, $dataResponse['results'], );
 
         $sorted = $createdAt;
