@@ -16,6 +16,7 @@ class Answer extends Model
 
     protected $fillable = [
         "id",
+        "uuid",
         "answer",
         "is_grouper_answer",
         "is_correct_answer",

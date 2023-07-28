@@ -40,7 +40,6 @@ class QueryParametersQuestionsForResolveTest
                 )
             );
         }
-
         //return $instanceEloquentCollection;
 
         //return new \Illuminate\Pagination\Paginator();

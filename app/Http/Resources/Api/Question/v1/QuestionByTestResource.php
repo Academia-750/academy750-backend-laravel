@@ -10,10 +10,9 @@ class QuestionByTestResource extends JsonResource
 {
     public function toArray($request): array
     {
-
         return [
             'type' => 'questions-test',
-            'id' => $this->resource->getRouteKey(),
+            'id' => $this->resource->uuid,
             'attributes' => [
                 "question-text" => $this->resource->question,
                 "reason-text" => $this->resource->reason

@@ -2,9 +2,11 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration {
+return new class extends Migration
+{
     public function __construct(public string $nameProcedure = 'get_questions_test_by_topic_procedure')
     {
     }
@@ -26,7 +28,7 @@ return new class extends Migration {
             IN `id_usuario` INT,
             IN `n_pregs` INT
         )
-        BEGIN
+BEGIN
             DECLARE index_loop INTEGER;
             DECLARE npregs_by_topic INTEGER;
             DECLARE c INTEGER;

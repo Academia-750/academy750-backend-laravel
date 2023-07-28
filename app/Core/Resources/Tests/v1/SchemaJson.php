@@ -34,8 +34,11 @@ class SchemaJson implements TestsInterface
 
         $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
 
+        $tESTdATA = $this->eventApp->fetch_unresolved_test( $test );
+        //\Log::debug($tESTdATA);
+
         return QuestionByTestCollection::make(
-            $this->eventApp->fetch_unresolved_test( $test )
+            $tESTdATA
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
