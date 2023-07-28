@@ -15,9 +15,9 @@ jobs:
       FOLDER_NAME: ${{ vars.FOLDER_NAME || '/var/www/academy750-backend' }}
 
     steps:
-      - name: Only Main branch
-        if: endsWith(github.ref, 'main') == false
-        run: exit -1
+      # - name: Only Main branch
+      #   if: endsWith(github.ref, 'main') == false
+      #   run: exit -1
 
       - name: 🚚 Checkout code
         uses: actions/checkout@v2
