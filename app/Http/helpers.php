@@ -49,3 +49,19 @@ function parseFilter($key, $value, $operation = '=')
         };
     };
 }
+
+
+/**
+ * Pass all the filters into the query
+ */
+function filterToQuery($query, $filter)
+{
+    $filter = removeNull($filter);
+    $query->where(function ($query) use ($filter) {
+        foreach ($filter as $condition) {
+            $condition($query);
+        }
+    });
+
+    return $query;
+}

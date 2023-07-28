@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\v1\Groups;
+namespace App\Http\Requests\Api\v1\Materials;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ListGroupUserRequest extends FormRequest
+class ListWorkspaceRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,12 +15,9 @@ class ListGroupUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'discharged' => [
-                'boolean'
-            ],
             'orderBy' => [
                 'string',
-                Rule::in(['dni', 'full_name', 'created_at', 'discharged_at', 'updated_at', 'phone', 'email'])
+                Rule::in(['name', 'created_at', 'updated_at', 'materials_count'])
             ],
             'order' => [
                 Rule::in([1, -1])
@@ -34,9 +31,8 @@ class ListGroupUserRequest extends FormRequest
                 'min:0'
             ],
             'content' => [
-                'string',
+                'string'
             ]
-
         ];
     }
 }

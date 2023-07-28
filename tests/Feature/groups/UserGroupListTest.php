@@ -122,6 +122,10 @@ class UserGroupListTest extends TestCase
         $this->assertNotEmpty($user1);
         $this->assertEquals($user1->full_name, $response['results'][0]['full_name']);
         $this->assertEquals($user1->dni, $response['results'][0]['dni']);
+        $this->assertEquals($user1->phone, $response['results'][0]['phone']);
+        $this->assertEquals($user1->email, $response['results'][0]['email']);
+        $this->assertEquals($user1->uuid, $response['results'][0]['uuid']);
+
 
     }
 
@@ -230,15 +234,20 @@ class UserGroupListTest extends TestCase
         $item = GroupUsers::query()->where('group_id', $this->group->id)->whereNull('discharged_at')->inRandomOrder()->first();
 
         // Search by DNI
-        $data1 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->user->dni, 0, 3)]))->assertStatus(200)->json();
-        $this->assertEquals($data1['results'][0]['id'], $item->id);
+        $data = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->user->dni, 0, 3)]))->assertStatus(200)->json();
+        $this->assertEquals($data['results'][0]['id'], $item->id);
 
         // Search by user first_name
-        $data2 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->user->full_name, 0, 3)]))->assertStatus(200)->json();
-        $this->assertEquals($data2['results'][0]['id'], $item->id);
+        $data = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->user->full_name, 0, 3)]))->assertStatus(200)->json();
+        $this->assertEquals($data['results'][0]['id'], $item->id);
 
-        // Search by group name
-        $data3 = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->group->name, 0, 3)]))->assertStatus(200)->json();
-        $this->assertEquals($data3['results'][0]['group_id'], $item->group_id);
+        // Search by user email
+        $data = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->user->email, 0, 3)]))->assertStatus(200)->json();
+        $this->assertEquals($data['results'][0]['id'], $item->id);
+
+        // Search by user phone
+        $data = $this->get("api/v1/group/{$this->group->id}/list?" . Arr::query(['content' => substr($item->user->phone, 0, 3)]))->assertStatus(200)->json();
+        $this->assertEquals($data['results'][0]['id'], $item->id);
+
     }
 }

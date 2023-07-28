@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\Api\v1\Groups;
+namespace App\Http\Requests\Api\v1\Materials;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class JoinGroupRequest extends FormRequest
+class ListTagRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -15,10 +15,13 @@ class JoinGroupRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => [
-                'required',
-                'uuid',
+            'limit' => [
+                'integer',
+                'min:0'
             ],
+            'content' => [
+                'string',
+            ]
         ];
     }
 }

@@ -3,8 +3,6 @@
 use App\Http\Controllers\Api\v1\GroupController;
 use App\Http\Controllers\Api\v1\GroupUsersController;
 
-// Rutas del recurso Users
-
 Route::post('group', [GroupController::class, 'postCreateGroup'])->middleware('onlyAdmin');
 Route::get('group/list', [GroupController::class, 'getList'])->middleware('onlyAdmin');
 Route::get('group/colors', [GroupController::class, 'getColorsAvailable'])->middleware('onlyAdmin');

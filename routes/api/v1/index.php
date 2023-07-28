@@ -79,6 +79,7 @@ Route::prefix('v1')->group(callback: static function () {
         //require __DIR__ . '/routes/images.routes.php';
         require __DIR__ . '/routes/import-processes.routes.php';
         require __DIR__ . '/routes/groups.routes.php';
+        require __DIR__ . '/routes/materials.routes.php';
 
         // [EndOfLineMethodRegister]
     });
