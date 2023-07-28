@@ -46,6 +46,14 @@ Route::get('/', function () {
 });
 
 Route::get('/debug-sentry', function () {
-    throw new Exception('My first Sentry error!');
-});
+    // Real scenario of how we handle issues
+    try {
+        throw new Exception('My Laravel Sentry error!');
+    } catch (\Exception $e) {
+        // Dont use ABORT, use the LOG and the response object to handle request
+        // Phase 1 APIS use abort and will be replace
+        abort(500, $e);
 
+
+    }
+});
