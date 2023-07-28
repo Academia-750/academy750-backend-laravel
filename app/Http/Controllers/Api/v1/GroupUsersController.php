@@ -21,16 +21,16 @@ class GroupUsersController extends Controller
             if (!$group) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Group not found'
+                    'message' => 'Group not found'
                 ], 404);
             }
 
-            $user = User::find($request->get('user_id'));
+            $user = User::query()->where('uuid', $request->get('user_id'))->first();
 
             if (!$user) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'User not found'
+                    'message' => 'User not found'
                 ], 404);
             }
 
@@ -42,7 +42,7 @@ class GroupUsersController extends Controller
             if ($userIsActive) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'The user is already active in this group'
+                    'message' => 'The user is already active in this group'
                 ], 409);
             }
 
@@ -59,7 +59,7 @@ class GroupUsersController extends Controller
             Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
-                'error' => $err->getMessage()
+                'message' => $err->getMessage()
             ], 500);
         }
     }
@@ -67,22 +67,31 @@ class GroupUsersController extends Controller
     public function leave(JoinGroupRequest $request, string $groupId)
     {
         try {
+            $user = User::query()->where('uuid', $request->get('user_id'))->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'User not found'
+                ], 404);
+            }
+
             $member = GroupUsers::query()->where('group_id', $groupId)
-                ->where('user_id', $request->get('user_id'))
+                ->where('user_id', $user->id)
                 ->whereNull('discharged_at')
                 ->first();
 
             if (!$member) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'User not found in this group'
+                    'message' => 'User not found in this group'
                 ], 404);
             }
 
             if ($member->discharged_at) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'This member was already discharged from the group'
+                    'message' => 'This member was already discharged from the group'
                 ], 409);
             }
 
@@ -98,7 +107,7 @@ class GroupUsersController extends Controller
             Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
-                'error' => $err->getMessage()
+                'message' => $err->getMessage()
             ], 500);
         }
     }
@@ -113,14 +122,15 @@ class GroupUsersController extends Controller
                 parseFilter([
                     'users.full_name',
                     'users.dni',
-                    'groups.name'
+                    'users.email',
+                    'users.phone',
                 ], $request->get('content'), 'or_like')
             ]);
 
 
             $query = GroupUsers::query()->join('users', 'group_users.user_id', '=', 'users.id')
                 ->join('groups', 'group_users.group_id', '=', 'groups.id')
-                ->select('group_users.*', 'users.dni', 'users.full_name', 'groups.name');
+                ->select('group_users.*', 'users.dni', 'users.email', 'users.uuid', 'users.phone', 'users.full_name', 'groups.name');
 
             filterToQuery($query, $conditions);
 
@@ -144,7 +154,7 @@ class GroupUsersController extends Controller
             Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
-                'error' => $err->getMessage()
+                'message' => $err->getMessage()
             ], 500);
         }
     }
