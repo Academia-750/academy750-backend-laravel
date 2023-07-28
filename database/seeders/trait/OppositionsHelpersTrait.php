@@ -11,7 +11,7 @@ trait OppositionsHelpersTrait
         $oppositionsRandom = [];
 
         foreach ( range(1, random_int(2,3)) as $n) {
-            $oppositionsRandom[] = $oppositions->random()->getRouteKey();
+            $oppositionsRandom[] = $oppositions->random()->getKey();
         }
 
         $model->oppositions()->sync($oppositionsRandom);

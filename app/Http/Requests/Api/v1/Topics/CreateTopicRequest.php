@@ -17,7 +17,7 @@ class CreateTopicRequest extends FormRequest
     {
         return [
             'name' => ['required', 'max:255'],
-            'topic-group-id' => ['required', 'uuid', 'exists:topic_groups,id']
+            'topic-group-id' => ['required', 'uuid', 'exists:topic_groups,uuid']
         ];
     }
 

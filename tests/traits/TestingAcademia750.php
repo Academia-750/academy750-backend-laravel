@@ -9,16 +9,14 @@ use Illuminate\Support\Facades\Artisan;
 
 trait TestingAcademia750
 {
-    public function generateSeedersPermissionsAndRoles(): void{
-
-        /*Artisan::call('cache:clear', ['redis']);
-        Artisan::call('config:clear');
-        Artisan::call('route:clear');*/
+    public function generateSeedersPermissionsAndRoles(): void
+    {
         $this->seed(RoleSeeder::class);
         $this->seed(PermissionSeeder::class);
     }
 
-    public function clearCacheApp (): void {
+    public function clearCacheApp(): void
+    {
         Artisan::call('cache:clear', ['store' => 'redis']);
     }
 

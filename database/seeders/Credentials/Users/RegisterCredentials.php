@@ -8,9 +8,9 @@ class RegisterCredentials
 {
     public static function registerCredentials (): void {
         self::registerAcademia();
-        //self::registerRaul();
-        //self::registerAdolfo();
-        //self::registerCarlos();
+        self::registerRaul();
+        self::registerAdolfo();
+        self::registerCarlos();
         self::registerGines();
     }
 
@@ -35,6 +35,6 @@ class RegisterCredentials
     }
     private static function registerGines (): void {
         GinesCredentials::AdminCredentials();
-        //GinesCredentials::StudentCredentials();
+        GinesCredentials::StudentCredentials();
     }
 }

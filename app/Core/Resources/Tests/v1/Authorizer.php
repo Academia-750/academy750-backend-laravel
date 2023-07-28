@@ -8,6 +8,7 @@ use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
 use App\Models\Opposition;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Gate;
@@ -43,20 +44,30 @@ class Authorizer implements TestsInterface
     public function create_a_quiz( $request )
     {
         //Gate::authorize('create_a_quiz', [Auth::user(), Test::class, Opposition::findOrFail($request->get('opposition_id')), $request] );
-        $opposition = Opposition::findOrFail($request->get('opposition_id'));
+
+        $opposition_id = $request->get('opposition_id');
+
+        $opposition = Opposition::query()
+            ->where('id', $opposition_id)
+            ->orWhere('uuid', $opposition_id)
+            ->first();
+
+        if (!$opposition) {
+            throw new ModelNotFoundException("La oposicion con Identificador {$opposition_id} no fue encontrado.");
+        }
 
         $topicsBelongsToOpposition = true;
 
-        $topics_id_by_opposition = $opposition->topics()->pluck('topics.id')->toArray();
+        $topics_uuid_by_opposition = $opposition->topics()->pluck('topics.uuid')->toArray();
 
-        foreach ($request->get('topics_id') as $topic_id) {
-            if ( !in_array($topic_id, $topics_id_by_opposition, true) ) {
+        foreach ($request->get('topics_id') as $topic_uuid) {
+            if ( !in_array($topic_uuid, $topics_uuid_by_opposition, true) ) {
                 $topicsBelongsToOpposition = false;
             }
         }
 
         if (!(Auth::user()->can('create-tests-for-resolve') && (bool) $topicsBelongsToOpposition)) {
-            abort(403);
+            abort(403, "Posiblemente algunos o todos los temas seleccionados no pertenecen a la Oposición Seleccionada");
         }
 
         return $this->schemaJson->create_a_quiz( $request );
@@ -68,22 +79,38 @@ class Authorizer implements TestsInterface
         return $this->schemaJson->get_cards_memory();
     }
 
+    /**
+     * @throws \Throwable
+     */
     public function resolve_a_question_of_test($request)
     {
-        $test = Test::findOrFail($request->get('test_id'));
+        $test_id = $request->get('test_id');
 
-        $question = $test->questions()->find($request->get('question_id'));
+        $test = Test::query()
+            ->where('id', $test_id)
+            ->where('uuid', $test_id)
+            ->first();
 
-        if (!$question) {
-            abort(403);
-        }
+        abort_if(!$test, new ModelNotFoundException("El Test o Cuestionario con Identificador {$test_id} no fue encontrado."));
+
+        $question_id = $request->get('question_id');
+
+        $questionQuery = $test->questions()
+            ->where('id', $question_id)
+            ->orWhere('uuid', $question_id)
+            ->first();
+
+        throw_if(!$questionQuery, new ModelNotFoundException("La pregunta con Identificador {$question_id} no fue encontrado."));
 
         if ($request->get('answer_id')) {
-            $answer = $question->answers()->find($request->get('answer_id'));
+            $answer_id = $request->get('answer_id');
 
-            if (!$answer) {
-                abort(403);
-            }
+            $answerQuery = $questionQuery->answers()
+                ->where('id', $answer_id)
+                ->orWhere('uuid', $answer_id)
+                ->first();
+
+            throw_if(!$answerQuery, new ModelNotFoundException("La alternativa con Identificador {$answer_id} no fue encontrado."));
         }
 
         return $this->schemaJson->resolve_a_question_of_test($request);
@@ -92,7 +119,7 @@ class Authorizer implements TestsInterface
     public function grade_a_test($request, $test)
     {
         // \Log::debug($test);
-        if (!Auth::user()->hasRole('student') || !Auth::user()->tests()->find($test->getRouteKey())) {
+        if (!Auth::user()->hasRole('student') || !Auth::user()->tests()->findOrFail($test->getKey())) {
             abort(403);
         }
 

@@ -12,6 +12,9 @@ class TopicResource extends JsonResource
 {
     public function toArray($request): array
     {
+
+        $totalSubtopicsThisTopic = $this->resource->subtopics()->count();
+
         return [
             'type' => 'topics',
             'id' => $this->resource->getRouteKey(),
@@ -22,10 +25,7 @@ class TopicResource extends JsonResource
                 "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
-                'topic_group' => $this->when(collect($this->resource)->has('topic_group'),
-                    function () {
-                        return TopicGroupResource::make($this->resource->topic_group);
-                    }),
+                'topic_group' => TopicGroupResource::make($this->resource->topic_group),
                 'subtopics' => $this->when(collect($this->resource)->has('subtopics'),
                     function () {
                         return SubtopicCollection::make($this->resource->subtopics);
@@ -40,7 +40,8 @@ class TopicResource extends JsonResource
                     }),
             ],
             'meta' => [
-                'has_subtopics' => $this->resource->subtopics->count() > 0
+                'has_subtopics' =>  $totalSubtopicsThisTopic > 0,
+                'count_subtopics_this_topic' => $totalSubtopicsThisTopic,
             ]
         ];
     }

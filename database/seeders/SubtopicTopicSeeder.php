@@ -30,7 +30,7 @@ class SubtopicTopicSeeder extends Seeder
 
         foreach ( range(1, random_int(5, 40)) as $number) {
 
-            $subtopics->put($this->subtopics->random()->getRouteKey(), [
+            $subtopics->put($this->subtopics->random()->getKey(), [
                 'is_available' => $optionsAvailable[random_int(0,1)]
             ]);
         }

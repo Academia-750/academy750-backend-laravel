@@ -17,7 +17,6 @@ class RaulCredentials implements  CredentialsInterface
         $roleAdmin = Role::query()->where('name', '=', 'admin')->first();
 
         $adminRaul = User::query()->create([
-            'id' => UuidGeneratorService::getUUIDUnique(User::class),
             //'email' => 'raulmoheno.admin@academia750.com',
             'email' => 'springh.trap@gmail.com',
             'first_name' => 'Raul',
@@ -42,7 +41,6 @@ class RaulCredentials implements  CredentialsInterface
         $roleStudent = Role::query()->where('name', '=', 'student')->first();
 
         $studentRaul = User::query()->create([
-            'id' => UuidGeneratorService::getUUIDUnique(User::class),
             //'email' => 'raulmoheno.student@academia750.com',
             'email' => 'ramz.162025@gmail.com',
             'first_name' => 'Raul',

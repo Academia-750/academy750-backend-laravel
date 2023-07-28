@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -13,29 +12,32 @@ return new class extends Migration
      */
     public function up()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         Schema::create('questions_used_test', function (Blueprint $table) {
             $table->id();
-            $table->foreignUuid('topic_id')
+            $table->foreignId('topic_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('subtopic_id')
+            $table->foreignId('subtopic_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('user_id')
+            $table->foreignId('user_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('opposition_id')
+            $table->foreignId('opposition_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
 
-            $table->foreignUuid('question_id')
+            $table->foreignId('question_id')
                 ->constrained()
                 ->cascadeOnUpdate()
                 ->cascadeOnDelete();
@@ -53,6 +55,9 @@ return new class extends Migration
      */
     public function down()
     {
+        if (app()->environment() === 'testing') {
+            return;
+        }
         Schema::dropIfExists('questions_used_test');
     }
 };

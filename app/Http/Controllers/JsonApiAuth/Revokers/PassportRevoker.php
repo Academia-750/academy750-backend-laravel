@@ -29,7 +29,7 @@ class PassportRevoker implements Revoker
     public function revokeAllTokens()
     {
         DB::table('oauth_access_tokens')
-            ->where('user_id', $this->user->id)
+            ->where('user_id', $this->user->getKey())
             ->update([
                 'revoked' => true
             ]);
