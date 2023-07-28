@@ -81,6 +81,7 @@ class MaterialController extends Controller
 
 
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
