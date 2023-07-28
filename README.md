@@ -25,9 +25,6 @@ face-to-face and online
 
 If something fails install the php required extensions.
 
-
-
-
 ### Set Up the database
 
 1 - Install MYSQL
@@ -58,8 +55,31 @@ GRANT ALL ON `bomberosapimysql`.* TO `bomberos`@`localhost`;
 ## Server Installation
 
 [Notion Guide](https://www.notion.so/tianlu/Academy-750-Code-Base-5833b818639448cea5607f6a7fa86ee5?pvs=4)
+
+
+### Sentry
+
+If you have PHP 8.1.0 and you can not do
+
+`php artisan sentry:test` 
+
+getting the error
+
+```
+There was an error sending the event.
+SDK: Failed to send the event to Sentry. Reason: "HTTP/2 stream 1 was reset for "https://o4505596447162368.ingest.sentry.io/api/4505596448210944/store/".".
+Please check the error message from the SDK above for further hints about what went wrong.
+```
+
+Is due a problem with PHP CURL with sentry, you can reinstall sentry this way
+
+composer update -W sentry/sentry-laravel
+
 ## Desarrolladores (Phase 1)
 
 * ___Raúl Alberto Moheno Zavaleta___
 * Adolfo Feria
 * Carlos Herrera
+
+## Desarrolladores (Phase 2)
+* Abel Bordonado Lillo
