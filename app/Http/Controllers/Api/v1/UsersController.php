@@ -15,6 +15,7 @@ use App\Notifications\Api\ResetPasswordStudentNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -160,6 +161,8 @@ class UsersController extends Controller
     {
         try {
             $conditions = removeNull([
+                // TODO: May need to change when we add the profiles ENDPOINT
+                parseFilter('roles', 'admin', 'notHave', ['field' => 'name']),
                 parseFilter(['first_name', 'last_name', 'dni'], $request->get('content'), 'or_like')
             ]);
 
@@ -170,12 +173,12 @@ class UsersController extends Controller
                 }
             });
 
-
             $results = $query
                 ->select('id', 'first_name', 'last_name', 'dni', 'uuid')
                 ->orderBy('created_at', 'desc')
                 ->limit($request->get('limit') ?? 20)
                 ->get();
+
 
             return response()->json([
                 'status' => 'successfully',
@@ -184,6 +187,7 @@ class UsersController extends Controller
 
 
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()

@@ -91,4 +91,13 @@ class SearchUserTest extends TestCase
         $res = $this->get("api/v1/users/search?" . Arr::query(['content' => substr($user->dni, 0, 3)]))->assertStatus(200)->json();
         $this->assertEquals($res['results'][0]['id'], $user->id);
     }
+
+    /** @test */
+    public function no_admin_users_exposed_200(): void
+    {
+        $adminUser = User::factory()->admin()->create();
+
+        $res = $this->get("api/v1/users/search?" . Arr::query(['content' => $adminUser->dni]))->assertStatus(200)->json();
+        $this->assertEmpty($res['results']);
+    }
 }
