@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\Lesson\ActivateLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\CreateLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\CalendarLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\UpdateLessonRequest;
@@ -114,6 +115,33 @@ class LessonsController extends Controller
         }
     }
 
+
+    public function putActivateLesson(ActivateLessonRequest $request, $lessonId)
+    {
+        try {
+
+            $lesson = Lesson::query()->find($lessonId);
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Lesson not found'
+                ], 404);
+            }
+
+            Lesson::query()->find($lesson->id)->update(['is_active' => $request->get('active')]);
+
+            return response()->json([
+                'status' => 'successfully',
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
     public function getLessonCalendar(CalendarLessonRequest $request)
     {
         if (Carbon::parse($request->get('to'))->diffInDays($request->get('from')) > 90) {

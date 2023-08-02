@@ -59,6 +59,12 @@ class EditLessonTest extends TestCase
     }
 
     /** @test */
+    public function not_found_404(): void
+    {
+        $this->put("api/v1/lesson/99")->assertStatus(404);
+    }
+
+    /** @test */
     public function wrong_params_422(): void
     {
 

@@ -6,6 +6,7 @@ Route::post('lesson', [LessonsController::class, 'postCreateLesson'])->middlewar
 Route::get('lesson/calendar', [LessonsController::class, 'getLessonCalendar'])->middleware('onlyAdmin');
 Route::get('lesson/{id}', [LessonsController::class, 'getLesson']);
 Route::put('lesson/{id}', [LessonsController::class, 'putEditLesson'])->middleware('onlyAdmin');
+Route::put('lesson/{id}/active', [LessonsController::class, 'putActivateLesson'])->middleware('onlyAdmin');
 Route::delete('lesson/{id}', [LessonsController::class, 'deleteLesson'])->middleware('onlyAdmin');
 
 Route::post('lesson/{id}/student', [LessonsController::class, 'postLessonStudent'])->middleware('onlyAdmin');
