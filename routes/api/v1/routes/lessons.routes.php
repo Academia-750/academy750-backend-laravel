@@ -3,7 +3,7 @@
 use App\Http\Controllers\Api\v1\LessonsController;
 
 Route::post('lesson', [LessonsController::class, 'postCreateLesson'])->middleware('onlyAdmin');
-Route::get('lesson/list', [LessonsController::class, 'getLessonList'])->middleware('onlyAdmin');
+Route::get('lesson/calendar', [LessonsController::class, 'getLessonCalendar'])->middleware('onlyAdmin');
 Route::get('lesson/{id}', [LessonsController::class, 'getLesson']);
 Route::put('lesson/{id}', [LessonsController::class, 'putEditLesson'])->middleware('onlyAdmin');
 Route::delete('lesson/{id}', [LessonsController::class, 'deleteLesson'])->middleware('onlyAdmin');

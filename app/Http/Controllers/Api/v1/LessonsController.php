@@ -4,10 +4,11 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\Lesson\CreateLessonRequest;
-use App\Http\Requests\Api\v1\Lesson\ListLessonRequest;
+use App\Http\Requests\Api\v1\Lesson\CalendarLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\UpdateLessonRequest;
 use App\Models\Lesson;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
 
 
@@ -87,7 +88,7 @@ class LessonsController extends Controller
     }
 
 
-    public function getLesson(Request $request, string $lessonId)
+    public function getLesson(string $lessonId)
     {
         try {
 
@@ -113,13 +114,13 @@ class LessonsController extends Controller
         }
     }
 
-    public function getLessonList(ListLessonRequest $request)
+    public function getLessonCalendar(CalendarLessonRequest $request)
     {
-        if ($request->get('to') - $request->get('from') > 90) {
+        if (Carbon::parse($request->get('to'))->diffInDays($request->get('from')) > 90) {
             return response()->json([
                 'status' => 'error',
                 'error' => 'You can only query a maximum range of 90 days'
-            ], 403);
+            ], 422);
         }
 
 
@@ -127,7 +128,7 @@ class LessonsController extends Controller
             $conditions = [
                 parseFilter(
                     'date',
-                    ['from' => $request->get('from'), 'to' => $request->get('to')],
+                    ['from' => Carbon::parse($request->get('from'))->startOfDay(), 'to' => Carbon::parse($request->get('to'))->endOfDay()],
                     'between'
                 ),
                 parseFilter(['name', 'description'], $request->get('content'), 'or_like')
@@ -138,7 +139,7 @@ class LessonsController extends Controller
 
             $results = (clone $query)
                 ->select('lessons.*')
-                // Count Students that will join the lesson
+                // TODO: Count Students that will join the lesson
                 // ->selectSub(function ($query) {
                 //     $query->from('group_users')
                 //         ->selectRaw('COUNT(*)')
@@ -168,7 +169,7 @@ class LessonsController extends Controller
             ], 500);
         }
     }
-    public function deleteLesson(Request $request, string $lessonId)
+    public function deleteLesson(string $lessonId)
     {
         try {
 

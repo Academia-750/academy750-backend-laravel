@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\v1\Lesson;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ListLessonRequest extends FormRequest
+class CalendarLessonRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -20,7 +20,8 @@ class ListLessonRequest extends FormRequest
             ],
             'to' => [
                 'required',
-                'date'
+                'date',
+                "after_or_equal:from"
             ],
             'content' => [
                 'string',
