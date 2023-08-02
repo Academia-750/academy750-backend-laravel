@@ -9,7 +9,7 @@ use Tests\traits\TestingAcademia750;
 
 abstract class TestCase extends BaseTestCase
 {
-    protected $valid_string_input = ['Value', 'Value with space', 'Under_score', 'minus_sign', '999', 'spanish chars áéíóúÁÉÍÓÚñÑ'];
+    protected $valid_string_input = ['Value', 'Value with space', 'Under_score', 'minus_sign', '99999', 'Spain áéíóúÁÉÍÓÚñÑ'];
     protected $pagination_wrong_inputs = [
         ['order' => 0],
         ['order' => 2],
