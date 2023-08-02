@@ -6,6 +6,7 @@ use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
 use App\Models\Opposition;
+use App\Models\Question;
 use App\Models\Test;
 use App\Core\Resources\Tests\v1\Interfaces\TestsInterface;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -88,29 +89,35 @@ class Authorizer implements TestsInterface
 
         $test = Test::query()
             ->where('id', $test_id)
-            ->where('uuid', $test_id)
+            ->orWhere('uuid', $test_id)
             ->first();
 
-        abort_if(!$test, new ModelNotFoundException("El Test o Cuestionario con Identificador {$test_id} no fue encontrado."));
+        abort_if(!$test, 404, "El Test o Cuestionario con Identificador {$test_id} no fue encontrado.");
 
-        $question_id = $request->get('question_id');
+        $question_id = Question::query()->firstWhere('uuid', '=', $request->get('question_id'))?->getKey();
 
+        abort_if(!$question_id, 404, "La pregunta con Identificador {$request->get('question_id')} no fue encontrado.");
+
+        /*$questionQuery = $test->questions()
+            ->where(function ($query) use ($question_id) {
+                $query->where('question_test.question_id', $question_id);
+            })
+            ->first();*/
         $questionQuery = $test->questions()
-            ->where('id', $question_id)
-            ->orWhere('uuid', $question_id)
+            ->where('question_test.question_id', $question_id)
             ->first();
 
-        throw_if(!$questionQuery, new ModelNotFoundException("La pregunta con Identificador {$question_id} no fue encontrado."));
+        abort_if(!$questionQuery, 404, "La pregunta con Identificador {$question_id} no pertenece al Test actual.");
 
         if ($request->get('answer_id')) {
             $answer_id = $request->get('answer_id');
 
             $answerQuery = $questionQuery->answers()
-                ->where('id', $answer_id)
-                ->orWhere('uuid', $answer_id)
+                ->where('answers.id', $answer_id)
+                ->orWhere('answers.uuid', $answer_id)
                 ->first();
 
-            throw_if(!$answerQuery, new ModelNotFoundException("La alternativa con Identificador {$answer_id} no fue encontrado."));
+            abort_if(!$answerQuery, 404, "La alternativa con Identificador {$answer_id} no fue encontrado.");
         }
 
         return $this->schemaJson->resolve_a_question_of_test($request);

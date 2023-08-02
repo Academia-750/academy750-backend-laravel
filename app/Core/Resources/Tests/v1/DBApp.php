@@ -91,23 +91,16 @@ class DBApp implements TestsInterface
             //DB::beginTransaction();
             $test = Test::query()
                 ->where('id', $request->get('test_id'))
-                ->where('uuid', $request->get('test_id'))
+                ->orWhere('uuid', $request->get('test_id'))
                 ->first();
 
-            abort_if(!$test, new ModelNotFoundException("No existe el Test con identificador {$request->get('test_id')}"));
-
-            $question = $test->questions()
-                ->where('id', $request->get('question_id'))
-                ->where('uuid', $request->get('question_id'))
-                ->first();
-            abort_if(!$test, new ModelNotFoundException("No existe la Pregunta con identificador {$request->get('question_id')}"));
+            $question = Question::query()
+                ->firstWhere('uuid', '=', $request->get('question_id'));
 
             $answer = Answer::query()
                 ->where('id', $request->get('answer_id'))
-                ->where('uuid', $request->get('answer_id'))
+                ->orWhere('uuid', $request->get('answer_id'))
                 ->first();
-
-            abort_if(!$answer, new ModelNotFoundException("No existe la Alternativa con identificador {$request->get('answer_id')}"));
 
             if ($request->get('answer_id')) {
 
@@ -126,12 +119,6 @@ class DBApp implements TestsInterface
                     /*'have_been_show_test' => 'no'*/
                 ]);
             }
-
-
-
-            //DB::commit();
-
-
         } catch (\Exception $e) {
             //DB::rollback();
             abort(500,$e->getMessage());
