@@ -100,4 +100,13 @@ class SearchUserTest extends TestCase
         $res = $this->get("api/v1/users/search?" . Arr::query(['content' => $adminUser->dni]))->assertStatus(200)->json();
         $this->assertEmpty($res['results']);
     }
+
+    /** @test */
+    public function no_disabled_user_exposed_200(): void
+    {
+        $disabledUser = User::factory()->student()->state(['state' => 'disable'])->create();
+
+        $res = $this->get("api/v1/users/search?" . Arr::query(['content' => $disabledUser->dni]))->assertStatus(200)->json();
+        $this->assertEmpty($res['results']);
+    }
 }

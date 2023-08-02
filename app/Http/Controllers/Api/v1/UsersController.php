@@ -161,7 +161,9 @@ class UsersController extends Controller
     {
         try {
             $conditions = removeNull([
-                // TODO: May need to change when we add the profiles ENDPOINT
+                // Can add as a property if required
+                parseFilter('state', 'disable', '!='),
+                // May need to change when we add the profiles ENDPOINT
                 parseFilter('roles', 'admin', 'notHave', ['field' => 'name']),
                 parseFilter(['first_name', 'last_name', 'dni'], $request->get('content'), 'or_like')
             ]);
