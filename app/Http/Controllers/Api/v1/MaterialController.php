@@ -328,7 +328,7 @@ class MaterialController extends Controller
     public function getMaterialInfo($materialId)
     {
         try {
-            $material = Material::find($materialId);
+            $material = Material::with('workspace:id,name')->find($materialId);
 
             if (!$material) {
                 return response()->json([
@@ -354,12 +354,14 @@ class MaterialController extends Controller
         try {
             $conditions = [
                 parseFilter('workspace_id', $request->get('workspace')),
-                parseFilter('type', $request->get('type')),
-                parseFilter(['tags'], $request->get('tags'), 'or_like'),
-                parseFilter(['name'], $request->get('content'), 'or_like')
+                parseFilter('materials.type', $request->get('type')),
+                parseFilter(['materials.tags'], $request->get('tags'), 'or_like'),
+                parseFilter(['materials.name'], $request->get('content'), 'or_like')
             ];
 
-            $query = filterToQuery(Material::query(), $conditions);
+            $query = Material::query()->join('workspaces', 'workspaces.id', '=', 'materials.workspace_id')->select('materials.*', 'workspaces.name as workspace_name');
+
+            filterToQuery($query, $conditions);
 
             $results = (clone $query)
                 ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')

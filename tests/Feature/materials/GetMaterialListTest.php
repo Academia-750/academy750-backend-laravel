@@ -99,6 +99,7 @@ class GetMaterialListTest extends TestCase
         $this->assertEquals($response['results'][0]['url'], $this->materials[0]->url);
         $this->assertEquals($response['results'][0]['tags'], $this->materials[0]->tags);
         $this->assertEquals($response['results'][0]['workspace_id'], $this->materials[0]->workspace_id);
+        $this->assertEquals($response['results'][0]['workspace_name'], $this->materials[0]->workspace->name);
 
     }
 

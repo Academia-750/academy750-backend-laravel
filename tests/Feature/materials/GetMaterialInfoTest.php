@@ -68,7 +68,9 @@ class GetMaterialInfoTest extends TestCase
         $this->assertEquals($response['result']['tags'], $this->material->tags);
         $this->assertEquals($response['result']['url'], $this->material->url);
         $this->assertEquals($response['result']['type'], $this->material->type);
-        $this->assertEquals($response['result']['workspace_id'], $this->material->workspace_id);
+        $this->assertEquals($response['result']['workspace']['id'], $this->material->workspace_id);
+        $this->assertEquals($response['result']['workspace']['name'], $this->material->workspace->name);
+
     }
 
 }
