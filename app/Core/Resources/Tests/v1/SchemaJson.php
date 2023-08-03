@@ -85,7 +85,7 @@ class SchemaJson implements TestsInterface
             ->where('uuid', $request->get('test_id'))
             ->first();
 
-        abort_if(!$test, new ModelNotFoundException("No existe el Test o cuestionario con identificador {$request->get('test_id')}"));
+        abort_if(!$test, 404, "No existe el Test o cuestionario con identificador {$request->get('test_id')}");
 
         $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
 

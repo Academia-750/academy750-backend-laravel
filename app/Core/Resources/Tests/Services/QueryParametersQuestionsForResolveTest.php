@@ -2,6 +2,7 @@
 
 namespace App\Core\Resources\Tests\Services;
 
+use App\Models\Answer;
 use App\Models\Question;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -19,7 +20,7 @@ class QueryParametersQuestionsForResolveTest
                 "status_question" => $question_test?->pivot?->status_solved_question,
                 "question" => Question::query()->findOrFail($question_test?->pivot?->question_id),
                 'question_id' => $question_test?->pivot?->question_id,
-                'answer_id' => $question_test?->pivot?->answer_id,
+                'answer_id' => $question_test?->pivot?->answer_id ? Answer::query()->findOrFail($question_test?->pivot?->answer_id)?->getRouteKey() : null,
             ]);
         }
 

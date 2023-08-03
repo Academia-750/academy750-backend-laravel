@@ -80,9 +80,6 @@ class Authorizer implements TestsInterface
         return $this->schemaJson->get_cards_memory();
     }
 
-    /**
-     * @throws \Throwable
-     */
     public function resolve_a_question_of_test($request)
     {
         $test_id = $request->get('test_id');
@@ -92,11 +89,13 @@ class Authorizer implements TestsInterface
             ->orWhere('uuid', $test_id)
             ->first();
 
-        abort_if(!$test, 404, "El Test o Cuestionario con Identificador {$test_id} no fue encontrado.");
+        \Log::debug($test);
+
+        /*abort_if(!$test, 404, "El Test o Cuestionario con Identificador {$test_id} no fue encontrado.");*/
 
         $question_id = Question::query()->firstWhere('uuid', '=', $request->get('question_id'))?->getKey();
 
-        abort_if(!$question_id, 404, "La pregunta con Identificador {$request->get('question_id')} no fue encontrado.");
+        /*abort_if(!$question_id, 404, "La pregunta con Identificador {$request->get('question_id')} no fue encontrado.");*/
 
         /*$questionQuery = $test->questions()
             ->where(function ($query) use ($question_id) {
@@ -107,7 +106,9 @@ class Authorizer implements TestsInterface
             ->where('question_test.question_id', $question_id)
             ->first();
 
-        abort_if(!$questionQuery, 404, "La pregunta con Identificador {$question_id} no pertenece al Test actual.");
+        \Log::debug($questionQuery);
+
+        //abort_if(!$questionQuery, 404, "La pregunta con Identificador {$question_id} no pertenece al Test actual.");
 
         if ($request->get('answer_id')) {
             $answer_id = $request->get('answer_id');
