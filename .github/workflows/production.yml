@@ -49,3 +49,4 @@ jobs:
             php artisan migrate --force
             php artisan up
             echo "🎉 Deployment finished!"
+            chown -R  webapps:webapps /home/acade750/domains/academia750.es/public_html/tianlu
