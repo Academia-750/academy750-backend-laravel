@@ -307,7 +307,8 @@ class MaterialController extends Controller
             if (!$material) {
                 return response()->json([
                     'status' => 'error',
-                    'error' => 'Material not found'
+                    'error' => 'Material not found 2 ',
+                    'material' => $material
                 ], 404);
             }
 
