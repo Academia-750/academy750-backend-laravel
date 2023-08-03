@@ -266,7 +266,7 @@ class MaterialController extends Controller
     public function putEditMaterial(EditMaterialRequest $request, $materialId)
     {
         try {
-            $material = Workspace::find($materialId);
+            $material = Material::find($materialId);
 
             if (!$material) {
                 return response()->json([
@@ -302,13 +302,12 @@ class MaterialController extends Controller
     {
 
         try {
-            $material = Workspace::find($materialId);
+            $material = Material::find($materialId);
 
             if (!$material) {
                 return response()->json([
                     'status' => 'error',
-                    'error' => 'Material not found 2 ',
-                    'material' => $material
+                    'error' => 'Material not found'
                 ], 404);
             }
 
