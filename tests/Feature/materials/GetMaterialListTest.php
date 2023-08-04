@@ -46,7 +46,8 @@ class GetMaterialListTest extends TestCase
                 )
             )
             ->sequence(fn($sequence) => ['updated_at' => now()->add($sequence->index * 10, 'seconds')])
-            ->withTags()
+            ->sequence(['tags' => 'fire'], ['tags' => 'water'], ['tags' => 'smoke'], ['tags' => 'security'])
+
             ->withUrl()
             ->create();
     }
