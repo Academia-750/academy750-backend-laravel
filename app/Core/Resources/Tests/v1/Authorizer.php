@@ -89,9 +89,9 @@ class Authorizer implements TestsInterface
             ->orWhere('uuid', $test_id)
             ->first();
 
-        \Log::debug($test);
 
         /*abort_if(!$test, 404, "El Test o Cuestionario con Identificador {$test_id} no fue encontrado.");*/
+        abort_if(!$test, 404, "No existe el Test o cuestionario con identificador {$request->get('test_id')}");
 
         $question_id = Question::query()->firstWhere('uuid', '=', $request->get('question_id'))?->getKey();
 

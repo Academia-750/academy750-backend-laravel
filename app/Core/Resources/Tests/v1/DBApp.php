@@ -64,16 +64,20 @@ class DBApp implements TestsInterface
     {
         try {
 
+            \Log::debug("-------Ordenamos toda la información que usaremos");
             $dataForTheBuildTest = TestsService::getDataToCreateTests( $request );
 
             abort_if(!$dataForTheBuildTest['userAuth'], 404);
 
+            \Log::debug("-------Crear la referencia del Test y actualizar información");
             $dataForTheBuildTest = TestsService::createTestReference( $dataForTheBuildTest );
 
+            \Log::debug("-------Registrar temas y subtemas");
             TestsService::registerTopicsAndSubtopicsByTest(
                 $dataForTheBuildTest
             );
 
+            \Log::debug("-------Aquí comienza el proceso de buscar preguntas");
             QuestionsTestService::buildQuestionsTest(
                 $dataForTheBuildTest
             );

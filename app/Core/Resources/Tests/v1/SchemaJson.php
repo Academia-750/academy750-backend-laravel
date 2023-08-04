@@ -82,7 +82,7 @@ class SchemaJson implements TestsInterface
 
         $test = Test::query()
             ->where('id', $request->get('test_id'))
-            ->where('uuid', $request->get('test_id'))
+            ->orWhere('uuid', $request->get('test_id'))
             ->first();
 
         abort_if(!$test, 404, "No existe el Test o cuestionario con identificador {$request->get('test_id')}");
