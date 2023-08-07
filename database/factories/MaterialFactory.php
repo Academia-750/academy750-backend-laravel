@@ -11,7 +11,7 @@ class MaterialFactory extends Factory
 
     public function types(): array
     {
-        return ['pdf', 'video', 'document'];
+        return ['material', 'recording'];
     }
 
     public function randomType(): string

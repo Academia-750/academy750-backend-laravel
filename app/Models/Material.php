@@ -10,7 +10,7 @@ class Material extends Model
 {
     public static function allowedTypes()
     {
-        return ['pdf', 'video', 'document'];
+        return ['material', 'recording'];
     }
 
     use HasFactory;

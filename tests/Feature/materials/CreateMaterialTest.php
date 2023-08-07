@@ -74,9 +74,9 @@ class CreateMaterialTest extends TestCase
     {
         $this->post("api/v1/workspace/{$this->workspace->id}/add", [])->assertStatus(422);
         // Name
-        $this->post("api/v1/workspace/{$this->workspace->id}/add", ['type' => 'pdf'])->assertStatus(422);
-        $this->post("api/v1/workspace/{$this->workspace->id}/add", ['name' => '', 'type' => 'pdf'])->assertStatus(422);
-        $this->post("api/v1/workspace/{$this->workspace->id}/add", ['name' => 'Others!', 'type' => 'pdf'])->assertStatus(422);
+        $this->post("api/v1/workspace/{$this->workspace->id}/add", ['type' => 'material'])->assertStatus(422);
+        $this->post("api/v1/workspace/{$this->workspace->id}/add", ['name' => '', 'type' => 'material'])->assertStatus(422);
+        $this->post("api/v1/workspace/{$this->workspace->id}/add", ['name' => 'Others!', 'type' => 'material'])->assertStatus(422);
         // Type
         $this->post("api/v1/workspace/{$this->workspace->id}/add", ['name' => 'CorrectName'])->assertStatus(422);
         $this->post("api/v1/workspace/{$this->workspace->id}/add", ['name' => 'CorrectName', 'type' => 'wrong_type'])->assertStatus(422);
