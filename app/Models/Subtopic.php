@@ -36,7 +36,8 @@ class Subtopic extends Model
         "day",
         "month",
         "year",
-        "date"
+        "date",
+        "is-available"
     ];
 
     public array $adapterFilters = [
@@ -45,6 +46,7 @@ class Subtopic extends Model
         "month" => "Month",
         "year" => "Year",
         "date" => "Date",
+        "is-available" => "isAvailable"
     ];
 
     public array $allowedIncludes = [
@@ -84,6 +86,10 @@ class Subtopic extends Model
     }
     public function filterDate(Builder $query, $value): void{
         $query->whereDate('created_at', $value);
+    }
+
+    public function filterIsAvailable(Builder $query, $value): void{
+        $query->where('is_available', $value);
     }
 
     public function filterSearch(Builder $query, $value): void{

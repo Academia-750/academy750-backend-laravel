@@ -64,7 +64,7 @@ class TestsService
      */
     public static function getSubtopicsByOppositionAndTopics (array $topicsSelected_id, string $opposition_id ): array {
         $subtopics_id = DB::select(
-            "call get_subtopics_ids_for_test(?,?)",
+            "call get_subtopics_ids_for_test_procedure(?,?)",
             array($opposition_id, implode(',', $topicsSelected_id))
         );
 

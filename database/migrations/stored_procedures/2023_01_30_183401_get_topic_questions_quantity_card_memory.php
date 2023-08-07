@@ -7,6 +7,8 @@ use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
+    public function __construct(Public string $nameProcedure = 'get_topic_questions_quantity_card_memory_procedure'){}
+
     /**
      * Run the migrations.
      *
@@ -14,8 +16,8 @@ return new class extends Migration
      */
     public function up()
     {
-        $procedure1= "DROP PROCEDURE IF EXISTS `get_topic_questions_quantity_card_memory`;
-        CREATE PROCEDURE `get_topic_questions_quantity_card_memory`(
+        $procedure1= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
+        CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `id_tema` VARCHAR(255),
             IN `id_oposicion` VARCHAR(255)
         )
@@ -37,7 +39,7 @@ return new class extends Migration
      */
     public function down()
     {
-        $procedure1= "DROP PROCEDURE IF EXISTS `get_topic_questions_quantity_card_memory`";
+        $procedure1= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
 
         DB::unprepared($procedure1);
 

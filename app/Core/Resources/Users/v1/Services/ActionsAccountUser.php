@@ -15,7 +15,7 @@ class ActionsAccountUser
         DB::table('personal_access_tokens')->where('tokenable_id', '=', $user->getRouteKey())->delete();
 
         DB::select(
-            "CALL delete_user_data_test(?)",
+            "CALL delete_user_data_test_procedure(?)",
             array($user->id)
         );
 

@@ -20,7 +20,7 @@ class GetTopicsAvailableForTestService
 
     public static function executeQueryFilterTopicsAvailableByOppositionAndTopicGroup (string $opposition_id, string $topics_group_id): array {
         $topic_data = DB::select(
-            "call topics_available_for_create_test(?,?)",
+            "call topics_available_for_create_test_procedure(?,?)",
             array($opposition_id, $topics_group_id)
         );
 

@@ -25,7 +25,7 @@ class DBApp implements QuestionsInterface
 
         $questions_id = $subtopic->questions()->pluck("id");
 
-        return $this->model->query()->whereIn('id', $questions_id->toArray())->where('is_visible', 'yes')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model->query()->whereIn('id', $questions_id->toArray())/*->where('is_visible', 'yes')*/->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
     public function subtopic_relationship_questions_read($subtopic, $question)
@@ -99,9 +99,12 @@ class DBApp implements QuestionsInterface
     public function subtopic_relationship_questions_delete($subtopic, $question)
     {
         try {
-            DB::beginTransaction();
 
             $countTestsCreatedByThisQuestion = $question->tests()->count();
+
+            DB::table('questions_used_test')
+                ->where('question_id', $question->id)
+                ->delete();
 
             if ($countTestsCreatedByThisQuestion) {
                 $question->is_visible = 'no';
@@ -109,12 +112,6 @@ class DBApp implements QuestionsInterface
             } else {
                 $question->delete();
             }
-
-            DB::table('questions_used_test')
-                ->where('question_id', $question->id)
-                ->delete();
-
-            DB::commit();
 
             return "Successfully";
         } catch (\Exception $e) {
@@ -131,14 +128,14 @@ class DBApp implements QuestionsInterface
 
         if (request()?->query('filter') && request()?->query('filter')['search']) {
             $questions_id = DB::select(
-                "call search_question_in_topics_and_subtopics(?,?)",
+                "call search_question_in_topics_and_subtopics_procedure(?,?)",
                 array(request()?->query('filter')['search'], $topic->getRouteKey())
             ); //search_question_in_topics_and_subtopics
 
 
             $questions_id = collect($questions_id)->pluck('id')->toArray();
 
-            return Question::query()->whereIn('id', $questions_id)->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
+            return Question::query()->whereIn('id', $questions_id)->applyFilters()/*->where('is_visible', 'yes')*/->applySorts()->applyIncludes()->jsonPaginate();
         }
 
         return $topic->questions()->applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->jsonPaginate();
@@ -215,9 +212,12 @@ class DBApp implements QuestionsInterface
     public function topic_relationship_questions_delete($topic, $question)
     {
         try {
-            DB::beginTransaction();
 
             $countTestsCreatedByThisQuestion = $question->tests()->count();
+
+            DB::table('questions_used_test')
+                ->where('question_id', $question->id)
+                ->delete();
 
             if ($countTestsCreatedByThisQuestion) {
                 $question->is_visible = 'no';
@@ -225,12 +225,6 @@ class DBApp implements QuestionsInterface
             } else {
                 $question->delete();
             }
-
-            DB::table('questions_used_test')
-                ->where('question_id', $question->id)
-                ->delete();
-
-            DB::commit();
 
             return "Successfully";
         } catch (\Exception $e) {

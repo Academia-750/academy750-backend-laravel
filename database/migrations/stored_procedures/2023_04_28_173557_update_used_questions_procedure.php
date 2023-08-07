@@ -23,7 +23,7 @@ return new class extends Migration
     {
         $procedure= "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
-            IN `id_test` VARCHAR(36),
+            IN `id_test` VARCHAR(36)
         )
         BEGIN
     DECLARE id_usuario VARCHAR(36);
@@ -82,8 +82,8 @@ OPEN cur1;
           LEAVE read_loop;
         END IF;
 
-        IF EXISTS(SELECT 1 FROM questions_used_test WHERE question_id =v_id and user_id = id_usuario and opossition_id = id_oposicion LIMIT 1) THEN
-          UPDATE questions_used_test SET result = 0 WHERE question_id =v_id and user_id = id_usuario and opossition_id = id_oposicion;
+        IF EXISTS(SELECT 1 FROM questions_used_test WHERE question_id =v_id and user_id = id_usuario and opposition_id = id_oposicion LIMIT 1) THEN
+          UPDATE questions_used_test SET result = 0 WHERE question_id =v_id and user_id = id_usuario and opposition_id = id_oposicion;
 /*INSERT INTO tmp_log VALUES ('UPDATE - QUESTION',v_id);
 INSERT INTO tmp_log VALUES ('UPDATE - USUARIO',id_usuario );
 INSERT INTO tmp_log VALUES ('UPDATE - OPO',id_oposicion );*/
@@ -134,8 +134,8 @@ INSERT INTO tmp_log VALUES ('INSERT - OPO',id_oposicion );*/
           LEAVE read_loop;
         END IF;
 
-        IF EXISTS(SELECT 1 FROM questions_used_test WHERE question_id =v_id and user_id = id_usuario and opossition_id = id_oposicion LIMIT 1) THEN
-          UPDATE questions_used_test SET result = 1 WHERE question_id =v_id and user_id = id_usuario and opossition_id = id_oposicion;
+        IF EXISTS(SELECT 1 FROM questions_used_test WHERE question_id =v_id and user_id = id_usuario and opposition_id = id_oposicion LIMIT 1) THEN
+          UPDATE questions_used_test SET result = 1 WHERE question_id =v_id and user_id = id_usuario and opposition_id = id_oposicion;
 /*INSERT INTO tmp_log VALUES ('UPDATE - OK - QUESTION',v_id);
 INSERT INTO tmp_log VALUES ('UPDATE - OK - USUARIO',id_usuario );
 INSERT INTO tmp_log VALUES ('UPDATE - OK - OPO',id_oposicion );*/
