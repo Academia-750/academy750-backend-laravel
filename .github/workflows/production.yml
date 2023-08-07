@@ -1,6 +1,8 @@
 name: Deploy API
 on:
   push:
+    branches:
+      - v1.0.*/*
     tags:
       - "*" # Everything that doesnt include  '/' character
 
