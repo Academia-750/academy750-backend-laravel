@@ -44,6 +44,7 @@ class TopicsController extends Controller
         // ]);
 
         return $this->topicsInterface->get_topics_available_for_create_test($request);
+
     }
 
     public function create(CreateTopicRequest $request)

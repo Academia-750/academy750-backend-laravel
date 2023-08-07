@@ -48,5 +48,8 @@ jobs:
             php artisan optimize
             php artisan migrate --force
             php artisan up
+            php artisan config:cache
+            php artisan config:clear
+            php artisan cache:clear
             echo "🎉 Deployment finished!"
             chown -R  webapps:webapps /home/acade750/domains/academia750.es/public_html/tianlu

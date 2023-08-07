@@ -22,55 +22,63 @@ class DBApp implements TopicsInterface
 {
     protected Topic $model;
 
-    public function __construct(Topic $topic ){
+    public function __construct(Topic $topic)
+    {
         $this->model = $topic;
     }
 
-    public function index(){
+    public function index()
+    {
         return $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function get_topics_available_for_create_test($request){
+    public function get_topics_available_for_create_test($request)
+    {
+        try {
+            // \Log::debug("---------------------Data Request---------------------");
+            // \Log::debug($request);
+            //// \Log::debug(implode(',', $request->get('topics-group-id')));
 
-        // \Log::debug("---------------------Data Request---------------------");
-        // \Log::debug($request);
-        //// \Log::debug(implode(',', $request->get('topics-group-id')));
+
+            $topics_procedure_results = [];
+
+            /*foreach ($request->get('topics-group-id') as $topicGroupId) {
+                // \Log::debug("---------------------Iteración {$topicGroupId}---------------------");
+                // \Log::debug($topicGroupId);
+
+                $topics_procedure_results = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup($request->get('opposition-id'), $topicGroupId);
+                // \Log::debug($topics_procedure_results);
+
+                $topics_id = array_merge(
+                    $topics_id,
+                    $topics_procedure_results
+                );
 
 
-        $topics_procedure_results = [];
+            }*/
 
-        /*foreach ($request->get('topics-group-id') as $topicGroupId) {
-            // \Log::debug("---------------------Iteración {$topicGroupId}---------------------");
-            // \Log::debug($topicGroupId);
-
-            $topics_procedure_results = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup($request->get('opposition-id'), $topicGroupId);
-            // \Log::debug($topics_procedure_results);
-
-            $topics_id = array_merge(
-                $topics_id,
-                $topics_procedure_results
+            $topics_id = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup(
+                $request->get('opposition-id'),
+                implode(',', (array) $request->get('topics-group-id'))
             );
 
 
-        }*/
+            // \Log::debug("---------------------Final Array Topics ID---------------------");
+            // \Log::debug($topics_id);
 
-        $topics_id = GetTopicsAvailableForTestService::executeQueryFilterTopicsAvailableByOppositionAndTopicGroup(
-            $request->get('opposition-id'),
-            implode(',', (array) $request->get('topics-group-id'))
-        );
+            //$topics_id = collect($topics_id)->pluck('id')->toArray();
+            //// \Log::debug($topics_id);
 
-
-        // \Log::debug("---------------------Final Array Topics ID---------------------");
-        // \Log::debug($topics_id);
-
-        //$topics_id = collect($topics_id)->pluck('id')->toArray();
-        //// \Log::debug($topics_id);
-
-        return $this->model->query()->whereIn('id', $topics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
-        //return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+            return $this->model->query()->whereIn('id', $topics_id)->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+            //return $this->model->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        } catch (\Exception $e) {
+            DB::rollback();
+            abort(500, $e->getMessage());
+        }
     }
 
-    public function create( $request ): \App\Models\Topic{
+    public function create($request): \App\Models\Topic
+    {
 
         try {
 
@@ -85,21 +93,23 @@ class DBApp implements TopicsInterface
 
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
-    public function read( $topic ): \App\Models\Topic{
+    public function read($topic): \App\Models\Topic
+    {
         return $this->model->applyIncludes()->find($topic->getRouteKey());
     }
 
-    public function update( $request, $topic ): \App\Models\Topic{
+    public function update($request, $topic): \App\Models\Topic
+    {
         try {
 
             DB::beginTransaction();
-                $topic->name = $request->get('name') ?? $topic->name;
-                $topic->topic_group_id = $request->get('topic-group-id') ?? $topic->topic_group_id;
-                $topic->save();
+            $topic->name = $request->get('name') ?? $topic->name;
+            $topic->topic_group_id = $request->get('topic-group-id') ?? $topic->topic_group_id;
+            $topic->save();
             DB::commit();
 
             return $this->model->applyIncludes()->find($topic->getRouteKey());
@@ -111,12 +121,13 @@ class DBApp implements TopicsInterface
 
     }
 
-    public function delete( $topic ): void{
+    public function delete($topic): void
+    {
         try {
 
             DB::beginTransaction();
-                //$topic->delete();
-                ActionsTopicsRecords::deleteRecord( $topic );
+            //$topic->delete();
+            ActionsTopicsRecords::deleteRecord($topic);
             DB::commit();
 
         } catch (\Exception $e) {
@@ -126,12 +137,13 @@ class DBApp implements TopicsInterface
 
     }
 
-    public function action_for_multiple_records( $request ): array{
+    public function action_for_multiple_records($request): array
+    {
         try {
 
             DB::beginTransaction();
 
-                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('topics'));
+            $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('topics'));
 
             DB::commit();
 
@@ -148,14 +160,15 @@ class DBApp implements TopicsInterface
 
     }
 
-    public function export_records( $request ): \Symfony\Component\HttpFoundation\BinaryFileResponse{
+    public function export_records($request): \Symfony\Component\HttpFoundation\BinaryFileResponse
+    {
         if ($request->get('type') === 'pdf') {
             $domPDF = App::make('dompdf.wrapper');
             $topics = $this->model->query()->whereIn('id', $request->get('topics'))->get();
             $domPDF->loadView('resources.export.templates.pdf.topics', compact('topics'))->setPaper('a4', 'landscape')->setWarnings(false);
             return $domPDF->download('report-topics.pdf');
         }
-        return Excel::download(new TopicsExport($request->get('topics')), 'topics.'. $request->get('type'));
+        return Excel::download(new TopicsExport($request->get('topics')), 'topics.' . $request->get('type'));
     }
 
     public function get_relationship_subtopics($topic)
@@ -233,10 +246,10 @@ class DBApp implements TopicsInterface
 
             DB::beginTransaction();
 
-                $subtopicCreated = Subtopic::query()->create([
-                    'name' => $request->get('name'),
-                    'topic_id' => $topic->getRouteKey()
-                ]);
+            $subtopicCreated = Subtopic::query()->create([
+                'name' => $request->get('name'),
+                'topic_id' => $topic->getRouteKey()
+            ]);
 
             DB::commit();
 
@@ -354,7 +367,8 @@ class DBApp implements TopicsInterface
 
     }
 
-    public function update_subtopics_opposition_by_topic ($request, $topic, $opposition) {
+    public function update_subtopics_opposition_by_topic($request, $topic, $opposition)
+    {
 
         $topics_id_by_opposition = $opposition->topics->pluck("id");
 
@@ -444,27 +458,27 @@ class DBApp implements TopicsInterface
         try {
 
             DB::beginTransaction();
-                $questionCreated = $topic->questions()->create([
-                    'question' => $request->get('question-text'),
-                    'reason' => $request->get('reason'),
-                    'is_visible' => $request->get('is_visible')
-                ]);
+            $questionCreated = $topic->questions()->create([
+                'question' => $request->get('question-text'),
+                'reason' => $request->get('reason'),
+                'is_visible' => $request->get('is_visible')
+            ]);
 
-                foreach ( $request->get('answers') as $answer) {
-                    Answer::query()->create([
-                        "answer" => $answer["answer-text"],
-                        "is_grouper_answer" => $answer["is_grouper_answer"],
-                        "is_correct_answer" => $answer["is_correct_answer"],
-                        "question_id" => $questionCreated->id,
-                    ]);
-                }
+            foreach ($request->get('answers') as $answer) {
+                Answer::query()->create([
+                    "answer" => $answer["answer-text"],
+                    "is_grouper_answer" => $answer["is_grouper_answer"],
+                    "is_correct_answer" => $answer["is_correct_answer"],
+                    "question_id" => $questionCreated->id,
+                ]);
+            }
             DB::commit();
 
             return $this->model->applyIncludes()->find($topic->id);
 
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
@@ -479,7 +493,7 @@ class DBApp implements TopicsInterface
                 'is_visible' => $request->get('is_visible') ?? $question->is_visible
             ]);
 
-            foreach ( $request->get('answers') as $answer) {
+            foreach ($request->get('answers') as $answer) {
                 $answer = Answer::query()->findOrFail($answer["id"]);
 
                 $answer->answer = $answer["answer-text"];
@@ -495,7 +509,7 @@ class DBApp implements TopicsInterface
 
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
@@ -509,7 +523,8 @@ class DBApp implements TopicsInterface
         return Topic::applyFilters()->where('is_visible', 'yes')->applySorts()->applyIncludes()->get();
     }
 
-    public function import_records( $request ): void{
+    public function import_records($request): void
+    {
         // IMPORTAR TEMAS
 
         try {
@@ -523,13 +538,13 @@ class DBApp implements TopicsInterface
                 );*/
 
                 (
-                new TopicsImport(Auth::user(), $file->getClientOriginalName())
+                    new TopicsImport(Auth::user(), $file->getClientOriginalName())
                 )->import($file);
 
             }
 
         } catch (\Exception $e) {
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
 
     }
@@ -548,13 +563,13 @@ class DBApp implements TopicsInterface
                 );*/
 
                 (
-                new SubtopicsImport(Auth::user(), $file->getClientOriginalName())
+                    new SubtopicsImport(Auth::user(), $file->getClientOriginalName())
                 )->import($file);
 
             }
 
         } catch (\Exception $e) {
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
