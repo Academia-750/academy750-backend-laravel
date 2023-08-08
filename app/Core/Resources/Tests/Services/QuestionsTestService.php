@@ -10,57 +10,61 @@ use Illuminate\Support\Facades\Log;
 
 class QuestionsTestService
 {
-    public static function buildQuestionsTest (int $amountQuestionsRequestedByTest, string $testType, User $user, Test $test, array $topicsSelected_id, string $opposition_id )
+    public static function buildQuestionsTest ( array $data ): array
     {
+        \Log::debug("-------Aquí ejecutamos SP de obtener preguntas, le pasamos toda la data");
 
+        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure(
+            $data['CountQuestionsTest'],
+            $data['userAuthID'],
+            $data['topics_id'],
+            $data['RequestTestIsCardMemory'],
+            $data['opposition_id']
+        );
 
-        $TotalQuestionsGottenByAllTopicsSelected = self::getQuestionsByTestProcedure($amountQuestionsRequestedByTest, $user, $topicsSelected_id, $testType === 'card_memory', $opposition_id);
+        // Una vez obtenemos las preguntas disponibles para este Test, contamos cuantas preguntas obtuvimos y guardamos esa información en la referencia del Test
+        \Log::debug("-------Una vez obtenemos las preguntas disponibles para este Test, contamos cuantas preguntas obtuvimos y guardamos esa información en la referencia del Test");
+        $data['testRecordReferenceCreated']->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
+        $data['testRecordReferenceCreated']->save();
 
-        $start_time__update_field_number_of_questions_generated_test = microtime(true);
-        Log::debug("+++Aqui se ejecuta el proceso de actualizar el campo 'number_of_questions_generated' el cuál significa cuantas preguntas de forma precisa tendrá este test del alumno: {$user?->full_name} con id {$user?->id}");
+        \Log::debug("-------Registramos las preguntas en el question_test tabla");
+        self::registerQuestionsHistoryByTest(
+            $TotalQuestionsGottenByAllTopicsSelected,
+            $data['testRecordReferenceCreated'],
+            $data['RequestTestIsCardMemory']
+        );
 
-        $test->number_of_questions_generated = count($TotalQuestionsGottenByAllTopicsSelected);
-        $test->save();
-
-        $elapsed_time__update_field_number_of_questions_generated_test = microtime(true) - $start_time__update_field_number_of_questions_generated_test;
-        Log::debug("---Aqui se termina el proceso de actualizar el campo 'number_of_questions_generated' el cuál significa cuantas preguntas de forma precisa tendrá este test del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__update_field_number_of_questions_generated_test} segundos");
-
-        // Registramos que todas las preguntas disponibles recolectadas, se registren en el Test a generar
-
-        $start_time__registerQuestionsHistoryByTest = microtime(true);
-        Log::debug("+++Aqui se ejecuta el proceso de registrar las preguntas en la tabla 'question_test' para relacionar cada test con sus respectivas preguntas del alumno: {$user?->full_name} con id {$user?->id}");
-        self::registerQuestionsHistoryByTest($TotalQuestionsGottenByAllTopicsSelected, $test, $testType, $user);
-        $elapsed_time__registerQuestionsHistoryByTest = microtime(true) - $start_time__registerQuestionsHistoryByTest;
-        Log::debug("---Aqui se termina el proceso de registrar las preguntas en la tabla 'question_test' para relacionar cada test con sus respectivas preguntas del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__registerQuestionsHistoryByTest} segundos");
-
+        \Log::debug("-------Justo aquí ya termina todo el proceso");
         return $TotalQuestionsGottenByAllTopicsSelected;
     }
 
-    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, User $user, array $topicsSelected_id, bool $isCardMemory, string $opposition_id ) {
-
+    public static function getQuestionsByTestProcedure (int $amountQuestionsRequestedByTest, int $user_id, array $topicsSelected_id, bool $isCardMemory, int $opposition_id ): array
+    {
         $nameProcedure = GetQuestionsByTopicProceduresService::getNameFirstProcedure($isCardMemory);
+
+        $topics__id = implode(',',$topicsSelected_id);
+        \Log::debug("----- Aquí imprimo la data que le pasaremos al SP de obtener preguntas");
+        \Log::debug("nombre procedure: {$nameProcedure}");
+        \Log::debug("topics id: {$topics__id}");
+        \Log::debug("Oposicion id: {$opposition_id}");
+        \Log::debug("usuario id: {$user_id}");
+        \Log::debug("numero preguntas: {$amountQuestionsRequestedByTest}");
 
         $questions_id = GetQuestionsByTopicProceduresService::callFirstProcedure(
             $nameProcedure,
             array(
                 implode(',',$topicsSelected_id),
-                Opposition::query()->firstWhere('uuid', $opposition_id)?->getKey(),
-                $user->getKey(),
+                $opposition_id,
+                $user_id,
                 $amountQuestionsRequestedByTest
             )
         );
-
-        //$questions_id = [];
-
-        //$start_time__shuffle_questions = microtime(true);
-        //Log::debug("+++Aqui se ejecuta el proceso de desordenar las preguntas mapeadas que ya son compatibles en este momento con el Backend PHP del alumno: {$user?->full_name} con id {$user?->id}");
+        \Log::debug("Aquí ya termino el SP, ahora cambiamos el orden de las preguntas");
         shuffle($questions_id);
-        //$elapsed_time__shuffle_questions = microtime(true) - $start_time__shuffle_questions;
-        //Log::debug("---Aqui se termina el proceso de desordenar las preguntas mapeadas que ya son compatibles en este momento con el Backend PHP del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__shuffle_questions} segundos");
 
         return $questions_id;
     }
-    public static function registerQuestionsHistoryByTest (array $questions_id, Test $test, string $testType, User $user): void {
+    public static function registerQuestionsHistoryByTest (array $questions_id, $test, bool $TestRequestedIsCardMemory): void {
         $index = 0;
         $pivotData = [];
 
@@ -69,14 +73,12 @@ class QuestionsTestService
             $pivotData[$question_id] = [
                 'index' => $index,
                 'have_been_show_test' => 'no',
-                'have_been_show_card_memory' => $testType === 'card_memory' ? 'yes' : 'no',
+                'have_been_show_card_memory' => $TestRequestedIsCardMemory ? 'yes' : 'no',
                 'answer_id' => null,
                 'status_solved_question' => 'unanswered',
             ];
         }
-
         $test->questions()->attach($pivotData);
-
     }
 
 

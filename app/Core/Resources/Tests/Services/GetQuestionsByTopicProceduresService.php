@@ -53,9 +53,6 @@ class GetQuestionsByTopicProceduresService
 
     public static function callFirstProcedure (string $nameProcedure, array $data): array
     {
-        $user = auth()?->user();
-
-
         $questionsDataIDFirstProcedure = DB::select(
             "call {$nameProcedure}(?,?,?,?)",
             $data

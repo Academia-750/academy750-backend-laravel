@@ -1,8 +1,17 @@
 <?php
 
+/**
+ * In production server we get the error CURL_SSLVERSION_TLSv1_2 not defined.
+ * This is a workaround lol
+ */
+if (!defined('CURL_SSLVERSION_TLSv1_2')) {
+    define('CURL_SSLVERSION_TLSv1_2', 6);
+}
+
 return [
 
-    'dsn' => env('SENTRY_LARAVEL_DSN', 'https://0197f8b6c0e84a1392c482df0d52b6b6@o4504918337978368.ingest.sentry.io/4504924471689216'/*env('SENTRY_DSN')*/),
+    'dsn' => env('SENTRY_LARAVEL_DSN'),
+
 
     // The release version of your application
     // Example with dynamic git hash: trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD'))
@@ -76,6 +85,6 @@ return [
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces-sample-rate
-    'traces_sample_rate' => env('SENTRY_TRACES_SAMPLE_RATE') === null ? null : (float)env('SENTRY_TRACES_SAMPLE_RATE'),
+    'traces_sample_rate' => env('SENTRY_TRACES_SAMPLE_RATE') === null ? null : (float) env('SENTRY_TRACES_SAMPLE_RATE'),
 
 ];
