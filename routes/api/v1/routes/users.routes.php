@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('users', [UsersController::class, 'index'])->name('api.v1.users.index');
 Route::get('users/search', [UsersController::class, 'search'])->middleware('onlyAdmin')->name('api.v1.users.search');
 Route::get('users/{user}', [UsersController::class, 'read'])->name('api.v1.users.read');
-Route::post('users/create', [UsersController::class, 'create'])->name('api.v1.users.create');
+Route::post('users/create', [UsersController::class, 'create'])->name('api.v1.users.create')->middleware('onlyAdmin');
 
 Route::patch('users/update/{user}', [UsersController::class, 'update'])->name('api.v1.users.update');
 Route::delete('users/delete/{user}', [UsersController::class, 'delete'])->name('api.v1.users.delete');

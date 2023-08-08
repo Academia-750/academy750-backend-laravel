@@ -23,12 +23,12 @@ function defaultValue($value, $default)
 /**
  * Helper for the get API. Maps a hash to a query object
  */
-function parseFilter($key, $value, $operation = '=')
+function parseFilter($key, $value, $operation = '=', $opts = [])
 {
     if (is_null($value)) {
         return null;
     }
-    return function ($query) use ($value, $operation, $key) {
+    return function ($query) use ($value, $operation, $key, $opts) {
 
         switch ($operation) {
             case 'in':
@@ -40,8 +40,18 @@ function parseFilter($key, $value, $operation = '=')
             case 'or_like':
                 $query->where(function ($subQuery) use ($value, $key) {
                     array_map(function ($key) use ($value, $subQuery) {
-                        $subQuery->orWhere($key, 'like', '%' . $value . '%');
+                        $value = is_array($value) ? $value : [$value];
+                        array_map(fn($item) => $subQuery->orWhere($key, 'like', '%' . $item . '%'), $value);
                     }, $key);
+                });
+                break;
+            case 'notHave':
+                if (!$opts['field']) {
+                    throw new \Exception('Error: Parse filter `notHave` operation requires of the $opts["fields"]');
+                }
+                $query->whereDoesntHave($key, function ($query) use ($value, $opts) {
+
+                    $query->where($opts['field'], $value);
                 });
                 break;
             default:

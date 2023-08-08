@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Material;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -76,12 +77,12 @@ class DeleteWorkspaceTest extends TestCase
     /** @test */
     public function delete_workspace_and_materials_200(): void
     {
-        // TODO when we get materials CRUD
-        $this->markTestSkipped();
-        $this->delete("api/v1/workspace/{$this->workspace->id}")->assertStatus(200);
-        $workspace = Workspace::find($this->workspace->id);
 
-        $this->assertNull($workspace);
+        Material::factory()->state(['workspace_id' => $this->workspace->id])->count(4)->create();
+
+        $this->delete("api/v1/workspace/{$this->workspace->id}")->assertStatus(200);
+
+        $this->assertEmpty(Material::all());
     }
 
 }
