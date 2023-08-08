@@ -40,7 +40,7 @@ class ActionsAccountUser
     {
 
         if (!($user instanceof User)) {
-            $user = User::query()->findOrFail($user->getKey());
+            $user = User::query()->findOrFail($user);
         }
 
         self::removeAllTokensByUserReally($user);
@@ -57,7 +57,7 @@ class ActionsAccountUser
     {
 
         if (!($user instanceof User)) {
-            $user = User::query()->findOrFail($user->getKey());
+            $user = User::query()->findOrFail($user);
         }
 
         self::removeAllTokensByUserReally($user);
