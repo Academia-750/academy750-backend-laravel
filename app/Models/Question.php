@@ -21,6 +21,7 @@ class Question extends Model
 
     protected $fillable = [
         "id",
+        "uuid",
         "question",
         "reason",
         "is_question_binary_alternatives",
