@@ -1,7 +1,7 @@
 <?php
 namespace App\Core\Resources\Tests\v1;
 
-use App\Core\Resources\Tests\Services\TestsQuestionsService;
+use App\Core\Resources\Tests\Services\QueryParametersQuestionsForResolveTest;
 use App\Http\Resources\Api\Question\v1\QuestionByTestCollection;
 use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
@@ -34,12 +34,15 @@ class SchemaJson implements TestsInterface
 
         $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
 
+        $tESTdATA = $this->eventApp->fetch_unresolved_test( $test );
+        //\Log::debug($tESTdATA);
+
         return QuestionByTestCollection::make(
-            $this->eventApp->fetch_unresolved_test( $test )
+            $tESTdATA
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => TestsQuestionsService::getQuestionsDataTestSortByIndexByTest($test),
+                'questions_data' => QueryParametersQuestionsForResolveTest::getQuestionsDataTestSortByIndexByTest($test),
                 'number_of_questions_answered_of_test' => $countQuestionsAnswered,
                 'total_questions_of_this_test' => $test->questions->count()
             ]
@@ -79,10 +82,10 @@ class SchemaJson implements TestsInterface
 
         $test = Test::query()
             ->where('id', $request->get('test_id'))
-            ->where('uuid', $request->get('test_id'))
+            ->orWhere('uuid', $request->get('test_id'))
             ->first();
 
-        abort_if(!$test, new ModelNotFoundException("No existe el Test o cuestionario con identificador {$request->get('test_id')}"));
+        abort_if(!$test, 404, "No existe el Test o cuestionario con identificador {$request->get('test_id')}");
 
         $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
 
@@ -108,7 +111,7 @@ class SchemaJson implements TestsInterface
         )->additional([
             'meta' => [
                 'test' => QuestionnaireResource::make($test),
-                'questions_data' => TestsQuestionsService::getQuestionsDataTestSortByIndexByTest($test)
+                'questions_data' => QueryParametersQuestionsForResolveTest::getQuestionsDataTestSortByIndexByTest($test)
             ]
         ]);
     }

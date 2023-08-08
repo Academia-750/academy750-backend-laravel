@@ -20,6 +20,7 @@ return new class extends Migration {
         if (app()->environment() === 'testing') {
             return;
         }
+
         $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `__id_oposicion` INT,
