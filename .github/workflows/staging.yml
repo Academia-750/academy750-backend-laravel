@@ -87,5 +87,6 @@ jobs:
           script: |
             cd /var/www/${{ env.FOLDER_NAME }}
             composer require --dev knuckleswtf/scribe
+            php artisan route:clear
             APP_ENV=documentation php artisan scribe:generate
             echo "🎉 Docs ready!"

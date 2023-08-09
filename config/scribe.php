@@ -347,7 +347,7 @@ INTRO
      * - 'logo' => 'img/logo.png' // for `laravel` type
      *
      */
-    'logo' => 'logo.png',
+    'logo' => '../logo.png',
 
     /**
      * Customize the "Last updated" value displayed in the docs by specifying tokens and formats.
