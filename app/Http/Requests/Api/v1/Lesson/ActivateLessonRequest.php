@@ -20,4 +20,14 @@ class ActivateLessonRequest extends FormRequest
             ]
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            'active' => [
+                'description' => 'True or False',
+                "example" => true
+            ],
+        ];
+    }
 }

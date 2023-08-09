@@ -154,7 +154,7 @@ class MaterialController extends Controller
      * Workspace: Edit
      *
      * @authenticated
-     * @urlParam workspaceId integer Workspace Id
+     * @urlParam workspaceId integer required Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
      * @apiResourceModel App\Models\Workspace
      * @response status=404 scenario="Workspace Not found"
@@ -193,7 +193,7 @@ class MaterialController extends Controller
      * Workspace: Delete
      *
      * @authenticated
-     * @urlParam workspaceId integer Workspace Id
+     * @urlParam workspaceId integer required Workspace Id
      * @response {"message": "successfully"}
      * @response status=404 scenario="Workspace Not found"
      */
@@ -230,7 +230,7 @@ class MaterialController extends Controller
      * Workspace: Info
      *
      * @authenticated
-     * @urlParam workspaceId integer Workspace Id
+     * @urlParam workspaceId integer required Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
      * @apiResourceModel App\Models\Workspace
      * @response status=404 scenario="Workspace Not found"
@@ -312,7 +312,7 @@ class MaterialController extends Controller
      * Material: Create / Add
      *
      * @authenticated
-     * @urlParam workspaceId integer Workspace Id
+     * @urlParam workspaceId integer required Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
      * @apiResourceModel App\Models\Material
      * @response status=404 scenario="Workspace Not found"

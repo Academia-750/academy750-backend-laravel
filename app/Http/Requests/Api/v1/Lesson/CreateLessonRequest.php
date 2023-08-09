@@ -37,4 +37,26 @@ class CreateLessonRequest extends FormRequest
             ],
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            'name' => [
+                'description' => 'Lesson Name',
+                "example" => 'Law Lesson 2'
+            ],
+            'date' => [
+                'description' => 'Lesson Date',
+                "example" => '2023-09-03'
+            ],
+            'start_time' => [
+                'description' => 'Lesson Name',
+                "example" => '10:00'
+            ],
+            'end_time' => [
+                'description' => 'Lesson Name',
+                "example" => '12:00'
+            ],
+        ];
+    }
 }

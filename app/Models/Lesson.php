@@ -17,7 +17,6 @@ class Lesson extends Model
         'description',
         'start_time',
         'end_time',
-        'is_digital',
         'is_active',
         'is_online',
         'url'

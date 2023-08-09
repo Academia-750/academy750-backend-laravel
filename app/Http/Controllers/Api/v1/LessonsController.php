@@ -7,6 +7,7 @@ use App\Http\Requests\Api\v1\Lesson\ActivateLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\CreateLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\CalendarLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\UpdateLessonRequest;
+use App\Http\Resources\Api\Lesson\v1\LessonResource;
 use App\Models\Lesson;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Carbon;
@@ -14,9 +15,22 @@ use Illuminate\Support\Facades\Log;
 
 
 
+/**
+ * @group Lessons
+ *
+ * APIs for managing user's Lessons
+ */
 class LessonsController extends Controller
 {
 
+    /**
+     * Lesson: Create
+     *
+     * Create a new Lesson (active is false)
+     * @authenticated
+     * @apiResource App\Http\Resources\Api\Lesson\v1\LessonResource
+     * @apiResourceModel App\Models\Lesson
+     */
     public function postCreateLesson(CreateLessonRequest $request)
     {
 
@@ -29,10 +43,8 @@ class LessonsController extends Controller
             ]);
 
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $lessonCreated
-            ]);
+            return LessonResource::make($lessonCreated);
+
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([
@@ -42,6 +54,18 @@ class LessonsController extends Controller
         }
     }
 
+
+    /**
+     * Lesson: Edit
+     *
+     * Only lessons which are not active can be edited.
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @apiResource App\Http\Resources\Api\Lesson\v1\LessonResource
+     * @apiResourceModel App\Models\Lesson
+     * @response status=404 scenario="Lesson not found"
+     * @response status=403 scenario="Lesson is Active"
+     */
     public function putEditLesson(UpdateLessonRequest $request, string $lessonId)
     {
         try {
@@ -74,10 +98,8 @@ class LessonsController extends Controller
             Lesson::query()->find($lesson->id)->update($data);
             $updated = Lesson::query()->find($lessonId);
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $updated
-            ]);
+            return LessonResource::make($updated);
+
 
         } catch (\Exception $err) {
             Log::error($err->getMessage());
@@ -88,7 +110,15 @@ class LessonsController extends Controller
         }
     }
 
-
+    /**
+     * Lesson: Info
+     *
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @apiResource App\Http\Resources\Api\Lesson\v1\LessonResource
+     * @apiResourceModel App\Models\Lesson
+     * @response status=404 scenario="Lesson not found"
+     */
     public function getLesson(string $lessonId)
     {
         try {
@@ -101,10 +131,8 @@ class LessonsController extends Controller
                 ], 404);
             }
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $lesson
-            ]);
+            return LessonResource::make($lesson);
+
 
         } catch (\Exception $err) {
             Log::error($err->getMessage());
@@ -115,7 +143,15 @@ class LessonsController extends Controller
         }
     }
 
-
+    /**
+     * Lesson: Activate
+     *
+     * Only active lessons can be edited. Only active lessons are fully visible for the students.
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {"message": "successfully"}
+     * @response status=404 scenario="Lesson not found"
+     */
     public function putActivateLesson(ActivateLessonRequest $request, $lessonId)
     {
         try {
@@ -142,6 +178,32 @@ class LessonsController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Lesson: Calendar
+     *
+     * Lessons planned between two dates.
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {
+     *     "results": [
+     *        "id": 1,
+     *        "name" : "Law Part 2" ,
+     *        "date" : "2023-02-03" ,
+     *        "start_time" : '10:00' ,
+     *        "end_time" : '12:00' ,
+     *        "description" : "We will go through the chapter 2 of the book" ,
+     *        "is_online" : false ,
+     *        "is_active" : false,
+     *        "url" : "https://zoom-url.com" ,
+     *        "students": 23,
+     *        "assistance": 10,
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ],
+     *       "total": 1
+     *  }
+     */
     public function getLessonCalendar(CalendarLessonRequest $request)
     {
         if (Carbon::parse($request->get('to'))->diffInDays($request->get('from')) > 90) {
@@ -197,6 +259,17 @@ class LessonsController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Lesson: Delete
+     *
+     * Only active lessons can be edited. Only active lessons are fully visible for the students.
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {"message": "successfully"}
+     * @response status=404 scenario="Lesson not found"
+     * @response status=403 scenario="Lesson is Active"
+     */
     public function deleteLesson(string $lessonId)
     {
         try {
@@ -232,36 +305,36 @@ class LessonsController extends Controller
     }
 
 
-    public function postLessonStudent(Request $request, string $lessonId)
-    {
+    // public function postLessonStudent(Request $request, string $lessonId)
+    // {
 
-    }
-    public function postLessonGroup(Request $request, string $lessonId)
-    {
+    // }
+    // public function postLessonGroup(Request $request, string $lessonId)
+    // {
 
-    }
-    public function deleteLessonStudent(Request $request, string $lessonId)
-    {
+    // }
+    // public function deleteLessonStudent(Request $request, string $lessonId)
+    // {
 
-    }
+    // }
 
-    public function getLessonStudents(Request $request, string $lessonId)
-    {
+    // public function getLessonStudents(Request $request, string $lessonId)
+    // {
 
-    }
+    // }
 
-    public function postLessonMaterial(Request $request, string $lessonId)
-    {
+    // public function postLessonMaterial(Request $request, string $lessonId)
+    // {
 
-    }
+    // }
 
-    public function deleteLessonMaterial(Request $request, string $lessonId)
-    {
+    // public function deleteLessonMaterial(Request $request, string $lessonId)
+    // {
 
-    }
+    // }
 
-    public function getLessonMaterials(Request $request, string $lessonId)
-    {
+    // public function getLessonMaterials(Request $request, string $lessonId)
+    // {
 
-    }
+    // }
 }
