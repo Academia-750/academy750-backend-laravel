@@ -74,7 +74,8 @@ class GroupListTest extends TestCase
     /** @test */
     public function find_all_items_200(): void
     {
-        $data = $this->get("api/v1/group/list", [])->assertStatus(200)->decodeResponseJson();
+        $data = $this->get("api/v1/group/list", [])->assertStatus(200)->json();
+
         $this->assertEquals(count($data['results']), 4);
         $this->assertEquals($data['total'], 4);
     }
@@ -82,7 +83,7 @@ class GroupListTest extends TestCase
     /** @test */
     public function find_by_name_200(): void
     {
-        $data = $this->get("api/v1/group/list?" . Arr::query(['names' => [$this->groups[0]->name]]))->assertStatus(200)->decodeResponseJson();
+        $data = $this->get("api/v1/group/list?" . Arr::query(['names' => [$this->groups[0]->name]]))->assertStatus(200)->json();
         $this->assertEquals($data['total'], 1);
         $this->assertEquals($data['results'][0]['id'], $this->groups[0]->id);
     }
@@ -90,7 +91,7 @@ class GroupListTest extends TestCase
     /** @test */
     public function find_by_code_200(): void
     {
-        $data = $this->get("api/v1/group/list?" . Arr::query(['codes' => [$this->groups[0]->code]]))->assertStatus(200)->decodeResponseJson();
+        $data = $this->get("api/v1/group/list?" . Arr::query(['codes' => [$this->groups[0]->code]]))->assertStatus(200)->json();
         $this->assertEquals($data['total'], 1);
         $this->assertEquals($data['results'][0]['id'], $this->groups[0]->id);
     }
@@ -98,7 +99,7 @@ class GroupListTest extends TestCase
     /** @test */
     public function find_by_color_200(): void
     {
-        $data = $this->get("api/v1/group/list?" . Arr::query(['colors' => [$this->groups[0]->color]]))->assertStatus(200)->decodeResponseJson();
+        $data = $this->get("api/v1/group/list?" . Arr::query(['colors' => [$this->groups[0]->color]]))->assertStatus(200)->json();
         $this->assertEquals($data['total'], 1);
         $this->assertEquals($data['results'][0]['id'], $this->groups[0]->id);
     }
@@ -106,11 +107,11 @@ class GroupListTest extends TestCase
     /** @test */
     public function pagination_200(): void
     {
-        $data = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 0]))->assertStatus(200)->decodeResponseJson();
+        $data = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 0]))->assertStatus(200)->json();
 
-        $data1 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 1]))->assertStatus(200)->decodeResponseJson();
-        $data2 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 2]))->assertStatus(200)->decodeResponseJson();
-        $data3 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 3]))->assertStatus(200)->decodeResponseJson();
+        $data1 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 1]))->assertStatus(200)->json();
+        $data2 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 2]))->assertStatus(200)->json();
+        $data3 = $this->get("api/v1/group/list?" . Arr::query(['limit' => 1, 'offset' => 3]))->assertStatus(200)->json();
 
         // Verify that each page we return a different object
         $ids = [$data1['results'][0]['id'], $data2['results'][0]['id'], $data3['results'][0]['id'], $data['results'][0]['id']];
@@ -127,7 +128,7 @@ class GroupListTest extends TestCase
 
     public function default_order_200(): void
     {
-        $dataResponse = $this->get("api/v1/group/list?")->assertStatus(200)->decodeResponseJson();
+        $dataResponse = $this->get("api/v1/group/list?")->assertStatus(200)->json();
         $createdAt = array_map(function ($data) {
             return $data['created_at'];
         }, $dataResponse['results'], );
@@ -141,7 +142,7 @@ class GroupListTest extends TestCase
     /** @test */
     public function default_order_asc_200(): void
     {
-        $dataResponse = $this->get("api/v1/group/list?" . Arr::query(['order' => 1]))->assertStatus(200)->decodeResponseJson();
+        $dataResponse = $this->get("api/v1/group/list?" . Arr::query(['order' => 1]))->assertStatus(200)->json();
         $createdAt = array_map(function ($data) {
             return $data['created_at'];
         }, $dataResponse['results'], );
@@ -157,7 +158,7 @@ class GroupListTest extends TestCase
 
     public function order_by_desc_200(): void
     {
-        $nameOrderResponse = $this->get("api/v1/group/list?" . Arr::query(['orderBy' => 'name', 'order' => 1]))->assertStatus(200)->decodeResponseJson();
+        $nameOrderResponse = $this->get("api/v1/group/list?" . Arr::query(['orderBy' => 'name', 'order' => 1]))->assertStatus(200)->json();
 
         $name = array_map(function ($data) {
             return $data['name'];
@@ -173,7 +174,7 @@ class GroupListTest extends TestCase
 
     public function order_by_asc_200(): void
     {
-        $nameOrderResponse = $this->get("api/v1/group/list?" . Arr::query(['orderBy' => 'name', 'order' => -1]))->assertStatus(200)->decodeResponseJson();
+        $nameOrderResponse = $this->get("api/v1/group/list?" . Arr::query(['orderBy' => 'name', 'order' => -1]))->assertStatus(200)->json();
 
         $name = array_map(function ($data) {
             return $data['name'];
@@ -188,11 +189,11 @@ class GroupListTest extends TestCase
     /** @test */
     public function search_by_content_200(): void
     {
-        $data1 = $this->get("api/v1/group/list?" . Arr::query(['content' => substr($this->groups[0]->name, 0, 3)]))->assertStatus(200)->decodeResponseJson();
+        $data1 = $this->get("api/v1/group/list?" . Arr::query(['content' => substr($this->groups[0]->name, 0, 3)]))->assertStatus(200)->json();
 
         $this->assertEquals($data1['results'][0]['id'], $this->groups[0]->id);
 
-        $data2 = $this->get("api/v1/group/list?" . Arr::query(['content' => substr($this->groups[2]->code, 0, 3)]))->assertStatus(200)->decodeResponseJson();
+        $data2 = $this->get("api/v1/group/list?" . Arr::query(['content' => substr($this->groups[2]->code, 0, 3)]))->assertStatus(200)->json();
 
 
         $this->assertEquals($data2['results'][0]['id'], $this->groups[2]->id);
@@ -204,7 +205,7 @@ class GroupListTest extends TestCase
     {
         GroupUsers::factory()->group($this->groups[0])->count(4)->create();
         GroupUsers::factory()->group($this->groups[0])->discharged()->count(2)->create();
-        $data = $this->get("api/v1/group/list?" . Arr::query(['content' => substr($this->groups[0]->name, 0, 3)]))->assertStatus(200)->decodeResponseJson();
+        $data = $this->get("api/v1/group/list?" . Arr::query(['content' => substr($this->groups[0]->name, 0, 3)]))->assertStatus(200)->json();
         $this->assertEquals(GroupUsers::query()->where('group_id', $this->groups[0]->id)->count(), 6);
         $this->assertEquals($data['results'][0]['active_users'], 4);
     }

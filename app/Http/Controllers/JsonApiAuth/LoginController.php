@@ -13,6 +13,10 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use JetBrains\PhpStorm\ArrayShape;
 
+
+/**
+ * @group Auth
+ */
 class LoginController
 {
     use HasToShowApiTokens;
@@ -31,7 +35,7 @@ class LoginController
                 $request->get(config('json-api-auth.access_key', 'access_key')),
                 $request->get('password')
             );
-            if($attemptAuth['attempt']) {
+            if ($attemptAuth['attempt']) {
 
                 $this->removeAllTokenSanctumOfCurrentUserAuth($attemptAuth['user']);
 
@@ -60,9 +64,9 @@ class LoginController
      *
      * @return array
      */
-    #[ArrayShape(['attempt' => "bool", 'user' => "mixed"])] public function attemptAuthentication ($access_key, $password): array
+    #[ArrayShape(['attempt' => "bool", 'user' => "mixed"])] public function attemptAuthentication($access_key, $password): array
     {
-        $user = User::query()->where('dni','=', $access_key)
+        $user = User::query()->where('dni', '=', $access_key)
             ->where('state', '=', 'enable')
             /*->orWhere('email', '=', $access_key)
             ->orWhere('username', '=', $access_key)*/
@@ -90,7 +94,8 @@ class LoginController
         ]);
     }
 
-    private function removeAllTokenSanctumOfCurrentUserAuth ($authUser): void {
+    private function removeAllTokenSanctumOfCurrentUserAuth($authUser): void
+    {
         $instanceRevokerTokensSanctum = new SanctumRevoker($authUser);
         $instanceRevokerTokensSanctum->deleteAllTokens();
     }

@@ -10,6 +10,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
+
+/**
+ * @group Auth
+ */
 class RegisterController
 {
     use HasToShowApiTokens;
@@ -25,7 +29,7 @@ class RegisterController
                 'password' => Hash::make($request->get('password')),
             ]);
 
-            if($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+            if ($user instanceof MustVerifyEmail && !$user->hasVerifiedEmail()) {
                 $user->notify(new VerifyEmailNotification);
             }
 

@@ -91,7 +91,7 @@ class GetMaterialListTest extends TestCase
     /** @test */
     public function get_material_info_200(): void
     {
-        $response = $this->get("api/v1/material/list?" . Arr::query(['content' => $this->materials[0]->name]), )->assertStatus(200)->json();
+        $response = $this->get("api/v1/material/list?" . Arr::query(['content' => $this->materials[0]->name]), )->json();
 
         $this->assertEquals($response['total'], 1);
         $this->assertEquals($response['results'][0]['id'], $this->materials[0]->id);

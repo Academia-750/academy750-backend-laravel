@@ -37,8 +37,9 @@ class EditMaterialTest extends TestCase
 
 
     /** @test */
-    public function not_logged_401(): void
+    public function _not_logged_401(): void
     {
+
         Auth::logout();
         $this->put("api/v1/material/{$this->material->id}")->assertStatus(401);
     }

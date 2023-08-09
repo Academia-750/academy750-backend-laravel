@@ -9,6 +9,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
+
+/**
+ * @group Auth
+ */
 class PasswordResetLinkController
 {
     public function __invoke(PasswordResetLinkRequest $request): JsonResponse

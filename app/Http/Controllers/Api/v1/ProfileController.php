@@ -12,6 +12,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+
+/**
+ * @group My profile
+ *
+ * APIs for managing users profile
+ */
 class ProfileController extends Controller
 {
     protected ProfileInterface $profileInterface;
@@ -41,7 +47,7 @@ class ProfileController extends Controller
         return $this->profileInterface->changePasswordAuth($request);
     }
 
-    public function checkPreviousSessionAccess (LoginRequest $request): \Illuminate\Http\JsonResponse
+    public function checkPreviousSessionAccess(LoginRequest $request): \Illuminate\Http\JsonResponse
     {
 
         $accessKey = config('json-api-auth.access_key', 'access_key');
@@ -68,11 +74,13 @@ class ProfileController extends Controller
         return response()->json(compact('invalidCredentials', 'thereIsAlreadyAPreviousSession'));
     }
 
-    public function getNotificationsUser () {
+    public function getNotificationsUser()
+    {
         return $this->profileInterface->getNotificationsUser();
     }
 
-    public function read_notification_user ($notification_id) {
+    public function read_notification_user($notification_id)
+    {
         return $this->profileInterface->read_notification_user($notification_id);
     }
 }

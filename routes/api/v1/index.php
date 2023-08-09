@@ -6,13 +6,25 @@ use App\Models\ManageUsersInformation;
 Route::prefix('v1')->group(callback: static function () {
     require __DIR__ . '/routes/json-api-auth.php';
 
+    /**
+     * @group Guest
+     * Contact Us
+     */
     Route::post('guest/user/contact-us', [UsersController::class, 'contactsUS'])->name('api.v1.users.home-page.form.contact-us');
+    /**
+     * @group Guest
+     * Hello World
+     */
     Route::get('guest/user/hello', function () {
         return response()->json([
             'message' => 'Welcome'
         ]);
     });
 
+    /**
+     * @group Guest
+     * Accept Cookies
+     */
     Route::post('guest/user/accept-cookies', function (\Illuminate\Http\Request $request) {
         $userIp = ManageUsersInformation::query()
             ->where('ip', $request->ip() ?? $request->getClientIp())
@@ -40,6 +52,10 @@ Route::prefix('v1')->group(callback: static function () {
         ]);
     })->name('api.v1.users.home-page.form.accept-cookies');
 
+    /**
+     * @group Guest
+     * Has Accept Cookies
+     */
     Route::post('guest/user/has-accept-cookies', function (\Illuminate\Http\Request $request) {
         $userIp = ManageUsersInformation::query()
             ->where('ip', $request->ip() ?? $request->getClientIp())

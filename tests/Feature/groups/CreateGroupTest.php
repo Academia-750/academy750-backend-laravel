@@ -72,6 +72,7 @@ class CreateGroupTest extends TestCase
         $response = $this->post('api/v1/group', $group)->assertStatus(200);
         $data = $response->decodeResponseJson();
 
+
         $this->assertEquals($group['name'], $data['result']['name']);
         $this->assertEquals($group['code'], $data['result']['code']);
         $this->assertEquals($group['color'], $data['result']['color']);

@@ -108,6 +108,13 @@ class JoinGroupTest extends TestCase
     }
 
     /** @test */
+    public function disabled_users_cant_join_403(): void
+    {
+        $student = User::factory()->student()->state(['state' => 'disable'])->create();
+        $this->post("api/v1/group/{$this->group->id}/join", ['user_id' => $student->uuid])->assertStatus(403);
+    }
+
+    /** @test */
     public function can_join_group_if_was_discharged_200(): void
     {
         $student = User::factory()->student()->create();

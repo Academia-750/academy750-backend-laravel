@@ -30,4 +30,22 @@ class EditGroupRequest extends FormRequest
             ],
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            'code' => [
+                'description' => 'Group Code. Must be unique.',
+                'example' => "AUGTDO"
+            ],
+            'name' => [
+                'description' => 'Group Name',
+                'example' => 'Advanced 3',
+            ],
+            'color' => [
+                'description' => 'Groups Color, a color can be used only in one group',
+                'example' => '#FF0000',
+            ]
+        ];
+    }
 }

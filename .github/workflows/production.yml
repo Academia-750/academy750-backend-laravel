@@ -49,3 +49,15 @@ jobs:
             php artisan migrate --force
             php artisan up
             echo "🎉 Deployment finished!"
+
+      - name: Updating Docs
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.SERVER }}
+          username: ${{ env.SSH_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          port: ${{ env.SSH_PORT }}
+          script: |
+            cd ${{ env.FOLDER_NAME }}
+            php artisan scribe:generate
+            echo "🎉 Docs ready!"
