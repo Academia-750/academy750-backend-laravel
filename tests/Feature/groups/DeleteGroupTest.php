@@ -67,7 +67,7 @@ class DeleteGroupTest extends TestCase
 
 
     /** @test */
-    public function delete_remove_students_200(): void
+    public function delete_group_remove_students_200(): void
     {
         GroupUsers::factory()->group($this->group)->count(4)->create();
         GroupUsers::factory()->group($this->group)->discharged()->count(2)->create();

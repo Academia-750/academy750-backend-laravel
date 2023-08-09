@@ -2,7 +2,7 @@
 namespace App\Core\Resources\Tests\v1;
 
 use App\Core\Resources\Tests\Services\QuestionsTestService;
-use App\Core\Resources\Tests\Services\TestsQuestionsService;
+use App\Core\Resources\Tests\Services\QueryParametersQuestionsForResolveTest;
 use App\Core\Resources\Tests\Services\TestsService;
 use App\Models\Answer;
 use App\Models\Opposition;
@@ -46,7 +46,7 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
-        return TestsQuestionsService::getQuestionsEloquentSortByIndexByTest($testQuery);
+        return QueryParametersQuestionsForResolveTest::getQuestionsEloquentSortByIndexByTest($testQuery);
     }
 
     public function fetch_card_memory( $test ){
@@ -63,78 +63,31 @@ class DBApp implements TestsInterface
     public function create_a_quiz( $request )
     {
         try {
-            $user = Auth::user();
-            /*Log::debug("-------------------Inicia todo el proceso de Crear un Test del alumno Nombre completo: {$user?->full_name} con id: {$user?->id}-------------------");*/
-            /*$start_time__create_a_quiz = microtime(true);*/
-            $testType = $request->get('test_type');
 
+            \Log::debug("-------Ordenamos toda la información que usaremos");
+            $dataForTheBuildTest = TestsService::getDataToCreateTests( $request );
 
-            if (!$user) {
-                abort(404);
-            }
+            abort_if(!$dataForTheBuildTest['userAuth'], 404);
 
-            /*$start_time__TestsService__createTest = microtime(true);
-            Log::debug("++Aqui se ejecuta el proceso de solo registrar en la tabla 'tests' la referencia de un nuevo Test con toda su información y la del alumno {$user?->full_name} con id {$user?->id}");*/
+            \Log::debug("-------Crear la referencia del Test y actualizar información");
+            $dataForTheBuildTest = TestsService::createTestReference( $dataForTheBuildTest );
 
-            $questionnaire = TestsService::createTest([
-                "number_of_questions_requested" => (int) $request->get('count_questions_for_test'),
-                "opposition_id" => Opposition::query()
-                    ->firstWhere('uuid', $request->get('opposition_id'))
-                    ?->getKey(),
-                "test_type" => $testType,
-                "user_id" => $user?->getKey()
-            ]);
-            /*$elapsed_time__TestsService__createTest = microtime(true) - $start_time__TestsService__createTest;
-            Log::debug("--Aqui se termina el proceso de solo registrar en la tabla 'tests' la referencia de un nuevo Test con toda su información y la del alumno {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__TestsService__createTest} segundos");*/
-
-            /*$start_time__TestsService__registerTopicsAndSubtopicsByTest = microtime(true);
-            Log::debug("++Aqui se ejecuta el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id}");*/
-            //\Log::debug($request->get('topics_id'));
-
+            \Log::debug("-------Registrar temas y subtemas");
             TestsService::registerTopicsAndSubtopicsByTest(
-                $questionnaire->getKey(),
-                array_map(function ($__topic_uuid) {
-                    return Topic::query()->firstWhere('uuid', $__topic_uuid)?->getKey();
-                }, $request->get('topics_id')),
-                Opposition::query()
-                    ->firstWhere('uuid', $request->get('opposition_id'))
-                    ?->getKey()
+                $dataForTheBuildTest
             );
-            /*$elapsed_time__TestsService__registerTopicsAndSubtopicsByTest = microtime(true) - $start_time__TestsService__registerTopicsAndSubtopicsByTest;
-            Log::debug("--Aqui se termina el proceso de solo registrar en la tabla 'testables' cada uno de los temas y subtemas disponibles de la Oposición seleccionada por el alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__TestsService__registerTopicsAndSubtopicsByTest} segundos");*/
 
-            /*$start_time__QuestionsTestService__buildQuestionsTest = microtime(true);
-            Log::debug("+++++++++++++++++++++++++++++++Aqui se ejecuta todos los procesos para obtener y registrar todas las preguntas para el Test del alumno: {$user?->full_name} con id {$user?->id}");*/
+            \Log::debug("-------Aquí comienza el proceso de buscar preguntas");
             QuestionsTestService::buildQuestionsTest(
-                (int) $request->get('count_questions_for_test'),
-                $testType,
-                $user,
-                $questionnaire,
-                $request->get('topics_id'),
-                $request->get('opposition_id')
+                $dataForTheBuildTest
             );
-            /*$elapsed_time__QuestionsTestService__buildQuestionsTest = microtime(true) - $start_time__QuestionsTestService__buildQuestionsTest;
-            Log::debug("-----------------------------Aqui se termina todos los procesos para obtener y registrar todas las preguntas para el Test del alumno: {$user?->full_name} con id {$user?->id} el cuál ha tardado: {$elapsed_time__QuestionsTestService__buildQuestionsTest} segundos");
-
-            $elapsed_time__create_a_quiz = microtime(true) - $start_time__create_a_quiz;
-            \Log::debug("-------------------Ha terminado el proceso de Crear un Test para el alumno con Nombre completo: {$user?->full_name} con id: {$user?->id} -- Ha tardado un total de {$elapsed_time__create_a_quiz} segundos-------------------");*/
-            /*Log::debug("");
-            Log::debug("");*/
-
-            return $questionnaire;
+            return $dataForTheBuildTest['testRecordReferenceCreated'];
         } catch (\Exception $e) {
             abort(500, $e);
         }
 
     }
 
-    /**
-     * Resuelve una pregunta de un Test abierto
-     * Simplemente envía el Test, la pregunta y la respuesta que se ha escojido
-     *
-     * @param $request
-     * @return void
-     */
     public function resolve_a_question_of_test($request)
     {
         try {
@@ -142,23 +95,16 @@ class DBApp implements TestsInterface
             //DB::beginTransaction();
             $test = Test::query()
                 ->where('id', $request->get('test_id'))
-                ->where('uuid', $request->get('test_id'))
+                ->orWhere('uuid', $request->get('test_id'))
                 ->first();
 
-            abort_if(!$test, new ModelNotFoundException("No existe el Test con identificador {$request->get('test_id')}"));
-
-            $question = $test->questions()
-                ->where('id', $request->get('question_id'))
-                ->where('uuid', $request->get('question_id'))
-                ->first();
-            abort_if(!$test, new ModelNotFoundException("No existe la Pregunta con identificador {$request->get('question_id')}"));
+            $question = Question::query()
+                ->firstWhere('uuid', '=', $request->get('question_id'));
 
             $answer = Answer::query()
                 ->where('id', $request->get('answer_id'))
-                ->where('uuid', $request->get('answer_id'))
+                ->orWhere('uuid', $request->get('answer_id'))
                 ->first();
-
-            abort_if(!$answer, new ModelNotFoundException("No existe la Alternativa con identificador {$request->get('answer_id')}"));
 
             if ($request->get('answer_id')) {
 
@@ -177,12 +123,6 @@ class DBApp implements TestsInterface
                     /*'have_been_show_test' => 'no'*/
                 ]);
             }
-
-
-
-            //DB::commit();
-
-
         } catch (\Exception $e) {
             //DB::rollback();
             abort(500,$e->getMessage());
@@ -265,6 +205,6 @@ class DBApp implements TestsInterface
             abort(404);
         }
 
-        return TestsQuestionsService::getQuestionsEloquentSortByIndexByTest($testQuery);
+        return QueryParametersQuestionsForResolveTest::getQuestionsEloquentSortByIndexByTest($testQuery);
     }
 }

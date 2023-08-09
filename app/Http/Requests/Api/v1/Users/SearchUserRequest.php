@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Api\v1\Users;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 
 class SearchUserRequest extends FormRequest
@@ -18,8 +19,7 @@ class SearchUserRequest extends FormRequest
             'content' => [
                 'nullable',
                 'alpha_num',
-            ],
-
+            ]
         ];
     }
 }

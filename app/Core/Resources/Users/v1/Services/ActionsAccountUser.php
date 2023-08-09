@@ -2,12 +2,14 @@
 
 namespace App\Core\Resources\Users\v1\Services;
 
+use App\Models\GroupUsers;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class ActionsAccountUser
 {
-    public static function removeAllTokensByUserReally ($user, string $nameTable = 'personal_access_tokens', string $nameFieldToken = 'tokenable_id') {
+    public static function removeAllTokensByUserReally($user, string $nameTable = 'personal_access_tokens', string $nameFieldToken = 'tokenable_id')
+    {
         DB::table($nameTable)
             ->where(
                 $nameFieldToken,
@@ -16,8 +18,9 @@ class ActionsAccountUser
             )->delete();
     }
 
-    public static function deleteUser ($user) {
-        if ( !($user instanceof User) ) {
+    public static function deleteUser($user)
+    {
+        if (!($user instanceof User)) {
             $user = User::query()->findOrFail($user);
         }
 
@@ -33,9 +36,10 @@ class ActionsAccountUser
 
         return $user;
     }
-    public static function disableAccountUser ($user) {
+    public static function disableAccountUser($user)
+    {
 
-        if ( !($user instanceof User) ) {
+        if (!($user instanceof User)) {
             $user = User::query()->findOrFail($user);
         }
 
@@ -45,14 +49,14 @@ class ActionsAccountUser
         $user->save();
         $user->refresh();
 
-        /*$user->delete(); // Soft Delete
-        $user->refresh();*/
+        GroupUsers::where('user_id', $user->id)->whereNull('discharged_at')->update(['discharged_at' => now()]);
 
         return $user;
     }
-    public static function enableAccountUser ($user) {
+    public static function enableAccountUser($user)
+    {
 
-        if ( !($user instanceof User) ) {
+        if (!($user instanceof User)) {
             $user = User::query()->findOrFail($user);
         }
 

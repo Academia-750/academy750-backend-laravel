@@ -2,11 +2,15 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\Materials\CreateMaterialRequest;
 use App\Http\Requests\Api\v1\Materials\CreateTagRequest;
 
 use App\Http\Requests\Api\v1\Materials\CreateWorkspaceRequest;
+use App\Http\Requests\Api\v1\Materials\EditMaterialRequest;
+use App\Http\Requests\Api\v1\Materials\ListMaterialRequest;
 use App\Http\Requests\Api\v1\Materials\ListTagRequest;
 use App\Http\Requests\Api\v1\Materials\ListWorkspaceRequest;
+use App\Models\Material;
 use App\Models\Tag;
 use App\Models\Workspace;
 use Illuminate\Support\Facades\Log;
@@ -77,6 +81,7 @@ class MaterialController extends Controller
 
 
         } catch (\Exception $err) {
+            Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
                 'error' => $err->getMessage()
@@ -166,17 +171,15 @@ class MaterialController extends Controller
     }
     public function getWorkspaceInfo($workspace_id)
     {
-        $workspace = Workspace::withCount('materials')->find($workspace_id);
-
-        if (!$workspace) {
-            return response()->json([
-                'status' => 'error',
-                'error' => 'Workspace not found'
-            ], 404);
-        }
         try {
+            $workspace = Workspace::withCount('materials')->find($workspace_id);
 
-
+            if (!$workspace) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Workspace not found'
+                ], 404);
+            }
 
             return response()->json([
                 'status' => 'successfully',
@@ -202,7 +205,7 @@ class MaterialController extends Controller
 
             $results = (clone $query)
                 ->withCount('materials')
-                ->orderBy($request->get('orderBy') ?? 'created_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
                 ->get();
@@ -227,20 +230,161 @@ class MaterialController extends Controller
     }
 
 
-    public function postAddMaterial()
+    public function postAddMaterial(CreateMaterialRequest $request, $workspaceId)
     {
+        try {
+            $workspace = Workspace::find($workspaceId);
+
+            if (!$workspace) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Workspace not found'
+                ], 404);
+            }
+
+            $material = Material::create([
+                'name' => $request->get('name'),
+                'type' => $request->get('type'),
+                'workspace_id' => $workspace->id
+            ]);
+
+
+            return response()->json([
+                'status' => 'successfully',
+                'result' => $material
+            ]);
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+
+
     }
-    public function putEditMaterial()
+    public function putEditMaterial(EditMaterialRequest $request, $materialId)
     {
+        try {
+            $material = Material::find($materialId);
+
+            if (!$material) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Material not found'
+                ], 404);
+            }
+
+            $data = removeNull([
+                'name' => $request->get('name'),
+                'tags' => $request->get('tags') ? join(',', $request->get('tags')) : null,
+                'url' => $request->get('url')
+            ]);
+
+            Material::query()->find($material->id)->update($data);
+            $updated = Material::query()->find($material->id);
+
+
+            return response()->json([
+                'status' => 'successfully',
+                'result' => $updated
+            ]);
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+
     }
-    public function deleteEditMaterial()
+    public function deleteMaterial($materialId)
     {
+
+        try {
+            $material = Material::find($materialId);
+
+            if (!$material) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Material not found'
+                ], 404);
+            }
+
+            $material->delete();
+
+
+            return response()->json([
+                'status' => 'successfully',
+            ]);
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
     }
-    public function getMaterialInfo()
+    public function getMaterialInfo($materialId)
     {
+        try {
+            $material = Material::with('workspace:id,name')->find($materialId);
+
+            if (!$material) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Material not found'
+                ], 404);
+            }
+
+            return response()->json([
+                'status' => 'successfully',
+                'result' => $material
+            ]);
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
     }
-    public function getMaterialList()
+    public function getMaterialList(ListMaterialRequest $request)
     {
+        try {
+            $conditions = [
+                parseFilter('workspace_id', $request->get('workspace')),
+                parseFilter('materials.type', $request->get('type')),
+                parseFilter(['materials.tags'], $request->get('tags'), 'or_like'),
+                parseFilter(['materials.name'], $request->get('content'), 'or_like')
+            ];
+
+            $query = Material::query()->join('workspaces', 'workspaces.id', '=', 'materials.workspace_id')->select('materials.*', 'workspaces.name as workspace_name');
+
+            filterToQuery($query, $conditions);
+
+            $results = (clone $query)
+                ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->offset($request->get('offset') ?? 0)
+                ->limit($request->get('limit') ?? 20)
+                ->get();
+
+            $total = (clone $query)->count();
+
+            return response()->json([
+                'status' => 'successfully',
+                'results' => $results,
+                'total' => $total
+            ]);
+
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
     }
 
 }

@@ -53,6 +53,18 @@ class Handler extends ExceptionHandler
             }
         });
     }
+    public function report($exception)
+    {
+
+        // TODO: Sentry Error Reporting only for staging and production environments
+        // if (app()->environment(['staging', 'production'])) {
+        if (app()->bound('sentry')) {
+            app('sentry')->captureException($exception);
+        }
+
+
+        parent::report($exception);
+    }
 
     public function render($request, \Exception|Throwable $e): \Illuminate\Http\Response|\Illuminate\Http\JsonResponse|\Symfony\Component\HttpFoundation\Response
     {
@@ -63,7 +75,7 @@ class Handler extends ExceptionHandler
         return parent::render($request, $e);
     }
 
-    private function isExceptionRedirectFrontend ($request, $exception): bool
+    private function isExceptionRedirectFrontend($request, $exception): bool
     {
         return !$request->expectsJson() &&
             ($exception instanceof MethodNotAllowedHttpException ||

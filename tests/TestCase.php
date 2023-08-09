@@ -26,4 +26,14 @@ abstract class TestCase extends BaseTestCase
         $this->clearCacheApp();
         $this->generateSeedersPermissionsAndRoles();
     }
+
+    /**
+     * Helper
+     */
+    public function map($array, $key)
+    {
+        return array_map(function ($data) use ($key) {
+            return $data[$key];
+        }, $array);
+    }
 }

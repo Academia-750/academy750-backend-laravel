@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('users', [UsersController::class, 'index'])->name('api.v1.users.index');
 Route::get('users/search', [UsersController::class, 'search'])->middleware('onlyAdmin')->name('api.v1.users.search');
 Route::get('users/{user}', [UsersController::class, 'read'])->name('api.v1.users.read');
-Route::post('users/create', [UsersController::class, 'create'])->name('api.v1.users.create');
+Route::post('users/create', [UsersController::class, 'create'])->name('api.v1.users.create')->middleware('onlyAdmin');
 
 Route::patch('users/update/{user}', [UsersController::class, 'update'])->name('api.v1.users.update');
 Route::delete('users/delete/{user}', [UsersController::class, 'delete'])->name('api.v1.users.delete');
 Route::post('users/actions-on-multiple-records', [UsersController::class, 'mass_selection_for_action'])->name('api.v1.users.actions-on-multiple-records');
-/*Route::post('users/disable-account/{user}', [UsersController::class, 'disable_account'])->name('api.v1.users.disable-account');
-Route::post('users/enable-account/{user}', [UsersController::class, 'enable_account'])->name('api.v1.users.enable-account');*/
+Route::post('users/disable-account/{user}', [UsersController::class, 'disable_account'])->name('api.v1.users.disable-account');
+Route::post('users/enable-account/{user}', [UsersController::class, 'enable_account'])->name('api.v1.users.enable-account');
 /*Route::post('users/export', [UsersController::class, 'export_records'])->name('api.v1.users.export');
 Route::post('users/import', [UsersController::class, 'import_records'])->name('api.v1.users.import');*/
 //Route::get('users/import/template', [UsersController::class, 'download_template_import_records'])->name('api.v1.users.import.template');
