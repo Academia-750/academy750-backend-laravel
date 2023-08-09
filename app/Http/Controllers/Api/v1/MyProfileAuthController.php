@@ -10,6 +10,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @group My profile
+ *
+ * APIs for managing users profile
+ */
 class MyProfileAuthController extends Controller
 {
     public function get_data_my_profile(): UserResource
@@ -19,7 +24,7 @@ class MyProfileAuthController extends Controller
         return UserResource::make($user);
     }
 
-    public function updateImageAccount (UpdateImageAccountRequest $request): \Illuminate\Http\JsonResponse
+    public function updateImageAccount(UpdateImageAccountRequest $request): \Illuminate\Http\JsonResponse
     {
 
         $this->deleteImageModelInStorage();
@@ -46,7 +51,7 @@ class MyProfileAuthController extends Controller
         ]);
     }
 
-    private function deleteImageModelInStorage (): void
+    private function deleteImageModelInStorage(): void
     {
 
         if (!Auth::user()?->image) {

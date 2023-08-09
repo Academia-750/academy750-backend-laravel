@@ -7,6 +7,9 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 
+/**
+ * @group Auth
+ */
 class VerifyEmailController
 {
     /**
@@ -21,7 +24,7 @@ class VerifyEmailController
     {
         if ($request->user()->hasVerifiedEmail()) {
             // if block added only to test on postman.
-            if($request->wantsJson()) {
+            if ($request->wantsJson()) {
                 return response()->json([
                     'message' => __('json-api-auth.email_already_verified'),
                 ], 200);
@@ -34,7 +37,7 @@ class VerifyEmailController
         }
 
         // if block added just to test on postman.
-        if($request->wantsJson()) {
+        if ($request->wantsJson()) {
             return response()->json([
                 'message' => __('json-api-auth.email_verified'),
             ], 200);

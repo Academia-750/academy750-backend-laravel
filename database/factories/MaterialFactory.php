@@ -21,10 +21,11 @@ class MaterialFactory extends Factory
 
     public function definition(): array
     {
+
         return [
             'name' => $this->faker->regexify('[a-zA-Z\s_-]{5,20}'),
             'type' => $this->randomType(),
-            'workspace_id' => function () {
+            'workspace_id' => config('app.env') === 'documentation' ? 1 : function () {
                 return Workspace::factory()->create()->id;
             },
             'created_at' => now(),

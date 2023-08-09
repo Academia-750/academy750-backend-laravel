@@ -21,4 +21,14 @@ class CreateTagRequest extends FormRequest
             ],
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            'name' => [
+                'description' => 'Tag Name (Must be unique)',
+                'example' => "Fire"
+            ],
+        ];
+    }
 }

@@ -21,4 +21,13 @@ class JoinGroupRequest extends FormRequest
             ],
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            'user_id' => [
+                'description' => 'Users ID',
+            ],
+        ];
+    }
 }

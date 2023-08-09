@@ -32,4 +32,22 @@ class EditMaterialRequest extends FormRequest
             ],
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            'name' => [
+                'description' => 'Material Name',
+                'example' => "Fire Laws V1"
+            ],
+            'tags' => [
+                'description' => 'Material Tags',
+                'example' => ['Fire', 'Law']
+            ],
+            'url' => [
+                'description' => 'Material URL',
+                'example' => `https://my-cloud.com/file/123dade123d`
+            ],
+        ];
+    }
 }

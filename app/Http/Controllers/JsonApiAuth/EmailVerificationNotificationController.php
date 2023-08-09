@@ -10,6 +10,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+
+/**
+ * @group Auth
+ */
 class EmailVerificationNotificationController
 {
     /**
@@ -21,7 +25,7 @@ class EmailVerificationNotificationController
     public function __invoke(Request $request)
     {
         if ($request->user(AuthKit::getGuard())->hasVerifiedEmail()) {
-            return response(['message'=> __('json-api-auth.email_already_verified')]);
+            return response(['message' => __('json-api-auth.email_already_verified')]);
         }
 
         $request->user(AuthKit::getGuard())->notify(new VerifyEmailNotification);

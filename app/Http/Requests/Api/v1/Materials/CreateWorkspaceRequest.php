@@ -21,4 +21,14 @@ class CreateWorkspaceRequest extends FormRequest
             ],
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            'name' => [
+                'description' => 'Workspace Name',
+                'example' => "General"
+            ],
+        ];
+    }
 }

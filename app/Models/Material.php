@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Material extends Model
 {
+
+    use HasFactory;
+
     public static function allowedTypes()
     {
         return ['material', 'recording'];
     }
 
-    use HasFactory;
+
     protected $fillable = [
         'name',
         'type',
@@ -33,7 +36,5 @@ class Material extends Model
     {
         return $this->belongsTo(Workspace::class, 'workspace_id');
     }
-
-
 
 }

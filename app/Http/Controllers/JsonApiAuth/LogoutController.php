@@ -9,6 +9,10 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
+
+/**
+ * @group Auth
+ */
 class LogoutController
 {
     public function __invoke(Request $request): Response
@@ -37,7 +41,7 @@ class LogoutController
         ];
 
         foreach ($methods as $method) {
-            if(config('json-api-auth.' . $method)) {
+            if (config('json-api-auth.' . $method)) {
                 return (string) Str::of($method)->camel();
             }
         }
