@@ -207,6 +207,7 @@ return [
         \App\Providers\InstanceInterfaceAppProvider::class,
         \App\Providers\JsonApiProvider::class,
         Maatwebsite\Excel\ExcelServiceProvider::class,
+
     ],
 
     /*

@@ -29,6 +29,7 @@ class ProfileController extends Controller
 
     public function getDataMyProfile()
     {
+
         return $this->profileInterface->getDataMyProfile();
     }
 
