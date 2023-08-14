@@ -8,12 +8,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
+
+/**
+ * @group Auth
+ */
 class ConfirmablePasswordController
 {
     /** Confirm the user's password.*/
     public function __invoke(Request $request): JsonResponse
     {
-        if (! Hash::check($request->get('password'), $request->user(AuthKit::getGuard())->password)) {
+        if (!Hash::check($request->get('password'), $request->user(AuthKit::getGuard())->password)) {
             throw ValidationException::withMessages([
                 'password' => __('json-api-auth.password'),
             ]);

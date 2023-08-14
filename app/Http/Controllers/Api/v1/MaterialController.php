@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
+use App\Core\Resources\Storage\Storage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\Materials\CreateMaterialRequest;
 use App\Http\Requests\Api\v1\Materials\CreateTagRequest;
@@ -10,14 +11,34 @@ use App\Http\Requests\Api\v1\Materials\EditMaterialRequest;
 use App\Http\Requests\Api\v1\Materials\ListMaterialRequest;
 use App\Http\Requests\Api\v1\Materials\ListTagRequest;
 use App\Http\Requests\Api\v1\Materials\ListWorkspaceRequest;
+use App\Http\Resources\Api\Material\v1\MaterialResource;
+use App\Http\Resources\Api\Material\v1\WorkspaceResource;
 use App\Models\Material;
 use App\Models\Tag;
 use App\Models\Workspace;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
+/**
+ * @group Materials
+ *
+ * APIs for managing Materials and workspaces
+ */
 class MaterialController extends Controller
 {
 
+
+    /**
+     * Tag: Create
+     *
+     * Add A tag with the type `Material`
+     * @authenticated
+     * @response status=409 scenario="Duplicated Tag"
+     * @response {
+     *  "result":
+     *      {"name": "Fire", "id": 1, "type": "material" }
+     * }
+     */
     public function postCreateTag(CreateTagRequest $request)
     {
         $duplicated = Tag::query()->where('name', $request->get('name'))->where('type', 'material')->count();
@@ -49,6 +70,20 @@ class MaterialController extends Controller
         }
     }
 
+    /**
+     * Tag: List
+     *
+     * Get the content of material tags
+     * @authenticated
+
+     * @response {
+     *  "results": [
+     *      {"name": "Fire", "id": 1, "type": "material"},
+     *      {"name": "Water", "id": 2, "type": "material"}
+     *   ],
+     *   "total": 2
+     * }
+     */
     public function getTagList(ListTagRequest $request)
     {
         try {
@@ -89,6 +124,13 @@ class MaterialController extends Controller
         }
     }
 
+    /**
+     * Workspace: Create
+     *
+     * @authenticated
+     * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
+     * @apiResourceModel App\Models\Workspace
+     */
     public function postCreateWorkspace(CreateWorkspaceRequest $request)
     {
         try {
@@ -98,10 +140,8 @@ class MaterialController extends Controller
             ]);
 
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $workspace
-            ]);
+            return WorkspaceResource::make($workspace)->response()->setStatusCode(200);
+
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([
@@ -110,6 +150,16 @@ class MaterialController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Workspace: Edit
+     *
+     * @authenticated
+     * @urlParam workspaceId integer Workspace Id
+     * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
+     * @apiResourceModel App\Models\Workspace
+     * @response status=404 scenario="Workspace Not found"
+     */
     public function putEditWorkspace(CreateWorkspaceRequest $request, $workspace_id)
     {
         $workspace = Workspace::find($workspace_id);
@@ -122,6 +172,8 @@ class MaterialController extends Controller
         }
 
         try {
+
+
             $data = removeNull([
                 'name' => $request->get('name')
             ]);
@@ -129,10 +181,8 @@ class MaterialController extends Controller
             Workspace::query()->find($workspace->id)->update($data);
             $updated = Workspace::query()->find($workspace->id);
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $updated
-            ]);
+            return WorkspaceResource::make($updated)->response()->setStatusCode(200);
+
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([
@@ -141,6 +191,15 @@ class MaterialController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Workspace: Delete
+     *
+     * @authenticated
+     * @urlParam workspaceId integer Workspace Id
+     * @response {"message": "successfully"}
+     * @response status=404 scenario="Workspace Not found"
+     */
     public function deleteWorkspace($workspace_id)
     {
         $workspace = Workspace::find($workspace_id);
@@ -152,6 +211,14 @@ class MaterialController extends Controller
             ], 404);
         }
         try {
+            $result = Workspace::deleteFromStorage($workspace);
+
+            if (isset($result['error'])) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => $result['error']
+                ], 424);
+            }
 
             /**
              * WARNING: This will delete all the files assigned to this workspace
@@ -169,6 +236,16 @@ class MaterialController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Workspace: Info
+     *
+     * @authenticated
+     * @urlParam workspaceId integer Workspace Id
+     * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
+     * @apiResourceModel App\Models\Workspace
+     * @response status=404 scenario="Workspace Not found"
+     */
     public function getWorkspaceInfo($workspace_id)
     {
         try {
@@ -181,10 +258,8 @@ class MaterialController extends Controller
                 ], 404);
             }
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $workspace
-            ]);
+            return WorkspaceResource::make($workspace)->response()->setStatusCode(200);
+
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([
@@ -193,6 +268,22 @@ class MaterialController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Workspace: List
+     *
+     * @authenticated
+     * @response {
+     *     "results": [
+     *        "id": 1,
+     *        "name" : "Generic" ,
+     *        "materials" : "30" ,
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ],
+     *       "total": 1
+     *  }
+     */
     public function getWorkspaceList(ListWorkspaceRequest $request)
     {
 
@@ -219,7 +310,6 @@ class MaterialController extends Controller
                 'total' => $total
             ]);
 
-
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([
@@ -229,7 +319,15 @@ class MaterialController extends Controller
         }
     }
 
-
+    /**
+     * Material: Create / Add
+     *
+     * @authenticated
+     * @urlParam workspaceId integer Workspace Id
+     * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
+     * @apiResourceModel App\Models\Material
+     * @response status=404 scenario="Workspace Not found"
+     */
     public function postAddMaterial(CreateMaterialRequest $request, $workspaceId)
     {
         try {
@@ -249,10 +347,8 @@ class MaterialController extends Controller
             ]);
 
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $material
-            ]);
+            return MaterialResource::make($material)->response()->setStatusCode(200);
+
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([
@@ -263,6 +359,17 @@ class MaterialController extends Controller
 
 
     }
+
+    /**
+     * Material: Update
+     *
+     * @authenticated
+     * @urlParam materialId integer Material Id
+     * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
+     * @apiResourceModel app\Models\Material
+     * @response status=404 scenario="Material Not found"
+     * @response status=424 scenario="Override URL fail, we can not delete file from the source"
+     */
     public function putEditMaterial(EditMaterialRequest $request, $materialId)
     {
         try {
@@ -281,14 +388,23 @@ class MaterialController extends Controller
                 'url' => $request->get('url')
             ]);
 
+            // Overriding URL => Delete old file
+            if ($request->get('url') && $request->get('url') !== $material->url) {
+                $result = Material::deleteFromStorage($material);
+
+                if (isset($result['error'])) {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'Error deleting file ' . $result['error']
+                    ], 424);
+                }
+            }
+
             Material::query()->find($material->id)->update($data);
             $updated = Material::query()->find($material->id);
 
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $updated
-            ]);
+            return MaterialResource::make($updated)->response()->setStatusCode(200);
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([
@@ -298,7 +414,17 @@ class MaterialController extends Controller
         }
 
     }
-    public function deleteMaterial($materialId)
+
+    /**
+     * Material: Delete
+     *
+     * @authenticated
+     * @urlParam materialId integer Material Id
+     * @response {"message": "successfully"}
+     * @response status=404 scenario="Material Not found"
+     * @response status=424 scenario="Delete material fail: we can not delete URL from the source"
+     */
+    public function deleteMaterial($materialId): JsonResponse
     {
 
         try {
@@ -310,6 +436,18 @@ class MaterialController extends Controller
                     'error' => 'Material not found'
                 ], 404);
             }
+
+
+            // Deleting Material URL
+            $result = Material::deleteFromStorage($material);
+
+            if (isset($result['error'])) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Error deleting file ' . $result['error']
+                ], 424);
+            }
+
 
             $material->delete();
 
@@ -325,6 +463,17 @@ class MaterialController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Material: Info
+     *
+     * Only for admins, at it will expose the unprotected source URL
+     * @authenticated
+     * @urlParam materialId integer Material Id
+     * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
+     * @apiResourceModel App\Models\Material
+     * @response status=404 scenario="Material Not found"
+     */
     public function getMaterialInfo($materialId)
     {
         try {
@@ -337,10 +486,8 @@ class MaterialController extends Controller
                 ], 404);
             }
 
-            return response()->json([
-                'status' => 'successfully',
-                'result' => $material
-            ]);
+            return MaterialResource::make($material);
+
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([
@@ -349,6 +496,28 @@ class MaterialController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Material: List
+     *
+     * Search materials
+     * @authenticated
+     * @urlParam materialId integer Material Id
+     * @response {
+     *     "results": [
+     *        "id": 1,
+     *        "workspace_id" : 4 ,
+     *        "workspace_name" : "Generics" ,
+     *        "type" :"materials",
+     *        "name" : "Generic" ,
+     *        "url" : "https://my-image.com/2123123123" ,
+     *        "tags" : "Fire,Water,Sample" ,
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ],
+     *       "total": 1
+     *  }
+     */
     public function getMaterialList(ListMaterialRequest $request)
     {
         try {
@@ -376,8 +545,6 @@ class MaterialController extends Controller
                 'results' => $results,
                 'total' => $total
             ]);
-
-
         } catch (\Exception $err) {
             Log::error($err->getMessage());
             return response()->json([

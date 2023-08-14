@@ -25,6 +25,19 @@ face-to-face and online
 
 If something fails install the php required extensions.
 
+### Api Documentation
+
+We are using  [Scribe](https://scribe.knuckles.wtf/laravel/). 
+Scribe does most of the job we take care of:
+
+1 - Requests: Add the bodyParameters or the queryParameters function.
+2 - Resources: Add the Resource/ResourceCollection response to allow scribe deduce the autoput.
+3 - In the controller add (if required) the @authenticated, @urlParam for url parameters and other HTTP status scenarios.
+4 - The models are taken from the Factories. Using create from another factory inside our factory wont work for doc, you can add 
+` config('app.env') === 'documentation'` check for this specific scenarios.
+
+Update the documentation running `APP_ENV=documentation php artisan scribe:generate php artisan scribe:generate` or `yarn doc`
+
 ### Set Up the database
 
 1 - Install MYSQL

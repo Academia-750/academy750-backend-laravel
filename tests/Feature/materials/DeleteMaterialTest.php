@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Core\Resources\Storage\Services\DummyStorage;
 use App\Models\Material;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Mockery;
 use Tests\TestCase;
 
 
@@ -62,10 +64,45 @@ class DeleteMaterialTest extends TestCase
     public function delete_material_200(): void
     {
 
+        $storageSpy = $this->spy(DummyStorage::class)->makePartial();
+
         $this->delete("api/v1/material/{$this->material->id}", )->assertStatus(200)->json();
 
         $material = Material::find($this->material->id);
         $this->assertEquals($material, null);
+        // Because URL was empty
+        $storageSpy->shouldNotHaveReceived('deleteFile'); // because original URL is empty
+
     }
+
+    /** @test */
+    public function delete_material_with_url_200(): void
+    {
+
+        $storageSpy = $this->spy(DummyStorage::class)->makePartial();
+
+        $material = Material::factory()->state(['type' => 'material', 'url' => $this->faker()->url()])->create();
+
+        $this->delete("api/v1/material/{$material->id}")->assertStatus(200)->json();
+
+        $storageSpy->shouldHaveReceived('deleteFile')->once()->with(Mockery::on(function ($argument) use ($material) {
+            return $argument->id === $material->id;
+        }));
+
+    }
+
+    /** @test */
+    public function error_from_storage_424(): void
+    {
+
+        $storageMock = $this->mock(DummyStorage::class)->makePartial();
+        $storageMock->shouldReceive('deleteFile')->andReturn(['status' => 401, 'error' => 'Not authorized']);
+
+        $material = Material::factory()->state(['type' => 'material', 'url' => $this->faker()->url()])->create();
+        $this->delete("api/v1/material/{$material->id}")
+            ->assertStatus(424)
+            ->json();
+    }
+
 
 }

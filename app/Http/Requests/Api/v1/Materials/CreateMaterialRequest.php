@@ -28,4 +28,19 @@ class CreateMaterialRequest extends FormRequest
             ],
         ];
     }
+
+    public function bodyParameters()
+    {
+        return [
+            'name' => [
+                'description' => 'Material Name (can be updated later)',
+                'example' => "Fire Laws V1"
+            ],
+            'type' => [
+                'description' => 'Material type from allowed types (Can not be updated): ' . join(Material::allowedTypes()),
+                'example' => 'material',
+            ],
+
+        ];
+    }
 }

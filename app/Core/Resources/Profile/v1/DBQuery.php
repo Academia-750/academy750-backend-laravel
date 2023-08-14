@@ -14,7 +14,8 @@ class DBQuery implements ProfileInterface
 {
     protected User $model;
 
-    public function __construct(User $user ){
+    public function __construct(User $user)
+    {
         $this->model = $user;
     }
 
@@ -27,21 +28,21 @@ class DBQuery implements ProfileInterface
         try {
 
             DB::beginTransaction();
-                $user = $this->model->findOrFail(auth()->user()->getKey());
+            $user = $this->model->findOrFail(auth()->user()->getKey());
 
-                //$user->dni = $request->get('dni');
-                $user->first_name = $request->get('first-name') ?? $user->first_name;
-                $user->last_name = $request->get('last-name') ?? $user->last_name;
-                $user->phone = $request->get('phone') ?? $user->phone;
-                $user->email = $request->get('email') ?? $user->email;
-                $user->save();
+            //$user->dni = $request->get('dni');
+            $user->first_name = $request->get('first-name') ?? $user->first_name;
+            $user->last_name = $request->get('last-name') ?? $user->last_name;
+            $user->phone = $request->get('phone') ?? $user->phone;
+            $user->email = $request->get('email') ?? $user->email;
+            $user->save();
 
             DB::commit();
 
             return $this->model->applyIncludes()->findOrFail($user->getKey());
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
@@ -49,26 +50,26 @@ class DBQuery implements ProfileInterface
     {
         try {
 
-                DB::beginTransaction();
-                $user = User::query()->findOrFailOr(Auth::user()?->getKey());
+            DB::beginTransaction();
+            $user = User::query()->findOrFailOr(Auth::user()?->getKey());
 
-                ActionsAccountUser::disableAccountUser($user);
+            ActionsAccountUser::disableAccountUser($user);
 
-                $userAcademy750 = User::query()->firstWhere('email', '=', config('mail.from.address'));
+            $userAcademy750 = User::query()->firstWhere('email', '=', config('mail.from.address'));
 
-                if (!$userAcademy750) {
-                    abort(500, 'No se ha podido encontrar el correo oficial de la Academia 750');
-                }
+            if (!$userAcademy750) {
+                abort(500, 'No se ha podido encontrar el correo oficial de la Academia 750');
+            }
 
-                DB::commit();
+            DB::commit();
 
-                $userAcademy750->notify(new StudentHasBeenRemovedFromTheSystemNotification($user));
+            $userAcademy750->notify(new StudentHasBeenRemovedFromTheSystemNotification($user));
 
 
             return "Se ha dado de baja del sistema con éxito";
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
@@ -95,7 +96,7 @@ class DBQuery implements ProfileInterface
             return "La contraseña ha sido actualizada con éxito";
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 

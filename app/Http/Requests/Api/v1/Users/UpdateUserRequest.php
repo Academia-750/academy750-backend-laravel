@@ -24,14 +24,15 @@ class UpdateUserRequest extends FormRequest
                     'alpha_num', Rule::unique('users', 'dni')
                         ->ignore(
                             $this->route('user')?->getRouteKey(),
-                            $this->route('user')->getRouteKeyName()
+                            $this->route('user')?->getRouteKeyName()
                         ),
                     new ValidateCorrectDNISpain()
                 ])
             ],
             'first-name' => [
                 'nullable',
-                Rule::when( $this->get('first-name') !== null ,
+                Rule::when(
+                    $this->get('first-name') !== null,
                     [
                         'min:3',
                         'max:25',
@@ -60,7 +61,7 @@ class UpdateUserRequest extends FormRequest
                         Rule::unique('users', 'phone')
                             ->ignore(
                                 $this->route('user')?->getRouteKey(),
-                                $this->route('user')->getRouteKeyName()
+                                $this->route('user')?->getRouteKeyName()
                             )
                     ]
                 )
@@ -74,12 +75,13 @@ class UpdateUserRequest extends FormRequest
                         Rule::unique('users', 'email')
                             ->ignore(
                                 $this->route('user')?->getRouteKey(),
-                                $this->route('user')->getRouteKeyName()
+                                $this->route('user')?->getRouteKeyName()
                             )
                     ]
                 )
             ],
-            'roles' => ['nullable',
+            'roles' => [
+                'nullable',
                 Rule::when(
                     $this->get('roles') !== null,
                     ['array', 'min:1']
@@ -87,13 +89,16 @@ class UpdateUserRequest extends FormRequest
             ],
             'roles.*' => [
                 Rule::when($this->get('roles') !== null, [
-                    'string','distinct:strict','exists:roles,id'
+                    'string',
+                    'distinct:strict',
+                    'exists:roles,id'
                 ])
             ],
         ];
     }
 
-    public function messages(): array {
+    public function messages(): array
+    {
         return [
             'dni.required' => 'Ingresa un n° de documento',
             'dni.alpha_num' => 'Comienza con  números y termina en letra',
@@ -117,7 +122,7 @@ class UpdateUserRequest extends FormRequest
         ];
     }
 
-    #[ArrayShape(['dni' => "string", 'first-name' => "string", 'last-name' => "string", 'phone' => "string", 'email' => "string", 'roles' => "string"])] public function attributes():array
+    #[ArrayShape(['dni' => "string", 'first-name' => "string", 'last-name' => "string", 'phone' => "string", 'email' => "string", 'roles' => "string"])] public function attributes(): array
     {
         // Este metodo remplaza cada índice que es mostrado en el error
         return [

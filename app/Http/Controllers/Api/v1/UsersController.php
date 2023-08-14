@@ -26,6 +26,11 @@ use App\Http\Requests\Api\v1\Users\ExportUsersRequest;
 use App\Http\Requests\Api\v1\Users\ImportUsersRequest;
 use Illuminate\Validation\Rule;
 
+/**
+ * @group Users
+ *
+ * APIs for managing opposition users
+ */
 class UsersController extends Controller
 {
     protected UsersInterface $usersInterface;

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Core\Resources\Storage\Services\DummyStorage;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -88,5 +89,6 @@ class EditWorkspaceTest extends TestCase
             $this->put("api/v1/workspace/{$this->workspace->id}", ['name' => $valid_string])->assertStatus(200);
         }, $this->valid_string_input);
     }
+
 
 }

@@ -57,4 +57,39 @@ class ListGroupRequest extends FormRequest
 
         ];
     }
+
+    public function queryParameters()
+    {
+        return [
+            'colors' => [
+                'description' => 'List of colors to search in',
+            ],
+            'codes' => [
+                'description' => 'List of codes to search in',
+            ],
+            'tags' => [
+                'description' => 'List of tags to search in',
+            ],
+            'orderBy' => [
+                'description' => 'Property to order by',
+                'example' => 'created_at'
+            ],
+            'order' => [
+                'description' => 'Order 1 ASC -1 DESC',
+                'example' => -1,
+            ],
+            'limit' => [
+                'description' => 'Limit of records returned (Pagination)',
+                'example' => 10,
+            ],
+            'offset' => [
+                'description' => 'Offset of records to be skipped (page*limit) (Pagination)',
+                'example' => 0,
+            ],
+            'content' => [
+                'description' => 'Search by substring match (name, code)',
+                'example' => '',
+            ],
+        ];
+    }
 }

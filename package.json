@@ -2,6 +2,7 @@
     "private": true,
     "scripts": {
         "dev": "tail -f storage/logs/laravel.log & php artisan serve",
+        "doc": "APP_ENV=documentation php artisan scribe:generate",
         "test": "php artisan test"
     },
     "devDependencies": {

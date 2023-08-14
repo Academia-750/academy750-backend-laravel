@@ -24,4 +24,19 @@ class ListTagRequest extends FormRequest
             ]
         ];
     }
+
+    public function queryParameters()
+    {
+        return [
+
+            'limit' => [
+                'description' => 'Limit of records returned (Pagination)',
+                'example' => 10,
+            ],
+            'content' => [
+                'description' => 'Search by substring match (tag name)',
+                'example' => '',
+            ],
+        ];
+    }
 }

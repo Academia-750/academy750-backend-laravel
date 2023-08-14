@@ -2,18 +2,22 @@
 
 namespace App\Models;
 
+use App\Core\Resources\Storage\Storage;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 
 class Material extends Model
 {
+
+    use HasFactory;
+
     public static function allowedTypes()
     {
         return ['material', 'recording'];
     }
 
-    use HasFactory;
+
     protected $fillable = [
         'name',
         'type',
@@ -34,6 +38,17 @@ class Material extends Model
         return $this->belongsTo(Workspace::class, 'workspace_id');
     }
 
+    public static function deleteFromStorage($material)
+    {
+        if (!$material->url) {
+            return ['status' => 204, 'message' => 'No Action'];
+        }
 
+        if ($material->type !== 'material') {
+            return ['status' => 204, 'message' => 'No Action'];
+        }
+
+        return Storage::for($material)->deleteFile($material); // Delete the old one.
+    }
 
 }

@@ -13,7 +13,7 @@ class WorkspaceFactory extends Factory
     {
         return [
             'name' => $this->faker->regexify('[a-zA-Z\s_-]{5,20}'),
-            'type' => $this->faker->regexify('[a-zA-Z\s_-]{5,20}'),
+            'type' => 'default',
             'created_at' => now(),
             'updated_at' => now(),
 

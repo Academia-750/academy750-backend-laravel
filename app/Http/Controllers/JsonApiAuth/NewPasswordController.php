@@ -8,6 +8,10 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+
+/**
+ * @group Auth
+ */
 class NewPasswordController
 {
     /** Handle an incoming new password request. */

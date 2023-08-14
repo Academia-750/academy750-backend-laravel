@@ -6,7 +6,6 @@ use App\Models\Group;
 use App\Models\GroupUsers;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 class GroupUsersFactory extends Factory
 {
@@ -16,8 +15,11 @@ class GroupUsersFactory extends Factory
     {
 
         return [
-            'group_id' => Group::factory()->create()->id,
-            'user_id' => User::factory()->create()->id,
+            'group_id' => config('app.env') === 'documentation' ? 1 : Group::factory()->create()->id,
+            'user_id' => config('app.env') === 'documentation' ? 2 : User::factory()->create()->id,
+            'discharged_at' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
         ];
     }
 
