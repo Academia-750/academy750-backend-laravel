@@ -2,13 +2,16 @@
 
 namespace Tests\Feature;
 
+use App\Core\Resources\Storage\Services\DummyStorage;
 use App\Models\Material;
 use App\Models\User;
-use App\Models\Workspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Mockery;
+use Mockery\MockInterface;
 use Tests\TestCase;
+
 
 
 class EditMaterialTest extends TestCase
@@ -117,10 +120,50 @@ class EditMaterialTest extends TestCase
     /** @test */
     public function update_url_200(): void
     {
+
+        $storageSpy = $this->spy(DummyStorage::class)->makePartial();
+
         $url = $this->faker->url();
 
-        $data = $this->put("api/v1/material/{$this->material->id}", ['url' => $url])->assertStatus(200)->json();
+        $data = $this->put("api/v1/material/{$this->material->id}", ['url' => $url])
+            ->assertStatus(200)
+            ->json();
+
         $this->assertEquals($data['result']['url'], $url);
+        $storageSpy->shouldNotHaveReceived('deleteFile'); // because original URL is empty
+
+
+    }
+
+    /** @test */
+    public function override_url_200(): void
+    {
+
+        $storageSpy = $this->spy(DummyStorage::class)->makePartial();
+
+        $material = Material::factory()->state(['type' => 'material', 'url' => $this->faker()->url()])->create();
+        $url = $this->faker()->url();
+        $this->put("api/v1/material/{$material->id}", ['url' => $url])
+            ->assertStatus(200)
+            ->json();
+        $storageSpy->shouldHaveReceived('deleteFile')->once()->with(Mockery::on(function ($argument) use ($material) {
+            return $argument->id === $material->id;
+        }));
+
+    }
+
+    /** @test */
+    public function error_from_storage_424(): void
+    {
+
+        $storageMock = $this->mock(DummyStorage::class)->makePartial();
+        $storageMock->shouldReceive('deleteFile')->andReturn(['status' => 401, 'error' => 'Not authorized']);
+
+        $material = Material::factory()->state(['type' => 'material', 'url' => $this->faker()->url()])->create();
+        $url = $this->faker()->url();
+        $this->put("api/v1/material/{$material->id}", ['url' => $url])
+            ->assertStatus(424)
+            ->json();
     }
 
     /** @test */

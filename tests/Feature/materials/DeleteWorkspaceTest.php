@@ -2,12 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Core\Resources\Storage\Services\DummyStorage;
 use App\Models\Material;
 use App\Models\User;
 use App\Models\Workspace;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Mockery;
 use Tests\TestCase;
 
 
@@ -85,4 +87,32 @@ class DeleteWorkspaceTest extends TestCase
         $this->assertEmpty(Material::all());
     }
 
+
+    /** @test */
+    public function delete_workspace_from_storage_200(): void
+    {
+        $storageSpy = $this->spy(DummyStorage::class)->makePartial();
+
+        $this->delete("api/v1/workspace/{$this->workspace->id}")->assertStatus(200);
+
+        $workspace = $this->workspace;
+
+        $storageSpy->shouldHaveReceived('deleteFolder')->once()->with(Mockery::on(function ($argument) use ($workspace) {
+            return $argument->id === $workspace->id;
+        }));
+
+    }
+
+
+
+    /** @test */
+    public function error_from_storage_424(): void
+    {
+
+        $storageMock = $this->mock(DummyStorage::class)->makePartial();
+        $storageMock->shouldReceive('deleteFolder')->andReturn(['status' => 401, 'error' => 'Not authorized']);
+
+        $this->delete("api/v1/workspace/{$this->workspace->id}")->assertStatus(424);
+
+    }
 }

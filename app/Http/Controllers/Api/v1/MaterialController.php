@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\v1;
 
+use App\Core\Resources\Storage\Storage;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\Materials\CreateMaterialRequest;
 use App\Http\Requests\Api\v1\Materials\CreateTagRequest;
@@ -154,7 +155,7 @@ class MaterialController extends Controller
      * Workspace: Edit
      *
      * @authenticated
-     * @urlParam workspaceId integer required Workspace Id
+     * @urlParam workspaceId integer Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
      * @apiResourceModel App\Models\Workspace
      * @response status=404 scenario="Workspace Not found"
@@ -171,6 +172,8 @@ class MaterialController extends Controller
         }
 
         try {
+
+
             $data = removeNull([
                 'name' => $request->get('name')
             ]);
@@ -193,7 +196,7 @@ class MaterialController extends Controller
      * Workspace: Delete
      *
      * @authenticated
-     * @urlParam workspaceId integer required Workspace Id
+     * @urlParam workspaceId integer Workspace Id
      * @response {"message": "successfully"}
      * @response status=404 scenario="Workspace Not found"
      */
@@ -208,6 +211,14 @@ class MaterialController extends Controller
             ], 404);
         }
         try {
+            $result = Workspace::deleteFromStorage($workspace);
+
+            if (isset($result['error'])) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => $result['error']
+                ], 424);
+            }
 
             /**
              * WARNING: This will delete all the files assigned to this workspace
@@ -230,7 +241,7 @@ class MaterialController extends Controller
      * Workspace: Info
      *
      * @authenticated
-     * @urlParam workspaceId integer required Workspace Id
+     * @urlParam workspaceId integer Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
      * @apiResourceModel App\Models\Workspace
      * @response status=404 scenario="Workspace Not found"
@@ -312,7 +323,7 @@ class MaterialController extends Controller
      * Material: Create / Add
      *
      * @authenticated
-     * @urlParam workspaceId integer required Workspace Id
+     * @urlParam workspaceId integer Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
      * @apiResourceModel App\Models\Material
      * @response status=404 scenario="Workspace Not found"
@@ -357,6 +368,7 @@ class MaterialController extends Controller
      * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
      * @apiResourceModel app\Models\Material
      * @response status=404 scenario="Material Not found"
+     * @response status=424 scenario="Override URL fail, we can not delete file from the source"
      */
     public function putEditMaterial(EditMaterialRequest $request, $materialId)
     {
@@ -375,6 +387,18 @@ class MaterialController extends Controller
                 'tags' => $request->get('tags') ? join(',', $request->get('tags')) : null,
                 'url' => $request->get('url')
             ]);
+
+            // Overriding URL => Delete old file
+            if ($request->get('url') && $request->get('url') !== $material->url) {
+                $result = Material::deleteFromStorage($material);
+
+                if (isset($result['error'])) {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => 'Error deleting file ' . $result['error']
+                    ], 424);
+                }
+            }
 
             Material::query()->find($material->id)->update($data);
             $updated = Material::query()->find($material->id);
@@ -398,6 +422,7 @@ class MaterialController extends Controller
      * @urlParam materialId integer Material Id
      * @response {"message": "successfully"}
      * @response status=404 scenario="Material Not found"
+     * @response status=424 scenario="Delete material fail: we can not delete URL from the source"
      */
     public function deleteMaterial($materialId): JsonResponse
     {
@@ -411,6 +436,18 @@ class MaterialController extends Controller
                     'error' => 'Material not found'
                 ], 404);
             }
+
+
+            // Deleting Material URL
+            $result = Material::deleteFromStorage($material);
+
+            if (isset($result['error'])) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Error deleting file ' . $result['error']
+                ], 424);
+            }
+
 
             $material->delete();
 

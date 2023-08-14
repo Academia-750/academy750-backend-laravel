@@ -46,7 +46,7 @@ class EditMaterialRequest extends FormRequest
             ],
             'url' => [
                 'description' => 'Material URL',
-                'example' => `https://my-cloud.com/file/123dade123d`
+                'example' => "https://my-cloud.com/file/123dade123d"
             ],
         ];
     }

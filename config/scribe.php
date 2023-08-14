@@ -250,7 +250,7 @@ return [
          * Any extra authentication-related info for your users. For instance, you can describe how to find or generate their auth credentials.
          * Markdown and HTML are supported.
          */
-        'extra_info' => 'You can retrieve your token by visiting your dashboard and clicking <b>Generate API token</b>.',
+        'extra_info' => 'You can retrieve your token by visiting the auth/login endpoint',
     ],
 
     /*
@@ -347,7 +347,7 @@ INTRO
      * - 'logo' => 'img/logo.png' // for `laravel` type
      *
      */
-    'logo' => 'logo.png',
+    'logo' => '../logo.png',
 
     /**
      * Customize the "Last updated" value displayed in the docs by specifying tokens and formats.
