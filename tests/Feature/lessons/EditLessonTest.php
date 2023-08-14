@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 
@@ -92,7 +93,8 @@ class EditLessonTest extends TestCase
 
         $this->put("api/v1/lesson/{$this->lesson->id}", ['description' => null])->assertStatus(422); // Not a string
         $this->put("api/v1/lesson/{$this->lesson->id}", ['description' => '11'])->assertStatus(422); // Too short
-        $this->put("api/v1/lesson/{$this->lesson->id}", ['description' => $this->faker->text(1010)])->assertStatus(422); // Too Long
+
+        $this->put("api/v1/lesson/{$this->lesson->id}", ['description' => Str::random(1001)])->assertStatus(422); // Too Long
 
         $this->put("api/v1/lesson/{$this->lesson->id}", ['is_online' => null])->assertStatus(422); // Wrong Value
 

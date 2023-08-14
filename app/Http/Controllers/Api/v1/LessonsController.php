@@ -43,7 +43,7 @@ class LessonsController extends Controller
             ]);
 
 
-            return LessonResource::make($lessonCreated);
+            return LessonResource::make($lessonCreated)->response()->setStatusCode(200);
 
         } catch (\Exception $err) {
             Log::error($err->getMessage());
@@ -98,8 +98,7 @@ class LessonsController extends Controller
             Lesson::query()->find($lesson->id)->update($data);
             $updated = Lesson::query()->find($lessonId);
 
-            return LessonResource::make($updated);
-
+            return LessonResource::make($updated)->response()->setStatusCode(200);
 
         } catch (\Exception $err) {
             Log::error($err->getMessage());
@@ -131,7 +130,7 @@ class LessonsController extends Controller
                 ], 404);
             }
 
-            return LessonResource::make($lesson);
+            return LessonResource::make($lesson)->response()->setStatusCode(200);
 
 
         } catch (\Exception $err) {
