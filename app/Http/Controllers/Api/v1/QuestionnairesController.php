@@ -29,6 +29,13 @@ class QuestionnairesController extends Controller
         return $this->testsInterface->get_tests_unresolved();
     }
 
+    /**
+     * Test: Uncompleted
+     *
+     * Fetch a test by id which is not completed yet
+     * @authenticated
+     * @urlParam test integer Test UUID
+     */
     public function fetch_unresolved_test(Test $test)
     {
         return $this->testsInterface->fetch_unresolved_test($test);

@@ -23,26 +23,57 @@ class OppositionsController extends Controller
         $this->oppositionsInterface = $oppositionsInterface;
     }
 
+    /**
+     * Opposition: List
+     *
+     * List of available opposition
+     * @authenticated
+     */
     public function index()
     {
         return $this->oppositionsInterface->index();
     }
 
+    /**
+     * Opposition: Create
+     *
+     * Create a new Opposition
+     * @authenticated
+     */
     public function create(CreateOppositionRequest $request)
     {
         return $this->oppositionsInterface->create($request);
     }
 
+    /**
+     * Opposition: Info
+     *
+     * Single Opposition Information
+     * @authenticated
+     */
     public function read(Opposition $opposition)
     {
         return $this->oppositionsInterface->read($opposition);
     }
 
+
+    /**
+     * Opposition: Update
+     *
+     * Update an opposition
+     * @authenticated
+     */
     public function update(UpdateOppositionRequest $request, Opposition $opposition)
     {
         return $this->oppositionsInterface->update($request, $opposition);
     }
 
+    /**
+     * Opposition: Delete
+     *
+     * Delete an oppositionc
+     * @authenticated
+     */
     public function delete(Opposition $opposition)
     {
         return $this->oppositionsInterface->delete($opposition);

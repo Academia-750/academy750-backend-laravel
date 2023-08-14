@@ -21,11 +21,13 @@ class DBApp implements TestsInterface
 {
     protected Test $model;
 
-    public function __construct(Test $test ){
+    public function __construct(Test $test)
+    {
         $this->model = $test;
     }
 
-    public function get_tests_unresolved(){
+    public function get_tests_unresolved()
+    {
         return Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'no')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
@@ -34,7 +36,8 @@ class DBApp implements TestsInterface
         return Auth::user()?->tests()->where('test_type', '=', 'card_memory')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function fetch_unresolved_test( $test ){
+    public function fetch_unresolved_test($test)
+    {
 
         $testQuery = Auth::user()
             ->tests()
@@ -49,7 +52,8 @@ class DBApp implements TestsInterface
         return QueryParametersQuestionsForResolveTest::getQuestionsEloquentSortByIndexByTest($testQuery);
     }
 
-    public function fetch_card_memory( $test ){
+    public function fetch_card_memory($test)
+    {
 
         $testQuery = Auth::user()->tests()->where('test_type', '=', 'card_memory')->firstWhere('id', '=', $test->getKey());
 
@@ -60,17 +64,17 @@ class DBApp implements TestsInterface
         return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate();
     }
 
-    public function create_a_quiz( $request )
+    public function create_a_quiz($request)
     {
         try {
 
             \Log::debug("-------Ordenamos toda la información que usaremos");
-            $dataForTheBuildTest = TestsService::getDataToCreateTests( $request );
+            $dataForTheBuildTest = TestsService::getDataToCreateTests($request);
 
             abort_if(!$dataForTheBuildTest['userAuth'], 404);
 
             \Log::debug("-------Crear la referencia del Test y actualizar información");
-            $dataForTheBuildTest = TestsService::createTestReference( $dataForTheBuildTest );
+            $dataForTheBuildTest = TestsService::createTestReference($dataForTheBuildTest);
 
             \Log::debug("-------Registrar temas y subtemas");
             TestsService::registerTopicsAndSubtopicsByTest(
@@ -111,8 +115,8 @@ class DBApp implements TestsInterface
                 $stateQuestionAnswered = $answer->is_correct_answer === 'yes' ? 'correct' : 'wrong';
 
                 $test->questions()->wherePivot('question_id', $question->getKey())->updateExistingPivot($question->getKey(), [
-                   'answer_id' => $answer->getKey(),
-                   'status_solved_question' => $stateQuestionAnswered,
+                    'answer_id' => $answer->getKey(),
+                    'status_solved_question' => $stateQuestionAnswered,
                     /*'have_been_show_test' => $stateQuestionAnswered === 'wrong' ? 'no' : 'yes'*/
                 ]);
 
@@ -125,7 +129,7 @@ class DBApp implements TestsInterface
             }
         } catch (\Exception $e) {
             //DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
@@ -157,13 +161,13 @@ class DBApp implements TestsInterface
                 $totalQuestionsCorrect - ($totalQuestionsWrong / 3) / $total_questions_test / 10
             );*/
             $result_final_test = (
-                ( $totalQuestionsCorrect - ($totalQuestionsWrong / 3) )
+                ($totalQuestionsCorrect - ($totalQuestionsWrong / 3))
                 / ($total_questions_test / 10)
             );
 
             //// \Log::debug($result_final_test);
 
-            $test->test_result = ( (int) $result_final_test ) <= 0 ? '0' : number_format($result_final_test, 2);
+            $test->test_result = ((int) $result_final_test) <= 0 ? '0' : number_format($result_final_test, 2);
             $test->is_solved_test = 'yes';
             $test->finished_at = Carbon::now();
 
@@ -193,7 +197,7 @@ class DBApp implements TestsInterface
             return $test;
         } catch (\Exception $e) {
             //DB::rollback();
-            abort($e->getCode(),$e->getMessage());
+            abort($e->getCode(), $e->getMessage());
         }
     }
 
