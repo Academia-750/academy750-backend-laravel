@@ -25,6 +25,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Maatwebsite\Excel\Facades\Excel;
+
 //use App\Imports\Api\Users\v1\UserImport;
 
 
@@ -33,33 +34,36 @@ class DBApp implements UsersInterface
 {
     protected User $model;
 
-    public function __construct(User $user ){
+    public function __construct(User $user)
+    {
         $this->model = $user;
     }
 
-    public function index(){
+    public function index()
+    {
         return $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function create( $request ): array{
+    public function create($request): array
+    {
         try {
             $secureRandomPassword = UserService::generateSecureRandomPassword();
 
             DB::beginTransaction();
-                $userCreated = $this->model->query()->create([
-                    'dni' => $request->get('dni'),
-                    'first_name' => $request->get('first-name'),
-                    'last_name' => $request->get('last-name'),
-                    'full_name' => "{$request->get('first-name')} {$request->get('last-name')}",
-                    'phone' => $request->get('phone'),
-                    'email' => $request->get('email'),
-                    'password' => Hash::make($secureRandomPassword)
-                ]);
+            $userCreated = $this->model->query()->create([
+                'dni' => $request->get('dni'),
+                'first_name' => $request->get('first-name'),
+                'last_name' => $request->get('last-name'),
+                'full_name' => "{$request->get('first-name')} {$request->get('last-name')}",
+                'phone' => $request->get('phone'),
+                'email' => $request->get('email'),
+                'password' => Hash::make($secureRandomPassword)
+            ]);
 
-                UserService::syncRolesToUser(
-                    $request->get('roles'),
-                    $userCreated
-                );
+            UserService::syncRolesToUser(
+                $request->get('roles'),
+                $userCreated
+            );
 
             DB::commit();
 
@@ -70,35 +74,37 @@ class DBApp implements UsersInterface
 
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
 
     }
 
-    public function read( $user ){
+    public function read($user)
+    {
         //dump($user->id);
         return $this->model->applyIncludes()->findOrFail($user->getKey());
     }
 
-    public function update( $request, $user ): \App\Models\User{
+    public function update($request, $user): \App\Models\User
+    {
         try {
 
             DB::beginTransaction();
-                $first_name = $request->get('first-name') ?? $user->first_name;
-                $last_name = $request->get('last-name') ?? $user->last_name;
+            $first_name = $request->get('first-name') ?? $user->first_name;
+            $last_name = $request->get('last-name') ?? $user->last_name;
 
-                $user->dni = $request->get('dni') ?? $user->dni;
-                $user->first_name = $first_name;
-                $user->last_name = $last_name;
-                $user->full_name = "{$first_name} {$last_name}";
-                $user->phone = $request->get('phone') ?? $user->phone;
-                $user->email = $request->get('email') ?? $user->email;
-                $user->save();
+            $user->dni = $request->get('dni') ?? $user->dni;
+            $user->first_name = $first_name;
+            $user->last_name = $last_name;
+            $user->full_name = "{$first_name} {$last_name}";
+            $user->phone = $request->get('phone') ?? $user->phone;
+            $user->email = $request->get('email') ?? $user->email;
+            $user->save();
 
-                UserService::syncRolesToUser(
-                    $request->get('roles'),
-                    $user
-                );
+            UserService::syncRolesToUser(
+                $request->get('roles'),
+                $user
+            );
 
 
             DB::commit();
@@ -112,7 +118,8 @@ class DBApp implements UsersInterface
 
     }
 
-    public function delete( $user ): void{
+    public function delete($user): void
+    {
         try {
 
             DB::beginTransaction();
@@ -126,12 +133,13 @@ class DBApp implements UsersInterface
 
     }
 
-    public function mass_selection_for_action( $request ): array{
+    public function mass_selection_for_action($request): array
+    {
         try {
 
             DB::beginTransaction();
 
-                $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('users'));
+            $information = ActionForMultipleRecordsService::actionForMultipleRecords($request->get('action'), $request->get('users'));
 
             DB::commit();
 
@@ -148,7 +156,8 @@ class DBApp implements UsersInterface
 
     }
 
-    public function import_records( $request ): string{
+    public function import_records($request): string
+    {
         return "Proceso de importación iniciado";
     }
 
@@ -252,11 +261,12 @@ class DBApp implements UsersInterface
 
             $today = date('Y-m-d');
             $student = Auth::user();
-            $last_date = date('Y-m-d', strtotime($today . StatisticsDataHistoryStudent::getPeriodInKey( $request->get('period') )));
+            $last_date = date('Y-m-d', strtotime($today . StatisticsDataHistoryStudent::getPeriodInKey($request->get('period'))));
 
             $topicsData = StatisticsDataHistoryStudent::getCollectGroupsStatisticsQuestionsTopic(
                 $request->get('topics_id'),
-                $request->get('period'), [
+                $request->get('period'),
+                [
                     'student_id' => $student?->getKey(),
                     'last_date' => $last_date,
                     'today' => $today,
@@ -268,11 +278,11 @@ class DBApp implements UsersInterface
             foreach ($topicsData as $topicData) {
                 $topicDataArray = (array) $topicData;
 
-                 $topics[] = [
-                    'topic' => Topic::query()->findOrFail($topicDataArray['topic_id']),
-                    'correct' => $topicDataArray['correct'],
-                    'wrong' => $topicDataArray['wrong'],
-                    'unanswered' => $topicDataArray['unanswered'],
+                $topics[] = [
+                    'topic' => Topic::query()->findOrFail($topicDataArray['TOPIC_ID']),
+                    'correct' => $topicDataArray['CORRECT_ANS'],
+                    'wrong' => $topicDataArray['INCORRECT_ANS'],
+                    'unanswered' => $topicDataArray['UNANSWERED_ANS'],
                 ];
             }
 
@@ -297,14 +307,20 @@ class DBApp implements UsersInterface
 
             $test = Test::query()
                 ->where('id', $test_id_request)
-                ->where('uuid', $test_id_request)
+                ->orWhere('uuid', $test_id_request)
                 ->first();
 
             abort_if(!$test, new ModelNotFoundException("No existe el Test o cuestionario con identificador {$test_id_request}"));
+            // return [];
 
-            return Question::query()->whereIn('id',
-                $test->questions()->wherePivot('status_solved_question', '=', request('type-question')
-                )->pluck('questions.id')->toArray())->jsonPaginate();
+            return Question::query()->whereIn(
+                'id',
+                $test->questions()->wherePivot(
+                    'status_solved_question',
+                    '=',
+                    request('type-question')
+                )->pluck('questions.id')->toArray()
+            )->jsonPaginate();
 
         } catch (\Exception $e) {
             DB::rollback();
@@ -322,12 +338,14 @@ class DBApp implements UsersInterface
             }
 
             //$questions_id  = array_unique(TopicsStatisticsService::getQuestionsFailedBelongsToTopicAndTest($topic));
-            $questions_id_results_procedure  = DB::select('call get_questions_wrong_history_by_topic_and_tests_student_procedure(?,?)',
-            array(
-                $user->getKey(), $topic->getKey()
-            ));
+            $questions_id_results_procedure = DB::select(
+                'call get_questions_wrong_history_by_topic_and_tests_student_procedure(?,?)',
+                array(
+                    $user->getKey(), $topic->getKey()
+                )
+            );
 
-            return  array_map(static function ($item) {
+            return array_map(static function ($item) {
                 $questionItem = (array) $item;
                 return [
                     'question_data' => Question::query()->findOrFail($questionItem['question_wrong_id']),
@@ -397,7 +415,7 @@ class DBApp implements UsersInterface
                 'key_period_date' => request('key-period-date')
             ];
 
-            $validateData = Validator::make($data,[
+            $validateData = Validator::make($data, [
                 'key_period_date' => ['required', Rule::in(['all', 'last-month', 'last-three-months'])]
             ]);
 
@@ -420,12 +438,14 @@ class DBApp implements UsersInterface
             $last_date = date(
                 'Y-m-d',
                 strtotime(
-                    $today . StatisticsDataHistoryStudent::getPeriodInKey( request('key-period-date') )
+                    $today . StatisticsDataHistoryStudent::getPeriodInKey(request('key-period-date'))
                 )
             );
 
-            $tests_id_by_procedure = DB::select('call get_tests_of_student_by_period_date_procedure(?,?,?)',
-            array($student->getKey(), $last_date, $today));
+            $tests_id_by_procedure = DB::select(
+                'call get_tests_of_student_by_period_date_procedure(?,?,?)',
+                array($student->getKey(), $last_date, $today)
+            );
 
 
             $tests_id = array_map(static function ($test) {
@@ -446,7 +466,6 @@ class DBApp implements UsersInterface
 
         } catch (\Exception $e) {
             DB::rollback();
-            // \Log::debug($e->getMessage());
             abort($e->getCode(), $e->getMessage());
         }
     }

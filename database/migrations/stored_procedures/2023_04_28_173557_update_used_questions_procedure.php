@@ -59,7 +59,7 @@ return new class extends Migration {
                 INNER JOIN questions q on q.id = qt.question_id
                 INNER JOIN topics top on top.id = q.questionable_id
                 where t.id = id_test
-                and q.questionable_type = 'App\\Models\\Topic'
+                and q.questionable_type = 'App\\\\Models\\\\Topic'
                 and qt.status_solved_question <> 'correct'
               UNION
                 select distinct qt.question_id, top.id as topic_id, st.id as subtopic_id, t.user_id, t.opposition_id
@@ -112,7 +112,7 @@ return new class extends Migration {
                 INNER JOIN questions q on q.id = qt.question_id
                 INNER JOIN topics top on top.id = q.questionable_id
                 where t.id = id_test
-                and q.questionable_type = 'App\\Models\\Topic'
+                and q.questionable_type = 'App\\\\Models\\\\Topic'
                 and qt.status_solved_question = 'correct'
               UNION
                 select distinct qt.question_id, top.id as topic_id, st.id as subtopic_id, t.user_id, t.opposition_id

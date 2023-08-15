@@ -5,8 +5,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     public function __construct(public string $nameProcedure = 'get_questions_test_by_topic_procedure')
     {
     }
@@ -77,7 +76,7 @@ BEGIN
             INNER JOIN topics t on t.id = q.questionable_id
             INNER JOIN oppositionables op ON op.oppositionable_id = q.questionable_id
             WHERE op.opposition_id = id_oposicion
-            AND q.questionable_type = 'App\\Models\\Topic'
+            AND q.questionable_type = 'App\\\\Models\\\\Topic'
             UNION
             SELECT DISTINCT
                 st.topic_id as topic_id,
@@ -153,7 +152,7 @@ BEGIN
                         AND qu.is_visible = 'yes')
                       AND op.opposition_id = id_oposicion
                       AND q.questionable_id = v_id
-                      AND q.questionable_type = 'App\\Models\\Topic'
+                      AND q.questionable_type = 'App\\\\Models\\\\Topic'
                       AND q.question_in_edit_mode = 'no'
                       AND q.is_visible = 'yes'
                       AND q.its_for_test = 'yes';

@@ -17,7 +17,8 @@ class SchemaJson implements UsersInterface
 {
     protected EventApp $eventApp;
 
-    public function __construct(\App\Core\Resources\Users\v1\EventApp $eventApp ){
+    public function __construct(\App\Core\Resources\Users\v1\EventApp $eventApp)
+    {
         $this->eventApp = $eventApp;
     }
 
@@ -28,46 +29,48 @@ class SchemaJson implements UsersInterface
         );
     }
 
-    public function create( $request ): \Illuminate\Http\JsonResponse
+    public function create($request): \Illuminate\Http\JsonResponse
     {
         return UserResource::make($this->eventApp->create($request))
-                    ->response()
-                    ->setStatusCode(201);
+            ->response()
+            ->setStatusCode(201);
     }
 
-    public function read( $user ): UserResource
+    public function read($user): UserResource
     {
         return UserResource::make(
-            $this->eventApp->read( $user )
+            $this->eventApp->read($user)
         );
     }
 
-    public function update( $request, $user ): UserResource
+    public function update($request, $user): UserResource
     {
         return UserResource::make(
-            $this->eventApp->update( $request, $user )
+            $this->eventApp->update($request, $user)
         );
     }
 
-    public function delete( $user ): \Illuminate\Http\Response
+    public function delete($user): \Illuminate\Http\Response
     {
-        $this->eventApp->delete( $user );
+        $this->eventApp->delete($user);
         return response()->noContent();
     }
 
-    public function mass_selection_for_action( $request ): \Illuminate\Http\JsonResponse
+    public function mass_selection_for_action($request): \Illuminate\Http\JsonResponse
     {
         return response()->json([
-            'information' => $this->eventApp->mass_selection_for_action( $request )
+            'information' => $this->eventApp->mass_selection_for_action($request)
         ], 200);
     }
 
-    public function export_records( $request ){
-        return $this->eventApp->export_records( $request );
+    public function export_records($request)
+    {
+        return $this->eventApp->export_records($request);
     }
 
-    public function import_records( $request ){
-        return $this->eventApp->import_records( $request );
+    public function import_records($request)
+    {
+        return $this->eventApp->import_records($request);
     }
 
     public function disable_account($request, $user): UserResource
@@ -101,7 +104,7 @@ class SchemaJson implements UsersInterface
     public function fetch_history_questions_by_type_and_period()
     {
 
-        $test = Test::query()->where('uuid', request('test-id'));
+        $test = Test::query()->where('uuid', request('test-id'))->first();
 
         if (!$test) {
             abort(404, 'Test not found');
@@ -114,6 +117,8 @@ class SchemaJson implements UsersInterface
         $questionsQuery = Question::query()->whereIn(
             'id', $test->questions()->wherePivot('status_solved_question', '=', request('type-question'))->pluck('questions.id')->toArray()
         )->get();
+
+
 
         foreach ($questionsQuery as $question) {
 
@@ -132,11 +137,11 @@ class SchemaJson implements UsersInterface
         return QuestionCollection::make(
             $this->eventApp->fetch_history_questions_by_type_and_period()
         )->additional([
-            'meta' => [
-                'test' => QuestionnaireResource::make($test),
-                'questions_data' => $questions
-            ]
-        ]);
+                    'meta' => [
+                        'test' => QuestionnaireResource::make($test),
+                        'questions_data' => $questions
+                    ]
+                ]);
     }
 
     public function fetch_history_questions_wrong_by_topic_of_student($topic)
