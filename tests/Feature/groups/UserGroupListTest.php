@@ -250,4 +250,5 @@ class UserGroupListTest extends TestCase
         $this->assertEquals($data['results'][0]['id'], $item->id);
 
     }
+
 }

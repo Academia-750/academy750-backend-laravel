@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Group;
+use App\Models\GroupUsers;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -79,19 +81,83 @@ class GetLessonTest extends TestCase
         $this->assertEquals($data['result']['date'], $this->lesson->date);
         $this->assertEquals($data['result']['start_time'], $this->lesson->start_time);
         $this->assertEquals($data['result']['end_time'], $this->lesson->end_time);
-    }
+        $this->assertEquals($data['result']['color'], null);
 
-    /**
-     * TODO: Maybe some attach information like the number of students assisting will be
-     * only display to an admin role
-     */
+    }
 
     /** @test */
-    public function total_students_200(): void
+    public function get_lesson_color_200(): void
     {
 
-        $this->markTestSkipped();
+        $group = Group::factory()->create();
+        GroupUsers::factory()->group($group)->count(2)->create();
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group->id])->assertStatus(200);
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}")->assertStatus(200);
+
+        $this->assertEquals($data['result']['color'], $group->color);
     }
+
+    /** @test */
+    public function get_lesson_groups_200(): void
+    {
+
+        $group = Group::factory()->create();
+        GroupUsers::factory()->group($group)->count(1)->create();
+        $group2 = Group::factory()->create();
+        GroupUsers::factory()->group($group2)->count(1)->create();
+
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group->id])->assertStatus(200);
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group2->id])->assertStatus(200);
+
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}")->assertStatus(200);
+
+        $this->assertEquals($data['result']['groups'][0]['group_id'], $group->id);
+        $this->assertEquals($data['result']['groups'][0]['group_name'], $group->name);
+
+        $this->assertEquals($data['result']['groups'][1]['group_id'], $group2->id);
+        $this->assertEquals($data['result']['groups'][1]['group_name'], $group2->name);
+    }
+
+
+    /** @test */
+    public function get_lesson_several_groups_color_200(): void
+    {
+
+        $group = Group::factory()->create();
+        GroupUsers::factory()->group($group)->count(3)->create();
+        $group2 = Group::factory()->create();
+        GroupUsers::factory()->group($group2)->count(2)->create();
+        $group3 = Group::factory()->create();
+        GroupUsers::factory()->group($group3)->count(1)->create();
+
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group->id])->assertStatus(200);
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group2->id])->assertStatus(200);
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group3->id])->assertStatus(200);
+
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}")->assertStatus(200);
+
+        $this->assertEquals($data['result']['color'], $group->color);
+    }
+
+
+    /** @test */
+    public function get_student_count_200(): void
+    {
+
+        $group = Group::factory()->create();
+        GroupUsers::factory()->group($group)->count(3)->create();
+
+
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group->id])->assertStatus(200);
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}")->assertStatus(200);
+
+        $this->assertEquals($data['result']['student_count'], 3);
+    }
+
 
     /** @test */
     public function total_materials_200(): void

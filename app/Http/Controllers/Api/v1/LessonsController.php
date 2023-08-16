@@ -4,13 +4,20 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\Lesson\ActivateLessonRequest;
+use App\Http\Requests\Api\v1\Lesson\AddGroupToLessonRequest;
+use App\Http\Requests\Api\v1\Lesson\AddStudentToLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\CreateLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\CalendarLessonRequest;
+use App\Http\Requests\Api\v1\Lesson\ListLessonStudentsRequest;
 use App\Http\Requests\Api\v1\Lesson\UpdateLessonRequest;
+use App\Http\Resources\Api\Lesson\v1\LessonCollection;
 use App\Http\Resources\Api\Lesson\v1\LessonResource;
+use App\Models\Group;
 use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 
@@ -115,7 +122,27 @@ class LessonsController extends Controller
      * @authenticated
      * @urlParam lessonId integer required Lesson ID
      * @apiResource App\Http\Resources\Api\Lesson\v1\LessonResource
-     * @apiResourceModel App\Models\Lesson
+     * @response {
+     *     "result": [
+     *        "id": 1,
+     *        "name" : "Law Part 2" ,
+     *        "date" : "2023-02-03" ,
+     *        "start_time" : '10:00' ,
+     *        "end_time" : '12:00' ,
+     *        "description" : "We will go through the chapter 2 of the book" ,
+     *        "is_online" : false ,
+     *        "is_active" : false,
+     *        "url" : "https://zoom-url.com" ,
+     *        "student_count": 23,
+     *        "color": "#990033"
+     *        "groups": [
+     *               { "group_id": 1, "group_name" : "Group A" },
+     *               { "group_id": 2, "group_name" : "Group B" }
+     *        ],
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ],
+     *  }
      * @response status=404 scenario="Lesson not found"
      */
     public function getLesson(string $lessonId)
@@ -129,6 +156,10 @@ class LessonsController extends Controller
                     'result' => 'Lesson not found'
                 ], 404);
             }
+
+            $lesson->color = $lesson->getColor();
+            $lesson->student_count = $lesson->students()->count();
+            $lesson->groups = $lesson->groups();
 
             return LessonResource::make($lesson)->response()->setStatusCode(200);
 
@@ -165,6 +196,18 @@ class LessonsController extends Controller
 
             Lesson::query()->find($lesson->id)->update(['is_active' => $request->get('active')]);
 
+            // If ACTIVE we resync all the active groups
+            if ($request->get('active')) {
+
+                array_map(function ($group) use ($lesson) {
+                    // Will delete any student that doesnt belong to the group anymore. Add the current active ones
+                    $lesson->students()->newPivotStatement()->where('group_id', $group['group_id'])->delete();
+                    $studentsIds = Group::find($group['group_id'])->users()->whereNull('discharged_at')->pluck('user_id');
+                    $lesson->students()->attach($studentsIds, ['group_id' => $group['group_id'], 'group_name' => $group['group_name']]);
+                }, $lesson->groups()->toArray());
+
+            }
+
             return response()->json([
                 'status' => 'successfully',
             ]);
@@ -195,8 +238,8 @@ class LessonsController extends Controller
      *        "is_online" : false ,
      *        "is_active" : false,
      *        "url" : "https://zoom-url.com" ,
-     *        "students": 23,
-     *        "assistance": 10,
+     *        "student_count": 23,
+     *        "color": "#990033"
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -227,14 +270,13 @@ class LessonsController extends Controller
             $query = filterToQuery(Lesson::query(), $conditions);
 
             $results = (clone $query)
-                ->select('lessons.*')
-                // TODO: Count Students that will join the lesson
-                // ->selectSub(function ($query) {
-                //     $query->from('group_users')
-                //         ->selectRaw('COUNT(*)')
-                //         ->whereColumn('group_users.group_id', 'groups.id')
-                //         ->whereNull('group_users.discharged_at');
-                // }, 'student_count')
+                ->select('lessons.*', 'lesson_group.color')
+                ->leftJoin(...Lesson::getColorSQL())
+                ->selectSub(function ($query) {
+                    $query->from('lesson_user')
+                        ->selectRaw('COUNT(*)')
+                        ->whereColumn('lesson_user.lesson_id', 'lessons.id');
+                }, 'student_count')
                 // --
                 ->orderBy('date', 'asc')
                 ->orderBy('start_time', 'asc')
@@ -303,24 +345,290 @@ class LessonsController extends Controller
         }
     }
 
+    /**
+     * Lesson: Add Student
+     *
+     * Add a single student of a group of students to a lesson.
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {"message": "successfully"}
+     * @response status=404 scenario="Lesson not found"
+     * @response status=404 scenario="Student not found"
+     * @response status=409 scenario="Student already exists on the group"
+     * @response status=403 scenario="User is not a student"
+     */
+    public function postLessonStudent(AddStudentToLessonRequest $request, string $lessonId)
+    {
+        try {
+            $lesson = Lesson::query()->find($lessonId);
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Group not found'
+                ], 404);
+            }
 
-    // public function postLessonStudent(Request $request, string $lessonId)
-    // {
+            $user = User::query()->where(['uuid' => $request->get('user_id')])->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'User not found'
+                ], 404);
+            }
 
-    // }
-    // public function postLessonGroup(Request $request, string $lessonId)
-    // {
+            if (!$user->hasRole('student')) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Only students can join lessons'
+                ], 403);
+            }
 
-    // }
-    // public function deleteLessonStudent(Request $request, string $lessonId)
-    // {
+            $exists = $lesson->students()->where(['user_id' => $user->id])->count();
 
-    // }
 
-    // public function getLessonStudents(Request $request, string $lessonId)
-    // {
+            if ($exists) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'The user already belongs to the lesson'
+                ], 409);
+            }
 
-    // }
+            $lesson->students()->save($user);
+
+            return response()->json([
+                'status' => 'successfully'
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Lesson: Add Group
+     *
+     * Sync group of active students to a lesson.
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {"message": "successfully", "count": 10 }
+     * @response status=404 scenario="Lesson not found"
+     * @response status=404 scenario="Group not found"
+     */
+    public function postLessonGroup(AddGroupToLessonRequest $request, string $lessonId)
+    {
+        try {
+            $lesson = Lesson::query()->find($lessonId);
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Group not found'
+                ], 404);
+            }
+
+            $group = Group::query()->find($request->get('group_id'));
+            if (!$group) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Group not found'
+                ], 404);
+            }
+
+
+            $studentsIds = $group->users()->whereNull('discharged_at')->pluck('user_id');
+
+            // Will delete any student that doesnt belong to the group anymore. Add the current active ones
+            $lesson->students()->newPivotStatement()->where('group_id', $group->id)->delete();
+            $lesson->students()->attach($studentsIds, ['group_id' => $group->id, 'group_name' => $group->name]);
+
+
+            return response()->json([
+                'status' => 'successfully',
+                'count' => count($studentsIds)
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Lesson: Delete Student
+     *
+     * Delete a single student from the group
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {"message": "successfully"}
+     * @response status=404 scenario="Lesson not found"
+     * @response status=409 scenario="Student not in the group"
+     */
+    public function deleteLessonStudent(AddStudentToLessonRequest $request, string $lessonId)
+    {
+        try {
+            $lesson = Lesson::find($lessonId);
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Group not found'
+                ], 404);
+            }
+
+            $student = $lesson->students()->where(['uuid' => $request->get('user_id')])->first();
+
+
+            if (!$student) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'The user is not linked to the lesson'
+                ], 409);
+            }
+
+            $lesson->students()->detach($student);
+
+            return response()->json([
+                'status' => 'successfully'
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+
+    }
+
+    /**
+     * Lesson: Delete Group
+     *
+     * Delete all the students that were added as part of a group.
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {"message": "successfully", "count": 3 }
+     * @response status=404 scenario="Lesson not found"
+     * @response status=409 scenario="Group not found"
+     */
+    public function deleteGroupLesson(AddGroupToLessonRequest $request, string $lessonId)
+    {
+        try {
+            $lesson = Lesson::query()->find($lessonId);
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Group not found'
+                ], 404);
+            }
+
+            $group = Group::query()->find($request->get('group_id'));
+            if (!$group) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Group not found'
+                ], 404);
+            }
+
+            // Will delete any student that doesnt belong to the group anymore. Add the current active ones
+            $result = $lesson->students()->newPivotStatement()->where('group_id', $group->id)->delete();
+
+            return response()->json([
+                'status' => 'successfully',
+                'count' => $result
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Lesson: Student List
+     *
+     * Search materials
+     * @authenticated
+     * @urlParam materialId integer Material Id
+     * @response {
+     *     "results": [
+     *        "user_id": 1,
+     *        "user_uuid" : "uuid" ,
+     *        "group_name" : "My Group" ,
+     *        "group_id" : 3,
+     *        "user_dni" : "00000000A" ,
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ],
+     *       "total": 1
+     *  }
+     * @response status=404 scenario="Lesson not found"
+     */
+    public function getLessonStudents(ListLessonStudentsRequest $request, $lessonId)
+    {
+        try {
+            $lesson = Lesson::find($lessonId);
+
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Group not found'
+                ], 404);
+            }
+
+            $conditions = [
+                parseFilter(['users.dni', 'users.full_name', 'lesson_user.group_name'], $request->get('content'), 'or_like')
+            ];
+
+            $query = DB::query()
+                ->from('lesson_user')
+                ->select([
+                    'lesson_user.user_id',
+                    'users.dni',
+                    'users.full_name',
+                    'users.uuid',
+                    'lesson_user.group_id',
+                    'lesson_user.group_name',
+                    'lesson_user.created_at as created_at',
+                    'lesson_user.updated_at as updated_at'
+                ])->join('users', 'lesson_user.user_id', '=', 'users.id');
+
+
+            filterToQuery(
+                $query,
+                $conditions
+            );
+
+            $results = (clone $query)
+                ->orderBy($request->get('orderBy') ?? 'lesson_user.updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->offset($request->get('offset') ?? 0)
+                ->limit($request->get('limit') ?? 20)
+                ->get();
+
+            $total = (clone $query)->count();
+
+            return response()->json([
+                'status' => 'successfully',
+                'results' => $results,
+                'total' => $total
+            ]);
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+
+    }
 
     // public function postLessonMaterial(Request $request, string $lessonId)
     // {

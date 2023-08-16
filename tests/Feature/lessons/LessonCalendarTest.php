@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Group;
+use App\Models\GroupUsers;
 use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -172,6 +174,38 @@ class LessonCalendarTest extends TestCase
 
         $this->assertEquals($data['total'], 1);
         $this->assertEquals($data['results'][0]['id'], $this->lessons[1]['id']);
+    }
+
+    /** @test */
+    public function group_color_200(): void
+    {
+        $group = Group::factory()->create();
+        GroupUsers::factory()->group($group)->count(3)->create();
+        $group2 = Group::factory()->create();
+        GroupUsers::factory()->group($group2)->count(2)->create();
+
+        $this->post("api/v1/lesson/{$this->lessons[0]->id}/group", ['group_id' => $group->id])->assertStatus(200);
+        $this->post("api/v1/lesson/{$this->lessons[0]->id}/group", ['group_id' => $group2->id])->assertStatus(200);
+
+
+        $data = $this->get("api/v1/lesson/calendar?" . Arr::query($this->body))->assertStatus(200)->json();
+
+        $this->assertEquals($data['results'][0]['color'], $group->color); // People from group 1 are more number
+        // Other groups have no color yet
+        $this->assertNull($data['results'][1]['color']);
+
+    }
+
+
+    /** @test */
+    public function total_students_200(): void
+    {
+        $this->lessons[0]->students()->attach(User::factory()->student()->count(2)->create());
+
+        $data = $this->get("api/v1/lesson/calendar?" . Arr::query($this->body))->json();
+        $this->assertEquals($data['results'][0]['student_count'], 2); // People from group 1 are more number
+        // Other groups have no students yet
+        $this->assertEquals($data['results'][1]['student_count'], 0);
 
     }
 }

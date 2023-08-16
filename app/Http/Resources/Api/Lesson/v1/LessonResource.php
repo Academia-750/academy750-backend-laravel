@@ -12,5 +12,4 @@ class LessonResource extends JsonResource
 
 
     public $collects = Lesson::class;
-
 }
