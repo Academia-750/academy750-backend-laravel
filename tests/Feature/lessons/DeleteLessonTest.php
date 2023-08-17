@@ -3,10 +3,12 @@
 namespace Tests\Feature;
 
 use App\Models\Lesson;
+use App\Models\Material;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 
@@ -79,7 +81,7 @@ class DeleteLessonTest extends TestCase
     public function delete_lesson_200(): void
     {
 
-        $this->delete("api/v1/lesson/{$this->lesson->id}")->assertStatus(200)->json();
+        $this->delete("api/v1/lesson/{$this->lesson->id}")->assertStatus(200);
         $lesson = Lesson::find($this->lesson->id);
 
         $this->assertNull($lesson);
@@ -89,12 +91,32 @@ class DeleteLessonTest extends TestCase
     /** @test */
     public function delete_lesson_clear_students_200(): void
     {
-        $this->markTestSkipped();
+        // We start with 3 students
+        $students = User::factory()->student()->count(3)->create();
+        $this->lesson->students()->attach($students);
+        $this->assertEquals($this->lesson->students()->count(), 3);
+
+        // Delete shall clear the students
+        $this->delete("api/v1/lesson/{$this->lesson->id}")->assertStatus(200);
+
+        $this->assertEquals($this->lesson->students()->count(), 0);
+        // The user is not deleted!
+        $this->assertNotNull(User::find($students[0]->id));
     }
 
     /** @test */
     public function delete_lesson_clear_materials_200(): void
     {
-        $this->markTestSkipped();
+        // We start with 3 students
+        $materials = Material::factory()->count(3)->create();
+        $this->lesson->materials()->attach($materials);
+
+        $this->assertEquals($this->lesson->materials()->count(), 3);
+
+        // Delete shall clear the students
+        $this->delete("api/v1/lesson/{$this->lesson->id}")->assertStatus(200);
+
+        $this->assertEquals($this->lesson->materials()->count(), 0);
+        $this->assertNotNull(Material::find($materials[0]->id));
     }
 }

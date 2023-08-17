@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\v1\Lesson;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddGroupToLessonRequest extends FormRequest
+class MaterialToLessonRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,20 +14,22 @@ class AddGroupToLessonRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'group_id' => [
+            'material_id' => [
                 'required',
                 'integer',
                 'min:0'
+
             ],
+
         ];
     }
 
     public function bodyParameters()
     {
         return [
-            'group_id' => [
-                'description' => 'Group Code: All the active users of the group will join the lesson',
-                "example" => 'BCDEFRT'
+            'material_id' => [
+                'description' => 'Material Id',
+                "example" => '23'
             ],
         ];
     }

@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Core\Resources\Storage\Services\DummyStorage;
+use App\Models\Lesson;
 use App\Models\Material;
 use App\Models\User;
 use App\Models\Workspace;
@@ -114,5 +115,18 @@ class DeleteWorkspaceTest extends TestCase
 
         $this->delete("api/v1/workspace/{$this->workspace->id}")->assertStatus(424);
 
+    }
+
+    /** @test */
+    public function deleted_workspace_remove_materials_from_lesson_200(): void
+    {
+        $lesson = Lesson::factory()->create();
+        $lesson->materials()->attach(Material::factory()->create(['workspace_id' => $this->workspace->id]));
+        $this->assertEquals($lesson->materials()->count(), 1);
+
+        $this->delete("api/v1/workspace/{$this->workspace->id}")
+            ->assertStatus(200);
+
+        $this->assertEquals($lesson->materials()->count(), 0);
     }
 }

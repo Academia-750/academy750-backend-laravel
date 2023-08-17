@@ -17,5 +17,5 @@ Route::get('lesson/{lessonId}/students', [LessonsController::class, 'getLessonSt
 
 
 Route::post('lesson/{lessonId}/material', [LessonsController::class, 'postLessonMaterial'])->middleware('onlyAdmin');
-Route::get('lesson/{lessonId}/materials', [LessonsController::class, 'getLessonMaterials'])->middleware('onlyAdmin');
 Route::delete('lesson/{lessonId}/material', [LessonsController::class, 'deleteLessonMaterial'])->middleware('onlyAdmin');
+Route::get('lesson/{lessonId}/materials', [LessonsController::class, 'getLessonMaterials'])->middleware('onlyAdmin');

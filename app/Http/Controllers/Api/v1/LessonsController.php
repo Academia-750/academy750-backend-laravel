@@ -9,11 +9,14 @@ use App\Http\Requests\Api\v1\Lesson\AddStudentToLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\CreateLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\CalendarLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\ListLessonStudentsRequest;
+use App\Http\Requests\Api\v1\Lesson\ListMaterialLessonRequest;
+use App\Http\Requests\Api\v1\Lesson\MaterialToLessonRequest;
 use App\Http\Requests\Api\v1\Lesson\UpdateLessonRequest;
 use App\Http\Resources\Api\Lesson\v1\LessonCollection;
 use App\Http\Resources\Api\Lesson\v1\LessonResource;
 use App\Models\Group;
 use App\Models\Lesson;
+use App\Models\Material;
 use App\Models\User;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Carbon;
@@ -319,7 +322,7 @@ class LessonsController extends Controller
             if (!$lesson) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Group not found'
+                    'result' => 'Lesson not found'
                 ], 404);
             }
 
@@ -346,7 +349,7 @@ class LessonsController extends Controller
     }
 
     /**
-     * Lesson: Add Student
+     * Lesson Student: Add
      *
      * Add a single student of a group of students to a lesson.
      * @authenticated
@@ -364,7 +367,7 @@ class LessonsController extends Controller
             if (!$lesson) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Group not found'
+                    'result' => 'Lesson not found'
                 ], 404);
             }
 
@@ -409,7 +412,7 @@ class LessonsController extends Controller
     }
 
     /**
-     * Lesson: Add Group
+     * Lesson Student: Add Group
      *
      * Sync group of active students to a lesson.
      * @authenticated
@@ -425,7 +428,7 @@ class LessonsController extends Controller
             if (!$lesson) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Group not found'
+                    'result' => 'Lesson not found'
                 ], 404);
             }
 
@@ -460,7 +463,7 @@ class LessonsController extends Controller
     }
 
     /**
-     * Lesson: Delete Student
+     * Lesson Student: Delete
      *
      * Delete a single student from the group
      * @authenticated
@@ -476,7 +479,7 @@ class LessonsController extends Controller
             if (!$lesson) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Group not found'
+                    'result' => 'Lesson not found'
                 ], 404);
             }
 
@@ -507,7 +510,7 @@ class LessonsController extends Controller
     }
 
     /**
-     * Lesson: Delete Group
+     * Lesson Student: Delete Group
      *
      * Delete all the students that were added as part of a group.
      * @authenticated
@@ -523,7 +526,7 @@ class LessonsController extends Controller
             if (!$lesson) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Group not found'
+                    'result' => 'Lesson not found'
                 ], 404);
             }
 
@@ -553,11 +556,11 @@ class LessonsController extends Controller
     }
 
     /**
-     * Lesson: Student List
+     * Lesson Student: List
      *
      * Search materials
      * @authenticated
-     * @urlParam materialId integer Material Id
+     * @urlParam lessonId integer Lesson Id
      * @response {
      *     "results": [
      *        "user_id": 1,
@@ -580,7 +583,7 @@ class LessonsController extends Controller
             if (!$lesson) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Group not found'
+                    'result' => 'Lesson not found'
                 ], 404);
             }
 
@@ -630,18 +633,180 @@ class LessonsController extends Controller
 
     }
 
-    // public function postLessonMaterial(Request $request, string $lessonId)
-    // {
+    /**
+     * Lesson Material: Add
+     *
+     * Add a material to the lesson. The materia will be available to the students
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {"message": "successfully"}
+     * @response status=404 scenario="Lesson not found"
+     * @response status=404 scenario="Material not found"
+     * @response status=409 scenario="Material already exists on the group"
+     */
+    public function postLessonMaterial(MaterialToLessonRequest $request, string $lessonId)
+    {
+        try {
+            $lesson = Lesson::query()->find($lessonId);
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Lesson not found'
+                ], 404);
+            }
 
-    // }
+            $material = Material::find($request->get('material_id'));
 
-    // public function deleteLessonMaterial(Request $request, string $lessonId)
-    // {
+            if (!$material) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Material not found'
+                ], 404);
+            }
 
-    // }
+            $exists = $lesson->materials()->where(['material_id' => $material->id])->count();
 
-    // public function getLessonMaterials(Request $request, string $lessonId)
-    // {
+            if ($exists) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'The material already belongs to the lesson'
+                ], 409);
+            }
 
-    // }
+            $lesson->materials()->save($material);
+
+            return response()->json([
+                'status' => 'successfully'
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Lesson Material: Delete
+     *
+     * Delete a material from the lesson.
+     * @authenticated
+     * @urlParam lessonId integer required Lesson ID
+     * @response {"message": "successfully"}
+     * @response status=404 scenario="Lesson not found"
+     * @response status=409 scenario="Material is not associated with the lesson"
+     */
+    public function deleteLessonMaterial(MaterialToLessonRequest $request, string $lessonId)
+    {
+        try {
+            $lesson = Lesson::find($lessonId);
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Lesson not found'
+                ], 404);
+            }
+
+            $material = $lesson->materials()->find($request->get('material_id'));
+
+
+            if (!$material) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'The material is not bind to the lesson'
+                ], 409);
+            }
+
+            $lesson->materials()->detach($material);
+
+            return response()->json([
+                'status' => 'successfully'
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Lesson Material: List
+     *
+     * Search materials
+     * @authenticated
+     * @urlParam lessonId integer Lesson Id
+     * @response {
+     *     "results": [
+     *        "material_id": 1,
+     *        "type" : "recording" ,
+     *        "tags" : "fire,water,smoke",
+     *        "user_dni" : "00000000A" ,
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ],
+     *       "total": 1
+     *  }
+     * @response status=404 scenario="Lesson not found"
+     */
+    public function getLessonMaterials(ListMaterialLessonRequest $request, string $lessonId)
+    {
+        try {
+            $lesson = Lesson::find($lessonId);
+
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Lesson not found'
+                ], 404);
+            }
+
+            $conditions = [
+                parseFilter('type', $request->get('type')),
+                parseFilter(['materials.tags'], $request->get('tags'), 'or_like'),
+                parseFilter(['materials.name'], $request->get('content'), 'or_like')
+            ];
+
+            $query = DB::query()
+                ->from('lesson_material')
+                ->select([
+                    'materials.name',
+                    'materials.type',
+                    'materials.tags',
+                    'lesson_material.material_id',
+                    'lesson_material.created_at as created_at',
+                    'lesson_material.updated_at as updated_at'
+                ])->join('materials', 'lesson_material.material_id', '=', 'materials.id');
+
+
+            filterToQuery(
+                $query,
+                $conditions
+            );
+
+            $results = (clone $query)
+                ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->offset($request->get('offset') ?? 0)
+                ->limit($request->get('limit') ?? 20)
+                ->get();
+
+            $total = (clone $query)->count();
+
+            return response()->json([
+                'status' => 'successfully',
+                'results' => $results,
+                'total' => $total
+            ]);
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
 }

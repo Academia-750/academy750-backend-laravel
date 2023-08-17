@@ -6,21 +6,30 @@ use App\Models\Material;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ListLessonStudentsRequest extends FormRequest
+class ListMaterialLessonRequest extends FormRequest
 {
     public function authorize(): bool
     {
         return true;
     }
 
-    private $orderBy = ['full_name', 'dni', 'group_name', 'created_at', 'updated_at'];
-
     public function rules(): array
     {
         return [
+            'type' => [
+                'string',
+                Rule::in(Material::allowedTypes())
+            ],
+            'tags' => [
+                'array'
+            ],
+            'tags.*' => [
+                'required',
+                'string',
+            ],
             'orderBy' => [
                 'string',
-                Rule::in($this->orderBy)
+                Rule::in(['name', 'created_at', 'updated_at'])
             ],
             'order' => [
                 Rule::in([1, -1])
@@ -42,8 +51,16 @@ class ListLessonStudentsRequest extends FormRequest
     public function queryParameters()
     {
         return [
+            'type' => [
+                'description' => 'Filter by type',
+                'example' => 'material'
+            ],
+            'tags' => [
+                'description' => 'Filter by tags',
+                'example' => ['Fire', 'Law']
+            ],
             'orderBy' => [
-                'description' => 'Property to order by ' . join($this->orderBy),
+                'description' => 'Property to order by [name, created_at, updated_at]',
                 'example' => 'created_at'
             ],
             'order' => [
@@ -59,7 +76,7 @@ class ListLessonStudentsRequest extends FormRequest
                 'example' => 0,
             ],
             'content' => [
-                'description' => 'Search by substring match (user name, dni, or group name)',
+                'description' => 'Search by substring match for [name]',
                 'example' => '',
             ],
         ];

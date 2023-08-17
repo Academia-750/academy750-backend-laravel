@@ -108,4 +108,6 @@ class DeactivateUserTest extends TestCase
             $this->assertNotNull($member['discharged_at']);
         }
     }
+
+
 }

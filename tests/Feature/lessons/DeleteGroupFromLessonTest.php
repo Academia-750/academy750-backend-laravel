@@ -81,6 +81,8 @@ class DeleteGroupFromLessonTest extends TestCase
     public function wrong_parameters_422(): void
     {
         $this->delete("api/v1/lesson/{$this->lesson->id}/group", [])->assertStatus(422); // Missing group_id
+        $this->delete("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => -23])->assertStatus(422); // No negative
+        $this->delete("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => 22.22])->assertStatus(422); // No decimals
         $this->delete("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => []])->assertStatus(422); // Wrong type
     }
 
