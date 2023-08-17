@@ -69,7 +69,7 @@ class Lesson extends Model
                     FROM
                         lesson_user
                     JOIN
-                        groups ON groups.id = lesson_user.group_id
+                        `groups` ON `groups`.id = `lesson_user`.group_id
                     GROUP BY
                         color, group_Id, lesson_id
                )  as lesson_group "
