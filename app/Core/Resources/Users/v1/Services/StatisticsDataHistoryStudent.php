@@ -51,7 +51,7 @@ class StatisticsDataHistoryStudent
     public static function callProcedureGetResultsByTopicTotal($topic_id, $student_id)
     {
         return DB::select(
-            'call get_results_by_topic_total_procedure(?,?,?,?)',
+            'call get_results_by_topic_total_procedure(?,?)',
             array(
                 $topic_id,
                 $student_id
