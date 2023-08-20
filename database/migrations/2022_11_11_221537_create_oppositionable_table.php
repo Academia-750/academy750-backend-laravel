@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      *
@@ -23,7 +22,7 @@ return new class extends Migration
 
             $table->morphs("oppositionable");
 
-            $table->enum('is_available', [ 'yes', 'no' ])->comment('Estará disponible para futuros usos?')->default('yes');
+            $table->enum('is_available', ['yes', 'no'])->comment('Estará disponible para futuros usos?')->default('yes');
 
             $table->timestamps();
         });
@@ -36,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('oppositionable');
+        Schema::dropIfExists('oppositionables');
     }
 };

@@ -6,21 +6,21 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration {
-  public function __construct(public string $nameProcedure = 'get_topic_questions_quantity_test_procedure')
-  {
-  }
-
-  /**
-   * Run the migrations.
-   *
-   * @return void
-   */
-  public function up()
-  {
-    if (app()->environment() === 'testing') {
-      return;
+    public function __construct(public string $nameProcedure = 'get_topic_questions_quantity_test_procedure')
+    {
     }
-    $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
+
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        if (app()->environment() === 'testing') {
+            return;
+        }
+        $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`;
         CREATE PROCEDURE `{$this->nameProcedure}`(
             IN `id_tema` INT,
             IN `id_oposicion` INT,
@@ -68,7 +68,7 @@ return new class extends Migration {
                   INNER JOIN oppositionables op ON op.oppositionable_id = st.id
                 WHERE
                   op.opposition_id = id_oposicion
-                  AND q.questionable_type = 'App\\Models\\Subtopic'
+                  AND q.questionable_type = 'App\\\\Models\\\\Subtopic'
               ) as TB
             WHERE
               FIND_IN_SET(TB.topic_id, topic_uuids) > 0
@@ -110,20 +110,20 @@ return new class extends Migration {
             END
             ";
 
-    DB::unprepared($procedure1);
-  }
+        DB::unprepared($procedure1);
+    }
 
-  /**
-   * Reverse the migrations.
-   *
-   * @return void
-   */
-  public function down()
-  {
-    $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        $procedure1 = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
 
-    DB::unprepared($procedure1);
+        DB::unprepared($procedure1);
 
 
-  }
+    }
 };

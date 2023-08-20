@@ -61,9 +61,9 @@ class Topic extends Model
         'topic-group' => 'topic_group'
     ];
 
-     protected $casts = [
+    protected $casts = [
         'uuid' => 'string'
-     ];
+    ];
 
     public function getRouteKeyName(): string
     {
@@ -73,69 +73,80 @@ class Topic extends Model
     /* -------------------------------------------------------------------------------------------------------------- */
     // Sorts functions
 
-    public function sortName(Builder $query, $direction): void{
+    public function sortName(Builder $query, $direction): void
+    {
         $query->orderBy('name', $direction);
     }
 
-    public function sortCreatedAt(Builder $query, $direction): void{
+    public function sortCreatedAt(Builder $query, $direction): void
+    {
         $query->orderBy('created_at', $direction);
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */
     // Filters functions
 
-    public function filterYear(Builder $query, $value): void{
+    public function filterYear(Builder $query, $value): void
+    {
         $query->whereYear('created_at', $value);
     }
-    public function filterMonth(Builder $query, $value): void{
+    public function filterMonth(Builder $query, $value): void
+    {
         $query->whereMonth('created_at', $value);
     }
-    public function filterDay(Builder $query, $value): void{
+    public function filterDay(Builder $query, $value): void
+    {
         $query->whereDay('created_at', $value);
     }
-    public function filterDate(Builder $query, $value): void{
+    public function filterDate(Builder $query, $value): void
+    {
         $query->whereDate('created_at', $value);
     }
 
-    public function filterSearch(Builder $query, $value): void{
-        $query->where(static function($query) use ($value) {
-            $query->where('name', 'LIKE' , "%{$value}%")
-                ->orWhereHas('topic_group', static function(Builder $query) use ($value) {
+    public function filterSearch(Builder $query, $value): void
+    {
+        $query->where(static function ($query) use ($value) {
+            $query->where('name', 'LIKE', "%{$value}%")
+                ->orWhereHas('topic_group', static function (Builder $query) use ($value) {
                     $query->where('name', 'like', "%{$value}%")
-                        ->orWhere('id', 'LIKE' , "%{$value}%");
+                        ->orWhere('id', 'LIKE', "%{$value}%");
                 })
             ;
         });
     }
 
-    public function filterOppositions(Builder $query, $value): void{
-        $query->whereHas('oppositions', function($query) use ($value) {
+    public function filterOppositions(Builder $query, $value): void
+    {
+        $query->whereHas('oppositions', function ($query) use ($value) {
             $query->where('opposition_id', '=', $value);
         });
     }
 
-    public function filterTopicGroup(Builder $query, $value): void{
-        $query->whereHas('topic_group', function($query) use ($value) {
+    public function filterTopicGroup(Builder $query, $value): void
+    {
+        $query->whereHas('topic_group', function ($query) use ($value) {
             $query->where('topic_group_id', '=', $value);
         });
     }
 
-    public function filterTopicsAvailable (): void {
+    public function filterTopicsAvailable(): void
+    {
 
     }
 
-    public function filterHasQuestionsAvailable (Builder $query) {
+    public function filterHasQuestionsAvailable(Builder $query)
+    {
         return $query
             ->where(static function ($query) {
-                $query->whereHas('questions', static function($query) {
+                $query->whereHas('questions', static function ($query) {
                     $query
                         ->where('is_visible', '=', 'yes');
-                })->whereHas('subtopics.questions', static function($query) {
+                })->whereHas('subtopics.questions', static function ($query) {
                     $query->where('is_visible', '=', 'yes');
                 });
 
 
-            } ,'>' , 0);
+            }, '>', 0);
 
     }
 
@@ -150,43 +161,33 @@ class Topic extends Model
     }
 
     /* -------------------------------------------------------------------------------------------------------------- */
-     // Relationships methods
+    // Relationships methods
 
-    public function subtopics (): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function subtopics(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Subtopic::class);
     }
 
-    public function oppositions (): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    public function oppositions(): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
         return $this->morphToMany(Opposition::class, 'oppositionable')
             ->withPivot('is_available')
             ->withTimestamps();
     }
 
-    public function tests (): \Illuminate\Database\Eloquent\Relations\MorphToMany
+    public function tests(): \Illuminate\Database\Eloquent\Relations\MorphToMany
     {
         return $this->morphToMany(Test::class, 'testable')
             ->withTimestamps();
     }
 
-    public function topic_group (): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function topic_group(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(TopicGroup::class);
     }
 
-    public function questions (): \Illuminate\Database\Eloquent\Relations\MorphMany
+    public function questions(): \Illuminate\Database\Eloquent\Relations\MorphMany
     {
-        /*return $this->morphOne(Question::class, 'questionable')->ofMany([
-            'id',
-            'question',
-            'reason',
-            'is_available',
-            'subtopic_id'
-        ], static function ($query) {
-            $query->whereNull('subtopic_id');
-        });*/
-
         return $this->morphMany(Question::class, 'questionable');
     }
 }

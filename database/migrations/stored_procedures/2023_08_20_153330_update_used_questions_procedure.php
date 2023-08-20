@@ -46,14 +46,8 @@ return new class extends Migration {
                 opposition_id VARCHAR(36)
             );
 
-        DROP TEMPORARY TABLE IF EXISTS tmp_log;
-            CREATE TEMPORARY TABLE tmp_log(
-                ltext VARCHAR(100),
-                question_id VARCHAR(36)
-            );
-
             INSERT INTO tmp_questions
-                select distinct qt.question_id, top.id as topic_id, '' as subtopic_id, t.user_id, t.opposition_id
+                select distinct qt.question_id, top.id as topic_id, NULL as subtopic_id, t.user_id, t.opposition_id
                 from tests t
                 INNER JOIN question_test qt on qt.test_id = t.id
                 INNER JOIN questions q on q.id = qt.question_id
@@ -69,7 +63,7 @@ return new class extends Migration {
                 INNER JOIN subtopics st on st.id = q.questionable_id
                 INNER JOIN topics top on top.id = st.topic_id
                 where t.id = id_test
-                and q.questionable_type = 'App\\Models\\Subtopic'
+                and q.questionable_type = 'App\\\\Models\\\\Subtopic'
                 and qt.status_solved_question <> 'correct';
 
             SET index_loop:=0;
@@ -86,17 +80,11 @@ return new class extends Migration {
 
                 IF EXISTS(SELECT 1 FROM questions_used_test WHERE question_id =v_id and user_id = id_usuario and opposition_id = id_oposicion LIMIT 1) THEN
                   UPDATE questions_used_test SET result = 0 WHERE question_id =v_id and user_id = id_usuario and opposition_id = id_oposicion;
-        /*INSERT INTO tmp_log VALUES ('UPDATE - QUESTION',v_id);
-        INSERT INTO tmp_log VALUES ('UPDATE - USUARIO',id_usuario );
-        INSERT INTO tmp_log VALUES ('UPDATE - OPO',id_oposicion );*/
                 ELSE
-                  INSERT INTO questions_used_test
+                  INSERT INTO questions_used_test (topic_id, subtopic_id, user_id, opposition_id, question_id, result)
                   SELECT topic_id, subtopic_id, user_id, opposition_id, question_id, 0
                   FROM tmp_questions
                   WHERE question_id = v_id;
-        /*INSERT INTO tmp_log VALUES ('INSERT - QUESTION',v_id);
-        INSERT INTO tmp_log VALUES ('INSERT - USUARIO',id_usuario );
-        INSERT INTO tmp_log VALUES ('INSERT - OPO',id_oposicion );*/
                 END IF;
 
             END LOOP;
@@ -106,7 +94,7 @@ return new class extends Migration {
           DELETE FROM tmp_questions;
 
             INSERT INTO tmp_questions
-                select distinct qt.question_id, top.id as topic_id, '' as subtopic_id, t.user_id, t.opposition_id
+                select distinct qt.question_id, top.id as topic_id, NULL as subtopic_id, t.user_id, t.opposition_id
                 from tests t
                 INNER JOIN question_test qt on qt.test_id = t.id
                 INNER JOIN questions q on q.id = qt.question_id
@@ -122,7 +110,7 @@ return new class extends Migration {
                 INNER JOIN subtopics st on st.id = q.questionable_id
                 INNER JOIN topics top on top.id = st.topic_id
                 where t.id = id_test
-                and q.questionable_type = 'App\\Models\\Subtopic'
+                and q.questionable_type = 'App\\\\Models\\\\Subtopic'
                 and qt.status_solved_question = 'correct';
 
             SET index_loop:=0;
@@ -138,17 +126,11 @@ return new class extends Migration {
 
                 IF EXISTS(SELECT 1 FROM questions_used_test WHERE question_id =v_id and user_id = id_usuario and opposition_id = id_oposicion LIMIT 1) THEN
                   UPDATE questions_used_test SET result = 1 WHERE question_id =v_id and user_id = id_usuario and opposition_id = id_oposicion;
-        /*INSERT INTO tmp_log VALUES ('UPDATE - OK - QUESTION',v_id);
-        INSERT INTO tmp_log VALUES ('UPDATE - OK - USUARIO',id_usuario );
-        INSERT INTO tmp_log VALUES ('UPDATE - OK - OPO',id_oposicion );*/
                 ELSE
-                  INSERT INTO questions_used_test
+                  INSERT INTO questions_used_test (topic_id, subtopic_id, user_id, opposition_id, question_id, result)
                   SELECT topic_id, subtopic_id, user_id, opposition_id, question_id, 1
                   FROM tmp_questions
                   WHERE question_id = v_id;
-        /*INSERT INTO tmp_log VALUES ('INSERT - OK - QUESTION',v_id);
-        INSERT INTO tmp_log VALUES ('INSERT - OK - USUARIO',id_usuario );
-        INSERT INTO tmp_log VALUES ('INSERT - OK - OPO',id_oposicion );*/
                 END IF;
 
             END LOOP;
@@ -156,7 +138,6 @@ return new class extends Migration {
             CLOSE cur1;
 
             DROP TEMPORARY TABLE tmp_questions;
-            DROP TEMPORARY TABLE tmp_log;
         END";
 
         DB::unprepared($procedure);

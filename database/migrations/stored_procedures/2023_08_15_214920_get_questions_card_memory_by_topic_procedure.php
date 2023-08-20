@@ -99,7 +99,7 @@ BEGIN
                   INNER JOIN oppositionables op ON op.oppositionable_id = st.id
                 WHERE
                   op.opposition_id = id_oposicion
-                  AND q.questionable_type = 'App\\Models\\Subtopic'
+                  AND q.questionable_type = 'App\\\\Models\\\\Subtopic'
               ) as TB
             WHERE
               FIND_IN_SET(TB.topic_id, topic_ids) > 0
@@ -164,7 +164,7 @@ BEGIN
             		WHERE t.user_id = id_usuario
 		              AND t.opposition_id = id_oposicion
 		              AND st.topic_id = v_id
-		              AND q.questionable_type = 'App\\Models\\Subtopic'
+		              AND q.questionable_type = 'App\\\\Models\\\\Subtopic'
 		              AND qt.have_been_show_card_memory = 'yes'
 		              AND q.question_in_edit_mode = 'no'
 		              AND q.is_visible = 'yes'
@@ -194,7 +194,7 @@ BEGIN
 	                	FROM tmp_table_showed)
 		              AND op.opposition_id = id_oposicion
 		              AND st.topic_id = v_id
-		              AND q.questionable_type = 'App\\Models\\Subtopic'
+		              AND q.questionable_type = 'App\\\\Models\\\\Subtopic'
 		              AND q.question_in_edit_mode = 'no'
 		              AND q.is_visible = 'yes'
 		              AND q.its_for_card_memory = 'yes';

@@ -88,7 +88,7 @@ BEGIN
             INNER JOIN topics t on t.id = st.topic_id
             INNER JOIN oppositionables op ON op.oppositionable_id = st.id
             WHERE op.opposition_id = id_oposicion
-            AND q.questionable_type = 'App\\Models\\Subtopic'
+            AND q.questionable_type = 'App\\\\Models\\\\Subtopic'
             ) as TB
             WHERE
                 FIND_IN_SET(TB.topic_id, __topic__ids) > 0
@@ -173,7 +173,7 @@ BEGIN
                       AND op.opposition_id = id_oposicion
                       AND st.topic_id = v_id
                       AND st.is_available = 'yes'
-                      AND q.questionable_type = 'App\\Models\\Subtopic'
+                      AND q.questionable_type = 'App\\\\Models\\\\Subtopic'
                       AND q.question_in_edit_mode = 'no'
                       AND q.is_visible = 'yes'
                       AND q.its_for_test = 'yes';
@@ -232,7 +232,7 @@ BEGIN
      */
     public function down()
     {
-        $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}";
+        $procedure = "DROP PROCEDURE IF EXISTS `{$this->nameProcedure}`";
         DB::unprepared($procedure);
     }
 };
