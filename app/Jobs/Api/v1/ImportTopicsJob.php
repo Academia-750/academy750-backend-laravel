@@ -15,15 +15,19 @@ class ImportTopicsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(Public $file, Public $userAuth)
+    public function __construct(public $file, public $userAuth)
     {
         //
     }
 
     public function handle()
     {
+        \Log::debug(
+            '------------------ DDD'
+        );
+
         (
-        new TopicsImport($this->userAuth, $this->file->getClientOriginalName())
+            new TopicsImport($this->userAuth, $this->file->getClientOriginalName())
         )->import($this->file);
     }
 

@@ -29,29 +29,20 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
     use Importable, RegistersEventListeners, HelpersLaravelImportCSVTrait;
     public $topics;
 
-    public function __construct($userAuth, $nameFile) {
-        //$this->userAuth = $userAuth;
-
-        //$this->topics = Topic::query()->with("subtopics")->get();
-        // \Log::debug("Se ha ejecutado el constructor de la clase");
-        $this->registerImportProcessHistory( $userAuth, $nameFile, "Importar preguntas" );
+    public function __construct($userAuth, $nameFile)
+    {
+        $this->registerImportProcessHistory($userAuth, $nameFile, "Importar preguntas");
     }
 
-    public function collection(Collection $collection): void {
+    public function collection(Collection $collection): void
+    {
 
-        /*// \Log::debug($collection->toArray());*/
-        // \Log::debug("Se ejecutó el metodo collection sin entrar al bucle");
+
         foreach ($collection as $row) {
             try {
 
                 $rowArray = $row->toArray();
-                // \Log::debug("Arreglo del archivo a importar");
-                // \Log::debug($rowArray);
-                /*// \Log::debug($rowArray);
-                // \Log::debug(array_keys($rowArray));
-                // \Log::debug("------------");
-                // \Log::debug(gettype($rowArray));
-                // \Log::debug($row->toArray());*/
+
 
                 $current_row = $this->getCurrentRow();
 
@@ -69,10 +60,6 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
 
                 if (!$hasErrors) {
-                    /*// \Log::debug($row);
-                    // \Log::debug(QuestionsImportService::getDataFormattedForRegisterQuestions($row));
-                    // \Log::debug(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row));*/
-
                     $this->registerQuestion(QuestionsImportService::getDataFormattedForRegisterQuestions($rowArray), $rowArray);
                     $this->count_rows_successfully++;
                 } else {
@@ -93,9 +80,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
             } catch (\Exception $e) {
                 DB::rollback();
-                // \Log::debug("Ha fallado el proceso de importación de preguntas");
-                // \Log::debug($e);
-                // \Log::debug("---------------------------------------------------");
+
 
                 $this->count_rows_failed++;
 
@@ -114,13 +99,10 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                 usleep(250);
 
                 continue;
-                //broadcast(new FailedImportEvent($e->getMessage(), $this->userAuth));
-                //broadcast(new ImportUsersEvent(array('errors' => [$e->getMessage()]), $this->userAuth));
+
             } catch (\Throwable $e) {
                 DB::rollback();
-                // \Log::debug("Ha fallado el proceso de importación de preguntas");
-                // \Log::debug($e);
-                // \Log::debug("---------------------------------------------------");
+
 
                 $this->count_rows_failed++;
 
@@ -139,8 +121,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
                 usleep(250);
 
                 continue;
-                //broadcast(new FailedImportEvent($e->getMessage(), $this->userAuth));
-                //broadcast(new ImportUsersEvent(array('errors' => [$e->getMessage()]), $this->userAuth));
+
             }
 
         }
@@ -158,21 +139,21 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
      *
      * @return \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
      * */
-    public function validateRow ($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
+    public function validateRow($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
         return QuestionsImportValidation::validateRowValidator($row);
     }
 
-    public function registerQuestion ($dataQuestion, $row): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
+    public function registerQuestion($dataQuestion, $row): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
 
-        // \Log::debug("Se ha ejecutado el registerQuestion");
+        \Log::debug(json_encode($dataQuestion));
+
 
         if ((bool) $dataQuestion["its_for_subtopic"]) {
 
-            // \Log::debug("Pertenece a subtema");
 
-            $subtopic = Subtopic::query()->firstWhere('id','=', $dataQuestion["topic_id"]);
+            $subtopic = Subtopic::query()->firstWhere('uuid', '=', $dataQuestion["topic_id"]);
 
             if (!$subtopic) {
                 abort(500, "No se ha encontrado al subtema");
@@ -182,42 +163,37 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
             $this->registerAnswersQuestion(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row, $question?->getKey()));
 
-            // \Log::debug("Termino de registrar la pregunta en subtema");
-
             return $question;
         }
 
-        // \Log::debug("Pertenece a tema");
 
-        $topic = Topic::query()->firstWhere('id','=',$dataQuestion["topic_id"]);
+        $topic = Topic::query()->firstWhere('uuid', '=', $dataQuestion["topic_id"]);
 
         if (!$topic) {
-            abort(500, "No se ha encontrado al subtema");
+            abort(500, "No se ha encontrado al tema");
         }
 
         $question = QuestionsImportService::registerQuestion($topic, $dataQuestion, QuestionsImportValidation::IssetRowInDataRows($row, "es_test") && $row['es_test'] === 'si');
 
         $this->registerAnswersQuestion(QuestionsImportService::getDataFormattedForRegisterAnswersOfQuestion($row, $question?->getKey()));
 
-        // \Log::debug("Termino de registrar la pregunta en tema");
         return $topic;
     }
 
-    public function registerAnswersQuestion ($dataAnswers): void {
+    public function registerAnswersQuestion($dataAnswers): void
+    {
 
-        // \Log::debug("Se ha ejecutado el registerAnswersQuestion");
         QuestionsImportService::registerAnswersOfQuestion($dataAnswers);
     }
 
     public static function afterSheet(AfterSheet $event): void
     {
-        // \Log::debug("Se ha ejecutado el evento AfterSheet");
         $event->getConcernable()->updateDataImportHistory($event);
     }
 
-    public static function afterImport (AfterImport $event): void {
+    public static function afterImport(AfterImport $event): void
+    {
 
-        // \Log::debug("Se ha ejecutado el evento AfterImport");
 
         $importProcessesRecord = $event->getConcernable()->setStatusCompleteImportHistory($event);
 
@@ -230,7 +206,7 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
         ]));
     }
 
-    public static function importFailed (ImportFailed $event)
+    public static function importFailed(ImportFailed $event)
     {
         // \Log::debug("Ha ocurrido un error en la importación usando el ImportFailed Event");
     }
@@ -240,4 +216,3 @@ class QuestionsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
         // \Log::debug("Ha ocurrido un error en la importación usando el onFailure");
     }
 }
-
