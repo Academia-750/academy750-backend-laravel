@@ -571,7 +571,11 @@ class LessonsController extends Controller
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
-     *       "total": 1
+     *      "total": 1,
+     *      "groups": [
+     *             { "group_id": 1, "group_name" : "Group A" },
+     *             { "group_id": 2, "group_name" : "Group B" }
+     *      ]
      *  }
      * @response status=404 scenario="Lesson not found"
      */
@@ -588,6 +592,7 @@ class LessonsController extends Controller
             }
 
             $conditions = [
+                parseFilter('lesson_id', $lessonId),
                 parseFilter(['users.dni', 'users.full_name', 'lesson_user.group_name'], $request->get('content'), 'or_like')
             ];
 
@@ -618,10 +623,14 @@ class LessonsController extends Controller
 
             $total = (clone $query)->count();
 
+            $groups = $lesson->groups();
+
+
             return response()->json([
                 'status' => 'successfully',
                 'results' => $results,
-                'total' => $total
+                'total' => $total,
+                'groups' => $groups
             ]);
         } catch (\Exception $err) {
             Log::error($err->getMessage());
@@ -766,6 +775,7 @@ class LessonsController extends Controller
             }
 
             $conditions = [
+                parseFilter('lesson_id', $lessonId),
                 parseFilter('type', $request->get('type')),
                 parseFilter(['materials.tags'], $request->get('tags'), 'or_like'),
                 parseFilter(['materials.name'], $request->get('content'), 'or_like')

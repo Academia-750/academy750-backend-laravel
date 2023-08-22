@@ -225,4 +225,21 @@ class ListLessonMaterialTest extends TestCase
         $this->assertEquals($data['results'][1]['type'], 'material');
 
     }
+
+
+    /** @test */
+    public function only_my_lesson_materials_200(): void
+    {
+        $lesson2 = Lesson::factory()->active()->create();
+        $lesson2->materials()->attach(Material::factory()->count(3)->create());
+
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/materials?")->assertStatus(200);
+
+        $this->assertEquals($data['total'], 4);
+
+        $data = $this->get("api/v1/lesson/{$lesson2->id}/materials?")->assertStatus(200);
+
+        $this->assertEquals($data['total'], 3);
+    }
 }

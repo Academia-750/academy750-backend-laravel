@@ -102,6 +102,22 @@ class ListLessonStudentsTest extends TestCase
 
 
     /** @test */
+    public function only_my_lesson_students_200(): void
+    {
+        $lesson2 = Lesson::factory()->active()->create();
+        $lesson2->students()->attach(User::factory()->student()->count(3)->create());
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?")->assertStatus(200);
+
+        $this->assertEquals($data['total'], 4);
+
+        $data = $this->get("api/v1/lesson/{$lesson2->id}/students?")->assertStatus(200);
+
+        $this->assertEquals($data['total'], 3);
+    }
+
+
+    /** @test */
     public function pagination_200(): void
     {
         $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 0]))->assertStatus(200)->json();
@@ -217,5 +233,27 @@ class ListLessonStudentsTest extends TestCase
 
         $this->assertEquals($data['total'], 1);
         $this->assertEquals($data['results'][0]['group_name'], $group2->name);
+    }
+
+    /** @test */
+    public function get_lesson_groups_200(): void
+    {
+
+        $group = Group::factory()->create();
+        GroupUsers::factory()->group($group)->count(1)->create();
+        $group2 = Group::factory()->create();
+        GroupUsers::factory()->group($group2)->count(1)->create();
+
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group->id])->assertStatus(200);
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group2->id])->assertStatus(200);
+
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?")->assertStatus(200);
+
+        $this->assertEquals($data['groups'][0]['group_id'], $group->id);
+        $this->assertEquals($data['groups'][0]['group_name'], $group->name);
+
+        $this->assertEquals($data['groups'][1]['group_id'], $group2->id);
+        $this->assertEquals($data['groups'][1]['group_name'], $group2->name);
     }
 }
