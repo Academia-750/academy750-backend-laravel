@@ -102,8 +102,7 @@ class DBApp implements TestsInterface
                 ->firstWhere('uuid', '=', $request->get('question_id'));
 
             $answer = Answer::query()
-                ->where('id', $request->get('answer_id'))
-                ->orWhere('uuid', $request->get('answer_id'))
+                ->where('uuid', $request->get('answer_id'))
                 ->first();
 
             if ($request->get('answer_id')) {
