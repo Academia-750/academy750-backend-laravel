@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Collection;
 
 class QueryParametersQuestionsForResolveTest
 {
-    public static function getQuestionsDataTestSortByIndexByTest ($test): array {
+    public static function getQuestionsDataTestSortByIndexByTest($test): array
+    {
         $questions = collect([]);
 
         $questionsQuery = $test->questions()->orderBy('index', 'ASC')->get();
@@ -27,12 +28,13 @@ class QueryParametersQuestionsForResolveTest
         return $questions->sortBy('index')->values()->toArray();
     }
 
-    public static function getQuestionsEloquentSortByIndexByTest ($test)
+    public static function getQuestionsEloquentSortByIndexByTest($test)
     {
         $instanceEloquentCollection = new \Illuminate\Database\Eloquent\Collection;
 
-        $questionsDataTest = $test->questions()->orderBy('index', 'ASC')->jsonPaginate()/*->pluck('questions.id')*/->toArray();
+        $questionsDataTest = $test->questions()->orderBy('index', 'ASC')->jsonPaginate()->toArray();
         $questionsDataTestCount = $test->questions()->count();
+
 
         foreach ($questionsDataTest['data'] as $question_test) {
             $instanceEloquentCollection->add(
@@ -41,9 +43,7 @@ class QueryParametersQuestionsForResolveTest
                 )
             );
         }
-        //return $instanceEloquentCollection;
 
-        //return new \Illuminate\Pagination\Paginator();
         return new \Illuminate\Pagination\LengthAwarePaginator(
             $instanceEloquentCollection,
             $questionsDataTestCount,

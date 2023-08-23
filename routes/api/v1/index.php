@@ -96,6 +96,8 @@ Route::prefix('v1')->group(callback: static function () {
         require __DIR__ . '/routes/import-processes.routes.php';
         require __DIR__ . '/routes/groups.routes.php';
         require __DIR__ . '/routes/materials.routes.php';
+        require __DIR__ . '/routes/lessons.routes.php';
+
 
         // [EndOfLineMethodRegister]
     });

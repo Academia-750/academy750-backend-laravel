@@ -25,75 +25,85 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
 {
     use Importable, RegistersEventListeners, HelpersLaravelImportCSVTrait;
 
-    public function __construct($userAuth, $nameFile) {
+    public function __construct($userAuth, $nameFile)
+    {
         //$this->userAuth = $userAuth;
+        \Log::debug(
+            '------------------ AA'
+        );
 
-        $this->registerImportProcessHistory( $userAuth, $nameFile, "Importar temas" );
+        $this->registerImportProcessHistory($userAuth, $nameFile, "Importar temas");
     }
 
-    public function collection(Collection $collection): void {
+    public function collection(Collection $collection): void
+    {
 
-            foreach ($collection as $row) {
+        \Log::debug(
+            '------------------ BBBBB'
+        );
+        foreach ($collection as $row) {
 
-                try {
+            try {
 
-                        $current_row = $this->getCurrentRow();
+                $current_row = $this->getCurrentRow();
 
-                        $errors = [];
-                        $hasErrors = false;
+                $errors = [];
+                $hasErrors = false;
 
-                        $validateData = $this->validateRow($row);
+                $validateData = $this->validateRow($row);
 
-                        if ($validateData->fails()) {
-                            $hasErrors = true;
-                            $errors = $validateData->errors();
-                        }
-
-                    DB::beginTransaction();
-
-                        if (!$hasErrors) {
-                            $this->registerTopic(
-                                $row["tema"],
-                                $row["grupo_tema_uuid"]
-                            );
-                            $this->count_rows_successfully++;
-                        } else {
-                            $this->count_rows_failed++;
-                        }
-
-                        $this->registerImportRecordHistory([
-                            "current-row" => $current_row,
-                            "has-errors" => $hasErrors,
-                            "errors-validation" => $errors,
-                            'import-process-id' => $this->importProcessRecord->id
-                        ]);
-
-
-                    DB::commit();
-
-                } catch (\Exception $e) {
-                    DB::rollback();
-
-                    $this->count_rows_failed++;
-
-                    $this->registerImportRecordHistory([
-                        "current-row" => $current_row,
-                        "has-errors" => true,
-                        "errors-validation" => [
-                            "tema" => [
-                                "Ocurrió un error en el proceso.",
-                                $e->getMessage()
-                            ]
-                        ],
-                        'import-process-id' => $this->importProcessRecord->id
-                    ]);
-
-                    continue;
-                    //broadcast(new FailedImportEvent($e->getMessage(), $this->userAuth));
-                    //broadcast(new ImportUsersEvent(array('errors' => [$e->getMessage()]), $this->userAuth));
+                if ($validateData->fails()) {
+                    $hasErrors = true;
+                    $errors = $validateData->errors();
                 }
 
+                DB::beginTransaction();
+
+                $topic_group = TopicGroup::where('uuid', $row["grupo_tema_uuid"])->first();
+
+                if (!$hasErrors) {
+                    $this->registerTopic(
+                        $row["tema"],
+                        $topic_group->id
+                    );
+                    $this->count_rows_successfully++;
+                } else {
+                    $this->count_rows_failed++;
+                }
+
+                $this->registerImportRecordHistory([
+                    "current-row" => $current_row,
+                    "has-errors" => $hasErrors,
+                    "errors-validation" => $errors,
+                    'import-process-id' => $this->importProcessRecord->id
+                ]);
+
+
+                DB::commit();
+
+            } catch (\Exception $e) {
+                DB::rollback();
+
+                $this->count_rows_failed++;
+
+                $this->registerImportRecordHistory([
+                    "current-row" => $current_row,
+                    "has-errors" => true,
+                    "errors-validation" => [
+                        "tema" => [
+                            "Ocurrió un error en el proceso.",
+                            $e->getMessage()
+                        ]
+                    ],
+                    'import-process-id' => $this->importProcessRecord->id
+                ]);
+
+                continue;
+                //broadcast(new FailedImportEvent($e->getMessage(), $this->userAuth));
+                //broadcast(new ImportUsersEvent(array('errors' => [$e->getMessage()]), $this->userAuth));
             }
+
+        }
     }
 
     public function chunkSize(): int
@@ -106,16 +116,21 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
      *
      * @return \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
      * */
-    public function validateRow ($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
+    public function validateRow($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
         return Validator::make($row->toArray(), [
             'tema' => ['required', 'max:255'],
-            'grupo_tema_uuid' => ['required', 'uuid', 'exists:topic_groups,id']
+            'grupo_tema_uuid' => ['required', 'uuid', 'exists:topic_groups,uuid']
         ]);
     }
 
-    public function registerTopic ($nameTopic, $topicGroupID): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
+    public function registerTopic($nameTopic, $topicGroupID): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
+        \Log::debug(json_encode([
+            "name" => $nameTopic,
+            "topic_group_id" => $topicGroupID,
+        ]));
+
         return Topic::query()->create([
             "name" => $nameTopic,
             "topic_group_id" => $topicGroupID,
@@ -131,7 +146,8 @@ class TopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, WithEve
         //broadcast(new ImportZonesEvent($event->getConcernable()->failuresArray, $event->getConcernable()->userAuth, $event->getConcernable()->failedBoolean));
     }
 
-    public static function afterImport (AfterImport $event): void {
+    public static function afterImport(AfterImport $event): void
+    {
 
         $importProcessesRecord = $event->getConcernable()->setStatusCompleteImportHistory($event);
 

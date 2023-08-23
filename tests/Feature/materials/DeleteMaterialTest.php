@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Core\Resources\Storage\Services\DummyStorage;
+use App\Models\Lesson;
 use App\Models\Material;
 use App\Models\User;
 use App\Models\Workspace;
@@ -100,8 +101,21 @@ class DeleteMaterialTest extends TestCase
 
         $material = Material::factory()->state(['type' => 'material', 'url' => $this->faker()->url()])->create();
         $this->delete("api/v1/material/{$material->id}")
-            ->assertStatus(424)
-            ->json();
+            ->assertStatus(424);
+
+    }
+
+    /** @test */
+    public function deleted_material_removed_from_lesson_200(): void
+    {
+        $lesson = Lesson::factory()->create();
+        $lesson->materials()->attach($this->material);
+        $this->assertEquals($lesson->materials()->count(), 1);
+
+        $this->delete("api/v1/material/{$this->material->id}")
+            ->assertStatus(200);
+
+        $this->assertEquals($lesson->materials()->count(), 0);
     }
 
 

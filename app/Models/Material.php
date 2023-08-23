@@ -38,6 +38,12 @@ class Material extends Model
         return $this->belongsTo(Workspace::class, 'workspace_id');
     }
 
+    // Relationships methods
+    public function lessons()
+    {
+        return $this->belongsToMany(Lesson::class)->withTimestamps();
+    }
+
     public static function deleteFromStorage($material)
     {
         if (!$material->url) {

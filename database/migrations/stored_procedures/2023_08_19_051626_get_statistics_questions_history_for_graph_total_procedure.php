@@ -27,7 +27,7 @@ return new class extends Migration {
         )
         BEGIN
             SELECT
-              id_topic as 'topic_id',
+              id_topic as 'TOPIC_ID',
               IFNULL(
                 SUM(
                   if(
@@ -36,7 +36,7 @@ return new class extends Migration {
                   )
                 ),
                 0
-              ) AS 'correct',
+              ) AS 'CORRECT_ANS',
               IFNULL(
                 SUM(
                   if(
@@ -45,7 +45,7 @@ return new class extends Migration {
                   )
                 ),
                 0
-              ) AS 'wrong',
+              ) AS 'INCORRECT_ANS',
               IFNULL(
                 SUM(
                   if(
@@ -54,7 +54,7 @@ return new class extends Migration {
                   )
                 ),
                 0
-              ) AS 'unanswered'
+              ) AS 'UNANSWERED_ANS'
             FROM
               question_test q,
               tests t,

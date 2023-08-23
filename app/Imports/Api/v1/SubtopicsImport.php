@@ -5,6 +5,7 @@ namespace App\Imports\Api\v1;
 use App\Core\Services\HelpersLaravelImportCSVTrait;
 use App\Models\ImportProcess;
 use App\Models\Subtopic;
+use App\Models\Topic;
 use App\Models\User;
 use App\Notifications\Api\ImportProcessFileFinishedNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -24,17 +25,20 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 {
     use Importable, RegistersEventListeners, HelpersLaravelImportCSVTrait;
 
-    public function __construct($userAuth, $nameFile) {
+    public function __construct($userAuth, $nameFile)
+    {
         //$this->userAuth = $userAuth;
 
-        $this->registerImportProcessHistory( $userAuth, $nameFile, "Importar subtemas" );
+        $this->registerImportProcessHistory($userAuth, $nameFile, "Importar subtemas");
     }
 
-    public function collection(Collection $collection): void {
+    public function collection(Collection $collection): void
+    {
 
         foreach ($collection as $row) {
 
             try {
+
 
                 $current_row = $this->getCurrentRow();
 
@@ -50,8 +54,10 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
 
                 DB::beginTransaction();
 
+                $topic = Topic::where('uuid', $row["tema_uuid"])->first();
+
                 if (!$hasErrors) {
-                    $this->registerSubtopic($row["subtema"], $row["tema_uuid"]);
+                    $this->registerSubtopic($row["subtema"], $topic->id);
                     $this->count_rows_successfully++;
                 } else {
                     $this->count_rows_failed++;
@@ -102,15 +108,15 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
      *
      * @return \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
      * */
-    public function validateRow ($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
+    public function validateRow($row): \Illuminate\Contracts\Validation\Validator|\Illuminate\Validation\Validator
     {
         return Validator::make($row->toArray(), [
             'subtema' => ['required', 'max:255'],
-            'tema_uuid' => ['required', 'uuid', 'exists:topics,id'],
+            'tema_uuid' => ['required', 'uuid', 'exists:topics,uuid'],
         ]);
     }
 
-    public function registerSubtopic ($nameSubtopic, $topic_id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
+    public function registerSubtopic($nameSubtopic, $topic_id): \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder
     {
         return Subtopic::query()->create([
             "name" => $nameSubtopic,
@@ -125,7 +131,8 @@ class SubtopicsImport implements ToCollection, WithHeadingRow, ShouldQueue, With
         $event->getConcernable()->updateDataImportHistory($event);
     }
 
-    public static function afterImport (AfterImport $event): void {
+    public static function afterImport(AfterImport $event): void
+    {
 
         $importProcessesRecord = $event->getConcernable()->setStatusCompleteImportHistory($event);
 

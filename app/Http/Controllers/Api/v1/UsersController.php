@@ -124,30 +124,49 @@ class UsersController extends Controller
         ];
     }
 
+    /**
+     * Tests: History Graph
+     *
+     * History Data Graph by topic
+     */
     public function fetch_history_statistical_data_graph_by_student(FetchHistoryStatisticalDataGraphByStudentRequest $request)
     {
 
         return $this->usersInterface->get_history_statistical_data_graph_by_student($request);
     }
 
+    /**
+     * Tests: History By Type
+     *
+     * History Data by type and period
+     */
     public function fetch_history_questions_by_type_and_period()
     {
 
         return $this->usersInterface->fetch_history_questions_by_type_and_period();
     }
 
+    /**
+     * Tests: Wrong Questions
+     *
+     * History of questions answered wrong
+     */
     public function fetch_history_questions_wrong_by_topic_of_student(Topic $topic)
     {
 
         return $this->usersInterface->fetch_history_questions_wrong_by_topic_of_student($topic);
     }
 
+    /**
+     * Tests: Completed Tests
+     *
+     * History of tests completed by student
+     */
     public function fetch_history_tests_completed_by_student()
     {
 
         return $this->usersInterface->fetch_history_tests_completed_by_student();
     }
-
     public function fetch_topics_available_in_tests()
     {
 

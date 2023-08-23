@@ -24,7 +24,7 @@ use Illuminate\Support\Str;
  * This script is doing 2 things:
  *  - Clone the tables that has no data change
  *  - Migrate the tables id (uuid) -> to id (int) uuid (copy of the old id)
- *  - Fiding the new PK id for each PK that before was an UUID
+ *  - Finding the new PK id for each PK that before was an UUID
  */
 class MigrateDBv2 extends Command
 {
@@ -33,7 +33,8 @@ class MigrateDBv2 extends Command
     protected $filesystem;
     protected $signature = 'migrate:dbv2
                             {old : Old database }
-                            {new : Database output of the operation }';
+                            {new : Database output of the operation }
+                            {table? : Optional - Only migrates that specific table }';
 
     protected $description = 'Migrate a database v1 (where UUID are primary key) to a database v2 (where the ID is the primary key)';
 
@@ -117,10 +118,7 @@ class MigrateDBv2 extends Command
 
         $this->migrateTable('tests', ['opposition_id' => 'oppositions', 'user_id' => 'users']);
         $this->migrateTable('question_test', ['test_id' => 'tests', 'question_id' => 'questions', 'answer_id' => 'answers']);
-        $this->migrateTable('questions_used_test', ['topic_id' => 'topics', 'subtopic_id' => 'subtopics', 'question_id' => 'questions', 'opposition_id' => 'oppositions']);
-
-
-
+        $this->migrateTable('questions_used_test', ['topic_id' => 'topics', 'subtopic_id' => 'subtopics', 'question_id' => 'questions', 'opposition_id' => 'oppositions', 'user_id' => 'users']);
 
 
 
@@ -130,10 +128,13 @@ class MigrateDBv2 extends Command
 
     private function migrateTable($table, $uuid = [])
     {
+        if ($this->argument('table') && $this->argument('table') !== $table) {
+            return;
+        }
 
         $this->new($table)->truncate();
 
-        $count = $this->old($table)->limit(1000)->get()->count();
+        $count = $this->old($table)->limit(50000)->get()->count();
 
         $bar = $this->output->createProgressBar($count);
         $orphans = 0;
@@ -142,7 +143,6 @@ class MigrateDBv2 extends Command
         $bar->start();
 
         $page = 0;
-        dump($page);
         $items = $this->old($table)->limit(20)->offset(20 * $page)->get();
 
         do {
@@ -206,6 +206,12 @@ class MigrateDBv2 extends Command
 
         foreach ($uuid as $key => $table_origin) {
 
+            // Subtopics may be empty some times
+            if ($item[$key] === '' || $item[$key] === null) {
+                $item[$key] = null;
+                continue;
+            }
+
             if ($table_origin[0] == '$') {
                 $field = substr($table_origin, 1);
                 $table_origin = $this->morph_to_table[$item[$field]];
@@ -214,7 +220,7 @@ class MigrateDBv2 extends Command
             $uuid_column = Schema::hasColumn($table_origin, 'uuid') ? 'uuid' : 'id';
 
             $parent = $this->new($table_origin)->where($uuid_column, $item[$key])->first();
-            if (!$parent) {
+            if (is_null($parent)) {
                 return false;
             }
 

@@ -21,11 +21,13 @@ class DBApp implements TestsInterface
 {
     protected Test $model;
 
-    public function __construct(Test $test ){
+    public function __construct(Test $test)
+    {
         $this->model = $test;
     }
 
-    public function get_tests_unresolved(){
+    public function get_tests_unresolved()
+    {
         return Auth::user()?->tests()->where('test_type', '=', 'test')->where('is_solved_test', '=', 'no')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
@@ -34,7 +36,8 @@ class DBApp implements TestsInterface
         return Auth::user()?->tests()->where('test_type', '=', 'card_memory')->applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
     }
 
-    public function fetch_unresolved_test( $test ){
+    public function fetch_unresolved_test($test)
+    {
 
         $testQuery = Auth::user()
             ->tests()
@@ -49,7 +52,8 @@ class DBApp implements TestsInterface
         return QueryParametersQuestionsForResolveTest::getQuestionsEloquentSortByIndexByTest($testQuery);
     }
 
-    public function fetch_card_memory( $test ){
+    public function fetch_card_memory($test)
+    {
 
         $testQuery = Auth::user()->tests()->where('test_type', '=', 'card_memory')->firstWhere('id', '=', $test->getKey());
 
@@ -60,24 +64,20 @@ class DBApp implements TestsInterface
         return Question::query()->whereIn('id', $testQuery->questions()->pluck('questions.id')->toArray())->jsonPaginate();
     }
 
-    public function create_a_quiz( $request )
+    public function create_a_quiz($request)
     {
         try {
 
-            \Log::debug("-------Ordenamos toda la información que usaremos");
-            $dataForTheBuildTest = TestsService::getDataToCreateTests( $request );
+            $dataForTheBuildTest = TestsService::getDataToCreateTests($request);
 
             abort_if(!$dataForTheBuildTest['userAuth'], 404);
 
-            \Log::debug("-------Crear la referencia del Test y actualizar información");
-            $dataForTheBuildTest = TestsService::createTestReference( $dataForTheBuildTest );
+            $dataForTheBuildTest = TestsService::createTestReference($dataForTheBuildTest);
 
-            \Log::debug("-------Registrar temas y subtemas");
             TestsService::registerTopicsAndSubtopicsByTest(
                 $dataForTheBuildTest
             );
 
-            \Log::debug("-------Aquí comienza el proceso de buscar preguntas");
             QuestionsTestService::buildQuestionsTest(
                 $dataForTheBuildTest
             );
@@ -102,8 +102,7 @@ class DBApp implements TestsInterface
                 ->firstWhere('uuid', '=', $request->get('question_id'));
 
             $answer = Answer::query()
-                ->where('id', $request->get('answer_id'))
-                ->orWhere('uuid', $request->get('answer_id'))
+                ->where('uuid', $request->get('answer_id'))
                 ->first();
 
             if ($request->get('answer_id')) {
@@ -111,8 +110,8 @@ class DBApp implements TestsInterface
                 $stateQuestionAnswered = $answer->is_correct_answer === 'yes' ? 'correct' : 'wrong';
 
                 $test->questions()->wherePivot('question_id', $question->getKey())->updateExistingPivot($question->getKey(), [
-                   'answer_id' => $answer->getKey(),
-                   'status_solved_question' => $stateQuestionAnswered,
+                    'answer_id' => $answer->getKey(),
+                    'status_solved_question' => $stateQuestionAnswered,
                     /*'have_been_show_test' => $stateQuestionAnswered === 'wrong' ? 'no' : 'yes'*/
                 ]);
 
@@ -125,7 +124,7 @@ class DBApp implements TestsInterface
             }
         } catch (\Exception $e) {
             //DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
@@ -133,19 +132,13 @@ class DBApp implements TestsInterface
     {
         try {
 
-            //DB::beginTransaction();
             $test = Test::query()->findOrFail($test->getKey());
             $user = auth()?->user();
-            //// \Log::debug($test);
 
             $total_questions_test = $test->questions->count();
-            //// \Log::debug($total_questions_test);
             $totalQuestionsCorrect = $test->questions()->wherePivot('status_solved_question', 'correct')->get()->count();
-            //// \Log::debug($totalQuestionsCorrect);
             $totalQuestionsWrong = $test->questions()->wherePivot('status_solved_question', 'wrong')->get()->count();
-            //// \Log::debug($totalQuestionsWrong);
             $totalQuestionsUnanswered = $test->questions()->wherePivot('status_solved_question', 'unanswered')->get()->count();
-            //// \Log::debug($totalQuestionsUnanswered);
 
             $test->total_questions_correct = $totalQuestionsCorrect;
             $test->total_questions_wrong = $totalQuestionsWrong;
@@ -153,17 +146,13 @@ class DBApp implements TestsInterface
 
             // Calificar test
 
-            /*$result_final_test = (
-                $totalQuestionsCorrect - ($totalQuestionsWrong / 3) / $total_questions_test / 10
-            );*/
             $result_final_test = (
-                ( $totalQuestionsCorrect - ($totalQuestionsWrong / 3) )
+                ($totalQuestionsCorrect - ($totalQuestionsWrong / 3))
                 / ($total_questions_test / 10)
             );
 
-            //// \Log::debug($result_final_test);
 
-            $test->test_result = ( (int) $result_final_test ) <= 0 ? '0' : number_format($result_final_test, 2);
+            $test->test_result = ((int) $result_final_test) <= 0 ? '0' : number_format($result_final_test, 2);
             $test->is_solved_test = 'yes';
             $test->finished_at = Carbon::now();
 
@@ -176,24 +165,19 @@ class DBApp implements TestsInterface
                     'have_been_show_test' => 'yes'
                 ]);
             }
+            \Log::debug($test->id);
 
-            Log::debug("");
-            Log::debug("Ejecutar procedimiento almacenado de update_used_questions para el usuario: '{$user->full_name}' con id: '{$user->id}'");
-            $start_time__call_procedure_update_used_questions = microtime(true);
             DB::select(
                 "call update_used_questions_procedure(?)",
-                array($test->getKey())
+                [$test->id]
             );
 
-            $end_time__call_procedure_update_used_questions = (microtime(true)) - $start_time__call_procedure_update_used_questions;
-            Log::debug("Ha terminado de ejecutarse el procedimiento update_used_questions para el usuario: '{$user->full_name}' con id: '{$user->id}' que ha durado: {$end_time__call_procedure_update_used_questions} segundos");
 
-            //DB::commit();
 
             return $test;
         } catch (\Exception $e) {
-            //DB::rollback();
-            abort($e->getCode(),$e->getMessage());
+            \Log::error($e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 

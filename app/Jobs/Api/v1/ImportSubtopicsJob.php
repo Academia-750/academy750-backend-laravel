@@ -15,15 +15,19 @@ class ImportSubtopicsJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public function __construct(Public $file, Public $userAuth)
+    public function __construct(public $file, public $userAuth)
     {
         //
     }
 
     public function handle()
     {
+        \Log::debug(
+            '------------------ FFF'
+        );
+
         (
-        new SubtopicsImport($this->userAuth, $this->file->getClientOriginalName())
+            new SubtopicsImport($this->userAuth, $this->file->getClientOriginalName())
         )->import($this->file);
     }
 

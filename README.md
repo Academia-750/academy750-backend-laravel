@@ -88,6 +88,79 @@ Is due a problem with PHP CURL with sentry, you can reinstall sentry this way
 
 composer update -W sentry/sentry-laravel
 
+### Queues
+
+Running queues we use `php artisan queue:work`.
+
+For production we use SuperVisor (See the Server installation guide in Notion )
+
+## Databases
+
+
+### Meta information
+
+- migrations: Laravel database migrations runned.
+--- 
+- Jobs: Laravel jobs (using database driver)
+- failed_jobs: Jobs that had failed!
+--- 
+- images: used to store users avatars (polymorphic can have different uses)
+
+### Users
+
+- Users: List of users
+--- 
+- personal_access_tokens: User logged tokens
+- passwords_resets: To rest the password
+
+--- 
+Permissions are handle by Spatie
+
+- Roles: We have two main roles ADMIN and STUDENT. 
+- Permissions: Specific platform permissions (Not in used but modified in the profile tasks to do)
+- Roles_has_permissions: Relation betwen roles and permissions
+- Model_has_roles: Relation between models (users or any other entity is polimorphic) and roles
+- Model_has_permissions: Relation between models (users or any other entity is polimorphic) and permissions (without need of the role)
+
+### Oppositions and Tests
+* oppositions: List of oppositions (big exams for goverment job), a opposition has several topics and questions.
+---
+* topic_group: All opposition topics stay between 3 groups: Generic, Law, Specific.
+* topic: A topic belongs to a group.
+* sub_topics:   A subtopic belong to a topic
+* oppositionable: Relates topics and subtopcis with the opposition table.
+
+--- 
+* questions: A question belong to a topic or sub topic. Can be for test or a memory card.
+* answers: Is the possible answers to the questions - 4 for tests - 1 for memory card.
+--- 
+* tests_types: DEPRECATED Is 2 test types and is not in use
+* tests: A student can generate a test with a number of questions. This is the list of tests by student.
+* testables: Relates the tests with the selected topics/subtopics in that specific test
+* questions_test: The questions selected for a specific test and the status (Unanswered, correct or fail)
+--- 
+* questions_used_test: A relation between user and question to keep track of all the questions
+showed to a student and the results (Independent with the test)
+--- 
+- import_records: List of questions imported by CSV and the queue job. (Displayed on the notifications)
+- import_process: Status of the CSV import (Pending, completed or failed)
+
+
+### Lessons & Materials
+
+- tags: A table with tags and type. We use tags in materials but can be expanded by other users.
+---
+- groups: The entity of group of students. A group has a name and a color.
+- groups_users: The relation between groups and users. A user is active if the discharged date is NULL.
+---
+- workspaces: Material Categories, a high level of abstraction or 'folder' to organize materials.
+- materials: Materials are linked to a URL where the PDF or video is stored.
+---
+- lesson: Classes where the student can join, could be on class or online.
+- lesson_user: Users that are linked to a lesson (can be related to a group but there is no a hard connection with the group)
+- lesson_material: Materials assigned to the lesson.
+
+
 ## Desarrolladores (Phase 1)
 
 * ___Raúl Alberto Moheno Zavaleta___
