@@ -120,6 +120,7 @@ class MigrateDBv2 extends Command
         $this->migrateTable('question_test', ['test_id' => 'tests', 'question_id' => 'questions', 'answer_id' => 'answers']);
         $this->migrateTable('questions_used_test', ['topic_id' => 'topics', 'subtopic_id' => 'subtopics', 'question_id' => 'questions', 'opposition_id' => 'oppositions', 'user_id' => 'users']);
 
+        $this->migrateTable('testables', ['testable_id' => '$testable_type', 'test_id' => 'tests']);
 
 
         $this->new_database->statement('SET FOREIGN_KEY_CHECKS=1;');
@@ -171,6 +172,10 @@ class MigrateDBv2 extends Command
 
     private function clone ($table)
     {
+        if ($this->argument('table') && $this->argument('table') !== $table) {
+            return;
+        }
+
         $this->new($table)->truncate();
 
         $count = $this->old($table)->get()->count();
