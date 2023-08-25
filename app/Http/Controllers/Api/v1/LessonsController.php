@@ -199,16 +199,11 @@ class LessonsController extends Controller
 
             Lesson::query()->find($lesson->id)->update(['is_active' => $request->get('active')]);
 
-            // If ACTIVE we resync all the active groups
+            // // If ACTIVE we resync all the active groups
             if ($request->get('active')) {
-
-                array_map(function ($group) use ($lesson) {
-                    // Will delete any student that doesnt belong to the group anymore. Add the current active ones
-                    $lesson->students()->newPivotStatement()->where('group_id', $group['group_id'])->delete();
-                    $studentsIds = Group::find($group['group_id'])->users()->whereNull('discharged_at')->pluck('user_id');
-                    $lesson->students()->attach($studentsIds, ['group_id' => $group['group_id'], 'group_name' => $group['group_name']]);
-                }, $lesson->groups()->toArray());
-
+                foreach ($lesson->groups() as $groupData) {
+                    $lesson->syncGroup(Group::find($groupData->group_id));
+                }
             }
 
             return response()->json([
@@ -441,11 +436,7 @@ class LessonsController extends Controller
             }
 
 
-            $studentsIds = $group->users()->whereNull('discharged_at')->pluck('user_id');
-
-            // Will delete any student that doesnt belong to the group anymore. Add the current active ones
-            $lesson->students()->newPivotStatement()->where('group_id', $group->id)->delete();
-            $lesson->students()->attach($studentsIds, ['group_id' => $group->id, 'group_name' => $group->name]);
+            $studentsIds = $lesson->syncGroup($group);
 
 
             return response()->json([

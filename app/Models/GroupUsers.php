@@ -31,4 +31,9 @@ class GroupUsers extends Model
     {
         return $this->belongsTo(Group::class, 'group_id');
     }
+
+    public function uuid()
+    {
+        $this->user()->first()->uuid;
+    }
 }
