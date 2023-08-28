@@ -81,7 +81,6 @@ class DBApp implements UsersInterface
 
     public function read($user)
     {
-        //dump($user->id);
         return $this->model->applyIncludes()->findOrFail($user->getKey());
     }
 

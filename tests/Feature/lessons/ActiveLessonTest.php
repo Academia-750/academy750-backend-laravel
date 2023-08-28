@@ -139,4 +139,37 @@ class ActiveLessonTest extends TestCase
 
     }
 
+
+    /** @test */
+    public function sync_group_dont_override_single_students_200(): void
+    {
+        // A student is added single
+        $student = User::factory()->student()->create();
+
+        $this->lesson->students()->attach($student);
+
+        // 2 students of a group are added separated
+        $group = Group::factory()->create();
+        $students = GroupUsers::factory()->group($group)->count(2)->create();
+        $this->lesson->students()->attach($students, ['group_id' => $group->id, 'group_name' => $group->name]);
+
+
+        // Now the single student is also added to the GROUP
+        $group->users()->create([
+            'group_id' => $group->id,
+            'user_id' => $student->id
+        ]);
+
+        // Activate shall resync the groups
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => false])->assertStatus(200);
+
+        // The single student shall still NOT linked to the group on the lesson
+
+        $studentData = $this->lesson->students()->where('user_id', $student->id)->first();
+        $this->assertNull($studentData->pivot->group_name);
+        $this->assertNull($studentData->pivot->group_code);
+
+    }
+
+
 }

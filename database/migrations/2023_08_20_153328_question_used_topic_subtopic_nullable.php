@@ -28,7 +28,5 @@ return new class extends Migration {
         Schema::table('questions_used_test', static function (Blueprint $table) {
             $table->unsignedBigInteger('subtopic_id')->nullable(false)->change();
         });
-
-
     }
 };

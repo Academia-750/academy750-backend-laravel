@@ -144,4 +144,40 @@ class AddGroupToLessonTest extends TestCase
         $this->assertEquals($this->lesson->students()->count(), 6);
     }
 
+
+    /** @test */
+    public function add_group_dont_override_single_students_200(): void
+    {
+
+        /**
+         * A user added to a lesson. If a group is added which contains an existing user the user info is not duplicated
+         * or overridden
+         */
+        $groupStudent = $this->group->users()->first()->user()->first();
+        $this->post("api/v1/lesson/{$this->lesson->id}/student", ['user_id' => $groupStudent->uuid])->assertStatus(200);
+
+        $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+        $this->assertEquals($data['count'], 3);
+
+        $count = $this->lesson->students()->where('user_id', $groupStudent['id'])->count();
+        $this->assertEquals($count, 1);
+    }
+
+    /** @test */
+    public function add_group_dont_override_other_groups_200(): void
+    {
+
+        $group2 = Group::factory()->create();
+        $group2->users()->saveMany($this->group->users()->get()->all());
+
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $group2->id])->assertStatus(200);
+
+        //
+        $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+        $this->assertEquals($data['count'], 0);
+
+        $count = $this->lesson->students()->wherePivot('group_id', $this->group->id)->count();
+        $this->assertEquals($count, 0);
+    }
+
 }

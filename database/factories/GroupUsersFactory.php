@@ -16,7 +16,7 @@ class GroupUsersFactory extends Factory
 
         return [
             'group_id' => config('app.env') === 'documentation' ? 1 : Group::factory()->create()->id,
-            'user_id' => config('app.env') === 'documentation' ? 2 : User::factory()->create()->id,
+            'user_id' => config('app.env') === 'documentation' ? 2 : User::factory()->student()->create()->id,
             'discharged_at' => null,
             'created_at' => now(),
             'updated_at' => now(),

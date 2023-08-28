@@ -81,4 +81,26 @@ class Lesson extends Model
         ];
     }
 
+    /**
+     *  Select the users of the group that are not discharged and doesnt exist already on the lesson
+     * @return  integer[] List of added students ids
+     */
+    public function syncGroup($group)
+    {
+        $this->students()->newPivotStatement()->where('group_id', $group->id)->delete();
+
+        // Will delete any student that doesnt belong to the group anymore. Add the current active ones
+        $studentsIds = $group->users()
+            ->whereNull('discharged_at')
+            ->whereNotExists(
+                function ($query) {
+                    $query->select('lesson_user.id')->from('lesson_user')->where('lesson_user.lesson_id', $this->id)->whereRaw('`lesson_user`.`user_id` = `group_users`.`user_id`');
+                }
+            )->pluck('user_id');
+
+        $this->students()->attach($studentsIds, ['group_id' => $group->id, 'group_name' => $group->name]);
+
+        return $studentsIds;
+    }
+
 }
