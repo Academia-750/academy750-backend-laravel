@@ -6,6 +6,9 @@ use App\Http\Resources\Api\Permission\v1\PermissionCollection;
 use App\Http\Resources\Api\User\v1\UserCollection;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * Used on the phase 1
+ */
 class RoleResource extends JsonResource
 {
     public function toArray($request): array
@@ -20,14 +23,18 @@ class RoleResource extends JsonResource
                 "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
-                'permissions' => $this->when(collect($this->resource)->has('permissions'),
+                'permissions' => $this->when(
+                    collect($this->resource)->has('permissions'),
                     function () {
                         return PermissionCollection::make($this->resource->permissions);
-                    }),
-                'users' => $this->when(collect($this->resource)->has('users'),
+                    }
+                ),
+                'users' => $this->when(
+                    collect($this->resource)->has('users'),
                     function () {
                         return UserCollection::make($this->resource->users);
-                    }),
+                    }
+                ),
             ],
         ];
     }

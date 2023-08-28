@@ -12,19 +12,20 @@ class UserService
 {
     use UserServiceTrait;
 
-    public static function existsDNIInTableUser ($dni): bool {
-        $existsDNI = User::query()->where("dni","=", $dni)
+    public static function existsDNIInTableUser($dni): bool
+    {
+        $existsDNI = User::query()->where("dni", "=", $dni)
             ->first();
 
         return $existsDNI !== null;
     }
 
-    public static function generateNewDNI (): string
+    public static function generateNewDNI(): string
     {
         return Person::dni();
     }
 
-    public static function generateDNIUnique (): string
+    public static function generateDNIUnique(): string
     {
         $DNIGenerated = self::generateNewDNI();
 
@@ -35,16 +36,16 @@ class UserService
         return $DNIGenerated;
     }
 
-    public static function getNumberPhoneSpain (): string
+    public static function getNumberPhoneSpain(): string
     {
         return self::generateNumberPhoneSpain();
     }
 
-    public static function generateNumberPhoneSpain (): string
+    public static function generateNumberPhoneSpain(): string
     {
-        $numberPhone = (string) random_int(6,9);
+        $numberPhone = (string) random_int(6, 9);
         for ($i = 0; $i < 8; $i++) {
-            $numberPhone.= random_int(1,9);
+            $numberPhone .= random_int(1, 9);
         }
 
         return $numberPhone;
@@ -53,7 +54,7 @@ class UserService
     /**
      * @throws \Exception
      */
-    public static function generateSecureRandomPassword (): string
+    public static function generateSecureRandomPassword(): string
     {
         $generator = new ComputerPasswordGenerator();
 
@@ -62,7 +63,7 @@ class UserService
             ->setOptionValue(ComputerPasswordGenerator::OPTION_LOWER_CASE, true)
             ->setOptionValue(ComputerPasswordGenerator::OPTION_NUMBERS, true)
             ->setOptionValue(ComputerPasswordGenerator::OPTION_SYMBOLS, true)
-            ->setLength(random_int(8,15));
+            ->setLength(random_int(8, 15));
 
         return $generator->generatePassword();
     }
@@ -70,7 +71,7 @@ class UserService
     /**
      * @throws \Throwable
      */
-    public static function syncRolesToUser ($roles_id, $user): array
+    public static function syncRolesToUser($roles_id, $user): array
     {
         if ($roles_id === null) {
             return [];

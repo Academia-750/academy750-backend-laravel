@@ -94,6 +94,26 @@ Running queues we use `php artisan queue:work`.
 
 For production we use SuperVisor (See the Server installation guide in Notion )
 
+### Permissions
+
+When we generate a empty database we will start with the next setup:
+
+Roles:
+ 1 - admin (can do everything)
+ 2 - student (empty role by default)
+
+Entering as an admin we can create new roles with some permissions and create students to this roles.
+
+The admin can NOT create new permissions, we handle the permissions from `PermissionSeeder.php` class.
+You can **create or update permissions** in the seeder and run 
+
+ php artisan db:seed --class=PermissionSeeder
+
+To make the update take effect. In production and staging environment this is done automatically.
+
+In order to **delete** permissions you will need to create a migration.
+
+
 ## Databases
 
 

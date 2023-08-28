@@ -74,7 +74,7 @@ class GroupController extends Controller
      *
      * Update Groups Values
      * @authenticated
-     * @urlParam groupId integer Group ID
+     * @urlParam groupId integer required Group ID
      * @response status=409 scenario="Group code or color already on use"
      * @response status=404 scenario="Group not found"
      * @apiResource App\Http\Resources\Api\Group\v1\GroupResource
@@ -135,7 +135,7 @@ class GroupController extends Controller
      * Group: Info
      *
      * Get single group information
-     * @urlParam groupId integer Group ID
+     * @urlParam groupId integer required Group ID
      * @response status=404 scenario="Group not found"
      * @apiResource App\Http\Resources\Api\Group\v1\GroupResource
      * @apiResourceModel App\Models\Group
@@ -182,7 +182,6 @@ class GroupController extends Controller
      *      ],
      *       "total": 1
      *  }
-     * @apiResourceAdditional total=2
      */
     public function getList(ListGroupRequest $request)
     {
@@ -235,7 +234,7 @@ class GroupController extends Controller
      *
      * Delete a group and all the relations of his students
      * @authenticated
-     * @urlParam groupId integer Group ID
+     * @urlParam groupId integer required Group ID
      * @response status=404 scenario="Group not found"
      * @response {"message": "successfully"}
      */
@@ -303,7 +302,7 @@ class GroupController extends Controller
      *
      * A student can join a group (unless he is already an active member)
      * @authenticated
-     * @urlParam groupId integer Group ID
+     * @urlParam groupId integer required Group ID
      * @response status=404 scenario="Group not found"
      * @response status=404 scenario="User not found"
      * @response status=403 scenario="The user state is disabled"
@@ -372,7 +371,7 @@ class GroupController extends Controller
      *
      * Students that are active can leave the groups (Will be come discharged)
      * @authenticated
-     * @urlParam groupId integer Group ID
+     * @urlParam groupId integer required Group ID
      * @response status=404 scenario="Member not found"
      * @response status=409 scenario="Member exists but is already discharged"
      * @apiResource App\Http\Resources\Api\Group\v1\GroupUserResource
@@ -430,7 +429,7 @@ class GroupController extends Controller
      *
      * List of students of a group (setting discharged to true will be the historical of old students)
      * @authenticated
-     * @urlParam groupId integer Group ID
+     * @urlParam groupId integer required Group ID
      * @response {
      *     "results": [
      *        "id": 1,
@@ -448,7 +447,6 @@ class GroupController extends Controller
      *      ],
      *       "total": 1
      *  }
-     * @apiResourceAdditional total=2
      */
     public function list(ListGroupUserRequest $request, string $groupId)
     {
