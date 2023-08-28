@@ -31,7 +31,7 @@ class ListMaterialRequest extends FormRequest
             ],
             'orderBy' => [
                 'string',
-                Rule::in(['name', 'created_at', 'updated_at', 'type'])
+                Rule::in(['name', 'created_at', 'updated_at', 'workspace_name'])
             ],
             'order' => [
                 Rule::in([1, -1])

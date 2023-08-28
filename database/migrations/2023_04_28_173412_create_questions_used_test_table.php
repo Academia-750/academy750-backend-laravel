@@ -12,9 +12,7 @@ return new class extends Migration {
      */
     public function up()
     {
-        if (app()->environment() === 'testing') {
-            return;
-        }
+
         Schema::create('questions_used_test', function (Blueprint $table) {
             $table->id();
             $table->foreignId('topic_id')

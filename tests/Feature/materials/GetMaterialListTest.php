@@ -209,7 +209,7 @@ class GetMaterialListTest extends TestCase
             rsort($sorted);
 
             $this->assertEquals($attributeList, $sorted);
-        }, ['type', 'name']);
+        }, ['name', 'workspace_name']);
     }
 
     /** @test */

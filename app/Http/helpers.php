@@ -34,6 +34,13 @@ function parseFilter($key, $value, $operation = '=', $opts = [])
             case 'in':
                 $query->whereIn($key, $value);
                 break;
+            case 'between':
+                $query->where(function ($subQuery) use ($value, $key) {
+                    $subQuery
+                        ->where($key, '>=', $value['from'])
+                        ->where($key, '<', $value['to']);
+                });
+                break;
             case 'isNull':
                 $value ? $query->whereNull($key) : $query->whereNotNull($key);
                 break;

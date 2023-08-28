@@ -13,8 +13,11 @@ class QuestionResource extends JsonResource
     {
         return [
             'type' => 'questions',
+            // This is the UUID
             'id' => $this->resource->getRouteKey(),
             'attributes' => [
+                // This is the ID (exposed for some checks)
+                "id" => $this->resource->id,
                 "question-text" => $this->resource->question,
                 "reason-text" => $this->resource->reason,
                 "is_question_binary_alternatives" => $this->resource->is_question_binary_alternatives,
@@ -34,14 +37,18 @@ class QuestionResource extends JsonResource
             ],
             'relationships' => [
                 'answers' => AnswerCollection::make($this->resource->answers),
-                'tests' => $this->when(collect($this->resource)->has('tests'),
+                'tests' => $this->when(
+                    collect($this->resource)->has('tests'),
                     function () {
                         return TestsCollection::make($this->resource->tests);
-                    }),
-                'image' => $this->when((bool) $this->resource->image,
+                    }
+                ),
+                'image' => $this->when(
+                    (bool) $this->resource->image,
                     function () {
                         return ImageResource::make($this->resource->image);
-                    }),
+                    }
+                ),
                 // 'questionable' => $this->when(collect($this->resource)->has('questionable'),
                 //     function () {
                 //         return $this->resource->questionable;

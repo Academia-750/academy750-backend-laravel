@@ -54,7 +54,7 @@ return new class extends Migration {
                   INNER JOIN oppositionables op ON op.oppositionable_id = q.questionable_id
                 WHERE
                   op.opposition_id = id_oposicion
-                  AND q.questionable_type = 'App\\Models\\Topic'
+                  AND q.questionable_type = 'App\\\\Models\\\\Topic'
                 UNION
                 SELECT
                   DISTINCT st.topic_id as topic_id,
@@ -68,7 +68,7 @@ return new class extends Migration {
                   INNER JOIN oppositionables op ON op.oppositionable_id = st.id
                 WHERE
                   op.opposition_id = id_oposicion
-                  AND q.questionable_type = 'App\\Models\\Subtopic'
+                  AND q.questionable_type = 'App\\\\Models\\\\Subtopic'
               ) as TB
             WHERE
               FIND_IN_SET(TB.topic_id, topic_uuids) > 0
