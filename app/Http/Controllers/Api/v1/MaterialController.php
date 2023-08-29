@@ -71,6 +71,50 @@ class MaterialController extends Controller
     }
 
     /**
+     * Tag: Delete
+     *
+     * Delete a tag of type `Material`
+     * @authenticated
+     * @urlParam tag_id integer required Tag Id
+     * @response status=404 scenario="Tag not found"
+     * @response status=409 scenario="Only tags type `material` can be deleted within this endpoint"
+     * @response {"message": "successfully"}
+     */
+    public function deleteMaterialTag($tag_id)
+    {
+        $tag = Tag::find($tag_id);
+
+        if (!$tag) {
+            return response()->json([
+                'status' => 'error',
+                'result' => 'Tag Not found'
+            ], 404);
+        }
+
+        if ($tag->type !== 'material') {
+            return response()->json([
+                'status' => 'error',
+                'result' => 'This tag type can not be deleted within this endpoint'
+            ], 409);
+        }
+
+        try {
+            $tag->delete();
+
+            return response()->json([
+                'status' => 'successfully',
+
+            ]);
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Tag: List
      *
      * Get the content of material tags

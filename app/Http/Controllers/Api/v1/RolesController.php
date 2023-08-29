@@ -195,7 +195,7 @@ class RolesController extends Controller
                         ->whereRaw('model_has_roles.model_type = "App\Models\User"');
                 }, 'users_count')
                 // --
-                ->orderBy($request->get('orderBy') ?? 'created_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
                 ->get();
@@ -383,7 +383,7 @@ class RolesController extends Controller
 
 
     /**
-     * Roles: Permissions
+     * Roles: Permissions List
      *
      * Return a paginated list of Permissions
      * @authenticated
@@ -408,10 +408,10 @@ class RolesController extends Controller
             ];
 
 
-            $query = filterToQuery(Role::query(), $conditions);
+            $query = filterToQuery(Permission::query(), $conditions);
 
             $results = (clone $query)
-                ->orderBy($request->get('orderBy') ?? 'created_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
                 ->get();

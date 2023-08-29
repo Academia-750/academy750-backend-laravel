@@ -18,6 +18,17 @@ use Illuminate\Database\Seeder;
 class PermissionSeeder extends Seeder
 {
 
+    public static $permissions = [
+        // Lessons
+        ['category' => 'lesson', 'name' => 'see-lessons', 'alias_name' => 'Ver clases'],
+        ['category' => 'lesson', 'name' => 'join-lessons', 'alias_name' => 'Apuntar a clase'],
+        ['category' => 'lesson', 'name' => 'online-lessons', 'alias_name' => 'Clases online'],
+        ['category' => 'lesson', 'name' => 'material-lessons', 'alias_name' => 'Materiales de Clases'],
+        ['category' => 'lesson', 'name' => 'recording-lessons', 'alias_name' => 'Grabaciones de Clases'],
+        // Tests
+        ['category' => 'tests', 'name' => 'tests', 'alias_name' => 'Generar Tests']
+    ];
+
     private $categories = [
         'lessons' => []
     ];
@@ -31,14 +42,9 @@ class PermissionSeeder extends Seeder
 
     public function run(): void
     {
-        $this->registerPermission(['category' => 'lesson', 'name' => 'see-lessons', 'alias_name' => 'Ver clases']);
-        $this->registerPermission(['category' => 'lesson', 'name' => 'join-lessons', 'alias_name' => 'Apuntar a clase']);
-        $this->registerPermission(['category' => 'lesson', 'name' => 'online-lessons', 'alias_name' => 'Clases online']);
-        $this->registerPermission(['category' => 'lesson', 'name' => 'material-lessons', 'alias_name' => 'Materiales de Clases']);
-        $this->registerPermission(['category' => 'lesson', 'name' => 'recording-lessons', 'alias_name' => 'Grabaciones de Clases']);
-
-
-        $this->registerPermission(['category' => 'tests', 'name' => 'tests', 'alias_name' => 'Generar Tests']);
+        array_map(function ($permission) {
+            $this->registerPermission($permission);
+        }, self::$permissions);
     }
 
     private function existsPermission($permission_name): bool

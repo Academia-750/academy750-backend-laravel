@@ -140,7 +140,7 @@ class GetMaterialListTest extends TestCase
 
 
     /** @test */
-    public function filter_by_tag(): void
+    public function filter_by_workspace_200(): void
     {
         $response = $this->get("api/v1/material/list?" . Arr::query(['workspace' => $this->materials[0]->workspace_id]), )->assertStatus(200)->json();
 
