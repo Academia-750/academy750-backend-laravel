@@ -26,7 +26,7 @@ class PermissionSeeder extends Seeder
         ['category' => 'lesson', 'name' => 'material-lessons', 'alias_name' => 'Materiales de Clases'],
         ['category' => 'lesson', 'name' => 'recording-lessons', 'alias_name' => 'Grabaciones de Clases'],
         // Tests
-        ['category' => 'tests', 'name' => 'tests', 'alias_name' => 'Generar Tests']
+        ['category' => 'tests', 'name' => 'generate-tests', 'alias_name' => 'Generar Tests']
     ];
 
     private $categories = [

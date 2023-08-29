@@ -73,12 +73,12 @@ class DeleteRoleTest extends TestCase
     }
 
     /** @test */
-    public function default_role_409(): void
+    public function delete_default_role_409(): void
     {
         $this->role->default_role = true;
         $this->role->save();
 
-        $this->put("api/v1/role/{$this->role->id}", [])->assertStatus(403);
+        $this->delete("api/v1/role/{$this->role->id}", [])->assertStatus(409);
     }
 
     /** @test */

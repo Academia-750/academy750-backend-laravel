@@ -79,12 +79,9 @@ class RolesController extends Controller
                 ], 403);
             }
 
-
             if ($request->get('default_role') === true) {
                 Role::where('default_role', true)->update(['default_role' => false]);
             }
-
-
 
             $data = removeNull([
                 'alias_name' => $request->get('name'),
@@ -247,7 +244,6 @@ class RolesController extends Controller
                     'result' => 'Protected Roles can not be edited'
                 ], 403);
             }
-
 
             if ($role->default_role) {
                 return response()->json([
