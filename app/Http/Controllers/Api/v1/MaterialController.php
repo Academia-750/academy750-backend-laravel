@@ -100,8 +100,10 @@ class MaterialController extends Controller
             });
 
 
+
             $results = (clone $query)
-                ->orderBy('name', 'asc')
+                ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
                 ->get();
 

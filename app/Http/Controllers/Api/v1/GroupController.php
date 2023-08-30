@@ -437,7 +437,7 @@ class GroupController extends Controller
      *        "group_id" : "2" ,
      *        "user_id" : "33" ,
      *        "discharged_at" : null ,
-     *        "dni" : "00000000A" ,
+     *        "dni" : "00000000T" ,
      *        "fullName" : "Full Name" ,
      *        "name" : "Name" ,
      *        "email" : "email@example.com" ,
