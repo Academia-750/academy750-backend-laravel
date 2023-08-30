@@ -557,7 +557,7 @@ class LessonsController extends Controller
      *        "user_uuid" : "uuid" ,
      *        "group_name" : "My Group" ,
      *        "group_id" : 3,
-     *        "user_dni" : "00000000A" ,
+     *        "user_dni" : "00000000T" ,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -744,7 +744,7 @@ class LessonsController extends Controller
      *        "material_id": 1,
      *        "type" : "recording" ,
      *        "tags" : "fire,water,smoke",
-     *        "user_dni" : "00000000A" ,
+     *        "user_dni" : "00000000T" ,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],

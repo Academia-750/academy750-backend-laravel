@@ -99,4 +99,72 @@ class GetTagTest extends TestCase
 
     }
 
+
+
+    /** @test */
+    public function pagination_200(): void
+    {
+        $data = $this->get("api/v1/material/tag?" . Arr::query(['limit' => 1, 'offset' => 0]))->assertStatus(200)->json();
+        $data1 = $this->get("api/v1/material/tag?" . Arr::query(['limit' => 1, 'offset' => 1]))->assertStatus(200)->json();
+        $data2 = $this->get("api/v1/material/tag?" . Arr::query(['limit' => 1, 'offset' => 2]))->assertStatus(200)->json();
+        $data3 = $this->get("api/v1/material/tag?" . Arr::query(['limit' => 1, 'offset' => 3]))->assertStatus(200)->json();
+
+        // Verify that each page we return a different object
+        $ids = [$data1['results'][0]['id'], $data2['results'][0]['id'], $data3['results'][0]['id'], $data['results'][0]['id']];
+
+        $this->assertEquals(count(array_unique($ids)), 4);
+        $this->assertEquals(count($data['results']), 1);
+        $this->assertEquals($data['total'], 4);
+        $this->assertEquals($data1['total'], 4);
+    }
+
+
+
+    /** @test */
+
+    public function default_order_200(): void
+    {
+        $dataResponse = $this->get("api/v1/material/tag?")->assertStatus(200)->json();
+        $createdAt = array_map(function ($data) {
+            return $data['updated_at'];
+        }, $dataResponse['results'], );
+
+        $sorted = $createdAt;
+        rsort($sorted);
+
+        $this->assertEquals($createdAt, $sorted);
+    }
+
+
+    /** @test */
+    public function order_by_200(): void
+    {
+        array_map(function ($orderBy) {
+            $dataResponse = $this->get("api/v1/material/tag?" . Arr::query(['orderBy' => $orderBy, 'order' => -1]))->assertStatus(200)->json();
+
+            $attributeList = array_map(function ($data) use ($orderBy) {
+                return $data[$orderBy];
+            }, $dataResponse['results']);
+
+            $sorted = $attributeList;
+            rsort($sorted);
+
+            $this->assertEquals($attributeList, $sorted);
+        }, ['name', 'created_at', 'updated_at']);
+    }
+
+    /** @test */
+    public function material_default_order_asc_200(): void
+    {
+        $dataResponse = $this->get("api/v1/material/tag?" . Arr::query(['order' => 1]))->assertStatus(200)->json();
+        $updatedAt = array_map(function ($data) {
+            return $data['updated_at'];
+        }, $dataResponse['results'], );
+
+        $sorted = $updatedAt;
+        sort($sorted);
+
+        $this->assertEquals($updatedAt, $sorted);
+    }
+
 }
