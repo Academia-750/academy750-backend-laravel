@@ -12,12 +12,12 @@ class TopicGroupPolicy
 
     public function index(User $user): bool
     {
-        return $user->can('list-topic-groups');
+        return true;
     }
 
     public function read(User $user, TopicGroup $topicGroup): bool
     {
-        return $user->can('see-a-resource');
+        return true;
     }
 
     public function create(User $user): bool

@@ -258,9 +258,9 @@ class DBApp implements UsersInterface
     {
         try {
 
-            $today = date('Y-m-d');
+            $today = Carbon::now()->endOfDay()->format('Y-m-d H:i:s');
             $student = Auth::user();
-            $last_date = date('Y-m-d', strtotime($today . StatisticsDataHistoryStudent::getPeriodInKey($request->get('period'))));
+            $last_date = Carbon::parse(date('Y-m-d', strtotime($today . StatisticsDataHistoryStudent::getPeriodInKey($request->get('period')))))->endOfDay()->format('Y-m-d H:i:s');
 
             $topicsData = StatisticsDataHistoryStudent::getCollectGroupsStatisticsQuestionsTopic(
                 $request->get('topics_id'),

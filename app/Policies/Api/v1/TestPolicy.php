@@ -14,12 +14,12 @@ class TestPolicy
 
     public function get_tests_unresolved(User $user): bool
     {
-        return $user->can('list-uncompleted-tests');
+        return true;
     }
 
     public function get_cards_memory(User $user): bool
     {
-        return $user->can('list-uncompleted-tests');
+        return true;
     }
 
     /**
@@ -32,7 +32,7 @@ class TestPolicy
      */
     public function fetch_unresolved_test(User $user, Test $test): bool
     {
-        return $user->can('resolve-a-tests') &&
+        return
             $test?->is_solved_test === 'no' &&
             $test?->test_type === 'test' &&
             $test->user?->getKey() === $user->getKey();
@@ -49,7 +49,7 @@ class TestPolicy
      */
     public function fetch_card_memory(User $user, Test $test): bool
     {
-        return $user->can('resolve-a-tests') &&
+        return
             $test?->test_type === 'card_memory' &&
             $test->user?->getKey() === $user->getKey();
     }
@@ -63,7 +63,7 @@ class TestPolicy
      * @param $request
      * @return bool
      */
-    public function create_a_quiz(User $user, Test $test, Opposition $opposition, Request $request ): bool
+    public function create_a_quiz(User $user, Test $test, Opposition $opposition, Request $request): bool
     {
         // \Log::debug('create a quiz Policy Test');
         $topicsBelongsToOpposition = true;
@@ -71,12 +71,12 @@ class TestPolicy
         $topics_uuids_by_opposition = $opposition->topics()->pluck('uuid')->toArray();
 
         foreach ($request->get('topics') as $topic_uuid) {
-            if ( !in_array($topic_uuid, $topics_uuids_by_opposition, true) ) {
+            if (!in_array($topic_uuid, $topics_uuids_by_opposition, true)) {
                 $topicsBelongsToOpposition = false;
             }
         }
 
-        return $user->can('create-tests-for-resolve') && (bool) $topicsBelongsToOpposition;
+        return (bool) $topicsBelongsToOpposition;
     }
 
     /**
@@ -84,7 +84,8 @@ class TestPolicy
      * @param Test $test
      * @return bool
      */
-    public function fetch_test_completed (User $user, Test $test): bool {
+    public function fetch_test_completed(User $user, Test $test): bool
+    {
         return $user->hasRole('student') &&
             (bool) $user->tests()->findOrFail($test->getKey()) && $test->is_solved_test === 'yes';
     }

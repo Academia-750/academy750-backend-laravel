@@ -12,12 +12,12 @@ class OppositionPolicy
 
     public function index(User $user): bool
     {
-        return $user->can('list-oppositions');
+        return true;
     }
 
     public function read(User $user, Opposition $opposition): bool
     {
-        return $user->can('see-a-opposition');
+        return true;
     }
 
     public function create(User $user): bool
