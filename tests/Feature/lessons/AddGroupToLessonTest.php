@@ -144,6 +144,7 @@ class AddGroupToLessonTest extends TestCase
         $this->assertEquals($this->lesson->students()->count(), 6);
     }
 
+
     /** @test */
     public function add_group_dont_override_single_students_200(): void
     {
