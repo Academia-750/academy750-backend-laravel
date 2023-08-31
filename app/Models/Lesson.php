@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Notifications\Api\NewLessonAvailable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -101,6 +102,22 @@ class Lesson extends Model
         $this->students()->attach($studentsIds, ['group_id' => $group->id, 'group_name' => $group->name]);
 
         return $studentsIds;
+    }
+
+    public function notifyUsers()
+    {
+
+        $students = $this->students()->get();
+        $lesson = Lesson::find($this->id); // Get a fresh copy of the lesson
+
+        foreach ($students as $student) {
+            dump($student->toArray());
+            $student->notify(
+                new NewLessonAvailable(
+                    $lesson
+                )
+            );
+        }
     }
 
 }

@@ -56,7 +56,7 @@ class CreateLessonTest extends TestCase
     }
 
     /** @test */
-    public function _wrong_params_422(): void
+    public function wrong_params_422(): void
     {
 
         $this->post("api/v1/lesson", [])->assertStatus(422);
