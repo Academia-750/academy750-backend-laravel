@@ -85,11 +85,8 @@ class MigrateDBv2 extends Command
 
         $this->new_database->statement('SET FOREIGN_KEY_CHECKS=0;');
 
-        $this->clone('migrations');
-
         $this->clone('failed_jobs');
-        $this->clone('import_processes');
-        $this->clone('import_records');
+
         $this->clone('jobs');
 
         $this->migrateTable('images', ['imageable_id' => '$imageable_type']);
@@ -122,6 +119,9 @@ class MigrateDBv2 extends Command
 
         $this->migrateTable('testables', ['testable_id' => '$testable_type', 'test_id' => 'tests']);
 
+
+        $this->migrateTable('import_processes', ['user_id' => 'users']);
+        $this->migrateTable('import_records', ['import_process_id' => 'import_processes']);
 
         $this->new_database->statement('SET FOREIGN_KEY_CHECKS=1;');
     }
