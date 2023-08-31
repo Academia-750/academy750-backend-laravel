@@ -305,8 +305,7 @@ class DBApp implements UsersInterface
             $test_id_request = request('test-id');
 
             $test = Test::query()
-                ->where('id', $test_id_request)
-                ->orWhere('uuid', $test_id_request)
+                ->where('uuid', $test_id_request)
                 ->first();
 
             abort_if(!$test, new ModelNotFoundException("No existe el Test o cuestionario con identificador {$test_id_request}"));

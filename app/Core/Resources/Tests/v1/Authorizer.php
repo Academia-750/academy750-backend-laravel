@@ -51,8 +51,7 @@ class Authorizer implements TestsInterface
         $opposition_id = $request->get('opposition_id');
 
         $opposition = Opposition::query()
-            ->where('id', $opposition_id)
-            ->orWhere('uuid', $opposition_id)
+            ->where('uuid', $opposition_id)
             ->first();
 
         if (!$opposition) {
