@@ -12,7 +12,7 @@ class ListRoleRequest extends FormRequest
         return true;
     }
 
-    private $orderBy = ['name', 'users_count', 'created_at', 'updated_at'];
+    private $orderBy = ['name', 'alias_name', 'users_count', 'created_at', 'updated_at'];
     public function rules(): array
     {
         return [

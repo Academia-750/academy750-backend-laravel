@@ -183,7 +183,7 @@ class GetRoleListTest extends TestCase
             rsort($sorted);
 
             $this->assertEquals($attributeList, $sorted);
-        }, ['name', 'users_count', 'created_at', 'updated_at']);
+        }, ['name', 'alias_name', 'users_count', 'created_at', 'updated_at']);
     }
 
     /** @test */
