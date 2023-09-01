@@ -99,11 +99,12 @@ class GetPermissionsListTest extends TestCase
         $this->assertEquals($response['results'][0]['id'], $permission['id']);
 
         // By Alias Name
-        $response = $this->get("api/v1/role/permissions?" . Arr::query(['content' => substr($permission['alias_name'], 0, 3)]), );
+        $response = $this->get("api/v1/role/permissions?" . Arr::query(['content' => $permission['alias_name']]), );
         $this->assertEquals($response['results'][0]['id'], $permission['id']);
 
         // By Category
-        $response = $this->get("api/v1/role/permissions?" . Arr::query(['content' => substr($permission['category'], 0, 3)]), );
+        $response = $this->get("api/v1/role/permissions?" . Arr::query(['content' => $permission['category']]), );
+        dump($permission['category']);
         $this->assertEquals($response['results'][0]['category'], $permission['category']);
     }
 
