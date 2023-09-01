@@ -118,7 +118,6 @@ class Lesson extends Model
         $lesson = Lesson::find($this->id); // Get a fresh copy of the lesson
 
         foreach ($students as $student) {
-            dump($student->toArray());
             $student->notify(
                 new NewLessonAvailable(
                     $lesson
