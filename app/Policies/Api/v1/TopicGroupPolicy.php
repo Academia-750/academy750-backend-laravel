@@ -12,32 +12,32 @@ class TopicGroupPolicy
 
     public function index(User $user): bool
     {
-        return $user->can('list-topic-groups');
+        return true;
     }
 
     public function read(User $user, TopicGroup $topicGroup): bool
     {
-        return $user->can('see-a-resource');
+        return true;
     }
 
     public function create(User $user): bool
     {
-        return $user->can('create-resource');
+        return $user->hasRole('admin');
     }
 
     public function update(User $user, TopicGroup $topicGroup): bool
     {
-        return $user->can('edit-resource');
+        return $user->hasRole('admin');
     }
 
     public function delete(User $user, TopicGroup $topicGroup): bool
     {
-        return $user->can('delete-resource');
+        return $user->hasRole('admin');
     }
 
     public function mass_selection_for_action(User $user): bool
     {
-        return $user->can('action-for-multiple-resources');
+        return $user->hasRole('admin');
     }
 
     public function export_records(User $user): bool

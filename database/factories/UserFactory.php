@@ -57,5 +57,13 @@ class UserFactory extends Factory
             $user->assignRole('student');
         });
     }
+    public function withRole($role): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [];
+        })->afterCreating(function (User $user) use ($role) {
+            $user->assignRole($role);
+        });
+    }
 
 }

@@ -12,6 +12,7 @@ Route::get('workspace/{workspaceId}/info', [MaterialController::class, 'getWorks
 
 Route::post('material/tag', [MaterialController::class, 'postCreateTag'])->middleware('onlyAdmin');
 Route::get('material/tag', [MaterialController::class, 'getTagList']);
+Route::delete('material/tag/{tagId}', [MaterialController::class, 'deleteMaterialTag'])->middleware('onlyAdmin');
 
 Route::post('workspace/{workspaceId}/add', [MaterialController::class, 'postAddMaterial'])->middleware('onlyAdmin');
 Route::put('material/{materialId}', [MaterialController::class, 'putEditMaterial'])->middleware('onlyAdmin');

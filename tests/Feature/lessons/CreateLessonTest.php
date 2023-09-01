@@ -101,11 +101,11 @@ class CreateLessonTest extends TestCase
         $this->assertEquals($data['result']['date'], $this->body['date']);
         $this->assertEquals($data['result']['start_time'], $this->body['start_time']);
         $this->assertEquals($data['result']['end_time'], $this->body['end_time']);
-        // TODO Verify why laravel doesnt return the default values
-        // $this->assertEquals($data['result']['description'], '');
-        // $this->assertEquals($data['result']['is_online'], false);
-        // $this->assertEquals($data['result']['is_active'], false);
-        // $this->assertEquals($data['result']['url'], '');
+        // Default values
+        $this->assertEquals($data['result']['description'], '');
+        $this->assertEquals($data['result']['is_online'], false);
+        $this->assertEquals($data['result']['is_active'], false);
+        $this->assertEquals($data['result']['url'], '');
     }
 
 }

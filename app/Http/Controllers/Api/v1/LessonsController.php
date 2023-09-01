@@ -124,7 +124,6 @@ class LessonsController extends Controller
      *
      * @authenticated
      * @urlParam lessonId integer required Lesson ID
-     * @apiResource App\Http\Resources\Api\Lesson\v1\LessonResource
      * @response {
      *     "result": [
      *        "id": 1,
@@ -743,7 +742,7 @@ class LessonsController extends Controller
      *
      * Search materials
      * @authenticated
-     * @urlParam lessonId integer Lesson Id
+     * @urlParam lessonId integer required Lesson Id
      * @response {
      *     "results": [
      *        "material_id": 1,

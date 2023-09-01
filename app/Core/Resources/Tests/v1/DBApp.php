@@ -92,10 +92,8 @@ class DBApp implements TestsInterface
     {
         try {
 
-            //DB::beginTransaction();
             $test = Test::query()
-                ->where('id', $request->get('test_id'))
-                ->orWhere('uuid', $request->get('test_id'))
+                ->where('uuid', $request->get('test_id'))
                 ->first();
 
             $question = Question::query()

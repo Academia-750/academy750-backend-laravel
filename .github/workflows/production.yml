@@ -47,6 +47,7 @@ jobs:
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
             php artisan optimize
             php artisan migrate --force
+            php artisan db:seed --class=PermissionSeeder --force
             php artisan up
             echo "🎉 Deployment finished!"
 
@@ -62,5 +63,5 @@ jobs:
             composer require --dev knuckleswtf/scribe
             php artisan route:clear
             APP_ENV=documentation php artisan scribe:generate
-            sudo service supervisor restart
+            supervisorctl restart all
             echo "🎉 Docs ready!"

@@ -5,6 +5,7 @@ use App\Http\Resources\Api\Question\v1\QuestionCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireCollection;
 use App\Http\Resources\Api\Questionnaire\v1\QuestionnaireResource;
 use App\Http\Resources\Api\Topic\v1\TopicCollection;
+use App\Models\Answer;
 use App\Models\Question;
 use App\Models\Test;
 use App\Models\User;
@@ -130,9 +131,10 @@ class SchemaJson implements UsersInterface
                 "status_question" => $questionPivotTest?->pivot?->status_solved_question,
                 "question" => $question->question,
                 'question_id' => $question->getKey(),
-                'answer_id' => $questionPivotTest?->pivot?->answer_id,
+                'answer_id' => $questionPivotTest?->pivot?->answer_id ? Answer::query()->findOrFail($questionPivotTest?->pivot?->answer_id)?->getRouteKey() : null,
             ]);
         }
+        \Log::debug($questions);
 
         return QuestionCollection::make(
             $this->eventApp->fetch_history_questions_by_type_and_period()

@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    if: "! github.event.pull_request.draft"
+    if: "!github.event.pull_request.draft"
     runs-on: ubuntu-latest
 
     steps:
@@ -74,6 +74,7 @@ jobs:
             composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
             php artisan optimize
             php artisan migrate --force
+            php artisan db:seed --class=PermissionSeeder --force
             php artisan up
             echo "🎉 Deployment finished!"
 
