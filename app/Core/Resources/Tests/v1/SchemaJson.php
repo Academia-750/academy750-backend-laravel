@@ -18,7 +18,8 @@ class SchemaJson implements TestsInterface
 {
     protected EventApp $eventApp;
 
-    public function __construct(EventApp $eventApp ){
+    public function __construct(EventApp $eventApp)
+    {
         $this->eventApp = $eventApp;
     }
 
@@ -29,42 +30,42 @@ class SchemaJson implements TestsInterface
         );
     }
 
-    public function fetch_unresolved_test( $test ): QuestionByTestCollection
+    public function fetch_unresolved_test($test): QuestionByTestCollection
     {
 
         $countQuestionsAnswered = $test->questions()->where('status_solved_question', '<>', 'unanswered')->count();
 
-        $tESTdATA = $this->eventApp->fetch_unresolved_test( $test );
+        $tESTdATA = $this->eventApp->fetch_unresolved_test($test);
         //\Log::debug($tESTdATA);
 
         return QuestionByTestCollection::make(
             $tESTdATA
         )->additional([
-            'meta' => [
-                'test' => QuestionnaireResource::make($test),
-                'questions_data' => QueryParametersQuestionsForResolveTest::getQuestionsDataTestSortByIndexByTest($test),
-                'number_of_questions_answered_of_test' => $countQuestionsAnswered,
-                'total_questions_of_this_test' => $test->questions->count()
-            ]
-        ]);
+                    'meta' => [
+                        'test' => QuestionnaireResource::make($test),
+                        'questions_data' => QueryParametersQuestionsForResolveTest::getQuestionsDataTestSortByIndexByTest($test),
+                        'number_of_questions_answered_of_test' => $countQuestionsAnswered,
+                        'total_questions_of_this_test' => $test->questions->count()
+                    ]
+                ]);
     }
 
-    public function fetch_card_memory( $test ): QuestionCollection
+    public function fetch_card_memory($test): QuestionCollection
     {
 
         return QuestionCollection::make(
-            $this->eventApp->fetch_card_memory( $test )
+            $this->eventApp->fetch_card_memory($test)
         )->additional([
-            'meta' => [
-                'test' => QuestionnaireResource::make($test)
-            ]
-        ]);
+                    'meta' => [
+                        'test' => QuestionnaireResource::make($test)
+                    ]
+                ]);
     }
 
-    public function create_a_quiz( $request )
+    public function create_a_quiz($request)
     {
         return QuestionnaireResource::make(
-            $this->eventApp->create_a_quiz( $request )
+            $this->eventApp->create_a_quiz($request)
         );
     }
 
@@ -81,8 +82,7 @@ class SchemaJson implements TestsInterface
         $this->eventApp->resolve_a_question_of_test($request);
 
         $test = Test::query()
-            ->where('id', $request->get('test_id'))
-            ->orWhere('uuid', $request->get('test_id'))
+            ->where('uuid', $request->get('test_id'))
             ->first();
 
         abort_if(!$test, 404, "No existe el Test o cuestionario con identificador {$request->get('test_id')}");
@@ -107,12 +107,12 @@ class SchemaJson implements TestsInterface
     {
 
         return QuestionCollection::make(
-            $this->eventApp->fetch_test_completed( $test )
+            $this->eventApp->fetch_test_completed($test)
         )->additional([
-            'meta' => [
-                'test' => QuestionnaireResource::make($test),
-                'questions_data' => QueryParametersQuestionsForResolveTest::getQuestionsDataTestSortByIndexByTest($test)
-            ]
-        ]);
+                    'meta' => [
+                        'test' => QuestionnaireResource::make($test),
+                        'questions_data' => QueryParametersQuestionsForResolveTest::getQuestionsDataTestSortByIndexByTest($test)
+                    ]
+                ]);
     }
 }

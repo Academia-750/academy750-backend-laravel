@@ -108,7 +108,7 @@ class ActiveLessonTest extends TestCase
         $group->users()->whereNull('discharged_at')->first()->update(['discharged_at' => now()]);
 
         // Activate shall resync the groups
-        $data = $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => true]); //->assertStatus(200);
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => true])->assertStatus(200);
         $this->assertEquals($this->lesson->students()->where('group_id', $group->id)->count(), 1);
 
     }
@@ -138,6 +138,7 @@ class ActiveLessonTest extends TestCase
         $this->assertEquals($this->lesson->students()->where('group_id', $group->id)->count(), 2);
 
     }
+
 
     /** @test */
     public function sync_group_dont_override_single_students_200(): void

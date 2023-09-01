@@ -198,7 +198,7 @@ class LessonsController extends Controller
 
             Lesson::query()->find($lesson->id)->update(['is_active' => $request->get('active')]);
 
-            // // If ACTIVE we resync all the active groups
+            // If ACTIVE we resync all the active groups
             if ($request->get('active')) {
                 foreach ($lesson->groups() as $groupData) {
                     $lesson->syncGroup(Group::find($groupData->group_id));
@@ -433,6 +433,7 @@ class LessonsController extends Controller
                     'result' => 'Group not found'
                 ], 404);
             }
+
 
 
             $studentsIds = $lesson->syncGroup($group);

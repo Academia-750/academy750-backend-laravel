@@ -36,6 +36,14 @@ class StatisticsDataHistoryStudent
                     $topicEloquentOrm->getKey(), $data['student_id']
                 )[0];
             } else {
+                \Log::debug(
+                    array(
+                        $topicEloquentOrm->getKey(),
+                        $data['student_id'],
+                        $data['last_date'],
+                        $data['today']
+                    )
+                );
                 $topicsDataStatistic[] = self::callProcedureGetResultsByTopicDate(
                     $topicEloquentOrm->getKey(),
                     $data['student_id'],

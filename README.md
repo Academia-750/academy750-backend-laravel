@@ -154,6 +154,7 @@ Permissions are handle by Spatie
 * questions: A question belong to a topic or sub topic. Can be for test or a memory card.
 * answers: Is the possible answers to the questions - 4 for tests - 1 for memory card.
 --- 
+* tests_types: DEPRECATED Is 2 test types and is not in use
 * tests: A student can generate a test with a number of questions. This is the list of tests by student.
 * testables: Relates the tests with the selected topics/subtopics in that specific test
 * questions_test: The questions selected for a specific test and the status (Unanswered, correct or fail)
