@@ -71,6 +71,50 @@ class MaterialController extends Controller
     }
 
     /**
+     * Tag: Delete
+     *
+     * Delete a tag of type `Material`
+     * @authenticated
+     * @urlParam tag_id integer required Tag Id
+     * @response status=404 scenario="Tag not found"
+     * @response status=409 scenario="Only tags type `material` can be deleted within this endpoint"
+     * @response {"message": "successfully"}
+     */
+    public function deleteMaterialTag($tag_id)
+    {
+        $tag = Tag::find($tag_id);
+
+        if (!$tag) {
+            return response()->json([
+                'status' => 'error',
+                'result' => 'Tag Not found'
+            ], 404);
+        }
+
+        if ($tag->type !== 'material') {
+            return response()->json([
+                'status' => 'error',
+                'result' => 'This tag type can not be deleted within this endpoint'
+            ], 409);
+        }
+
+        try {
+            $tag->delete();
+
+            return response()->json([
+                'status' => 'successfully',
+
+            ]);
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Tag: List
      *
      * Get the content of material tags
@@ -157,7 +201,7 @@ class MaterialController extends Controller
      * Workspace: Edit
      *
      * @authenticated
-     * @urlParam workspaceId integer Workspace Id
+     * @urlParam workspaceId integer required Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
      * @apiResourceModel App\Models\Workspace
      * @response status=404 scenario="Workspace Not found"
@@ -198,7 +242,7 @@ class MaterialController extends Controller
      * Workspace: Delete
      *
      * @authenticated
-     * @urlParam workspaceId integer Workspace Id
+     * @urlParam workspaceId integer required Workspace Id
      * @response {"message": "successfully"}
      * @response status=404 scenario="Workspace Not found"
      */
@@ -243,7 +287,7 @@ class MaterialController extends Controller
      * Workspace: Info
      *
      * @authenticated
-     * @urlParam workspaceId integer Workspace Id
+     * @urlParam workspaceId integer required Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
      * @apiResourceModel App\Models\Workspace
      * @response status=404 scenario="Workspace Not found"
@@ -325,7 +369,7 @@ class MaterialController extends Controller
      * Material: Create / Add
      *
      * @authenticated
-     * @urlParam workspaceId integer Workspace Id
+     * @urlParam workspaceId integer required Workspace Id
      * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
      * @apiResourceModel App\Models\Material
      * @response status=404 scenario="Workspace Not found"
@@ -366,7 +410,7 @@ class MaterialController extends Controller
      * Material: Update
      *
      * @authenticated
-     * @urlParam materialId integer Material Id
+     * @urlParam materialId integer required Material Id
      * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
      * @apiResourceModel app\Models\Material
      * @response status=404 scenario="Material Not found"
@@ -421,7 +465,7 @@ class MaterialController extends Controller
      * Material: Delete
      *
      * @authenticated
-     * @urlParam materialId integer Material Id
+     * @urlParam materialId integer required Material Id
      * @response {"message": "successfully"}
      * @response status=404 scenario="Material Not found"
      * @response status=424 scenario="Delete material fail: we can not delete URL from the source"
@@ -471,7 +515,7 @@ class MaterialController extends Controller
      *
      * Only for admins, at it will expose the unprotected source URL
      * @authenticated
-     * @urlParam materialId integer Material Id
+     * @urlParam materialId integer required Material Id
      * @apiResource App\Http\Resources\Api\Material\v1\MaterialResource
      * @apiResourceModel App\Models\Material
      * @response status=404 scenario="Material Not found"
@@ -504,7 +548,7 @@ class MaterialController extends Controller
      *
      * Search materials
      * @authenticated
-     * @urlParam materialId integer Material Id
+     * @urlParam materialId integer required Material Id
      * @response {
      *     "results": [
      *        "id": 1,

@@ -23,6 +23,13 @@ class Lesson extends Model
         'url'
     ];
 
+    protected $attributes = [
+        'is_online' => false,
+        'is_active' => false,
+        'description' => '',
+        'url' => ''
+    ];
+
     public function materials()
     {
         return $this->belongsToMany(Material::class)->withTimestamps();

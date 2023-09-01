@@ -14,12 +14,12 @@ class TestPolicy
 
     public function get_tests_unresolved(User $user): bool
     {
-        return true;
+        return $user->can('generate-tests');
     }
 
     public function get_cards_memory(User $user): bool
     {
-        return true;
+        return $user->can('generate-tests');
     }
 
     /**
@@ -32,7 +32,7 @@ class TestPolicy
      */
     public function fetch_unresolved_test(User $user, Test $test): bool
     {
-        return
+        return $user->can('generate-tests') &&
             $test?->is_solved_test === 'no' &&
             $test?->test_type === 'test' &&
             $test->user?->getKey() === $user->getKey();
@@ -49,7 +49,7 @@ class TestPolicy
      */
     public function fetch_card_memory(User $user, Test $test): bool
     {
-        return
+        return $user->can('generate-tests') &&
             $test?->test_type === 'card_memory' &&
             $test->user?->getKey() === $user->getKey();
     }
@@ -76,7 +76,7 @@ class TestPolicy
             }
         }
 
-        return (bool) $topicsBelongsToOpposition;
+        return $user->can('generate-tests') && (bool) $topicsBelongsToOpposition;
     }
 
     /**
@@ -86,7 +86,7 @@ class TestPolicy
      */
     public function fetch_test_completed(User $user, Test $test): bool
     {
-        return $user->hasRole('student') &&
+        return $user->can('generate-tests') &&
             (bool) $user->tests()->findOrFail($test->getKey()) && $test->is_solved_test === 'yes';
     }
 }
