@@ -6,9 +6,11 @@ use App\Models\Group;
 use App\Models\GroupUsers;
 use App\Models\Lesson;
 use App\Models\User;
+use App\Notifications\Api\NewLessonAvailable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 
@@ -161,7 +163,7 @@ class ActiveLessonTest extends TestCase
         ]);
 
         // Activate shall resync the groups
-        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => false])->assertStatus(200);
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => true])->assertStatus(200);
 
         // The single student shall still NOT linked to the group on the lesson
 
@@ -171,5 +173,85 @@ class ActiveLessonTest extends TestCase
 
     }
 
+
+    /** @test */
+    public function activate_notify_students_200(): void
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
+
+        $students = User::factory()->student()->count(3)->create();
+        $this->lesson->students()->attach($students);
+
+
+
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => true])->assertStatus(200);
+
+        Notification::assertCount(3);
+        Notification::assertSentTo($students[0], NewLessonAvailable::class);
+        Notification::assertSentTo($students[1], NewLessonAvailable::class);
+        Notification::assertSentTo($students[2], NewLessonAvailable::class);
+    }
+
+    /** @test */
+    public function de_activate_dont_notify_students_200(): void
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
+        // Initially active
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => true])->assertStatus(200);
+
+
+        $students = User::factory()->student()->count(3)->create();
+        $this->lesson->students()->attach($students);
+
+        // Deactivate
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => false])->assertStatus(200);
+
+        Notification::assertCount(0);
+    }
+
+
+    /** @test */
+    public function re_activate_re_notify_students_200(): void
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
+
+        $students = User::factory()->student()->count(3)->create();
+        $this->lesson->students()->attach($students);
+
+
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => true])->assertStatus(200);
+        // Reactivate !
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => true])->assertStatus(200);
+
+        // It send twice
+        Notification::assertCount(6);
+    }
+
+    /** @test */
+    public function notifications_sent_after_sync_200(): void
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
+        // We got 2 students
+        $group = Group::factory()->create();
+        $students = GroupUsers::factory()->group($group)->count(2)->create();
+        // And are attached to the lessons
+        $this->lesson->students()->attach($students, ['group_id' => $group->id, 'group_name' => $group->name]);
+        $this->assertEquals($this->lesson->students()->where('group_id', $group->id)->count(), 2);
+
+        // Now 1 user is discharged
+        $group->users()->where('user_id', $students[0]->user_id)->first()->update(['discharged_at' => now()]);
+
+        // Activate shall resync the groups
+        $this->put("api/v1/lesson/{$this->lesson->id}/active", ['active' => true])->assertStatus(200);
+
+        // Only 1 student is active, only 1 shall get notified
+        Notification::assertCount(1);
+        Notification::assertSentTo(User::find($students[1]->user_id), NewLessonAvailable::class);
+
+    }
 
 }

@@ -203,6 +203,9 @@ class LessonsController extends Controller
                 foreach ($lesson->groups() as $groupData) {
                     $lesson->syncGroup(Group::find($groupData->group_id));
                 }
+
+                // Send email to all the students
+                $lesson->notifyUsers();
             }
 
             return response()->json([
