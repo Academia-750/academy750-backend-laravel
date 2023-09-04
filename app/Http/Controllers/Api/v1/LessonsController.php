@@ -28,7 +28,8 @@ use Illuminate\Support\Facades\Log;
 /**
  * @group Lessons
  *
- * APIs for managing user's Lessons
+ * APIs for managing lessons.
+ * Only for administrator users.
  */
 class LessonsController extends Controller
 {
@@ -226,7 +227,6 @@ class LessonsController extends Controller
      *
      * Lessons planned between two dates.
      * @authenticated
-     * @urlParam lessonId integer required Lesson ID
      * @response {
      *     "results": [
      *        "id": 1,
@@ -561,7 +561,10 @@ class LessonsController extends Controller
      *        "user_uuid" : "uuid" ,
      *        "group_name" : "My Group" ,
      *        "group_id" : 3,
-     *        "user_dni" : "00000000T" ,
+     *        "dni" : "00000000T" ,
+     *        "full_name" : "Alex Menir" ,
+     *        "uuid" : "users' uuid" ,
+     *        "user_id" : 22 ,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -748,7 +751,6 @@ class LessonsController extends Controller
      *        "material_id": 1,
      *        "type" : "recording" ,
      *        "tags" : "fire,water,smoke",
-     *        "user_dni" : "00000000T" ,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],

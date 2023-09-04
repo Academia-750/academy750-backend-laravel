@@ -40,7 +40,7 @@ class EditMaterialTest extends TestCase
 
 
     /** @test */
-    public function _not_logged_401(): void
+    public function not_logged_401(): void
     {
 
         Auth::logout();

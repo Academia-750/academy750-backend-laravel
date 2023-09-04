@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Lesson;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -30,6 +32,18 @@ class LessonFactory extends Factory
             return [
                 'is_active' => true,
             ];
+        });
+    }
+
+    /**
+     * Add a group of users to the lesson students list
+     */
+    public function withStudents($students): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [];
+        })->afterCreating(function (Lesson $lesson) use ($students) {
+            $lesson->students()->save($students);
         });
     }
 }

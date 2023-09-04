@@ -300,4 +300,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(GroupUsers::class);
     }
+
+    public function lessons()
+    {
+        return $this->belongsToMany(Lesson::class)->withPivot(['group_name', 'group_id', 'will_join'])->withTimestamps();
+    }
+
 }

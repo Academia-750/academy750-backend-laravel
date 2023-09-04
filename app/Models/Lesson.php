@@ -38,7 +38,7 @@ class Lesson extends Model
 
     public function students()
     {
-        return $this->belongsToMany(User::class)->withPivot(['group_name', 'group_id'])->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot(['group_name', 'group_id', 'will_join'])->withTimestamps();
     }
 
 

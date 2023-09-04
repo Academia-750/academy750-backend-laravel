@@ -1,14 +1,18 @@
 <?php
 
-namespace App\Http\Requests\Api\v1\Lesson;
+namespace App\Http\Requests\Api\v1\StudentLessons;
 
+use App\Models\Material;
+use Database\Seeders\Permissions;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class CalendarLessonRequest extends FormRequest
+class StudentLessonListRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can(Permissions::SEE_LESSONS);
     }
 
     public function rules(): array

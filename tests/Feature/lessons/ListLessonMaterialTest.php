@@ -77,7 +77,7 @@ class ListLessonMaterialTest extends TestCase
     public function wrong_parameters_422(): void
     {
         array_map(function ($input) {
-            $this->get("api/v1/lesson/{$this->lesson->id}/materials?" . Arr::query($input))->assertStatus(422);
+            $this->get("api/v1/material/list?" . Arr::query($input))->assertStatus(422);
         }, $this->pagination_wrong_inputs);
 
         $this->get("api/v1/material/list?" . Arr::query(['type' => "not_valid"]))->assertStatus(422); // Wrong type

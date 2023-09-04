@@ -15,17 +15,26 @@ use Illuminate\Database\Seeder;
  * The deployment pipelines will also run this script each time for an automatic create / update
  * You will need to run migrations in order to delete permissions
  */
+class Permissions
+{
+    public const SEE_LESSONS = 'see-lessons'; // Only allow to see your lessons but nothing else
+    public const JOIN_LESSONS = 'join-lessons'; // Allows confirm your participation to a lesson
+    public const SEE_ONLINE_LESSON = 'online-lessons'; // Allows you to access the online lessons page
+    public const SEE_LESSON_MATERIALS = 'material-lessons'; // Allows you to access lessons materials type material
+    public const SEE_LESSON_RECORDINGS = 'recording-lessons'; // Allows you to access lessons materials type recordings
+    public const SEE_LESSON_PARTICIPANTS = 'participants-lessons'; // Allows you to see the list of participants
+}
 class PermissionSeeder extends Seeder
 {
 
     public static $permissions = [
         // Lessons
-        ['category' => 'lesson', 'name' => 'see-lessons', 'alias_name' => 'Ver clases'],
-        ['category' => 'lesson', 'name' => 'join-lessons', 'alias_name' => 'Apuntar a clase'],
-        ['category' => 'lesson', 'name' => 'online-lessons', 'alias_name' => 'Clases online'],
-        ['category' => 'lesson', 'name' => 'material-lessons', 'alias_name' => 'Materiales de Clases'],
-        ['category' => 'lesson', 'name' => 'recording-lessons', 'alias_name' => 'Grabaciones de Clases'],
-        ['category' => 'lesson', 'name' => 'participants-lessons', 'alias_name' => 'Listado de Asistentes'],
+        ['category' => 'lesson', 'name' => Permissions::SEE_LESSONS, 'alias_name' => 'Ver clases'],
+        ['category' => 'lesson', 'name' => Permissions::JOIN_LESSONS, 'alias_name' => 'Apuntar a clase'],
+        ['category' => 'lesson', 'name' => Permissions::SEE_ONLINE_LESSON, 'alias_name' => 'Clases online'],
+        ['category' => 'lesson', 'name' => Permissions::SEE_LESSON_MATERIALS, 'alias_name' => 'Materiales de Clases'],
+        ['category' => 'lesson', 'name' => Permissions::SEE_LESSON_RECORDINGS, 'alias_name' => 'Grabaciones de Clases'],
+        ['category' => 'lesson', 'name' => Permissions::SEE_LESSON_PARTICIPANTS, 'alias_name' => 'Listado de Asistentes'],
 
         // Tests
         ['category' => 'tests', 'name' => 'generate-tests', 'alias_name' => 'Generar Tests']
