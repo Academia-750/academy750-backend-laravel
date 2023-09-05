@@ -94,7 +94,8 @@ class Lesson extends Model
      */
     public function syncGroup($group)
     {
-        $this->students()->newPivotStatement()->where('group_id', $group->id)->delete();
+
+        $this->students()->where('group_id', $group->id)->delete();
 
         // Will delete any student that doesnt belong to the group anymore. Add the current active ones
         $studentsIds = $group->users()

@@ -164,7 +164,7 @@ class LessonGroupsAddTest extends TestCase
     }
 
     /** @test */
-    public function add_group_dont_override_other_groups_200(): void
+    public function add_group_dont_override_existing_users_from_other_groups_200(): void
     {
 
         $group2 = Group::factory()->create();
@@ -178,6 +178,19 @@ class LessonGroupsAddTest extends TestCase
 
         $count = $this->lesson->students()->wherePivot('group_id', $this->group->id)->count();
         $this->assertEquals($count, 0);
+    }
+
+
+    /** @test */
+    public function groups_with_same_name_dont_get_override_200(): void
+    {
+        $lesson2 = Lesson::factory()->create(['name' => $this->lesson->name]);
+
+        $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+        $this->post("api/v1/lesson/{$lesson2->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+
+        $this->assertEquals($this->lesson->students()->count(), 4);
+        $this->assertEquals($lesson2->students()->count(), 4);
     }
 
 }
