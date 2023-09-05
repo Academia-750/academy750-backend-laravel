@@ -23,6 +23,7 @@ class LessonFactory extends Factory
             'is_active' => false,
             'created_at' => now(),
             'updated_at' => now(),
+            'url' => ''
         ];
     }
 

@@ -6,6 +6,7 @@ use App\Models\Group;
 use App\Models\GroupUsers;
 use App\Models\Lesson;
 use App\Models\User;
+use Database\Seeders\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
@@ -52,9 +53,12 @@ class ListLessonStudentsTest extends TestCase
     }
 
     /** @test */
-    public function only_admin_403(): void
+    public function not_allowed_403(): void
     {
-        $user = User::factory()->student()->create();
+        $user = User::factory()->student()->create(); // No admin no permission
+        $this->actingAs($user)->get("api/v1/lesson/{$this->lesson->id}/students")->assertStatus(403);
+
+        $user->givePermissionTo(Permissions::SEE_LESSONS); // SEE Lesson but not participants
         $this->actingAs($user)->get("api/v1/lesson/{$this->lesson->id}/students")->assertStatus(403);
     }
 
@@ -81,6 +85,18 @@ class ListLessonStudentsTest extends TestCase
 
         $this->assertEquals($data['total'], 4);
         $this->assertEquals(count($data['results']), 4);
+        $this->assertEquals($data['will_join_count'], 0);
+
+    }
+
+
+    /** @test */
+    public function no_admin_with_correct_permissions_200(): void
+    {
+        $user = User::factory()->student()->create();
+
+        $user->givePermissionTo([Permissions::SEE_LESSONS, Permissions::SEE_LESSON_PARTICIPANTS]);
+        $this->actingAs($user)->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query([]))->assertStatus(200);
     }
 
     /** @test */
@@ -98,7 +114,24 @@ class ListLessonStudentsTest extends TestCase
         $this->assertEquals($data['results'][0]['full_name'], $student->full_name);
         $this->assertNull($data['results'][0]['group_id']);
         $this->assertNull($data['results'][0]['group_name']);
+        $this->assertEquals($data['results'][0]['will_join'], false);
+
     }
+
+    /** @test */
+    public function get_will_join_200(): void
+    {
+        $student = $this->lesson->students()->get()->first(); // Will join student
+        $this->lesson->students()->updateExistingPivot($student->id, ['will_join' => true]);
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['content' => $student->dni]))->assertStatus(200);
+
+        $this->assertEquals($data['will_join_count'], 1);
+
+        $this->assertEquals($data['results'][0]['user_id'], $student->id);
+        $this->assertEquals($data['results'][0]['will_join'], true);
+    }
+
 
 
     /** @test */

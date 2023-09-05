@@ -18,7 +18,7 @@ Route::post('lesson/{lessonId}/student', [LessonsController::class, 'postLessonS
 Route::post('lesson/{lessonId}/group', [LessonsController::class, 'postLessonGroup'])->middleware('onlyAdmin');
 Route::delete('lesson/{lessonId}/student', [LessonsController::class, 'deleteLessonStudent'])->middleware('onlyAdmin');
 Route::delete('lesson/{lessonId}/group', [LessonsController::class, 'deleteGroupLesson'])->middleware('onlyAdmin');
-Route::get('lesson/{lessonId}/students', [LessonsController::class, 'getLessonStudents'])->middleware('onlyAdmin');
+Route::get('lesson/{lessonId}/students', [LessonsController::class, 'getLessonStudents']);
 
 
 Route::post('lesson/{lessonId}/material', [LessonsController::class, 'postLessonMaterial'])->middleware('onlyAdmin');
@@ -30,3 +30,5 @@ Route::get('lesson/{lessonId}/materials', [LessonsController::class, 'getLessonM
  */
 Route::get('student-lessons/calendar', [StudentLessonsController::class, 'getStudentLessonsCalendar']);
 Route::get('student-lessons/materials', [StudentLessonsController::class, 'getStudentLessonMaterials']);
+Route::put('student-lessons/{lessonId}/join', [StudentLessonsController::class, 'putJoinLesson']);
+Route::get('student-lessons/{lessonId}/online', [StudentLessonsController::class, 'getOnlineLesson']);

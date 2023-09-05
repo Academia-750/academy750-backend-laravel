@@ -272,11 +272,23 @@ class LessonsController extends Controller
             $results = (clone $query)
                 ->select('lessons.*', 'lesson_group.color')
                 ->leftJoin(...Lesson::getColorSQL())
-                ->selectSub(function ($query) {
-                    $query->from('lesson_user')
-                        ->selectRaw('COUNT(*)')
-                        ->whereColumn('lesson_user.lesson_id', 'lessons.id');
-                }, 'student_count')
+                ->withCount([
+                    'students as student_count',
+                    'students as will_join_count' => function ($query) {
+                        $query->where('will_join', true);
+                    },
+                ])
+                // ->selectSub(function ($query) {
+                //     $query->from('lesson_user')
+                //         ->selectRaw('COUNT(*)')
+                //         ->whereColumn('lesson_user.lesson_id', 'lessons.id');
+                // }, 'student_count')
+                // ->selectSub(function ($query) {
+                //     $query->from('lesson_user')
+                //         ->selectRaw('COUNT(*)')
+                //         ->whereColumn('lesson_user.lesson_id', 'lessons.id')
+                //         ->whereColumn('lesson_user.will_join', true);
+                // }, 'will_join_count')
                 // --
                 ->orderBy('date', 'asc')
                 ->orderBy('start_time', 'asc')
@@ -555,6 +567,7 @@ class LessonsController extends Controller
      * Search materials
      * @authenticated
      * @urlParam lessonId integer Lesson Id
+     * Required Admin permissions or SEE_JOIN and SEE_LESSON_PARTICIPANTS
      * @response {
      *     "results": [
      *        "user_id": 1,
@@ -572,7 +585,8 @@ class LessonsController extends Controller
      *      "groups": [
      *             { "group_id": 1, "group_name" : "Group A" },
      *             { "group_id": 2, "group_name" : "Group B" }
-     *      ]
+     *      ],
+     *      "will_join_count": 0,
      *  }
      * @response status=404 scenario="Lesson not found"
      */
@@ -600,6 +614,7 @@ class LessonsController extends Controller
                     'users.dni',
                     'users.full_name',
                     'users.uuid',
+                    'lesson_user.will_join',
                     'lesson_user.group_id',
                     'lesson_user.group_name',
                     'lesson_user.created_at as created_at',
@@ -620,6 +635,8 @@ class LessonsController extends Controller
 
             $total = (clone $query)->count();
 
+            $will_join_count = (clone $query)->where('lesson_user.will_join', true)->count();
+
             $groups = $lesson->groups();
 
 
@@ -627,6 +644,7 @@ class LessonsController extends Controller
                 'status' => 'successfully',
                 'results' => $results,
                 'total' => $total,
+                'will_join_count' => $will_join_count,
                 'groups' => $groups
             ]);
         } catch (\Exception $err) {

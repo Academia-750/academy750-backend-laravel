@@ -142,7 +142,7 @@ class StudentLessonMaterialsListTest extends TestCase
     }
 
     /** @test */
-    public function student_lesson_content_200(): void
+    public function student_material_content_200(): void
     {
 
         $data = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'limit' => 1]))->assertStatus(200);

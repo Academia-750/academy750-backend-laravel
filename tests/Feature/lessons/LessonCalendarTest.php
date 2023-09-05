@@ -116,6 +116,8 @@ class LessonCalendarTest extends TestCase
         $data = $this->get("api/v1/lesson/calendar?" . Arr::query($this->body))->assertStatus(200)->json();
         $this->assertEquals(count($data['results']), 4);
         $this->assertEquals($data['total'], 4);
+        $this->assertEquals($data['total'], 0);
+
     }
 
     /** @test */
@@ -203,9 +205,22 @@ class LessonCalendarTest extends TestCase
         $this->lessons[0]->students()->attach(User::factory()->student()->count(2)->create());
 
         $data = $this->get("api/v1/lesson/calendar?" . Arr::query($this->body))->json();
+
         $this->assertEquals($data['results'][0]['student_count'], 2); // People from group 1 are more number
         // Other groups have no students yet
         $this->assertEquals($data['results'][1]['student_count'], 0);
 
+    }
+
+    /** @test */
+    public function get_will_join_count_200(): void
+    {
+        $this->lessons[0]->students()->attach(User::factory()->student()->count(2)->create(), ['will_join' => true]);
+
+        $data = $this->get("api/v1/lesson/calendar?" . Arr::query($this->body))->json();
+
+        $this->assertEquals($data['results'][0]['will_join_count'], 2);
+        // Other groups have no students yet
+        $this->assertEquals($data['results'][1]['will_join_count'], 0);
     }
 }

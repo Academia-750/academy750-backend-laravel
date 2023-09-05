@@ -42,9 +42,10 @@ class StudentLessonCalendarListTest extends TestCase
             ->sequence(['is_online' => true], ['is_online' => false])
             ->sequence(function ($sequence) {
                 return ['date' => now()->add($sequence->index, 'day')->startOfDay()];
-            })->withStudents($this->user)
+            })
+            ->withStudents($this->user)
             ->count(4)
-            ->create();
+            ->create(['url' => $this->faker()->url()]);
 
         $this->body = [
             'from' => now()->format('Y-m-d'),
@@ -137,6 +138,9 @@ class StudentLessonCalendarListTest extends TestCase
         $this->assertEquals($lesson['will_join'], false);
         $this->assertEquals($lesson['color'], null);
         $this->assertEquals($lesson['user_id'], $this->user->id);
+        // URL is hidden, there is specific API for users with permissions for it
+        $this->assertFalse(isset($lesson['url']));
+
 
 
     }
@@ -145,13 +149,13 @@ class StudentLessonCalendarListTest extends TestCase
     public function has_joined_lesson_content_200(): void
     {
 
-        $this->markTestSkipped();
+        $this->lessons[0]->students()->updateExistingPivot($this->user->id, ['will_join' => true]);
 
         $data = $this->get("api/v1/student-lessons/calendar?" . Arr::query($this->body))->assertStatus(200);
         $lesson = $data['results'][0];
 
         $this->assertEquals($lesson['id'], $this->lessons[0]->id);
-        $this->assertEquals($lesson['has_join'], true);
+        $this->assertEquals($lesson['will_join'], true);
 
     }
 
