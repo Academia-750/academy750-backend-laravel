@@ -137,6 +137,7 @@ class LessonsController extends Controller
      *        "is_active" : false,
      *        "url" : "https://zoom-url.com" ,
      *        "student_count": 23,
+     *        "will_join_count": 23,
      *        "color": "#990033"
      *        "groups": [
      *               { "group_id": 1, "group_name" : "Group A" },
@@ -152,7 +153,13 @@ class LessonsController extends Controller
     {
         try {
 
-            $lesson = Lesson::query()->find($lessonId);
+            $lesson = Lesson::query()->withCount([
+                'students as student_count',
+                'students as will_join_count' => function ($query) {
+                    $query->where('will_join', true);
+                },
+            ])->find($lessonId);
+
             if (!$lesson) {
                 return response()->json([
                     'status' => 'error',
@@ -161,7 +168,6 @@ class LessonsController extends Controller
             }
 
             $lesson->color = $lesson->getColor();
-            $lesson->student_count = $lesson->students()->count();
             $lesson->groups = $lesson->groups();
 
             return LessonResource::make($lesson)->response()->setStatusCode(200);
@@ -239,6 +245,7 @@ class LessonsController extends Controller
      *        "is_active" : false,
      *        "url" : "https://zoom-url.com" ,
      *        "student_count": 23,
+     *        "will_join_count": 23,
      *        "color": "#990033"
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
@@ -278,18 +285,6 @@ class LessonsController extends Controller
                         $query->where('will_join', true);
                     },
                 ])
-                // ->selectSub(function ($query) {
-                //     $query->from('lesson_user')
-                //         ->selectRaw('COUNT(*)')
-                //         ->whereColumn('lesson_user.lesson_id', 'lessons.id');
-                // }, 'student_count')
-                // ->selectSub(function ($query) {
-                //     $query->from('lesson_user')
-                //         ->selectRaw('COUNT(*)')
-                //         ->whereColumn('lesson_user.lesson_id', 'lessons.id')
-                //         ->whereColumn('lesson_user.will_join', true);
-                // }, 'will_join_count')
-                // --
                 ->orderBy('date', 'asc')
                 ->orderBy('start_time', 'asc')
                 ->get();

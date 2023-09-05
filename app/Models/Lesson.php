@@ -44,9 +44,8 @@ class Lesson extends Model
 
     public function getColor()
     {
-        $groups = array_count_values($this->students()->pluck('group_id')->toArray());
+        $groups = array_count_values($this->students()->wherePivotNotNull('group_id')->pluck('group_id')->toArray());
         $groupsIdOrdered = array_keys($groups);
-
         if (count($groupsIdOrdered) === 0) {
             return null;
         }
