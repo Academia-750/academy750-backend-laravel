@@ -99,4 +99,11 @@ class RoleCreateTest extends TestCase
             $this->post("api/v1/role", [...$this->body, 'name' => $valid_string])->assertStatus(200);
         }, $this->valid_string_input);
     }
+
+    /** @test */
+    public function duplicated_role_name(): void
+    {
+        $this->post("api/v1/role", ['name' => 'same_name'])->assertStatus(200);
+        $this->post("api/v1/role", ['name' => 'same_name'])->assertStatus(409);
+    }
 }

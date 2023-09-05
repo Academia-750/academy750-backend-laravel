@@ -29,9 +29,19 @@ class RolesController extends Controller
      * @authenticated
      * @apiResource App\Http\Resources\Api\Role\v1\RoleItemResource
      * @apiResourceModel App\Models\Role
+     * @response status=409 scenario="Duplicate role name"
      */
     public function postCreateRole(CreateRoleRequest $request)
     {
+        $name = Role::parseName($request->get('name'));
+
+        if (Role::where('name', $name)->count()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Role name already exists'
+            ], 409);
+        }
+
 
         try {
             $role = Role::create([
@@ -57,6 +67,7 @@ class RolesController extends Controller
      * @urlParam roleId string required Role uuid. Example: "uuid"
      * @response status=404 scenario="Role not found"
      * @response status=403 scenario="Role is protected"
+     * @response status=409 scenario="Duplicate role name"
      * @apiResource App\Http\Resources\Api\Role\v1\RoleItemResource
      * @apiResourceModel App\Models\Role
      */
@@ -68,20 +79,32 @@ class RolesController extends Controller
             if (!$role) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Role not found'
+                    'message' => 'Role not found'
                 ], 404);
             }
 
             if ($role->protected) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Protected Roles can not be edited'
+                    'message' => 'Protected Roles can not be edited'
                 ], 403);
             }
 
             if ($request->get('default_role') === true) {
                 Role::where('default_role', true)->update(['default_role' => false]);
             }
+
+            if ($request->get('name')) {
+                // If other role has the new name
+                if (Role::where('name', $request->get('name'))->where('id', '!=', $role->id)->count()) {
+                    return response()->json([
+                        'status' => 'error',
+                        'message' => 'Role name already exists'
+                    ], 409);
+                }
+            }
+
+
 
             $data = removeNull([
                 'alias_name' => $request->get('name'),
@@ -129,13 +152,12 @@ class RolesController extends Controller
     {
         try {
 
-            $role = Role::with('permissions')
-                ->find($roleId);
+            $role = Role::with('permissions')->find($roleId);
 
             if (!$role) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Role not found'
+                    'message' => 'Role not found'
                 ], 404);
             }
 
@@ -234,21 +256,21 @@ class RolesController extends Controller
             if (!$role) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Role not found'
+                    'message' => 'Role not found'
                 ], 404);
             }
 
             if ($role->protected) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Protected Roles can not be edited'
+                    'message' => 'Protected Roles can not be edited'
                 ], 403);
             }
 
             if ($role->default_role) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'No role is marked as default role'
+                    'message' => 'No role is marked as default role'
                 ], 409);
             }
 
@@ -286,7 +308,7 @@ class RolesController extends Controller
             if (!$role) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Role not found'
+                    'message' => 'Role not found'
                 ], 404);
             }
 
@@ -295,14 +317,14 @@ class RolesController extends Controller
             if (!$permission) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Permission not available'
+                    'message' => 'Permission not available'
                 ], 403);
             }
 
             if ($role->hasPermissionTo($permission->name)) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'The permission already belongs to this role'
+                    'message' => 'The permission already belongs to this role'
                 ], 409);
             }
 
@@ -342,7 +364,7 @@ class RolesController extends Controller
             if (!$role) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Role not found'
+                    'message' => 'Role not found'
                 ], 404);
             }
 
@@ -350,14 +372,14 @@ class RolesController extends Controller
             if (!$permission) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'Permission not available'
+                    'message' => 'Permission not available'
                 ], 403);
             }
 
             if (!$role->hasPermissionTo($permission->name)) {
                 return response()->json([
                     'status' => 'error',
-                    'result' => 'The permission doesn`t belong to this role'
+                    'message' => 'The permission doesn`t belong to this role'
                 ], 409);
             }
 

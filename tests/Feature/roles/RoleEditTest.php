@@ -134,4 +134,17 @@ class RoleEditTest extends TestCase
         $this->assertEquals(Role::where('default_role', true)->count(), 1);
 
     }
+
+    /** @test */
+    public function duplicated_role_name(): void
+    {
+        Role::factory()->create(['name' => 'same_name']);
+
+        // Change to his name is no issue
+        $this->put("api/v1/role/{$this->role->id}", ['name' => $this->role->name])->assertStatus(200);
+
+        // Change to others role name is an issue
+        $this->put("api/v1/role/{$this->role->id}", ['name' => 'same_name'])->assertStatus(409);
+
+    }
 }
