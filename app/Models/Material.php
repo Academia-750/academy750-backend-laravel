@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Core\Resources\Storage\Storage;
+use Database\Seeders\Permissions;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -55,6 +56,30 @@ class Material extends Model
         }
 
         return Storage::for($material)->deleteFile($material); // Delete the old one.
+    }
+
+
+    public function canDownload(User $user)
+    {
+
+        if ($this->type === 'recording') {
+            return $user->can(Permissions::SEE_LESSON_RECORDINGS);
+        }
+
+        return $user->can(Permissions::SEE_LESSON_MATERIALS);
+    }
+    public function downloadUrl(User $user)
+    {
+
+        if ($this->type === 'recording') {
+            return $this->url;
+        }
+
+        // Other is material
+
+        // TODO: If is PDF or Image make a water mark and return a temporal URL
+
+        return $this->url;
     }
 
 }

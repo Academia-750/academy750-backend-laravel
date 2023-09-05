@@ -44,4 +44,8 @@ class Role extends RoleSpatieModel
         ]);
     }
 
+    public static function defaultRole()
+    {
+        return self::where('default_role', true)->first();
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Role;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 
@@ -20,6 +21,20 @@ class RoleFactory extends Factory
             'updated_at' => now(),
 
         ];
+    }
+
+    /**
+     * Only 1 can be the default role
+     */
+    public function defaultRole(): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [];
+        })->afterCreating(function (Role $role) {
+            Role::where('default_role', true)->update(['default_role' => false]);
+            $role->default_role = true;
+            $role->save();
+        });
     }
 
 }

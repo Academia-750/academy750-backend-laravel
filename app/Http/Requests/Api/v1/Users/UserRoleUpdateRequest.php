@@ -16,6 +16,10 @@ class UserRoleUpdateRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'user_id' => [
+                'uuid',
+                'required',
+            ],
             'role_id' => [
                 'uuid',
                 'required',
@@ -23,12 +27,16 @@ class UserRoleUpdateRequest extends FormRequest
         ];
     }
 
-    public function queryParameters()
+    public function bodyParameters()
     {
         return [
+            'user_id' => [
+                'description' => 'The user uuid that will be updated',
+                'example' => 'uuid',
+            ],
             'role_id' => [
                 'description' => 'The role id that the user will have',
-                'example' => '',
+                'example' => 'uuid',
             ],
         ];
     }

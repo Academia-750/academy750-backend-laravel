@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\v1\Lesson\CalendarLessonRequest;
+use App\Models\User;
+use Illuminate\Http\Request;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonJoinRequest;
-use App\Http\Requests\Api\v1\StudentLessons\StudentLessonJoinRquest;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonListRequest;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonMaterialListRequest;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonOnlineRequest;
 use App\Models\Lesson;
+use App\Models\Material;
 use DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
@@ -267,7 +268,7 @@ class StudentLessonsController extends Controller
      * @authenticated
      * @response {
      *   'status' => 'successfully',
-     *   'url' => 'https://url.com/room-id
+     *   'url' => 'https://url.com/room-id'
      * }
      * @response status=404 scenario="Lesson not found"
      * @response status=403 scenario="Required `see-lessons` and `online-lessons` permissions"
@@ -315,6 +316,72 @@ class StudentLessonsController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'url' => $lesson->url
+            ]);
+
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+
+    /**
+     * Students: Download Material
+     *
+     * Allow students to get download or access the material URL.
+     * Required `material-lessons` and `recording-lessons` permission according to the type of material
+     * @urlParam lessonId integer required Lesson Id
+     * @authenticated
+     * @response {
+     *   'status' => 'successfully',
+     *   'url' => 'https://url.com/download-material'
+     * }
+     * @response status=404 scenario="Meterial not found"
+     * @response status=403 scenario="Required `material-lessons` OR `recording-lessons` permissions"
+     * @response status=409 scenario="Material not available"
+     */
+    public function downloadMaterial(Request $request, int $materialId)
+    {
+        try {
+            $material = Material::find($materialId);
+            if (!$material) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => "Material not found"
+                ], 404);
+            }
+
+
+            if (!$material->canDownload($request->user())) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => "Not permissions to access this types of material"
+                ], 403);
+            }
+
+
+            $available = $request->user()->lessons()
+                ->where('lessons.is_active', true)
+                ->whereHas('materials', function ($query) use ($material) {
+                    $query->where('materials.id', $material->id);
+                })
+                ->count();
+
+
+            if (!$available) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => "Material not available"
+                ], 409);
+            }
+
+            return response()->json([
+                'status' => 'successfully',
+                'url' => $material->downloadUrl($request->user())
             ]);
 
 

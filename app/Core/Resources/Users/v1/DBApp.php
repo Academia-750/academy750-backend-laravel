@@ -60,10 +60,13 @@ class DBApp implements UsersInterface
                 'password' => Hash::make($secureRandomPassword)
             ]);
 
-            UserService::syncRolesToUser(
-                $request->get('roles'),
-                $userCreated
-            );
+            $defaultRole = Role::defaultRole();
+
+            if (!$defaultRole) {
+                abort(500, 'Default Role not set');
+            }
+            $userCreated->roles()->save($defaultRole);
+
 
             DB::commit();
 

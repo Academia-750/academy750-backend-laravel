@@ -47,4 +47,13 @@ class LessonFactory extends Factory
             $lesson->students()->save($students);
         });
     }
+
+    public function withMaterials(array $materials): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [];
+        })->afterCreating(function (Lesson $lesson) use ($materials) {
+            $lesson->materials()->saveMany($materials);
+        });
+    }
 }

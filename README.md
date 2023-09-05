@@ -59,7 +59,11 @@ Giving a new model and controller you need, for example `Cars`
 
 - Migration: We will probably start adding a migration to add or edit the cars table.
 
+- Seeder: We will use seeder when we need to init the database after a new installation
+
 - Model File `Car`: With database information, specific business logic of this model, relations between model (many to many, belongs to).
+
+- Factory `CarFactory`: We will use a factory that helps us to create data in our test cases.
 
 - Routes File:  a `car.routes` with the end points related to Cars. Include it in the `routes/api/v1/index.php` file (where it has some global middleware). The routes file has the route, the method, and some extra middelware.
 
@@ -88,13 +92,16 @@ Giving a new model and controller you need, for example `Cars`
     
 Most common actions are:
 
-- `CarList`: List of items with pagination, order-by, general search and specific filters. Also my return some counts of belongs to items.
-- `CarCalendar`: Similar to the list but focus on time line, there is no pagination but we search using from-to dates, and there is a maximum date range that we can search on.
-- `CarCreate`: Create a new car, use the minimum parameters and those who can not change after creation.
-- `CarEdit`: Edit car properties, normally most parameters are allowed (except restricted by business logic) and ALL are optional.
-- `CarInfo`: Returns the info for a single car.
-- `CarDelete`: Deletes a car and all the information related to it.
-- `CarAction`: Specific logics or business actions over the car.
+- `List`: List of items with pagination, order-by, general search and specific filters. Also my return some counts of belongs to items.
+- `Calendar`: Similar to the list but focus on time line, there is no pagination but we search using from-to dates, and there is a maximum date range that we can search on.
+- `Search`: Search api by content without exposing any private data (for example search for users in a auto complete form)
+- `Create`: Create a new car, use the minimum parameters and those who can not change after creation.
+- `Edit`: Edit car properties, normally most parameters are allowed (except restricted by business logic) and ALL are optional.
+- `Info`: Returns the info for a single car.
+- `Delete`: Deletes a car and all the information related to it.
+- `Action`: Specific logics or business actions over the car.
+
+
 
 - `CarTest`: Always do test cases! Rehuse the logic from previous test cases to see that you dont miss anything. Test first error cases generally (401 not allowed, 403 no permissions or forbidden, 404 not found, 422 wrong parameters, 409 conflict or duplicated) then move to the 200 scenarios (return the correct data, has the correct values, doesnt return not wanted data, different logics, relations with other databases)
     

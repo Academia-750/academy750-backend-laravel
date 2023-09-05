@@ -116,8 +116,6 @@ class LessonCalendarTest extends TestCase
         $data = $this->get("api/v1/lesson/calendar?" . Arr::query($this->body))->assertStatus(200)->json();
         $this->assertEquals(count($data['results']), 4);
         $this->assertEquals($data['total'], 4);
-        $this->assertEquals($data['total'], 0);
-
     }
 
     /** @test */

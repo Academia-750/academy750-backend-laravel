@@ -32,3 +32,4 @@ Route::get('student-lessons/calendar', [StudentLessonsController::class, 'getStu
 Route::get('student-lessons/materials', [StudentLessonsController::class, 'getStudentLessonMaterials']);
 Route::put('student-lessons/{lessonId}/join', [StudentLessonsController::class, 'putJoinLesson']);
 Route::get('student-lessons/{lessonId}/online', [StudentLessonsController::class, 'getOnlineLesson']);
+Route::get('student-lessons/{materialId}/download', [StudentLessonsController::class, 'downloadMaterial']);
