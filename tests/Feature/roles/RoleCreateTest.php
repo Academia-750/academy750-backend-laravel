@@ -73,6 +73,8 @@ class RoleCreateTest extends TestCase
 
         $this->assertNotNull($data['result']['id']);
         $this->assertEquals($data['result']['alias_name'], $this->body['name']);
+        $this->assertEquals($data['result']['guard_name'], 'web');
+
     }
 
     /** @test */

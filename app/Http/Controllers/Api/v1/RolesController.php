@@ -47,6 +47,7 @@ class RolesController extends Controller
             $role = Role::create([
                 'name' => Role::parseName($request->get('name')),
                 'alias_name' => $request->get('name'),
+                'guard_name' => 'web'
             ]);
 
             return RoleItemResource::make($role)->response()->setStatusCode(200);
@@ -223,7 +224,8 @@ class RolesController extends Controller
                 ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
-                ->get();
+                ->get()
+                ->makeHidden(['permissions.pivot']);
 
 
             $total = (clone $query)->count();
