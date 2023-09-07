@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Role;
 use App\Models\User;
+use Database\Seeders\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
@@ -93,6 +94,8 @@ class RoleListTest extends TestCase
         $this->assertEquals($response['results'][0]['users_count'], 0);
         $this->assertEquals($response['results'][0]['protected'], 0);
         $this->assertEquals($response['results'][0]['default_role'], 0);
+        $this->assertEmpty($response['results'][0]['permissions']);
+
     }
 
     /** @test */
@@ -167,6 +170,7 @@ class RoleListTest extends TestCase
         $this->assertEquals($dataResponse['results'][1]['id'], $this->roles[1]->id);
         $this->assertEquals($dataResponse['results'][1]['name'], $this->roles[1]->name);
         $this->assertEquals($dataResponse['results'][1]['users_count'], 2);
+
     }
 
     /** @test */
@@ -218,5 +222,18 @@ class RoleListTest extends TestCase
 
         $this->assertEquals($dataResponse['results'][0]['name'], 'admin');
         $this->assertEquals($dataResponse['results'][0]['protected'], 1);
+    }
+
+    /** @test */
+    public function with_permissions_info_200(): void
+    {
+        $this->roles[0]->givePermissionTo(Permissions::JOIN_LESSONS);
+        $dataResponse = $this->get("api/v1/role/list?" . Arr::query(['content' => $this->roles[0]->name]))->assertStatus(200);
+
+        $this->assertNotNull($dataResponse['results'][0]['permissions']);
+
+        $this->assertCount(1, $dataResponse['results'][0]['permissions']);
+        $this->assertNotNull($dataResponse['results'][0]['permissions'][0]['name'], Permissions::JOIN_LESSONS);
+
     }
 }

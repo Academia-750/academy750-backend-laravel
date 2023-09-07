@@ -190,6 +190,11 @@ class RolesController extends Controller
      *        "users_count" : 2,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
+     *        "permissions": [{
+     *              "id" : "uuid",
+     *              "name": "permission-name",
+     *              "alias-name": "Permission Name"
+     *        }],
      *      ],
      *       "total": 1
      *  }
@@ -213,6 +218,7 @@ class RolesController extends Controller
                         ->whereColumn('model_has_roles.role_id', 'roles.id')
                         ->whereRaw('model_has_roles.model_type = "App\Models\User"');
                 }, 'users_count')
+                ->with('permissions:id,name,alias_name')
                 // --
                 ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
