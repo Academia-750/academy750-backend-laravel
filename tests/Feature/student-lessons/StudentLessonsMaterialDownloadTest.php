@@ -2,15 +2,12 @@
 
 namespace Tests\Feature;
 
-use App\Models\Group;
-use App\Models\GroupUsers;
 use App\Models\Lesson;
 use App\Models\Material;
+use App\Models\Permission;
 use App\Models\User;
-use Database\Seeders\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
@@ -38,8 +35,8 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         ]);
 
         $this->user = User::factory()->student()->allowedTo([
-            Permissions::SEE_LESSON_MATERIALS,
-            Permissions::SEE_LESSON_RECORDINGS,
+            Permission::SEE_LESSON_MATERIALS,
+            Permission::SEE_LESSON_RECORDINGS,
         ])->create();
 
         $this->material = Material::factory()->withUrl()->create(['type' => 'material']);
@@ -73,11 +70,11 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         $this->actingAs($user)->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(403);
 
         $user->permissions()->detach();
-        $user->givePermissionTo(Permissions::SEE_LESSON_RECORDINGS); // Wrong Permission type
+        $user->givePermissionTo(Permission::SEE_LESSON_RECORDINGS); // Wrong Permission type
         $this->actingAs($user)->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(403);
 
         $user->permissions()->detach();
-        $user->givePermissionTo(Permissions::SEE_LESSON_MATERIALS); // Wrong Permission type
+        $user->givePermissionTo(Permission::SEE_LESSON_MATERIALS); // Wrong Permission type
         $this->actingAs($user)->get("api/v1/student-lessons/{$this->recording->id}/download")->assertStatus(403);
 
     }

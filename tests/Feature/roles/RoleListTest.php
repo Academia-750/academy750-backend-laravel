@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
+use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
-use Database\Seeders\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
@@ -227,13 +227,13 @@ class RoleListTest extends TestCase
     /** @test */
     public function with_permissions_info_200(): void
     {
-        $this->roles[0]->givePermissionTo(Permissions::JOIN_LESSONS);
+        $this->roles[0]->givePermissionTo(Permission::JOIN_LESSONS);
         $dataResponse = $this->get("api/v1/role/list?" . Arr::query(['content' => $this->roles[0]->name]))->assertStatus(200);
 
         $this->assertNotNull($dataResponse['results'][0]['permissions']);
 
         $this->assertCount(1, $dataResponse['results'][0]['permissions']);
-        $this->assertNotNull($dataResponse['results'][0]['permissions'][0]['name'], Permissions::JOIN_LESSONS);
+        $this->assertNotNull($dataResponse['results'][0]['permissions'][0]['name'], Permission::JOIN_LESSONS);
 
     }
 }

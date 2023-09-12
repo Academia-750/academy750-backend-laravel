@@ -2,18 +2,16 @@
 
 namespace App\Http\Requests\Api\v1\StudentLessons;
 
-use App\Models\Material;
-use Database\Seeders\Permissions;
+use App\Models\Permission;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StudentLessonJoinRequest extends FormRequest
 {
     public function authorize(): bool
     {
 
-        return $this->user()->can(Permissions::SEE_LESSONS)
-            && $this->user()->can(Permissions::JOIN_LESSONS);
+        return $this->user()->can(Permission::SEE_LESSONS)
+            && $this->user()->can(Permission::JOIN_LESSONS);
     }
 
     public function rules(): array

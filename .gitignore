@@ -15,5 +15,10 @@ yarn-error.log
 /.idea
 /.vscode
 
+## API DOC
 /.scribe
 /public/docs
+# PDF Gnerations
+/public/doc.pdf
+/public/temp/*
+!/public/temp/.gitkeep

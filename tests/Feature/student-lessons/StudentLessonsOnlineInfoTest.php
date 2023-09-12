@@ -2,14 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Group;
-use App\Models\GroupUsers;
 use App\Models\Lesson;
+use App\Models\Permission;
 use App\Models\User;
-use Database\Seeders\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
@@ -34,8 +31,8 @@ class StudentLessonsOnlineInfoTest extends TestCase
         ]);
 
         $this->user = User::factory()->student()->allowedTo([
-            Permissions::SEE_LESSONS,
-            Permissions::SEE_ONLINE_LESSON,
+            Permission::SEE_LESSONS,
+            Permission::SEE_ONLINE_LESSON,
         ])->create();
 
         $this->lesson = Lesson::factory()
@@ -65,7 +62,7 @@ class StudentLessonsOnlineInfoTest extends TestCase
         $user = User::factory()->student()->create(); // Missing SEE LESSONS
         $this->actingAs($user)->get("api/v1/student-lessons/{$this->lesson->id}/online")->assertStatus(403);
 
-        $user->givePermissionTo(Permissions::SEE_LESSONS); // Missing ONLINE LESSONS
+        $user->givePermissionTo(Permission::SEE_LESSONS); // Missing ONLINE LESSONS
         $this->actingAs($user)->get("api/v1/student-lessons/{$this->lesson->id}/online")->assertStatus(403);
 
     }

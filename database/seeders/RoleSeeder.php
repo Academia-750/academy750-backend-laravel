@@ -1,6 +1,5 @@
 <?php
 
-namespace Database\Seeders;
 
 use App\Core\Services\UuidGeneratorService;
 use App\Models\Role;

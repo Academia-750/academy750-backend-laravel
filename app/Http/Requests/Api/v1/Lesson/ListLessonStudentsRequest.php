@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\Api\v1\Lesson;
 
-use App\Models\Material;
-use Database\Seeders\Permissions;
+
+use App\Models\Permission;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -15,8 +15,8 @@ class ListLessonStudentsRequest extends FormRequest
             return true;
         }
         // Not admin can also see this list if the have the proper permissions
-        return $this->user()->can(Permissions::SEE_LESSONS)
-            && $this->user()->can(Permissions::SEE_LESSON_PARTICIPANTS);
+        return $this->user()->can(Permission::SEE_LESSONS)
+            && $this->user()->can(Permission::SEE_LESSON_PARTICIPANTS);
     }
 
     private $orderBy = ['full_name', 'dni', 'group_name', 'created_at', 'updated_at'];

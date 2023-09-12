@@ -1,6 +1,5 @@
 <?php
 
-namespace Database\Seeders;
 
 use App\Models\TopicGroup;
 use Illuminate\Database\Seeder;

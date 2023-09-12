@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use App\Core\Resources\Storage\Storage;
-use Database\Seeders\Permissions;
+use App\Core\Resources\Watermark\Watermark;
+use DocumentType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 
 
 class Material extends Model
@@ -63,10 +65,10 @@ class Material extends Model
     {
 
         if ($this->type === 'recording') {
-            return $user->can(Permissions::SEE_LESSON_RECORDINGS);
+            return $user->can(Permission::SEE_LESSON_RECORDINGS);
         }
 
-        return $user->can(Permissions::SEE_LESSON_MATERIALS);
+        return $user->can(Permission::SEE_LESSON_MATERIALS);
     }
     public function downloadUrl(User $user)
     {
@@ -75,11 +77,26 @@ class Material extends Model
             return $this->url;
         }
 
-        // Other is material
+        // else $this->type === 'material'
 
-        // TODO: If is PDF or Image make a water mark and return a temporal URL
+        $docType = $this->getDocumentTypeFromURL();
 
+        if ($docType === DocumentType::PDF) {
+            return Watermark::pdf($this->url, $this->name, $user);
+        }
+        if ($docType === DocumentType::IMAGE) {
+            return Watermark::image($this->url, $this->name, $user);
+        }
+
+        // Other Doc type
         return $this->url;
     }
 
+
+
+
+    function getDocumentTypeFromURL()
+    {
+        return getDocumentTypeFromURL($this->url);
+    }
 }

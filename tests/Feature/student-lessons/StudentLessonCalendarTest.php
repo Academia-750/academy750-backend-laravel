@@ -33,7 +33,7 @@ class StudentLessonCalendarTest extends TestCase
             'Accept' => 'application/json'
         ]);
 
-        $this->user = User::factory()->student()->allowedTo(Permissions::SEE_LESSONS)->create();
+        $this->user = User::factory()->student()->allowedTo(Permission::SEE_LESSONS)->create();
 
 
         // 4 Lessons, 2 active 2 online

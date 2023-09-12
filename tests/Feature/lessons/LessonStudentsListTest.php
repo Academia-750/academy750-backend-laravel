@@ -5,13 +5,12 @@ namespace Tests\Feature;
 use App\Models\Group;
 use App\Models\GroupUsers;
 use App\Models\Lesson;
+use App\Models\Permission;
 use App\Models\User;
-use Database\Seeders\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use Tests\TestCase;
 
 
@@ -58,7 +57,7 @@ class LessonStudentsListTest extends TestCase
         $user = User::factory()->student()->create(); // No admin no permission
         $this->actingAs($user)->get("api/v1/lesson/{$this->lesson->id}/students")->assertStatus(403);
 
-        $user->givePermissionTo(Permissions::SEE_LESSONS); // SEE Lesson but not participants
+        $user->givePermissionTo(Permission::SEE_LESSONS); // SEE Lesson but not participants
         $this->actingAs($user)->get("api/v1/lesson/{$this->lesson->id}/students")->assertStatus(403);
     }
 
@@ -95,7 +94,7 @@ class LessonStudentsListTest extends TestCase
     {
         $user = User::factory()->student()->create();
 
-        $user->givePermissionTo([Permissions::SEE_LESSONS, Permissions::SEE_LESSON_PARTICIPANTS]);
+        $user->givePermissionTo([Permission::SEE_LESSONS, Permission::SEE_LESSON_PARTICIPANTS]);
         $this->actingAs($user)->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query([]))->assertStatus(200);
     }
 

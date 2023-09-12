@@ -2,12 +2,11 @@
 
 namespace Tests\Feature;
 
-use App\Models\Group;
-use App\Models\GroupUsers;
+
 use App\Models\Lesson;
 use App\Models\Material;
+use App\Models\Permission;
 use App\Models\User;
-use Database\Seeders\Permissions;
 use DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -39,9 +38,9 @@ class StudentLessonMaterialsListTest extends TestCase
             ->student()
             ->allowedTo(
                 [
-                    Permissions::SEE_LESSONS,
-                    Permissions::SEE_LESSON_MATERIALS,
-                    Permissions::SEE_LESSON_RECORDINGS
+                    Permission::SEE_LESSONS,
+                    Permission::SEE_LESSON_MATERIALS,
+                    Permission::SEE_LESSON_RECORDINGS
                 ]
             )->create();
 
@@ -93,7 +92,7 @@ class StudentLessonMaterialsListTest extends TestCase
     /** @test */
     public function no_permissions_for_type_403(): void
     {
-        $user = User::factory()->student()->allowedTo([Permissions::SEE_LESSONS])->create();
+        $user = User::factory()->student()->allowedTo([Permission::SEE_LESSONS])->create();
 
         $this->actingAs($user)->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material']))->assertStatus(403);
         $this->actingAs($user)->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'recording']))->assertStatus(403);

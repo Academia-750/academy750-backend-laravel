@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Api\v1\StudentLessons;
 
 use App\Models\Material;
-use Database\Seeders\Permissions;
+use App\Models\Permission;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -11,16 +11,16 @@ class StudentLessonMaterialListRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        if (!$this->user()->can(Permissions::SEE_LESSONS)) {
+        if (!$this->user()->can(Permission::SEE_LESSONS)) {
             return false;
         }
 
         $type = $this->request->get('type');
         if ($type === 'recording') {
-            return $this->user()->can(Permissions::SEE_LESSON_RECORDINGS);
+            return $this->user()->can(Permission::SEE_LESSON_RECORDINGS);
         }
 
-        return $this->user()->can(Permissions::SEE_LESSON_MATERIALS); // There are now only 2 types. Fallback
+        return $this->user()->can(Permission::SEE_LESSON_MATERIALS); // There are now only 2 types. Fallback
     }
 
     public function rules(): array
