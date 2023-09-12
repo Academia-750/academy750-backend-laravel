@@ -41,7 +41,13 @@ class DBApp implements UsersInterface
 
     public function index()
     {
-        return $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model::applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'admin');
+            })
+            ->jsonPaginate();
     }
 
     public function create($request): array

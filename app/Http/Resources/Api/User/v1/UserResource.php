@@ -28,19 +28,8 @@ class UserResource extends JsonResource
                 "created_at" => date('Y-m-d H:i:s', strtotime($this->resource->created_at))
             ],
             'relationships' => [
-                //'roles' => \App\Http\Resources\Api\Role\RoleCollection::make($this->whenLoaded('roles'))
-                'roles' => $this->when(
-                    collect($this->resource)->has('roles'),
-                    function () {
-                        return RoleCollection::make($this->resource->roles);
-                    }
-                ),
-                'image' => $this->when(
-                    collect($this->resource)->has('image'),
-                    function () {
-                        return ImageResource::make($this->resource->image);
-                    }
-                ),
+                'roles' => RoleCollection::make($this->resource->roles),
+                'image' => ImageResource::make($this->resource->image),
                 'groups' => $this->resource->groups()->whereNull('discharged_at')->join('groups', 'groups.id', 'group_users.group_id')->select('groups.id', 'groups.name')->get(),
 
             ],
