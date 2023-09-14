@@ -378,7 +378,6 @@ class StudentLessonsController extends Controller
                 ], 409);
             }
 
-
             return response()->json([
                 'status' => 'successfully',
                 'url' => $material->downloadUrl($request->user())

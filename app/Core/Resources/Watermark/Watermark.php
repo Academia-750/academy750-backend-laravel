@@ -46,10 +46,14 @@ class Watermark
 
         // Iterate through the pages and import them
         for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-            $pdf->AddPage();
-
             // Import the current page from the existing PDF as a template
             $templateId = $pdf->importPage($pageNo);
+
+            // Get the imported page dimensions
+            $size = $pdf->getTemplateSize($templateId);
+
+            // Add a new page with the same size as the imported page
+            $pdf->AddPage($size['orientation'], array($size['width'], $size['height']));
 
             // Use the imported page as a template
             $pdf->useTemplate($templateId); // Set position and size of the imported page

@@ -63,15 +63,14 @@ class UserPDF extends Fpdi
     /**
      * Our own water mark on the header (behind)
      */
-    function Header()
+    function Footer()
     {
         $sourcePageWidth = $this->getPageWidth();
         $sourcePageHeight = $this->getPageHeight();
-
         /* Put the watermark */
-        $this->SetTextColor(255, 192, 203);
+        $this->SetTextColor(255, 192, 203, 0.35);
 
-        $name = "Abel Bordonado Lillo MuyLargo"; // $this->user->full_name;
+        $name = $this->user->full_name;
         // Is SIZE 16 for 15 chars. Each 5 chars reduce size 2
         $size = 16 - 2 * floor((strlen($name) - 15) / 5);
         $this->SetFont('Arial', 'B', $size);
@@ -82,6 +81,5 @@ class UserPDF extends Fpdi
         $this->SetFont('Arial', 'B', 18);
 
         $this->RotatedText($sourcePageWidth - 26, $sourcePageHeight - 2, $this->user->dni, 45);
-
     }
 }
