@@ -27,7 +27,7 @@ class Permission extends PermissionSpatieModel
     /**
      * Opposition Tests
      */
-    public const GENERATE_TESTS = 'tests'; // Allows you to see the list of participants
+    public const GENERATE_TESTS = 'generate-tests'; // Allows you to see the list of participants
 
     use UUIDTrait;
 
