@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Group;
 use App\Models\GroupUsers;
 use App\Models\Lesson;
+use App\Models\Permission;
 use App\Models\User;
 use Database\Seeders\Permissions;
 use Illuminate\Foundation\Testing\RefreshDatabase;

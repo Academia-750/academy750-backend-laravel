@@ -68,7 +68,7 @@ class UserPDF extends Fpdi
         $sourcePageWidth = $this->getPageWidth();
         $sourcePageHeight = $this->getPageHeight();
         /* Put the watermark */
-        $this->SetTextColor(255, 192, 203, 0.35);
+        $this->SetTextColor(255, 192, 203);
 
         $name = $this->user->full_name;
         // Is SIZE 16 for 15 chars. Each 5 chars reduce size 2

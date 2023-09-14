@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Lesson;
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -37,7 +38,7 @@ class LessonStudentsCreateTest extends TestCase
 
         $this->lesson = Lesson::factory()->active()->create();
 
-        $this->student = User::factory()->student()->create();
+        $this->student = User::factory()->allowedTo(Permission::SEE_LESSONS)->student()->create();
     }
 
 
