@@ -38,8 +38,6 @@ BEGIN
             DECLARE v_id INT;
             DECLARE cur1 CURSOR FOR SELECT topic_uuid FROM tmp_topics_selected;
             DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_done = TRUE;
-
-
             DROP TEMPORARY TABLE IF EXISTS tmp_topics;
             CREATE TEMPORARY TABLE tmp_topics (
                 topic_id LONGTEXT,
@@ -47,18 +45,15 @@ BEGIN
                 nombre_del_tema VARCHAR(255),
                 total_questions INT
             );
-
             DROP TEMPORARY TABLE IF EXISTS tmp_topics_selected;
             CREATE TEMPORARY TABLE tmp_topics_selected (
                 topic_uuid INT,
                 total_questions INT
             );
-
             DROP TEMPORARY TABLE IF EXISTS tmp_selected_questions;
             CREATE TEMPORARY TABLE tmp_selected_questions (
                 question_id INT
             );
-
             SET num_preguntas := n_pregs;
         INSERT INTO tmp_topics (topic_id, topic_uuid, nombre_del_tema, total_questions)
             SELECT
@@ -77,6 +72,7 @@ BEGIN
             INNER JOIN oppositionables op ON op.oppositionable_id = q.questionable_id
             WHERE op.opposition_id = id_oposicion
             AND q.questionable_type = 'App\\\\Models\\\\Topic'
+            AND op.oppositionable_type = 'App\\\\Models\\\\Topic'
             UNION
             SELECT DISTINCT
                 st.topic_id as topic_id,
@@ -89,6 +85,7 @@ BEGIN
             INNER JOIN oppositionables op ON op.oppositionable_id = st.id
             WHERE op.opposition_id = id_oposicion
             AND q.questionable_type = 'App\\\\Models\\\\Subtopic'
+            AND op.oppositionable_type = 'App\\\\Models\\\\Subtopic'
             ) as TB
             WHERE
                 FIND_IN_SET(TB.topic_id, __topic__ids) > 0
@@ -103,7 +100,6 @@ BEGIN
                 )
             GROUP BY topic_id, name_topic
             ORDER BY total_questions ASC;
-
             IF (SELECT COUNT(*) FROM tmp_topics) > num_preguntas THEN
                 INSERT INTO tmp_topics_selected
                 SELECT topic_uuid, total_questions FROM tmp_topics
@@ -113,21 +109,16 @@ BEGIN
                 INSERT INTO tmp_topics_selected
                 SELECT topic_uuid, total_questions FROM tmp_topics;
             END IF;
-
             SET npregs_by_topic = (SELECT count(*) FROM tmp_topics);
             SET npregs_by_topic := num_preguntas / npregs_by_topic;
             SET index_loop:=0;
-
             OPEN cur1;
-
             read_loop: LOOP
                 FETCH cur1 INTO v_id;
                 IF v_done THEN
                   LEAVE read_loop;
                 END IF;
-
                 DROP TEMPORARY TABLE IF EXISTS tmp_table;
-
                 CREATE TEMPORARY TABLE tmp_table
                   SELECT DISTINCT q.question_id
                   FROM questions_used_test q
@@ -137,7 +128,6 @@ BEGIN
                   AND opposition_id = id_oposicion
                   AND result = 0
                   AND qu.is_visible = 'yes';
-
                 INSERT INTO  tmp_table
                     SELECT distinct q.id
                     FROM questions q
@@ -156,7 +146,6 @@ BEGIN
                       AND q.question_in_edit_mode = 'no'
                       AND q.is_visible = 'yes'
                       AND q.its_for_test = 'yes';
-
                 INSERT INTO  tmp_table
                     SELECT distinct q.id
                     FROM questions q
@@ -177,9 +166,7 @@ BEGIN
                       AND q.question_in_edit_mode = 'no'
                       AND q.is_visible = 'yes'
                       AND q.its_for_test = 'yes';
-
                 SET c := (SELECT count(*) FROM tmp_table);
-
                 IF c < npregs_by_topic THEN
                     SET c := npregs_by_topic - c;
                     /*En caso de que las preguntas no sea suficientes, añadimos también las que el usuario ya ha acertado*/
@@ -194,29 +181,19 @@ BEGIN
                       AND qu.is_visible = 'yes'
                       ORDER BY RAND() LIMIT c;
                 END IF;
-
                 INSERT INTO tmp_selected_questions
                 SELECT question_id FROM tmp_table ORDER BY RAND() LIMIT npregs_by_topic;
-
                 DROP TEMPORARY TABLE tmp_table;
-
                 SET questions_by_topic = (SELECT COUNT(*) FROM tmp_selected_questions);
-
                 SET index_loop := index_loop+1;
                 SET num_preguntas := n_pregs - questions_by_topic;
-
                 SET c:=(SELECT count(*) FROM tmp_topics_selected);
-
                 IF (c- index_loop) > 0 THEN
                 SET npregs_by_topic := num_preguntas / (c - index_loop);
                 END IF;
-
             END LOOP;
-
             CLOSE cur1;
-
             SELECT * FROM tmp_selected_questions ORDER BY RAND();
-
             DROP TEMPORARY TABLE tmp_topics;
             DROP TEMPORARY TABLE tmp_topics_selected;
             DROP TEMPORARY TABLE tmp_selected_questions;

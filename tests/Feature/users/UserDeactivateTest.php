@@ -86,7 +86,8 @@ class UserDeactivateTest extends TestCase
         $this->body['users'] = $this->map($students->toArray(), 'uuid');
 
         $this->post("api/v1/users/actions-on-multiple-records", $this->body)->assertStatus(200);
-        $studentsAfter = User::findMany($this->map($students->toArray(), 'uuid'));
+        $studentsAfter = User::whereIn('uuid', $this->map($students->toArray(), 'uuid'))->get();
+
 
         foreach ($studentsAfter as $student) {
             $this->assertEquals($student->state, 'disable');
