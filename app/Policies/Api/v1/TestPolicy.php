@@ -3,6 +3,7 @@
 namespace App\Policies\Api\v1;
 
 use App\Models\Opposition;
+use App\Models\Permission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\Test;
 use App\Models\User;
@@ -14,12 +15,12 @@ class TestPolicy
 
     public function get_tests_unresolved(User $user): bool
     {
-        return $user->can('generate-tests');
+        return $user->can(Permission::GENERATE_TESTS);
     }
 
     public function get_cards_memory(User $user): bool
     {
-        return $user->can('generate-tests');
+        return $user->can(Permission::GENERATE_TESTS);
     }
 
     /**
@@ -32,7 +33,7 @@ class TestPolicy
      */
     public function fetch_unresolved_test(User $user, Test $test): bool
     {
-        return $user->can('generate-tests') &&
+        return $user->can(Permission::GENERATE_TESTS) &&
             $test?->is_solved_test === 'no' &&
             $test?->test_type === 'test' &&
             $test->user?->getKey() === $user->getKey();
@@ -49,7 +50,7 @@ class TestPolicy
      */
     public function fetch_card_memory(User $user, Test $test): bool
     {
-        return $user->can('generate-tests') &&
+        return $user->can(Permission::GENERATE_TESTS) &&
             $test?->test_type === 'card_memory' &&
             $test->user?->getKey() === $user->getKey();
     }
@@ -76,7 +77,7 @@ class TestPolicy
             }
         }
 
-        return $user->can('generate-tests') && (bool) $topicsBelongsToOpposition;
+        return $user->can(Permission::GENERATE_TESTS) && (bool) $topicsBelongsToOpposition;
     }
 
     /**
@@ -86,7 +87,7 @@ class TestPolicy
      */
     public function fetch_test_completed(User $user, Test $test): bool
     {
-        return $user->can('generate-tests') &&
+        return $user->can(Permission::GENERATE_TESTS) &&
             (bool) $user->tests()->findOrFail($test->getKey()) && $test->is_solved_test === 'yes';
     }
 }

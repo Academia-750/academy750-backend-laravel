@@ -69,7 +69,7 @@ class Authorizer implements TestsInterface
             }
         }
 
-        if (!(Auth::user()->can('create-tests-for-resolve') && (bool) $topicsBelongsToOpposition)) {
+        if (!(Auth::user()->can(Permission::GENERATE_TESTS) && (bool) $topicsBelongsToOpposition)) {
             abort(403, "Posiblemente algunos o todos los temas seleccionados no pertenecen a la Oposición Seleccionada");
         }
 

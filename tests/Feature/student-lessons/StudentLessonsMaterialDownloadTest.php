@@ -195,9 +195,6 @@ class StudentLessonsMaterialDownloadTest extends TestCase
     /** @test */
     public function delete_old_temporal_files_200(): void
     {
-
-
-
         // Create a test file in the folder
         $testFilePath = $this->tempPath . '/test.txt';
         file_put_contents($testFilePath, 'Test file content');
