@@ -355,7 +355,6 @@ class StudentLessonsController extends Controller
                 ], 404);
             }
 
-
             if (!$material->canDownload($request->user())) {
                 return response()->json([
                     'status' => 'error',
@@ -378,6 +377,7 @@ class StudentLessonsController extends Controller
                     'error' => "Material not available"
                 ], 409);
             }
+
 
             return response()->json([
                 'status' => 'successfully',

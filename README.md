@@ -167,6 +167,24 @@ Running queues we use `php artisan queue:work`.
 
 For production we use SuperVisor (See the Server installation guide in Notion )
 
+This functionality are using QUEUEs
+
+- Send emails. (Forgot Password)
+- Import CVS for topics, questions, etc.
+
+
+### Schedules 
+
+Running queues we use `php artisan schedule:work`.
+
+For production we use SuperVisor (See the Server installation guide in Notion )
+
+This functionality are using Schedules
+
+- Clear temporal files. (For example Student personalized PDFs)
+- Import CVS for topics, questions, etc.
+
+
 ### Permissions
 
 When we generate a empty database we will start with the next setup:

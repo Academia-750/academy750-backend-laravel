@@ -101,8 +101,12 @@ function getDocumentTypeFromURL($url)
     if (!$url) {
         return DocumentType::EMPTY;
     }
+
+    /**
+     * We skip this call on TESTING environment where the URLs are fake
+     */
     // Get the headers of the remote file using HEAD request
-    $headers = get_headers($url, 1);
+    $headers = config('app.env') !== 'testing' ? get_headers($url, 1) : [];
 
     // Check if a 'Content-Type' header is present
     if (isset($headers['Content-Type'])) {
@@ -121,7 +125,7 @@ function getDocumentTypeFromURL($url)
             return DocumentType::IMAGE;
         }
         // Check if it's a video (common video types)
-        elseif (strpos($contentType, 'video/') === 0) {
+        if (strpos($contentType, 'video/') === 0) {
             return DocumentType::VIDEO;
         }
         // Add more checks for other document types as needed

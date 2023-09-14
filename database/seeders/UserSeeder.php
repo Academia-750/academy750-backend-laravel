@@ -1,14 +1,13 @@
 <?php
 
+namespace Database\Seeders;
 
 use App\Core\Services\UserService;
 use App\Core\Services\UserServiceTrait;
-//use App\Core\Services\UuidGeneratorService;
-//use App\Models\Permission;
 use App\Core\Services\UuidGeneratorService;
 use App\Models\Role;
 use App\Models\User;
-//use Faker\Factory;
+
 use Illuminate\Database\Seeder;
 
 class UserSeeder extends Seeder

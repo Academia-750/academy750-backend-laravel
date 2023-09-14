@@ -82,10 +82,10 @@ class Material extends Model
         $docType = $this->getDocumentTypeFromURL();
 
         if ($docType === DocumentType::PDF) {
-            return Watermark::pdf($this->url, $this->name, $user);
+            return Watermark::get()->pdf($this->url, $this->name, $user);
         }
         if ($docType === DocumentType::IMAGE) {
-            return Watermark::image($this->url, $this->name, $user);
+            return Watermark::get()->image($this->url, $this->name, $user);
         }
 
         // Other Doc type
@@ -95,7 +95,7 @@ class Material extends Model
 
 
 
-    function getDocumentTypeFromURL()
+    public function getDocumentTypeFromURL()
     {
         return getDocumentTypeFromURL($this->url);
     }

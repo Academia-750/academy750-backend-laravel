@@ -21,4 +21,5 @@ yarn-error.log
 # PDF Gnerations
 /public/doc.pdf
 /public/temp/*
+/public/test_temp
 !/public/temp/.gitkeep

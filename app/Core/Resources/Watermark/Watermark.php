@@ -5,19 +5,29 @@ use App\Core\Services\UserPDF;
 use App\Models\User;
 use Illuminate\Support\Facades\File;
 use setasign\Fpdi\PdfParser\StreamReader;
-use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\ImageManager as Image;
 
 
 
 class Watermark
 {
-
-    private static function toUrl($path)
+    public static function get()
     {
+        /**
+         * To allow mock ups
+         */
+        return app()->make(Watermark::class);
+    }
+
+    private function toUrl($path)
+    {
+        /**
+         * In local we return HTTP, otherwise HTTPS
+         */
         return asset($path, app()->environment('local') !== 1);
     }
 
-    public static function pdf(string $url, string $name, User $user)
+    public function pdf(string $url, string $name, User $user)
     {
         $path = "temp/material-{$name}-{$user->uuid}.pdf";
 
@@ -52,13 +62,13 @@ class Watermark
         return self::toUrl($path);
     }
 
-    static public function image($url, $name, $user)
+    public function image($url, $name, $user)
     {
         $path = "temp/material-{$name}-{$user->uuid}.jpg";
 
-        // if (File::exists(public_path($path))) {
-        //     return self::toUrl($path);
-        // }
+        if (File::exists(public_path($path))) {
+            return self::toUrl($path);
+        }
 
 
         /**
@@ -66,7 +76,7 @@ class Watermark
          */
         $width = 550;
         $height = 140;
-        $rectangleCanvas = Image::canvas($width, $height);
+        $rectangleCanvas = (new Image())->canvas($width, $height);
         $rectangleCanvas->rectangle(0, 0, $width, $height, function ($draw) {
             $draw->background(array(244, 67, 54, 0.3));
             // $draw->background(array(0, 0, 0, 0.3));
@@ -76,7 +86,7 @@ class Watermark
         /**
          * Add the rectangle and the texts as water mark
          */
-        $img = Image::make($url);
+        $img = (new Image())->make($url);
 
         $img->insert($rectangleCanvas, 'bottom-right', -110, -100);
 
