@@ -28,7 +28,7 @@ class PermissionSeeder extends Seeder
         ['category' => 'lesson', 'name' => Permission::SEE_LESSON_PARTICIPANTS, 'alias_name' => 'Acceso al listado de asistencia de la lección'],
 
         // Tests
-        ['category' => 'tests', 'name' => 'generate-tests', 'alias_name' => 'Acceso al menu de tests']
+        ['category' => 'tests', 'name' => Permission::GENERATE_TESTS, 'alias_name' => 'Acceso al menu de tests']
     ];
 
     private $categories = [

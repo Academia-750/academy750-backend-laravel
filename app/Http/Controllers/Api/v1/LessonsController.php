@@ -17,6 +17,7 @@ use App\Http\Resources\Api\Lesson\v1\LessonResource;
 use App\Models\Group;
 use App\Models\Lesson;
 use App\Models\Material;
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Carbon;
@@ -383,7 +384,7 @@ class LessonsController extends Controller
                 ], 404);
             }
 
-            if (!$user->hasRole('student')) {
+            if (!$user->can(Permission::SEE_LESSONS)) {
                 return response()->json([
                     'status' => 'error',
                     'result' => 'Only students can join lessons'
