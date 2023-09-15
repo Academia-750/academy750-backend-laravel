@@ -6,6 +6,8 @@ use setasign\Fpdi\Fpdi;
 
 /**
  * This PDF will add a watermark with the user name and DNI
+ * Alpha: http://www.fpdf.org/en/script/script74.php
+ * Rotation: https://www.studentstutorial.com/fpdf/watermark.php
  */
 class UserPDF extends Fpdi
 {
@@ -17,9 +19,74 @@ class UserPDF extends Fpdi
         $this->user = $user;
     }
 
+
     /**
-     * Inspired in https://www.studentstutorial.com/fpdf/watermark.php
-     * But modified the header for our own scenario
+     * ALPHA
+     */
+    // alpha: real value from 0 (transparent) to 1 (opaque)
+    // bm:    blend mode, one of the following:
+    //          Normal, Multiply, Screen, Overlay, Darken, Lighten, ColorDodge, ColorBurn,
+    //          HardLight, SoftLight, Difference, Exclusion, Hue, Saturation, Color, Luminosity
+    protected $extgstates = array(); // For the Alpha
+
+    function SetAlpha($alpha, $bm = 'Normal')
+    {
+        // set alpha for stroking (CA) and non-stroking (ca) operations
+        $gs = $this->AddExtGState(array('ca' => $alpha, 'CA' => $alpha, 'BM' => '/' . $bm));
+        $this->SetExtGState($gs);
+    }
+
+    function AddExtGState($parms)
+    {
+        $n = count($this->extgstates) + 1;
+        $this->extgstates[$n]['parms'] = $parms;
+        return $n;
+    }
+
+    function SetExtGState($gs)
+    {
+        $this->_out(sprintf('/GS%d gs', $gs));
+    }
+
+    function _enddoc()
+    {
+        if (!empty($this->extgstates) && $this->PDFVersion < '1.4')
+            $this->PDFVersion = '1.4';
+        parent::_enddoc();
+    }
+
+    function _putextgstates()
+    {
+        for ($i = 1; $i <= count($this->extgstates); $i++) {
+            $this->_newobj();
+            $this->extgstates[$i]['n'] = $this->n;
+            $this->_put('<</Type /ExtGState');
+            $parms = $this->extgstates[$i]['parms'];
+            $this->_put(sprintf('/ca %.3F', $parms['ca']));
+            $this->_put(sprintf('/CA %.3F', $parms['CA']));
+            $this->_put('/BM ' . $parms['BM']);
+            $this->_put('>>');
+            $this->_put('endobj');
+        }
+    }
+
+    function _putresourcedict()
+    {
+        parent::_putresourcedict();
+        $this->_put('/ExtGState <<');
+        foreach ($this->extgstates as $k => $extgstate)
+            $this->_put('/GS' . $k . ' ' . $extgstate['n'] . ' 0 R');
+        $this->_put('>>');
+    }
+
+    function _putresources()
+    {
+        $this->_putextgstates();
+        parent::_putresources();
+    }
+
+    /**
+     * ROTATION
      */
     var $angle = 0;
 
@@ -41,7 +108,6 @@ class UserPDF extends Fpdi
             $this->_out(sprintf('q %.5F %.5F %.5F %.5F %.2F %.2F cm 1 0 0 1 %.2F %.2F cm', $c, $s, -$s, $c, $cx, $cy, -$cx, -$cy));
         }
     }
-
     function _endpage()
     {
         if ($this->angle != 0) {
@@ -61,14 +127,29 @@ class UserPDF extends Fpdi
     }
 
     /**
-     * Our own water mark on the header (behind)
+     * OUR CUSTOMIZATION
      */
     function Footer()
     {
         $sourcePageWidth = $this->getPageWidth();
         $sourcePageHeight = $this->getPageHeight();
-        /* Put the watermark */
-        $this->SetTextColor(255, 192, 203);
+        /**
+         * RECTANGLE
+         */
+        $this->SetAlpha(0.2);
+        $this->SetFillColor(244, 67, 54);
+        $recX = $sourcePageWidth + 27;
+        $recY = $sourcePageHeight - 50;
+        $this->Rotate(225, $recX, $recY);
+        $this->Rect($recX, $recY, 100, 20, 'F');
+        $this->Rotate(0);
+
+        /**
+         * TEXT: Name + DNI
+         */
+        $this->SetAlpha(0.7);
+
+        $this->SetTextColor(255, 255, 255);
 
         $name = $this->user->full_name;
         // Is SIZE 16 for 15 chars. Each 5 chars reduce size 2
