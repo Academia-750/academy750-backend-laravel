@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Core\Resources\Users\v1\Services\ActionsAccountUser;
 use App\Core\Services\UserService;
+use App\Http\Controllers\JsonApiAuth\Revokers\SanctumRevoker;
 use App\Http\Requests\Api\v1\Users\ContactUsPageRequest;
 use App\Http\Requests\Api\v1\Users\FetchHistoryQuestionsByTypeAndPeriodOfStudentRequest;
 use App\Http\Requests\Api\v1\Users\FetchHistoryStatisticalDataGraphByStudentRequest;
@@ -297,6 +298,9 @@ class UsersController extends Controller
             }
 
             $user->roles()->sync($role);
+
+            // Force the user to reload
+            (new SanctumRevoker($user))->deleteAllTokens();
 
             return response()->json([
                 'status' => 'successfully',

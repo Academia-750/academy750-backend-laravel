@@ -111,4 +111,17 @@ class UserRoleChanpostest extends TestCase
         $this->assertFalse($updated->hasRole('student'));
     }
 
+    /** @test */
+    public function assign_role_removes_session_200(): void
+    {
+        $this->updateUser->createToken($this->updateUser);
+
+        $this->assertNotNull($this->updateUser->tokens()->first());
+
+        $this->post("api/v1/users/role", $this->body)->assertStatus(200);
+
+        $this->assertNull($this->updateUser->tokens()->first());
+    }
+
+
 }

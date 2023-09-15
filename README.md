@@ -198,7 +198,7 @@ Entering as an admin we can create new roles with some permissions and create st
 The admin can NOT create new permissions, we handle the permissions from `PermissionSeeder.php` class.
 You can **create or update permissions** in the seeder and run 
 
- php artisan db:seed --class=PermissionSeeder
+php artisan db:seed --class=PermissionSeeder
 
 To make the update take effect. In production and staging environment this is done automatically.
 
