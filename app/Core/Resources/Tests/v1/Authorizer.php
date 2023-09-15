@@ -69,8 +69,13 @@ class Authorizer implements TestsInterface
             }
         }
 
-        if (!(Auth::user()->can(Permission::GENERATE_TESTS) && (bool) $topicsBelongsToOpposition)) {
-            abort(403, "Posiblemente algunos o todos los temas seleccionados no pertenecen a la Oposición Seleccionada");
+
+        if (!Auth::user()->hasPermissionTo(Permission::GENERATE_TESTS, 'web')) {
+            abort(403, "No tienes permisos para generar tests");
+        }
+
+        if (!(bool) $topicsBelongsToOpposition) {
+            abort(409, "Posiblemente algunos o todos los temas seleccionados no pertenecen a la Oposición Seleccionada");
         }
 
         return $this->schemaJson->create_a_quiz($request);
