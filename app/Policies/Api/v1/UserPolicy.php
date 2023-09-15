@@ -2,6 +2,7 @@
 
 namespace App\Policies\Api\v1;
 
+use App\Models\Permission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use App\Models\User;
 
@@ -60,31 +61,31 @@ class UserPolicy
 
     public function get_history_statistical_data_graph_by_student(User $user): bool
     {
-        return $user->hasRole('student');
+        return $user->can(Permission::GENERATE_TESTS);
     }
 
     public function fetch_history_questions_by_type_and_period(User $user): bool
     {
-        return $user->hasRole('student');
+        return $user->can(Permission::GENERATE_TESTS);
     }
 
     public function fetch_history_questions_wrong_by_topic_of_student(User $user): bool
     {
-        return $user->hasRole('student');
+        return $user->can(Permission::GENERATE_TESTS);
     }
 
     public function fetch_history_tests_completed_by_student(User $user): bool
     {
-        return $user->hasRole('student');
+        return $user->can(Permission::GENERATE_TESTS);
     }
 
     public function fetch_topics_available_in_tests(User $user): bool
     {
-        return $user->hasRole('student');
+        return $user->can(Permission::GENERATE_TESTS);
     }
 
     public function fetch_tests_between_period_date(User $user): bool
     {
-        return $user->hasRole('student');
+        return $user->can(Permission::GENERATE_TESTS);
     }
 }

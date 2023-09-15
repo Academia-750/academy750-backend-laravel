@@ -91,32 +91,27 @@ class UsersController extends Controller
             'email' => ['required', 'email', 'max:255']
         ]);
 
-        $student = User::firstWhere('email', '=', $request->get('email'));
+        $user = User::firstWhere('email', '=', $request->get('email'));
 
-        if (!$student || $student->hasRole('admin')) {
+        if (!$user) {
             return [
                 'status' => 'failed',
                 'message' => 'No se encontró al usuario'
             ];
         }
 
-        if (!$student->hasRole('student')) {
-            return [
-                'status' => 'failed',
-                'message' => 'No es válido el correo electrónico'
-            ];
-        }
+
 
         $password_generated = UserService::generateSecureRandomPassword();
 
-        $student->password = Hash::make($password_generated);
-        $student->save();
+        $user->password = Hash::make($password_generated);
+        $user->save();
 
-        DB::table('password_resets')->where('email', $student->email)->delete();
-        ActionsAccountUser::removeAllTokensByUserReally($student);
+        DB::table('password_resets')->where('email', $user->email)->delete();
+        ActionsAccountUser::removeAllTokensByUserReally($user);
 
         DB::commit();
-        $student->notify(new ResetPasswordStudentNotification(compact('password_generated')));
+        $user->notify(new ResetPasswordStudentNotification(compact('password_generated')));
 
         return [
             'status' => 'successfully',
