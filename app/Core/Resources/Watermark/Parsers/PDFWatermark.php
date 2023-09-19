@@ -1,5 +1,5 @@
 <?php
-namespace App\Core\Services;
+namespace App\Core\Resources\Watermark\Parsers;
 
 use App\Models\User;
 use setasign\Fpdi\Fpdi;
@@ -9,8 +9,14 @@ use setasign\Fpdi\Fpdi;
  * Alpha: http://www.fpdf.org/en/script/script74.php
  * Rotation: https://www.studentstutorial.com/fpdf/watermark.php
  */
-class UserPDF extends Fpdi
+class PDFWatermark extends Fpdi
 {
+
+    public $GRAY_BACKGROUND = "#222222";
+    public $RED_BACKGROUND = "#F44336";
+
+    public $WHITE_TEXT = "#FFFFFF";
+
     private User $user;
 
     function __construct(User $user)
@@ -19,6 +25,11 @@ class UserPDF extends Fpdi
         $this->user = $user;
     }
 
+    private function hexToRGB($hex)
+    {
+        list($r, $g, $b) = sscanf($hex, "#%02x%02x%02x");
+        return array($r, $g, $b);
+    }
 
     /**
      * ALPHA
@@ -126,18 +137,30 @@ class UserPDF extends Fpdi
         $this->Rotate(0);
     }
 
+    function CenterPageText($y, $text)
+    {
+        $sourcePageWidth = $this->getPageWidth();
+        $this->Text(($sourcePageWidth / 2) - $this->GetStringWidth($text) / 2, $y, $text);
+    }
+
     /**
      * OUR CUSTOMIZATION
      */
     function Footer()
+    {
+        $this->footerLegalNotice();
+        $this->diagonalNameIDBar();
+    }
+
+    private function diagonalNameIdBar()
     {
         $sourcePageWidth = $this->getPageWidth();
         $sourcePageHeight = $this->getPageHeight();
         /**
          * RECTANGLE
          */
-        $this->SetAlpha(0.2);
-        $this->SetFillColor(244, 67, 54);
+        $this->SetAlpha(0.4);
+        $this->SetFillColor(...$this->hexToRGB($this->GRAY_BACKGROUND));
         $recX = $sourcePageWidth + 27;
         $recY = $sourcePageHeight - 50;
         $this->Rotate(225, $recX, $recY);
@@ -149,7 +172,7 @@ class UserPDF extends Fpdi
          */
         $this->SetAlpha(0.7);
 
-        $this->SetTextColor(255, 255, 255);
+        $this->SetTextColor(...$this->hexToRGB($this->WHITE_TEXT));
 
         $name = $this->user->full_name;
         // Is SIZE 16 for 15 chars. Each 5 chars reduce size 2
@@ -162,5 +185,32 @@ class UserPDF extends Fpdi
         $this->SetFont('Arial', 'B', 18);
 
         $this->RotatedText($sourcePageWidth - 26, $sourcePageHeight - 2, $this->user->dni, 45);
+    }
+
+    private function footerLegalNotice()
+    {
+        $sourcePageWidth = $this->getPageWidth();
+        $sourcePageHeight = $this->getPageHeight();
+        /**
+         * RECTANGLE
+         */
+        $this->SetAlpha(0.2);
+        $this->SetFillColor(...$this->hexToRGB($this->GRAY_BACKGROUND));
+        $this->Rect(0, $sourcePageHeight - 10, $sourcePageWidth, $sourcePageHeight, 'F');
+
+
+        /**
+         * TEXT: Warning
+         */
+        $warning1 = "Este documento es personal e intransferible. Academia750 se reserva el derecho de emprender cualquier accion legal";
+        $warning2 = "para preservar sus derechos de propiedad intelectual frente a las copias o difusion de su contenido";
+
+        $this->SetAlpha(0.7);
+
+        $this->SetTextColor(...$this->hexToRGB($this->RED_BACKGROUND));
+        $this->SetFont('Arial', 'B', 8);
+        $this->CenterPageText($sourcePageHeight - 4, $warning1);
+        $this->CenterPageText($sourcePageHeight - 1, $warning2);
+
     }
 }

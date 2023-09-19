@@ -1,13 +1,11 @@
 <?php
 namespace App\Core\Resources\Watermark;
 
-use App\Core\Services\UserPDF;
 use App\Models\User;
 use Illuminate\Support\Facades\File;
 use setasign\Fpdi\PdfParser\StreamReader;
-use Intervention\Image\ImageManager as Image;
-
-
+use App\Core\Resources\Watermark\Parsers\PDFWatermark;
+use App\Core\Resources\Watermark\Parsers\ImageWatermark;
 
 class Watermark
 {
@@ -37,8 +35,8 @@ class Watermark
 
         $fileContent = file_get_contents($url);
 
-        // Initialize FPDI
-        $pdf = new UserPDF($user);
+        // Initialize FPDI, in this wrapper we will add the watermark
+        $pdf = new PDFWatermark($user);
 
         // Get the total number of pages in the existing PDF
         $pageCount = $pdf->setSourceFile(StreamReader::createByString($fileContent));
@@ -56,13 +54,13 @@ class Watermark
             $pdf->AddPage($size['orientation'], array($size['width'], $size['height']));
 
             // Use the imported page as a template
-            $pdf->useTemplate($templateId); // Set position and size of the imported page
+            $pdf->useTemplate($templateId);
         }
 
         // Output the modified PDF
 
         $pdf->Output('F', $path);
-        // Return https except in localhost
+
         return self::toUrl($path);
     }
 
@@ -74,53 +72,13 @@ class Watermark
             return self::toUrl($path);
         }
 
+        $imageWatermark = new ImageWatermark($user);
 
-        /**
-         *  Draw a rectangle in a empty canvas ro rotate the canvas
-         */
-        $width = 550;
-        $height = 140;
-        $rectangleCanvas = (new Image())->canvas($width, $height);
-        $rectangleCanvas->rectangle(0, 0, $width, $height, function ($draw) {
-            $draw->background(array(244, 67, 54, 0.3));
-            // $draw->background(array(0, 0, 0, 0.3));
-        });
-        $rectangleCanvas->rotate(45);
+        $image = $imageWatermark->watermark($url);
 
-        /**
-         * Add the rectangle and the texts as water mark
-         */
-        $img = (new Image())->make($url);
-
-        $img->insert($rectangleCanvas, 'bottom-right', -110, -100);
-
-        // Add the text
-        // The sizeIs SIZE 40 for 15 chars. Each 5 chars reduce size 2
-        $name = $user->full_name;
-
-        $size = 40 - 4 * floor((strlen($name) - 15) / 5);
-
-        $img->text($name, $img->width() - 275, $img->height() - 15, function ($font) use ($size) {
-            $font->file(storage_path('app/public/fonts/Arial.ttf')); // Use the built-in Arial font
-            $font->size($size); // Adjust the font size as needed
-            // $font->color('#ffffff'); // Adjust the text color and opacity
-            $font->color('#FFD700');
-            $font->angle(45); // Rotate the text by 45 degrees
-        });
-
-        $img->text($user->dni, $img->width() - 175, $img->height() - 25, function ($font) use ($user) {
-            $font->file(storage_path('app/public/fonts/Arial.ttf')); // Use the built-in Arial font
-            $font->size(42); // Adjust the font size as needed
-            // $font->color('#ffffff'); // Adjust the text color and opacity
-            $font->color('#FFD700');
-            $font->angle(45); // Rotate the text by 45 degrees
-
-
-        });
+        $image->save($path); // Replace with the desired output image path
 
         // Save the final image with the rotated text watermark
-        $img->save($path); // Replace with the desired output image path
-
         return self::toUrl($path);
 
     }
