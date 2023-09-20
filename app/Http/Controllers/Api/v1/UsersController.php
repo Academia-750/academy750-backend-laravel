@@ -3,10 +3,13 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Core\Resources\Users\v1\Services\ActionsAccountUser;
 use App\Core\Services\UserService;
+use App\Http\Controllers\JsonApiAuth\Revokers\SanctumRevoker;
 use App\Http\Requests\Api\v1\Users\ContactUsPageRequest;
 use App\Http\Requests\Api\v1\Users\FetchHistoryQuestionsByTypeAndPeriodOfStudentRequest;
 use App\Http\Requests\Api\v1\Users\FetchHistoryStatisticalDataGraphByStudentRequest;
 use App\Http\Requests\Api\v1\Users\SearchUserRequest;
+use App\Http\Requests\Api\v1\Users\UserRoleUpdateRequest;
+use App\Models\Role;
 use App\Models\Topic;
 use App\Models\User;
 use App\Core\Resources\Users\v1\Interfaces\UsersInterface;
@@ -153,21 +156,28 @@ class UsersController extends Controller
     }
 
     /**
-     * Tests: Completed Tests
+     * Tests: History Completed Tests
      *
      * History of tests completed by student
+     * @authenticated
      */
     public function fetch_history_tests_completed_by_student()
     {
 
         return $this->usersInterface->fetch_history_tests_completed_by_student();
     }
+
     public function fetch_topics_available_in_tests()
     {
 
         return $this->usersInterface->fetch_topics_available_in_tests();
     }
 
+    /**
+     * Tests: History Test between dates
+     *
+     * @authenticated
+     */
     public function fetch_tests_between_period_date()
     {
 
@@ -175,7 +185,26 @@ class UsersController extends Controller
     }
 
 
-
+    /**
+     * Users: Search
+     *
+     * Search for users (Normally for auto complete purposes)
+     * Only for Admin
+     * @authenticated
+     * @response status=409 scenario="The user already belongs the group"
+     * @response {
+     *     "results": [
+     *        "id" : "1" ,
+     *        "uuid" : "uuid" ,
+     *        "first_name" : "Son" ,
+     *        "last_name" : "Go Ku" ,
+     *        "dni" : "74370249W" ,
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ],
+     *       "total": 1
+     *  }
+     */
     public function search(SearchUserRequest $request)
     {
         try {
@@ -204,6 +233,77 @@ class UsersController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'results' => $results,
+            ]);
+
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+
+    /**
+     * Users: Change Role
+     *
+     * Changes the role of a user
+     * Only for Admin
+     * @authenticated
+     * @response {
+     *     "message": "successfully"
+     *  }
+     * @response status=404 scenario="User not found"
+     * @response status=404 scenario="Role not found"
+     * @response status=409 scenario="Cant assign the role admin"
+     * @response status=403 scenario="Cant update an admin user"
+     */
+    public function changeRole(UserRoleUpdateRequest $request)
+    {
+        try {
+
+            $user = User::where('uuid', $request->get('user_id'))->first();
+
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'User not found'
+                ], 404);
+            }
+
+            if ($user->hasRole('admin')) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Can`t change the role of an admin user'
+                ], 403);
+            }
+
+
+            $role = Role::find($request->get('role_id'));
+
+            if (!$role) {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Role not found'
+                ], 404);
+            }
+
+            if ($role->name === 'admin') {
+                return response()->json([
+                    'status' => 'error',
+                    'result' => 'Not allowed to set role admin in this version'
+                ], 409);
+            }
+
+            $user->roles()->sync($role);
+
+            // Force the user to reload
+            (new SanctumRevoker($user))->deleteAllTokens();
+
+            return response()->json([
+                'status' => 'successfully',
             ]);
 
 

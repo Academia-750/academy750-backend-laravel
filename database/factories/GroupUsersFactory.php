@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Group;
 use App\Models\GroupUsers;
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -16,7 +17,7 @@ class GroupUsersFactory extends Factory
 
         return [
             'group_id' => config('app.env') === 'documentation' ? 1 : Group::factory()->create()->id,
-            'user_id' => config('app.env') === 'documentation' ? 2 : User::factory()->student()->create()->id,
+            'user_id' => config('app.env') === 'documentation' ? 2 : User::factory()->student()->allowedTo(Permission::SEE_LESSONS)->create()->id,
             'discharged_at' => null,
             'created_at' => now(),
             'updated_at' => now(),

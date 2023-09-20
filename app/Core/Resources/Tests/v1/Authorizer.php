@@ -70,7 +70,7 @@ class Authorizer implements TestsInterface
         }
 
 
-        if (!Auth::user()->hasPermissionTo(Permission::GENERATE_TESTS, 'web')) {
+        if (!Auth::user()->can(Permission::GENERATE_TESTS)) {
             abort(403, "No tienes permisos para generar tests");
         }
 

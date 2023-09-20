@@ -4,16 +4,11 @@ namespace Database\Seeders;
 
 use App\Core\Services\UserService;
 use App\Core\Services\UserServiceTrait;
-//use App\Core\Services\UuidGeneratorService;
-//use App\Models\Permission;
 use App\Core\Services\UuidGeneratorService;
 use App\Models\Role;
 use App\Models\User;
-use Database\Seeders\Credentials\Users\RegisterCredentials;
-//use Faker\Factory;
+
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class UserSeeder extends Seeder
 {

@@ -41,7 +41,13 @@ class DBApp implements UsersInterface
 
     public function index()
     {
-        return $this->model::applyFilters()->applySorts()->applyIncludes()->jsonPaginate();
+        return $this->model::applyFilters()
+            ->applySorts()
+            ->applyIncludes()
+            ->whereDoesntHave('roles', function ($query) {
+                $query->where('name', 'admin');
+            })
+            ->jsonPaginate();
     }
 
     public function create($request): array
@@ -60,10 +66,13 @@ class DBApp implements UsersInterface
                 'password' => Hash::make($secureRandomPassword)
             ]);
 
-            UserService::syncRolesToUser(
-                $request->get('roles'),
-                $userCreated
-            );
+            $defaultRole = Role::defaultRole();
+
+            if (!$defaultRole) {
+                abort(500, 'Default Role not set');
+            }
+            $userCreated->roles()->save($defaultRole);
+
 
             DB::commit();
 
@@ -209,33 +218,25 @@ class DBApp implements UsersInterface
 
             DB::beginTransaction();
             if ($request->get('reason') === 'reset-password') {
-                $student = User::firstWhere('email', '=', $request->get('email'));
+                $user = User::firstWhere('email', '=', $request->get('email'));
 
-                if (!$student || $student->hasRole('admin')) {
+                if (!$user) {
                     return [
                         'status' => 'failed',
                         'message' => 'No se encontró al usuario'
                     ];
                 }
 
-                if (!$student->hasRole('student')) {
-                    return [
-                        'status' => 'failed',
-                        'message' => 'No es válido el correo electrónico'
-                    ];
-                }
-
                 $password_generated = UserService::generateSecureRandomPassword();
 
+                $user->password = Hash::make($password_generated);
+                $user->save();
 
-                $student->password = Hash::make($password_generated);
-                $student->save();
-
-                DB::table('password_resets')->where('email', $student->email)->delete();
-                ActionsAccountUser::removeAllTokensByUserReally($student);
+                DB::table('password_resets')->where('email', $user->email)->delete();
+                ActionsAccountUser::removeAllTokensByUserReally($user);
 
                 DB::commit();
-                $student->notify(new ResetPasswordStudentNotification(compact('password_generated')));
+                $user->notify(new ResetPasswordStudentNotification(compact('password_generated')));
 
                 return [
                     'status' => 'successfully',

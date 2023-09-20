@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\TestType;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class TestTypeSeeder extends Seeder
 {

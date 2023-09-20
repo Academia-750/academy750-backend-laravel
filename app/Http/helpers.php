@@ -82,3 +82,84 @@ function filterToQuery($query, $filter)
 
     return $query;
 }
+
+
+
+abstract class DocumentType
+{
+    const PDF = 'PDF';
+    const WORD = 'Word Document';
+    const IMAGE = 'Image';
+    const VIDEO = 'Video';
+    const UNKNOWN = 'Unknown Document Type';
+    const EMPTY = 'Empty';
+}
+
+
+function getDocumentTypeFromURL($url)
+{
+    if (!$url) {
+        return DocumentType::EMPTY;
+    }
+
+    /**
+     * We skip this call on TESTING environment where the URLs are fake
+     */
+    // Get the headers of the remote file using HEAD request
+    $headers = config('app.env') !== 'testing' ? get_headers($url, 1) : [];
+
+    // Check if a 'Content-Type' header is present
+    if (isset($headers['Content-Type'])) {
+        $contentType = $headers['Content-Type'];
+
+        // Check if it's a PDF
+        if (strpos($contentType, 'application/pdf') !== false) {
+            return DocumentType::PDF;
+        }
+        // Check if it's a Word document (DOC or DOCX)
+        if (strpos($contentType, 'application/msword') !== false || strpos($contentType, 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') !== false) {
+            return DocumentType::WORD;
+        }
+        // Check if it's an image (common image types)
+        if (strpos($contentType, 'image/') === 0) {
+            return DocumentType::IMAGE;
+        }
+        // Check if it's a video (common video types)
+        if (strpos($contentType, 'video/') === 0) {
+            return DocumentType::VIDEO;
+        }
+        // Add more checks for other document types as needed
+
+        // If none of the known content types match, you can return a generic type
+        return DocumentType::UNKNOWN;
+    }
+
+    // If there's no 'Content-Type' header, you can also check the file extension
+    $pathInfo = pathinfo($url);
+    $extension = strtolower($pathInfo['extension']);
+
+    // Check the file extension for known types
+    switch ($extension) {
+        case 'pdf':
+            return DocumentType::PDF;
+        case 'doc':
+        case 'docx':
+            return DocumentType::WORD;
+        // Check for common image extensions
+        case 'jpg':
+        case 'jpeg':
+        case 'png':
+        case 'gif':
+        case 'bmp':
+            return DocumentType::IMAGE;
+        // Check for common video extensions
+        case 'mp4':
+        case 'avi':
+        case 'mov':
+        case 'wmv':
+            return DocumentType::VIDEO;
+        // Add more cases for other document types
+        default:
+            return DocumentType::UNKNOWN;
+    }
+}

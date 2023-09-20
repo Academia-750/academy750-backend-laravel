@@ -37,7 +37,7 @@ class CalendarLessonRequest extends FormRequest
                 'example' => '2023-02-01'
             ],
             'to' => [
-                'description' => 'To Date (Including that date',
+                'description' => 'To Date (Including that date)',
                 'example' => '2023-02-05'
             ],
             'content' => [

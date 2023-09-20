@@ -10,6 +10,7 @@
         "doctrine/dbal": "^3.6",
         "guzzlehttp/guzzle": "^7.2",
         "hackzilla/password-generator": "^1.6",
+        "intervention/image": "^2.7",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
@@ -17,6 +18,8 @@
         "predis/predis": "^2.2",
         "psr/simple-cache": "2.0",
         "sentry/sentry-laravel": "^3.4",
+        "setasign/fpdf": "1.8.*",
+        "setasign/fpdi": "^2.0",
         "spatie/laravel-permission": "^5.5"
     },
     "require-dev": {

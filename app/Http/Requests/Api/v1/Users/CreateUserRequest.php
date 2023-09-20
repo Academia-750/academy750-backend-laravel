@@ -44,8 +44,6 @@ class CreateUserRequest extends FormRequest
                 'required',
                 'email', Rule::unique('users', 'email')
             ],
-            'roles' => ['required', 'array', 'min:1'],
-            'roles.*' => ['string', 'distinct:strict', 'exists:roles,id'],
         ];
     }
 

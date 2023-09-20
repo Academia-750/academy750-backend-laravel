@@ -22,4 +22,14 @@ class SearchUserRequest extends FormRequest
             ]
         ];
     }
+
+    public function queryParameters()
+    {
+        return [
+            'content' => [
+                'description' => 'Search by substring match (name, dni)',
+                'example' => '',
+            ],
+        ];
+    }
 }

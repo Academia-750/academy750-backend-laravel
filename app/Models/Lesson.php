@@ -38,15 +38,14 @@ class Lesson extends Model
 
     public function students()
     {
-        return $this->belongsToMany(User::class)->withPivot(['group_name', 'group_id'])->withTimestamps();
+        return $this->belongsToMany(User::class)->withPivot(['group_name', 'group_id', 'will_join'])->withTimestamps();
     }
 
 
     public function getColor()
     {
-        $groups = array_count_values($this->students()->pluck('group_id')->toArray());
+        $groups = array_count_values($this->students()->wherePivotNotNull('group_id')->pluck('group_id')->toArray());
         $groupsIdOrdered = array_keys($groups);
-
         if (count($groupsIdOrdered) === 0) {
             return null;
         }
@@ -95,9 +94,9 @@ class Lesson extends Model
      */
     public function syncGroup($group)
     {
-        $this->students()->newPivotStatement()->where('group_id', $group->id)->delete();
-
         // Will delete any student that doesnt belong to the group anymore. Add the current active ones
+        DB::table('lesson_user')->where('lesson_id', $this->id)->where('group_id', $group->id)->delete();
+
         $studentsIds = $group->users()
             ->whereNull('discharged_at')
             ->whereNotExists(

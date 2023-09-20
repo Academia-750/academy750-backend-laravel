@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use App\Core\Resources\Storage\Storage;
+use App\Core\Resources\Watermark\Watermark;
+use DocumentType;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+
 
 
 class Material extends Model
@@ -57,4 +60,43 @@ class Material extends Model
         return Storage::for($material)->deleteFile($material); // Delete the old one.
     }
 
+
+    public function canDownload(User $user)
+    {
+
+        if ($this->type === 'recording') {
+            return $user->can(Permission::SEE_LESSON_RECORDINGS);
+        }
+
+        return $user->can(Permission::SEE_LESSON_MATERIALS);
+    }
+    public function downloadUrl(User $user)
+    {
+
+        if ($this->type === 'recording') {
+            return $this->url;
+        }
+
+        // else $this->type === 'material'
+
+        $docType = $this->getDocumentTypeFromURL();
+
+        if ($docType === DocumentType::PDF) {
+            return Watermark::get()->pdf($this->url, $this->name, $user);
+        }
+        if ($docType === DocumentType::IMAGE) {
+            return Watermark::get()->image($this->url, $this->name, $user);
+        }
+
+        // Other Doc type
+        return $this->url;
+    }
+
+
+
+
+    public function getDocumentTypeFromURL()
+    {
+        return getDocumentTypeFromURL($this->url);
+    }
 }

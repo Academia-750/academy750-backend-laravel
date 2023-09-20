@@ -17,6 +17,7 @@ use App\Http\Resources\Api\Lesson\v1\LessonResource;
 use App\Models\Group;
 use App\Models\Lesson;
 use App\Models\Material;
+use App\Models\Permission;
 use App\Models\User;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Carbon;
@@ -28,7 +29,8 @@ use Illuminate\Support\Facades\Log;
 /**
  * @group Lessons
  *
- * APIs for managing user's Lessons
+ * APIs for managing lessons.
+ * Only for administrator users.
  */
 class LessonsController extends Controller
 {
@@ -136,6 +138,7 @@ class LessonsController extends Controller
      *        "is_active" : false,
      *        "url" : "https://zoom-url.com" ,
      *        "student_count": 23,
+     *        "will_join_count": 23,
      *        "color": "#990033"
      *        "groups": [
      *               { "group_id": 1, "group_name" : "Group A" },
@@ -151,7 +154,13 @@ class LessonsController extends Controller
     {
         try {
 
-            $lesson = Lesson::query()->find($lessonId);
+            $lesson = Lesson::query()->withCount([
+                'students as student_count',
+                'students as will_join_count' => function ($query) {
+                    $query->where('will_join', true);
+                },
+            ])->find($lessonId);
+
             if (!$lesson) {
                 return response()->json([
                     'status' => 'error',
@@ -160,7 +169,6 @@ class LessonsController extends Controller
             }
 
             $lesson->color = $lesson->getColor();
-            $lesson->student_count = $lesson->students()->count();
             $lesson->groups = $lesson->groups();
 
             return LessonResource::make($lesson)->response()->setStatusCode(200);
@@ -226,7 +234,6 @@ class LessonsController extends Controller
      *
      * Lessons planned between two dates.
      * @authenticated
-     * @urlParam lessonId integer required Lesson ID
      * @response {
      *     "results": [
      *        "id": 1,
@@ -239,6 +246,7 @@ class LessonsController extends Controller
      *        "is_active" : false,
      *        "url" : "https://zoom-url.com" ,
      *        "student_count": 23,
+     *        "will_join_count": 23,
      *        "color": "#990033"
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
@@ -272,12 +280,12 @@ class LessonsController extends Controller
             $results = (clone $query)
                 ->select('lessons.*', 'lesson_group.color')
                 ->leftJoin(...Lesson::getColorSQL())
-                ->selectSub(function ($query) {
-                    $query->from('lesson_user')
-                        ->selectRaw('COUNT(*)')
-                        ->whereColumn('lesson_user.lesson_id', 'lessons.id');
-                }, 'student_count')
-                // --
+                ->withCount([
+                    'students as student_count',
+                    'students as will_join_count' => function ($query) {
+                        $query->where('will_join', true);
+                    },
+                ])
                 ->orderBy('date', 'asc')
                 ->orderBy('start_time', 'asc')
                 ->get();
@@ -376,7 +384,7 @@ class LessonsController extends Controller
                 ], 404);
             }
 
-            if (!$user->hasRole('student')) {
+            if (!$user->can(Permission::SEE_LESSONS)) {
                 return response()->json([
                     'status' => 'error',
                     'result' => 'Only students can join lessons'
@@ -555,13 +563,17 @@ class LessonsController extends Controller
      * Search materials
      * @authenticated
      * @urlParam lessonId integer Lesson Id
+     * Required Admin permissions or SEE_JOIN and SEE_LESSON_PARTICIPANTS
      * @response {
      *     "results": [
      *        "user_id": 1,
      *        "user_uuid" : "uuid" ,
      *        "group_name" : "My Group" ,
      *        "group_id" : 3,
-     *        "user_dni" : "00000000T" ,
+     *        "dni" : "00000000T" ,
+     *        "full_name" : "Alex Menir" ,
+     *        "uuid" : "users' uuid" ,
+     *        "user_id" : 22 ,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -569,7 +581,8 @@ class LessonsController extends Controller
      *      "groups": [
      *             { "group_id": 1, "group_name" : "Group A" },
      *             { "group_id": 2, "group_name" : "Group B" }
-     *      ]
+     *      ],
+     *      "will_join_count": 0,
      *  }
      * @response status=404 scenario="Lesson not found"
      */
@@ -597,6 +610,7 @@ class LessonsController extends Controller
                     'users.dni',
                     'users.full_name',
                     'users.uuid',
+                    'lesson_user.will_join',
                     'lesson_user.group_id',
                     'lesson_user.group_name',
                     'lesson_user.created_at as created_at',
@@ -617,6 +631,8 @@ class LessonsController extends Controller
 
             $total = (clone $query)->count();
 
+            $will_join_count = (clone $query)->where('lesson_user.will_join', true)->count();
+
             $groups = $lesson->groups();
 
 
@@ -624,6 +640,7 @@ class LessonsController extends Controller
                 'status' => 'successfully',
                 'results' => $results,
                 'total' => $total,
+                'will_join_count' => $will_join_count,
                 'groups' => $groups
             ]);
         } catch (\Exception $err) {
@@ -748,7 +765,6 @@ class LessonsController extends Controller
      *        "material_id": 1,
      *        "type" : "recording" ,
      *        "tags" : "fire,water,smoke",
-     *        "user_dni" : "00000000T" ,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],

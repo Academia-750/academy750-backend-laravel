@@ -2,9 +2,9 @@
 
 namespace Tests\traits;
 
-use Database\Seeders\DatabaseSeeder;
 use Database\Seeders\PermissionSeeder;
 use Database\Seeders\RoleSeeder;
+
 use Illuminate\Support\Facades\Artisan;
 
 trait TestingAcademia750

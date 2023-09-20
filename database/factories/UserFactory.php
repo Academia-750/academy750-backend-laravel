@@ -66,4 +66,13 @@ class UserFactory extends Factory
         });
     }
 
+    public function allowedTo($permissions): Factory
+    {
+        return $this->state(function (array $attributes) {
+            return [];
+        })->afterCreating(function (User $user) use ($permissions) {
+            $user->givePermissionTo($permissions);
+        });
+    }
+
 }

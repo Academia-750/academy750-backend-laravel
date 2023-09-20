@@ -2,7 +2,8 @@
 
 namespace App\Http\Requests\Api\v1\Lesson;
 
-use App\Models\Material;
+
+use App\Models\Permission;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -10,7 +11,12 @@ class ListLessonStudentsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        if ($this->user()->hasRole('admin')) {
+            return true;
+        }
+        // Not admin can also see this list if the have the proper permissions
+        return $this->user()->can(Permission::SEE_LESSONS)
+            && $this->user()->can(Permission::SEE_LESSON_PARTICIPANTS);
     }
 
     private $orderBy = ['full_name', 'dni', 'group_name', 'created_at', 'updated_at'];
