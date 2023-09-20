@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\StudentLessons\StudentLessonSearchRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonJoinRequest;
@@ -111,15 +112,12 @@ class StudentLessonsController extends Controller
      * @authenticated
      * @response {
      *     "results": [
-     *        "id": 1,
-     *        "name" : "Law Part 2" ,
-     *        "date" : "2023-02-03" ,
-     *        "start_time" : '10:00' ,
-     *        "end_time" : '12:00' ,
-     *        "description" : "We will go through the chapter 2 of the book" ,
-     *        "is_online" : false ,
-     *        "url" : "https://zoom-url.com" ,
-     *        "color": "#990033"
+     *        "material_id": 1,
+     *        "name" : "Material Law 2" ,
+     *        "type" : "material" ,
+     *        "tags" : "fire,water" ,
+     *        "lesson_name" : 'Advance Lesson' ,
+     *        "lesson_id" : 34 ,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -159,6 +157,8 @@ class StudentLessonsController extends Controller
                 ->where('lesson_user.user_id', $request->user()->id)
                 ->where('lessons.is_active', true)
                 ->select([
+                    'lessons.name as lesson_name',
+                    'lessons.id as lesson_id',
                     'materials.name as name',
                     'materials.type',
                     'materials.tags',
@@ -186,6 +186,60 @@ class StudentLessonsController extends Controller
                 'total' => $total
             ]);
 
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Students: Search lessons
+     *
+     * Search lessons of the student via name
+     * Required `see-lessons` permission.
+     * @authenticated
+     * @response {
+     *     "results": [
+     *        "id": 1,
+     *        "name" : "Material Law 2" ,
+     *        "date" : "material" ,
+     *      ]
+     *  }
+     * @response status=403 scenario="Required `see-lessons` and `material-lessons` OR `recording-lessons` permissions"
+     */
+    public function getStudentLessonSearch(StudentLessonSearchRequest $request)
+    {
+        try {
+            $conditions = [
+                parseFilter(['lessons.name'], $request->get('content'), 'or_like')
+            ];
+
+            $query = DB::table('lesson_user')
+                ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
+                ->select([
+                    'lessons.name as name',
+                    'lessons.id as id',
+                    'lessons.date as date',
+                ]);
+
+            filterToQuery(
+                $query,
+                $conditions
+            );
+
+            $results = (clone $query)
+                ->orderBy('name', 'desc')
+                ->limit($request->get('limit') ?? 20)
+                ->get();
+
+            return response()->json([
+                'status' => 'successfully',
+                'results' => $results
+            ]);
 
         } catch (\Exception $err) {
             Log::error($err->getMessage());

@@ -146,14 +146,17 @@ class StudentLessonMaterialsListTest extends TestCase
 
         $data = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'limit' => 1]))->assertStatus(200);
         $this->assertEquals(count($data['results']), 1);
-
         $material = Material::find($data['results'][0]['material_id']);
+        $lesson = Lesson::find($data['results'][0]['lesson_id']);
 
         $this->assertNotNull($material);
         $this->assertEquals($data['results'][0]['material_id'], $material->id);
         $this->assertEquals($data['results'][0]['name'], $material->name);
         $this->assertEquals($data['results'][0]['type'], $material->type);
         $this->assertEquals($data['results'][0]['tags'], $material->tags);
+        $this->assertEquals($data['results'][0]['lesson_id'], $lesson->id);
+        $this->assertEquals($data['results'][0]['lesson_name'], $lesson->name);
+
         $this->assertNotNull($data['results'][0]['created_at']);
         $this->assertNotNull($data['results'][0]['updated_at']);
         $this->assertFalse(isset($data['results'][0]['url'])); // We don't expose the URL in this end point
