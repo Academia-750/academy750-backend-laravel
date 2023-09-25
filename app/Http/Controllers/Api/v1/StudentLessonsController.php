@@ -131,9 +131,17 @@ class StudentLessonsController extends Controller
 
             // Verify Im authorized to check this lessons. (Early feedback)
             if ($request->get('lessons')) {
-                $not_auth = $request->user()->whereDoesntHave('lessons', function ($query) use ($request) {
-                    $query->where('lesson_id', $request->get('lessons'));
-                })->pluck('id');
+                $not_auth = Lesson::query()
+                    ->whereIn('id', $request->get('lessons'))
+                    ->whereNotIn(
+                        'id',
+                        DB::table('lesson_user')
+
+                            ->select('lesson_id')
+                            ->whereIn('lesson_id', $request->get('lessons'))
+                            ->where('user_id', $request->user()->id)
+                    )
+                    ->pluck('id');
 
                 if (count($not_auth) > 0) {
                     return response()->json([
@@ -431,6 +439,7 @@ class StudentLessonsController extends Controller
                     'error' => "Material not available"
                 ], 409);
             }
+
 
             return response()->json([
                 'status' => 'successfully',

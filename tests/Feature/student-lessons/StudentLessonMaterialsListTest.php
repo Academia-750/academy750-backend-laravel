@@ -184,6 +184,37 @@ class StudentLessonMaterialsListTest extends TestCase
     }
 
 
+    /** @test */
+    public function filter_by_lesson_complex_200(): void
+    {
+        // There was a bug cos the query was returning the users that didnt have this lesson.
+        // Here we reproduce adding noise from other users
+        User::factory()->count(3)->create();
+        $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'lessons' => [$this->lessons[0]->id]]))->assertStatus(200);
+
+        $this->assertEquals($response['total'], 2);
+    }
+
+    /** @test */
+    public function filter_by_lesson_403(): void
+    {
+        $lesson = Lesson::factory()->create();
+        $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'lessons' => [$lesson->id]]))->assertStatus(403);
+        $this->assertStringContainsString($lesson->id, $response['error']);
+
+        // Multiple Lessons
+        $lesson2 = Lesson::factory()->create();
+        $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'lessons' => [$lesson->id, $lesson2->id]]))->assertStatus(403);
+        $this->assertStringContainsString($lesson->id, $response['error']);
+        $this->assertStringContainsString($lesson2->id, $response['error']);
+
+
+        // Some lesson are ok others not
+        $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'lessons' => [$lesson->id, $this->lessons[0]->id]]))->assertStatus(403);
+        $this->assertStringContainsString($lesson->id, $response['error']);
+        $this->assertStringNotContainsString($this->lessons[0]->id, $response['error']);
+    }
+
 
     /** @test */
     public function pagination_200(): void
@@ -335,7 +366,6 @@ class StudentLessonMaterialsListTest extends TestCase
             ->create(['is_active' => false]); // This is the matter!
 
         $noActiveLesson->materials()->attach(Material::factory()->withUrl()->count(2)->create(['type' => 'material']));
-
 
         $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'lessons' => [$noActiveLesson->id]]))->assertStatus(200);
         $this->assertEquals($response['total'], 0);
