@@ -28,6 +28,9 @@ class ListLessonStudentsRequest extends FormRequest
                 'string',
                 Rule::in($this->orderBy)
             ],
+            'willJoin' => [
+                'boolean',
+            ],
             'order' => [
                 Rule::in([1, -1])
             ],
@@ -48,6 +51,10 @@ class ListLessonStudentsRequest extends FormRequest
     public function queryParameters()
     {
         return [
+            'willJoin' => [
+                'description' => 'Filter by the users that will be join or not',
+                'example' => true,
+            ],
             'orderBy' => [
                 'description' => 'Property to order by ' . join($this->orderBy),
                 'example' => 'created_at'
