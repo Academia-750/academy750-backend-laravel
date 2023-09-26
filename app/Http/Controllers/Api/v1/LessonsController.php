@@ -574,6 +574,7 @@ class LessonsController extends Controller
      *        "full_name" : "Alex Menir" ,
      *        "uuid" : "users' uuid" ,
      *        "user_id" : 22 ,
+     *        "will_join" : 0,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],

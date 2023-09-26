@@ -269,7 +269,7 @@ class StudentLessonMaterialsListTest extends TestCase
             rsort($sorted);
 
             $this->assertEquals($attributeList, $sorted);
-        }, ['name']);
+        }, ['name', 'lesson_name']);
     }
 
     /** @test */
