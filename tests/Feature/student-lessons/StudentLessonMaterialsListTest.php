@@ -160,7 +160,10 @@ class StudentLessonMaterialsListTest extends TestCase
         $this->assertNotNull($data['results'][0]['created_at']);
         $this->assertNotNull($data['results'][0]['updated_at']);
         $this->assertFalse(isset($data['results'][0]['url'])); // We don't expose the URL in this end point
+        $this->assertEquals($data['results'][0]['has_url'], 1);
+
     }
+
 
 
     /** @test */
@@ -305,6 +308,23 @@ class StudentLessonMaterialsListTest extends TestCase
 
         $this->assertEquals($data['total'], 1);
         $this->assertNotNull($this->lessons[1]->materials()->find($data['results'][0]['material_id']));
+    }
+
+    /** @test */
+    public function has_url_is_false_200(): void
+    {
+        $material = $this->lessons[0]->materials()->first();
+        $material->url = '';
+        $material->save();
+
+        $data = $this->get("api/v1/student-lessons/materials?" . Arr::query([
+            'type' => 'material',
+            'content' => $material->name
+        ]))->assertStatus(200);
+
+        $this->assertEquals($data['total'], 1);
+        $this->assertFalse(isset($data['results'][0]['url'])); // We don't expose the URL in this end point
+        $this->assertEquals($data['results'][0]['has_url'], 0);
     }
 
     /** @test */

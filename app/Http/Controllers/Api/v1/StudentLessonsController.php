@@ -118,6 +118,7 @@ class StudentLessonsController extends Controller
      *        "tags" : "fire,water" ,
      *        "lesson_name" : 'Advance Lesson' ,
      *        "lesson_id" : 34 ,
+     *        "has_url": true,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -173,7 +174,8 @@ class StudentLessonsController extends Controller
                     'lesson_material.material_id',
                     'lesson_material.created_at as created_at',
                     'lesson_material.updated_at as updated_at'
-                ]);
+                ])->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
+            ;
 
             filterToQuery(
                 $query,

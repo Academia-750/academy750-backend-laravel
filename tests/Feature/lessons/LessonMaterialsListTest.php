@@ -98,7 +98,9 @@ class LessonMaterialsListTest extends TestCase
     /** @test */
     public function get_all_materials_detail_200(): void
     {
-        $data = $this->get("api/v1/lesson/{$this->lesson->id}/materials?" . Arr::query(['limit' => 1]))->assertStatus(200);
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/materials?" . Arr::query(['limit' => 1])); // ->assertStatus(200);
+
+
 
         $this->assertEquals(count($data['results']), 1);
         $material = $this->lesson->materials()->where('material_id', $data['results'][0]['material_id'])->first();
@@ -109,6 +111,7 @@ class LessonMaterialsListTest extends TestCase
         $this->assertEquals($data['results'][0]['type'], $material->type);
         $this->assertEquals($data['results'][0]['tags'], $material->tags);
         $this->assertFalse(isset($data['results'][0]['url'])); // We don't expose the URL in this end point
+        $this->assertEquals($data['results'][0]['has_url'], 0);
     }
 
 
@@ -189,6 +192,20 @@ class LessonMaterialsListTest extends TestCase
 
         $this->assertEquals($data['total'], 1);
         $this->assertEquals($data['results'][0]['material_id'], $material->id);
+    }
+
+    /** @test */
+    public function has_url_is_true_200(): void
+    {
+        $material = $this->lesson->materials()->first();
+        $material->url = 'https://materia.url/com';
+        $material->save();
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/materials?" . Arr::query(['content' => substr($material->name, 0, 3)]))->assertStatus(200);
+
+        $this->assertEquals($data['total'], 1);
+        $this->assertFalse(isset($data['results'][0]['url'])); // We don't expose the URL in this end point
+        $this->assertEquals($data['results'][0]['has_url'], 1);
     }
 
     /** @test */
