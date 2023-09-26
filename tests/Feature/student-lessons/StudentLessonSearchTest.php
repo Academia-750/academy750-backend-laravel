@@ -121,7 +121,10 @@ class StudentLessonSearchTest extends TestCase
         // The student is not assigned this lessons
         $lessons = Lesson::factory()
             ->count(2)
+            ->withStudents(User::factory()->create())
             ->create(['is_active' => true]);
+
+
 
         $data = $this->get("api/v1/student-lessons/search?" . Arr::query([]))->assertStatus(200);
         $this->assertEquals(count($data['results']), 4);

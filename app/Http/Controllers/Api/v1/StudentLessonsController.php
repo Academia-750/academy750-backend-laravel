@@ -225,6 +225,7 @@ class StudentLessonsController extends Controller
     {
         try {
             $conditions = [
+                parseFilter('user_id', $request->user()->id),
                 parseFilter(['lessons.name'], $request->get('content'), 'or_like')
             ];
 
