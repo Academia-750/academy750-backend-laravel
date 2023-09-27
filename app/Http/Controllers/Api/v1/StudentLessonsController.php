@@ -290,14 +290,6 @@ class StudentLessonsController extends Controller
                 ], 404);
             }
 
-            if (!$lesson->is_active) {
-                return response()->json([
-                    'status' => 'error',
-                    'error' => "The lesson is not active yet"
-                ], 409);
-            }
-
-
             $student = $lesson->students()->where('user_id', $request->user()->id)->first();
 
             if (!$student) {

@@ -85,10 +85,13 @@ class StudentLessonsJoinTest extends TestCase
     }
 
     /** @test */
-    public function lesson_not_active_409(): void
+    public function lesson_not_active_200(): void
     {
-        $lesson = Lesson::factory()->create(['is_active' => false]);
-        $this->put("api/v1/student-lessons/{$lesson->id}/join", ['join' => true])->assertStatus(409);
+        // The student CAN join non active lessons
+        $this->lesson->is_active = false;
+        $this->lesson->save();
+
+        $this->put("api/v1/student-lessons/{$this->lesson->id}/join", ['join' => true])->assertStatus(200);
     }
 
     /** @test */
