@@ -601,7 +601,7 @@ class LessonsController extends Controller
 
             $conditions = [
                 parseFilter('lesson_id', $lessonId),
-                parseFilter('will_join', $request->get('will_join')),
+                parseFilter('will_join', $request->get('willJoin')),
                 parseFilter(['users.dni', 'users.full_name', 'lesson_user.group_name'], $request->get('content'), 'or_like')
             ];
 

@@ -317,7 +317,7 @@ class LessonStudentsListTest extends TestCase
         $this->lesson->students()->updateExistingPivot($student1->id, ['will_join' => 1]);
         $this->lesson->students()->updateExistingPivot($student2->id, ['will_join' => 1]);
 
-        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['will_join' => 1]))->assertStatus(200);
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['willJoin' => 1]))->assertStatus(200);
 
         $this->assertEquals($data['total'], 2);
         $this->assertEquals($data['results'][0]['user_id'], $student1->id);
@@ -336,7 +336,7 @@ class LessonStudentsListTest extends TestCase
         $this->lesson->students()->updateExistingPivot($student1->id, ['will_join' => 1]);
         $this->lesson->students()->updateExistingPivot($student2->id, ['will_join' => 1]);
 
-        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['will_join' => 0]))->assertStatus(200);
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['willJoin' => 0]))->assertStatus(200);
 
         $ids = $this->map($data['results'], 'user_id');
 
