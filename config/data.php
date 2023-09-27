@@ -20,11 +20,11 @@ return [
         // (Lime)
         '#0000FF',
         // (Blue)
-        '#FFFF00',
-        // (Yellow)
+        '#C6CE00',
+        // (Yellow Lemon)
         '#FF00FF',
         // (Magenta)
-        '#00FFFF',
+        '#009C8C',
         // (Cyan)
         '#FFA500',
         // (Orange)
@@ -33,9 +33,9 @@ return [
         '#008000',
         // (Green)
         '#000080',
-        // (Navy)
-        '#FFC0CB',
-        // (Pink)
+        // (Sea Blue)
+        '#660000',
+        // (Red Blood)
         '#800000',
         // (Maroon)
         '#008080',
@@ -46,12 +46,12 @@ return [
         // (Orange Red)
         '#808000',
         // (Olive)
-        '#C0C0C0',
-        // (Silver)
-        '#B1F0F0',
-        // (Alice Blue)
-        '#FF69B4',
-        // (Hot Pink)
+        '#111111',
+        // (Almost Black)
+        '#1B7161',
+        // (Dark Green)
+        '#CA6212',
+        // (Dark Orange)
         '#828282',
         // (Maroon)
     ],
