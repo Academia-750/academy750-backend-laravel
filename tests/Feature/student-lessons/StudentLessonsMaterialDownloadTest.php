@@ -152,6 +152,18 @@ class StudentLessonsMaterialDownloadTest extends TestCase
     }
 
     /** @test */
+    public function handle_download_error_424(): void
+    {
+        $mock = $this->partialMock(Watermark::class);
+        $mock->shouldReceive('pdf')->once()->andThrow(new \Exception);
+
+        $this->material->url = 'http://test.url/mypdf.pdf';
+        $this->material->save();
+
+        $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(424);
+    }
+
+    /** @test */
     public function download_image_watermark_200(): void
     {
         $mock = $this->partialMock(Watermark::class);

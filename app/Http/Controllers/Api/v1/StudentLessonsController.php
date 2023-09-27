@@ -400,6 +400,7 @@ class StudentLessonsController extends Controller
      * @response status=404 scenario="Meterial not found"
      * @response status=403 scenario="Required `material-lessons` OR `recording-lessons` permissions"
      * @response status=409 scenario="Material not available"
+     * @response status=424 scenario="Error generating the PDF URL"
      */
     public function downloadMaterial(Request $request, int $materialId)
     {
@@ -411,6 +412,7 @@ class StudentLessonsController extends Controller
                     'error' => "Material not found"
                 ], 404);
             }
+
 
             if (!$material->canDownload($request->user())) {
                 return response()->json([
@@ -436,13 +438,25 @@ class StudentLessonsController extends Controller
             }
 
 
+            /** We handle Download errors differently */
+            try {
+                $url = $material->downloadUrl($request->user());
+            } catch (\Exception $err) {
+                Log::error($err->getMessage());
+                return response()->json([
+                    'status' => 'error',
+                    'error' => $err->getMessage()
+                ], 424);
+            }
+
             return response()->json([
                 'status' => 'successfully',
-                'url' => $material->downloadUrl($request->user())
+                'url' => $url,
             ]);
 
 
         } catch (\Exception $err) {
+
             Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',
