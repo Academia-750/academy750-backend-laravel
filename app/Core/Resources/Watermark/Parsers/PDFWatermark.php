@@ -193,7 +193,7 @@ class PDFWatermark extends Fpdi
         /**
          * RECTANGLE
          */
-        $this->SetAlpha(0.4);
+        $this->SetAlpha(0.5);
         $this->SetFillColor(...$this->hexToRGB($this->GRAY_BACKGROUND));
         $this->Rect(0, $sourcePageHeight - 10, $sourcePageWidth, $sourcePageHeight, 'F');
 
