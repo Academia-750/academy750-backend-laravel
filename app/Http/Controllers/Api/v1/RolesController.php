@@ -282,6 +282,17 @@ class RolesController extends Controller
                 ], 409);
             }
 
+            $defaultRole = Role::where('default_role', 1)->where('guard_name', $role->guard_name)->first();
+
+            if (!$defaultRole) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Remove a role without a default role is dangerous'
+                ], 500);
+            }
+
+            DB::table('model_has_roles')->where('role_id', $role->id)->update(['role_id' => $defaultRole->id]);
+
             $role->delete();
 
             return response()->json([

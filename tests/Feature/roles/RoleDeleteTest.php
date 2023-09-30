@@ -19,7 +19,6 @@ class RoleDeleteTest extends TestCase
 
     private $user;
 
-    private $body;
 
     private $role;
 
@@ -114,4 +113,26 @@ class RoleDeleteTest extends TestCase
         $this->assertEquals(DB::table('model_has_roles')->where('role_id', $this->role->id)->count(), 0);
     }
 
+    /** @test */
+    public function users_get_default_role_when_current_role_is_deleted_200(): void
+    {
+        $user = User::factory()->withRole($this->role->name)->create();
+        $defaultRole = Role::where('default_role', 1)->first();
+
+        $this->delete("api/v1/role/{$this->role->id}")->assertStatus(200);
+
+        $updated_user = DB::table('model_has_roles')->where('model_id', $user->id)->first();
+
+        $this->assertEquals($updated_user->role_id, $defaultRole->id);
+    }
+
+    /** @test */
+    public function cant_delete_if_no_default_role_500(): void
+    {
+        $defaultRole = Role::where('default_role', 1)->first();
+        $defaultRole->default_role = 0;
+        $defaultRole->save();
+
+        $this->delete("api/v1/role/{$this->role->id}")->assertStatus(500);
+    }
 }
