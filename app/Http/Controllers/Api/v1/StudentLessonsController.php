@@ -391,13 +391,15 @@ class StudentLessonsController extends Controller
      *
      * Allow students to get download or access the material URL.
      * Required `material-lessons` and `recording-lessons` permission according to the type of material
+     * Admin users can use also the API with no permissions required
+     *
      * @urlParam lessonId integer required Lesson Id
      * @authenticated
      * @response {
      *   'status' => 'successfully',
      *   'url' => 'https://url.com/download-material'
      * }
-     * @response status=404 scenario="Meterial not found"
+     * @response status=404 scenario="Material not found"
      * @response status=403 scenario="Required `material-lessons` OR `recording-lessons` permissions"
      * @response status=409 scenario="Material not available"
      * @response status=424 scenario="Error generating the PDF URL"
@@ -422,19 +424,22 @@ class StudentLessonsController extends Controller
             }
 
 
-            $available = $request->user()->lessons()
-                ->where('lessons.is_active', true)
-                ->whereHas('materials', function ($query) use ($material) {
-                    $query->where('materials.id', $material->id);
-                })
-                ->count();
+            if ($request->user()->hasRole('admin') === false) {
+
+                $available = $request->user()->lessons()
+                    ->where('lessons.is_active', true)
+                    ->whereHas('materials', function ($query) use ($material) {
+                        $query->where('materials.id', $material->id);
+                    })
+                    ->count();
 
 
-            if (!$available) {
-                return response()->json([
-                    'status' => 'error',
-                    'error' => "Material not available"
-                ], 409);
+                if (!$available) {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => "Material not available"
+                    ], 409);
+                }
             }
 
 

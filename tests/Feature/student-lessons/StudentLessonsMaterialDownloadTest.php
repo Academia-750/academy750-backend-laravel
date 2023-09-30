@@ -138,6 +138,19 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         $this->assertEquals($data['url'], $url);
     }
 
+
+    /** @test */
+    public function admin_can_download_too_200(): void
+    {
+        $url = 'http://test.url';
+        $this->material->url = $url; // This type will be defined to UNKONW
+        $this->material->save();
+
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)->get("api/v1/student-lessons/{$this->recording->id}/download")->assertStatus(200);
+        $this->actingAs($admin)->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(200);
+    }
     /** @test */
     public function download_pdf_watermark_200(): void
     {
