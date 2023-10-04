@@ -35,7 +35,7 @@ class NewLessonAvailable extends Notification implements ShouldQueue
 
     public function toMail($notifiable)
     {
-        $date = date('Y-m-d', $this->lesson->date);
+        $date = date('d/m/Y', strtotime($this->lesson->date));
 
         return (new MailMessage)
             ->subject("Clase  {$this->lesson->name} disponible")
