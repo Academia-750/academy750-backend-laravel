@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\StudentLessons\StudentLessonSearchRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonJoinRequest;
@@ -111,15 +112,13 @@ class StudentLessonsController extends Controller
      * @authenticated
      * @response {
      *     "results": [
-     *        "id": 1,
-     *        "name" : "Law Part 2" ,
-     *        "date" : "2023-02-03" ,
-     *        "start_time" : '10:00' ,
-     *        "end_time" : '12:00' ,
-     *        "description" : "We will go through the chapter 2 of the book" ,
-     *        "is_online" : false ,
-     *        "url" : "https://zoom-url.com" ,
-     *        "color": "#990033"
+     *        "material_id": 1,
+     *        "name" : "Material Law 2" ,
+     *        "type" : "material" ,
+     *        "tags" : "fire,water" ,
+     *        "lesson_name" : 'Advance Lesson' ,
+     *        "lesson_id" : 34 ,
+     *        "has_url": true,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -133,9 +132,17 @@ class StudentLessonsController extends Controller
 
             // Verify Im authorized to check this lessons. (Early feedback)
             if ($request->get('lessons')) {
-                $not_auth = $request->user()->whereDoesntHave('lessons', function ($query) use ($request) {
-                    $query->where('lesson_id', $request->get('lessons'));
-                })->pluck('id');
+                $not_auth = Lesson::query()
+                    ->whereIn('id', $request->get('lessons'))
+                    ->whereNotIn(
+                        'id',
+                        DB::table('lesson_user')
+
+                            ->select('lesson_id')
+                            ->whereIn('lesson_id', $request->get('lessons'))
+                            ->where('user_id', $request->user()->id)
+                    )
+                    ->pluck('id');
 
                 if (count($not_auth) > 0) {
                     return response()->json([
@@ -159,13 +166,16 @@ class StudentLessonsController extends Controller
                 ->where('lesson_user.user_id', $request->user()->id)
                 ->where('lessons.is_active', true)
                 ->select([
+                    'lessons.name as lesson_name',
+                    'lessons.id as lesson_id',
                     'materials.name as name',
                     'materials.type',
                     'materials.tags',
                     'lesson_material.material_id',
                     'lesson_material.created_at as created_at',
                     'lesson_material.updated_at as updated_at'
-                ]);
+                ])->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
+            ;
 
             filterToQuery(
                 $query,
@@ -186,6 +196,61 @@ class StudentLessonsController extends Controller
                 'total' => $total
             ]);
 
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Students: Search lessons
+     *
+     * Search lessons of the student via name
+     * Required `see-lessons` permission.
+     * @authenticated
+     * @response {
+     *     "results": [
+     *        "id": 1,
+     *        "name" : "Material Law 2" ,
+     *        "date" : "material" ,
+     *      ]
+     *  }
+     * @response status=403 scenario="Required `see-lessons` and `material-lessons` OR `recording-lessons` permissions"
+     */
+    public function getStudentLessonSearch(StudentLessonSearchRequest $request)
+    {
+        try {
+            $conditions = [
+                parseFilter('user_id', $request->user()->id),
+                parseFilter(['lessons.name'], $request->get('content'), 'or_like')
+            ];
+
+            $query = DB::table('lesson_user')
+                ->join('lessons', 'lesson_user.lesson_id', '=', 'lessons.id')
+                ->select([
+                    'lessons.name as name',
+                    'lessons.id as id',
+                    'lessons.date as date',
+                ]);
+
+            filterToQuery(
+                $query,
+                $conditions
+            );
+
+            $results = (clone $query)
+                ->orderBy('name', 'desc')
+                ->limit($request->get('limit') ?? 20)
+                ->get();
+
+            return response()->json([
+                'status' => 'successfully',
+                'results' => $results
+            ]);
 
         } catch (\Exception $err) {
             Log::error($err->getMessage());
@@ -224,14 +289,6 @@ class StudentLessonsController extends Controller
                     'error' => "Lesson not found"
                 ], 404);
             }
-
-            if (!$lesson->is_active) {
-                return response()->json([
-                    'status' => 'error',
-                    'error' => "The lesson is not active yet"
-                ], 409);
-            }
-
 
             $student = $lesson->students()->where('user_id', $request->user()->id)->first();
 
@@ -334,15 +391,18 @@ class StudentLessonsController extends Controller
      *
      * Allow students to get download or access the material URL.
      * Required `material-lessons` and `recording-lessons` permission according to the type of material
+     * Admin users can use also the API with no permissions required
+     *
      * @urlParam lessonId integer required Lesson Id
      * @authenticated
      * @response {
      *   'status' => 'successfully',
      *   'url' => 'https://url.com/download-material'
      * }
-     * @response status=404 scenario="Meterial not found"
+     * @response status=404 scenario="Material not found"
      * @response status=403 scenario="Required `material-lessons` OR `recording-lessons` permissions"
      * @response status=409 scenario="Material not available"
+     * @response status=424 scenario="Error generating the PDF URL"
      */
     public function downloadMaterial(Request $request, int $materialId)
     {
@@ -355,6 +415,7 @@ class StudentLessonsController extends Controller
                 ], 404);
             }
 
+
             if (!$material->canDownload($request->user())) {
                 return response()->json([
                     'status' => 'error',
@@ -363,28 +424,44 @@ class StudentLessonsController extends Controller
             }
 
 
-            $available = $request->user()->lessons()
-                ->where('lessons.is_active', true)
-                ->whereHas('materials', function ($query) use ($material) {
-                    $query->where('materials.id', $material->id);
-                })
-                ->count();
+            if ($request->user()->hasRole('admin') === false) {
+
+                $available = $request->user()->lessons()
+                    ->where('lessons.is_active', true)
+                    ->whereHas('materials', function ($query) use ($material) {
+                        $query->where('materials.id', $material->id);
+                    })
+                    ->count();
 
 
-            if (!$available) {
+                if (!$available) {
+                    return response()->json([
+                        'status' => 'error',
+                        'error' => "Material not available"
+                    ], 409);
+                }
+            }
+
+
+            /** We handle Download errors differently */
+            try {
+                $url = $material->downloadUrl($request->user());
+            } catch (\Exception $err) {
+                Log::error($err->getMessage());
                 return response()->json([
                     'status' => 'error',
-                    'error' => "Material not available"
-                ], 409);
+                    'error' => $err->getMessage()
+                ], 424);
             }
 
             return response()->json([
                 'status' => 'successfully',
-                'url' => $material->downloadUrl($request->user())
+                'url' => $url,
             ]);
 
 
         } catch (\Exception $err) {
+
             Log::error($err->getMessage());
             return response()->json([
                 'status' => 'error',

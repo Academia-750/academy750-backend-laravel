@@ -138,6 +138,19 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         $this->assertEquals($data['url'], $url);
     }
 
+
+    /** @test */
+    public function admin_can_download_too_200(): void
+    {
+        $url = 'http://test.url';
+        $this->material->url = $url; // This type will be defined to UNKONW
+        $this->material->save();
+
+        $admin = User::factory()->admin()->create();
+
+        $this->actingAs($admin)->get("api/v1/student-lessons/{$this->recording->id}/download")->assertStatus(200);
+        $this->actingAs($admin)->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(200);
+    }
     /** @test */
     public function download_pdf_watermark_200(): void
     {
@@ -149,6 +162,18 @@ class StudentLessonsMaterialDownloadTest extends TestCase
 
         $data = $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(200);
         $this->assertEquals($data['url'], 'internal-url');
+    }
+
+    /** @test */
+    public function handle_download_error_424(): void
+    {
+        $mock = $this->partialMock(Watermark::class);
+        $mock->shouldReceive('pdf')->once()->andThrow(new \Exception);
+
+        $this->material->url = 'http://test.url/mypdf.pdf';
+        $this->material->save();
+
+        $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(424);
     }
 
     /** @test */

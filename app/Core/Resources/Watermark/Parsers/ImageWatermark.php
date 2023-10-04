@@ -10,7 +10,6 @@ use Intervention\Image\ImageManager as Image;
 class ImageWatermark
 {
 
-    private $RED_COLOR = "#F44336";
     private $GRAY_COLOR = "#222222";
 
     private User $user;
@@ -85,7 +84,7 @@ class ImageWatermark
     {
         $rectangleCanvas = (new Image())->canvas($img->width(), 50);
         $rectangleCanvas->rectangle(0, 0, $img->width(), 50, function ($draw) {
-            $draw->background(array(...$this->hexToRGB($this->GRAY_COLOR), 0.3));
+            $draw->background(array(...$this->hexToRGB($this->GRAY_COLOR), 0.4));
         });
 
         $img->insert($rectangleCanvas, 'bottom-left', 0, 0);

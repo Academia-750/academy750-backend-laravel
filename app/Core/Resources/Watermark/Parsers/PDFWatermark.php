@@ -13,7 +13,6 @@ class PDFWatermark extends Fpdi
 {
 
     public $GRAY_BACKGROUND = "#222222";
-    public $RED_BACKGROUND = "#F44336";
 
     public $WHITE_TEXT = "#FFFFFF";
 
@@ -159,7 +158,7 @@ class PDFWatermark extends Fpdi
         /**
          * RECTANGLE
          */
-        $this->SetAlpha(0.4);
+        $this->SetAlpha(0.6);
         $this->SetFillColor(...$this->hexToRGB($this->GRAY_BACKGROUND));
         $recX = $sourcePageWidth + 27;
         $recY = $sourcePageHeight - 50;
@@ -194,7 +193,7 @@ class PDFWatermark extends Fpdi
         /**
          * RECTANGLE
          */
-        $this->SetAlpha(0.2);
+        $this->SetAlpha(0.5);
         $this->SetFillColor(...$this->hexToRGB($this->GRAY_BACKGROUND));
         $this->Rect(0, $sourcePageHeight - 10, $sourcePageWidth, $sourcePageHeight, 'F');
 
@@ -207,7 +206,7 @@ class PDFWatermark extends Fpdi
 
         $this->SetAlpha(0.7);
 
-        $this->SetTextColor(...$this->hexToRGB($this->RED_BACKGROUND));
+        $this->SetTextColor(...$this->hexToRGB($this->WHITE_TEXT));
         $this->SetFont('Arial', 'B', 8);
         $this->CenterPageText($sourcePageHeight - 4, $warning1);
         $this->CenterPageText($sourcePageHeight - 1, $warning2);

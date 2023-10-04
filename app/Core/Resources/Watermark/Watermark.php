@@ -22,7 +22,7 @@ class Watermark
         /**
          * In local we return HTTP, otherwise HTTPS
          */
-        return asset($path, app()->environment('local') !== 1);
+        return asset($path, app()->environment() !== 'local');
     }
 
     public function pdf(string $url, string $name, User $user)

@@ -49,7 +49,7 @@ class StudentLessonMaterialListRequest extends FormRequest
             ],
             'orderBy' => [
                 'string',
-                Rule::in(['name', 'created_at', 'updated_at'])
+                Rule::in(['name', 'lesson_name', 'created_at', 'updated_at'])
             ],
             'order' => [
                 Rule::in([1, -1])
@@ -84,7 +84,7 @@ class StudentLessonMaterialListRequest extends FormRequest
                 'example' => [332, 123]
             ],
             'orderBy' => [
-                'description' => 'Property to order by [name, created_at, updated_at]',
+                'description' => 'Property to order by [name, lesson_name, created_at, updated_at]',
                 'example' => 'created_at'
             ],
             'order' => [

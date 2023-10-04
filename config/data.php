@@ -14,17 +14,17 @@ return [
     */
 
     'group_colors' => [
-        '#FF0000',
+        '#FF3131',
         // (Red)
-        '#00FF00',
+        '#00BF63',
         // (Lime)
         '#0000FF',
         // (Blue)
-        '#FFFF00',
-        // (Yellow)
+        '#C6CE00',
+        // (Yellow Lemon)
         '#FF00FF',
         // (Magenta)
-        '#00FFFF',
+        '#31859C',
         // (Cyan)
         '#FFA500',
         // (Orange)
@@ -33,27 +33,27 @@ return [
         '#008000',
         // (Green)
         '#000080',
-        // (Navy)
-        '#FFC0CB',
-        // (Pink)
+        // (Sea Blue)
+        '#00B5D4',
+        // (Blue)
         '#800000',
         // (Maroon)
-        '#008080',
-        // (Teal)
-        '#FFD700',
-        // (Gold)
+        '#C85DE6',
+        // (Light Violet)
+        '#5E17EB',
+        // (Violet)
         '#FF4500',
         // (Orange Red)
         '#808000',
         // (Olive)
-        '#C0C0C0',
-        // (Silver)
-        '#B1F0F0',
-        // (Alice Blue)
-        '#FF69B4',
-        // (Hot Pink)
+        '#5271FF',
+        // (Blue violet)
+        '#01493C',
+        // (Dark Green)
+        '#CA6212',
+        // (Dark Orange)
         '#828282',
-        // (Maroon)
+        // (Grey)
     ],
 
 ];

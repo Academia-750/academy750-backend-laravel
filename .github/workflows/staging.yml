@@ -59,7 +59,7 @@ jobs:
           SOURCE: ""
           TARGET: "/var/www/${{ env.FOLDER_NAME }}"
           ARGS: "-rltgoDzvO --delete"
-          EXCLUDE: ".env, pm2.json, stubs/*, storage/framework/cache/*, storage/framework/session/*, storage/framework/views/*, storage/logs/*, storage/app/*, bootstrap/cache/*"
+          EXCLUDE: ".env, pm2.json, stubs/*, storage/framework/cache/*, storage/framework/session/*, storage/framework/views/*, storage/logs/*, storage/app/public/users/images/*, bootstrap/cache/*"
 
       - name: Installing the new version
         uses: appleboy/ssh-action@master
@@ -75,6 +75,7 @@ jobs:
             php artisan optimize
             php artisan migrate --force
             php artisan db:seed --class=PermissionSeeder --force
+            chmod -R guo+w public/temp
             php artisan up
             echo "🎉 Deployment finished!"
 

@@ -1,16 +1,17 @@
 <?php
 
-namespace App\Http\Requests\Api\v1\Users;
+namespace App\Http\Requests\Api\v1\StudentLessons;
 
+use App\Models\Material;
+use App\Models\Permission;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-
-class SearchUserRequest extends FormRequest
+class StudentLessonSearchRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can(Permission::SEE_LESSONS);
     }
 
     public function rules(): array
@@ -18,7 +19,7 @@ class SearchUserRequest extends FormRequest
         return [
             'content' => [
                 'nullable',
-                'alpha_num',
+                'string',
             ],
             'limit' => [
                 'integer',

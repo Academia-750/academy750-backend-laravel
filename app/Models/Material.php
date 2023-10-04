@@ -63,6 +63,10 @@ class Material extends Model
 
     public function canDownload(User $user)
     {
+        // Admin can call this API to see how the material is water mark too
+        if ($user->hasRole('admin')) {
+            return true;
+        }
 
         if ($this->type === 'recording') {
             return $user->can(Permission::SEE_LESSON_RECORDINGS);

@@ -560,7 +560,7 @@ class LessonsController extends Controller
     /**
      * Lesson Student: List
      *
-     * Search materials
+     * Student lesson List
      * @authenticated
      * @urlParam lessonId integer Lesson Id
      * Required Admin permissions or SEE_JOIN and SEE_LESSON_PARTICIPANTS
@@ -574,6 +574,7 @@ class LessonsController extends Controller
      *        "full_name" : "Alex Menir" ,
      *        "uuid" : "users' uuid" ,
      *        "user_id" : 22 ,
+     *        "will_join" : 0,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -600,6 +601,7 @@ class LessonsController extends Controller
 
             $conditions = [
                 parseFilter('lesson_id', $lessonId),
+                parseFilter('will_join', $request->get('willJoin')),
                 parseFilter(['users.dni', 'users.full_name', 'lesson_user.group_name'], $request->get('content'), 'or_like')
             ];
 
@@ -757,7 +759,7 @@ class LessonsController extends Controller
     /**
      * Lesson Material: List
      *
-     * Search materials
+     * Lessons Materials list
      * @authenticated
      * @urlParam lessonId integer required Lesson Id
      * @response {
@@ -766,7 +768,8 @@ class LessonsController extends Controller
      *        "type" : "recording" ,
      *        "tags" : "fire,water,smoke",
      *        "created_at" : "Iso Date",
-     *        "updated_at" : "Iso Date"
+     *        "updated_at" : "Iso Date",
+     *        "has_url": true
      *      ],
      *       "total": 1
      *  }
@@ -799,8 +802,10 @@ class LessonsController extends Controller
                     'materials.tags',
                     'lesson_material.material_id',
                     'lesson_material.created_at as created_at',
-                    'lesson_material.updated_at as updated_at'
-                ])->join('materials', 'lesson_material.material_id', '=', 'materials.id');
+                    'lesson_material.updated_at as updated_at',
+                ])
+                ->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
+                ->join('materials', 'lesson_material.material_id', '=', 'materials.id');
 
 
             filterToQuery(

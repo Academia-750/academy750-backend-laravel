@@ -204,4 +204,10 @@ class LessonEditTest extends TestCase
         $this->put("api/v1/lesson/{$this->lesson->id}", $body)->assertStatus(200)->json();
     }
 
+    /** @test */
+    public function edit_long_description_200(): void
+    {
+        $this->put("api/v1/lesson/{$this->lesson->id}", ['description' => Str::random(900)])->assertStatus(200); // Too Long
+    }
+
 }

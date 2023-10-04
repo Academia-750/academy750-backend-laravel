@@ -73,6 +73,8 @@ class LessonStudentsListTest extends TestCase
         array_map(function ($input) {
             $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query($input))->assertStatus(422);
         }, $this->pagination_wrong_inputs);
+
+        $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(["willJoin" => [22]]))->assertStatus(422); // Wrong Type
     }
 
 
@@ -152,13 +154,29 @@ class LessonStudentsListTest extends TestCase
     /** @test */
     public function pagination_200(): void
     {
-        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 0]))->assertStatus(200)->json();
-        $data1 = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 1]))->assertStatus(200)->json();
-        $data2 = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 2]))->assertStatus(200)->json();
-        $data3 = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 3]))->assertStatus(200)->json();
+        $data = $this->get(
+            "api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 0])
+        )->assertStatus(200);
+
+        $data1 = $this->get(
+            "api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 1])
+        )->assertStatus(200);
+
+        $data2 = $this->get(
+            "api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 2])
+        )->assertStatus(200);
+
+        $data3 = $this->get(
+            "api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1, 'offset' => 3])
+        )->assertStatus(200);
 
         // Verify that each page we return a different object
-        $ids = [$data1['results'][0]['user_id'], $data2['results'][0]['user_id'], $data3['results'][0]['user_id'], $data['results'][0]['user_id']];
+        $ids = [
+            $data1['results'][0]['user_id'],
+            $data2['results'][0]['user_id'],
+            $data3['results'][0]['user_id'],
+            $data['results'][0]['user_id']
+        ];
 
         $this->assertEquals(count(array_unique($ids)), 4);
         $this->assertEquals(count($data['results']), 1);
@@ -172,7 +190,7 @@ class LessonStudentsListTest extends TestCase
 
     public function default_order_200(): void
     {
-        $dataResponse = $this->get("api/v1/lesson/{$this->lesson->id}/students?")->assertStatus(200)->json();
+        $dataResponse = $this->get("api/v1/lesson/{$this->lesson->id}/students?")->assertStatus(200);
         $createdAt = array_map(function ($data) {
             return $data['updated_at'];
         }, $dataResponse['results'], );
@@ -196,7 +214,7 @@ class LessonStudentsListTest extends TestCase
 
         array_map(function ($orderBy) {
 
-            $dataResponse = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['orderBy' => $orderBy, 'order' => -1]))->assertStatus(200)->json();
+            $dataResponse = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['orderBy' => $orderBy, 'order' => -1]))->assertStatus(200);
 
             $attributeList = array_map(function ($data) use ($orderBy) {
                 return $data[$orderBy];
@@ -212,7 +230,7 @@ class LessonStudentsListTest extends TestCase
     /** @test */
     public function default_order_asc_200(): void
     {
-        $dataResponse = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['order' => 1]))->assertStatus(200)->json();
+        $dataResponse = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['order' => 1]))->assertStatus(200);
         $updatedAt = array_map(function ($data) {
             return $data['updated_at'];
         }, $dataResponse['results'], );
@@ -287,5 +305,43 @@ class LessonStudentsListTest extends TestCase
 
         $this->assertEquals($data['groups'][1]['group_id'], $group2->id);
         $this->assertEquals($data['groups'][1]['group_name'], $group2->name);
+    }
+
+
+    /** @test */
+    public function will_join_filter_200(): void
+    {
+
+        [$student1, $student2] = $this->lesson->students()->limit(2)->get();
+
+        $this->lesson->students()->updateExistingPivot($student1->id, ['will_join' => 1]);
+        $this->lesson->students()->updateExistingPivot($student2->id, ['will_join' => 1]);
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['willJoin' => 1]))->assertStatus(200);
+
+        $this->assertEquals($data['total'], 2);
+        $this->assertEquals($data['results'][0]['user_id'], $student1->id);
+        $this->assertEquals($data['results'][0]['will_join'], 1);
+
+        $this->assertEquals($data['results'][1]['user_id'], $student2->id);
+        $this->assertEquals($data['results'][1]['will_join'], 1);
+    }
+
+    /** @test */
+    public function not_will_join_filter_200(): void
+    {
+
+        [$student1, $student2] = $this->lesson->students()->limit(2)->get();
+
+        $this->lesson->students()->updateExistingPivot($student1->id, ['will_join' => 1]);
+        $this->lesson->students()->updateExistingPivot($student2->id, ['will_join' => 1]);
+
+        $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['willJoin' => 0]))->assertStatus(200);
+
+        $ids = $this->map($data['results'], 'user_id');
+
+        $this->assertEquals($data['total'], 2);
+        $this->assertNotContains($student1->id, $ids);
+        $this->assertNotContains($student2->id, $ids);
     }
 }
