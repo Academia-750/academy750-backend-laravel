@@ -35,11 +35,13 @@ class NewLessonAvailable extends Notification implements ShouldQueue
 
     public function toMail($notifiable)
     {
+        $date = date('Y-m-d', $this->lesson->date);
+
         return (new MailMessage)
             ->subject("Clase  {$this->lesson->name} disponible")
             ->greeting("<p class='center-text text-size-20 typography-greeting-text'>{$this->lesson->name}</p>")
-            ->line("Hola! La clase  {$this->lesson->name} ya se encuentra activada.")
-            ->line("Podrás consultar los archivos vinculados a la misma desde tu área “Lecciones”.  Así mismo, en tu apartado de temario, aparecerán los nuevos documentos.")
+            ->line("Hola! La clase  {$this->lesson->name} del día {$date} ya se encuentra activada.")
+            ->line('Podrás consultar los archivos vinculados a la misma desde tu área "Mis Clases". Así mismo, en tu apartado "Materiales", aparecerán los nuevos documentos.')
             ->line("¡A darle caña!")
             ->salutation("Firma");
     }

@@ -20,15 +20,15 @@ class PermissionSeeder extends Seeder
 
     public static $permissions = [
         // Lessons
-        ['category' => 'lesson', 'name' => Permission::SEE_LESSONS, 'alias_name' => 'Acceso al menu de clases'],
-        ['category' => 'lesson', 'name' => Permission::JOIN_LESSONS, 'alias_name' => 'Confirmar asistencia a clase'],
-        ['category' => 'lesson', 'name' => Permission::SEE_ONLINE_LESSON, 'alias_name' => 'Acceso al aula virtual'],
-        ['category' => 'lesson', 'name' => Permission::SEE_LESSON_MATERIALS, 'alias_name' => 'Acceso a los materiales de la lección'],
-        ['category' => 'lesson', 'name' => Permission::SEE_LESSON_RECORDINGS, 'alias_name' => 'Acceso a las grabaciones de la lección'],
-        ['category' => 'lesson', 'name' => Permission::SEE_LESSON_PARTICIPANTS, 'alias_name' => 'Acceso al listado de asistencia de la lección'],
+        ['category' => 'lesson', 'name' => Permission::SEE_LESSONS, 'alias_name' => 'Clases: 0. Acceso al menu de clases'],
+        ['category' => 'lesson', 'name' => Permission::JOIN_LESSONS, 'alias_name' => 'Clases: 1. Confirmar asistencia a clase'],
+        ['category' => 'lesson', 'name' => Permission::SEE_ONLINE_LESSON, 'alias_name' => 'Clases: 2. Acceso al aula virtual'],
+        ['category' => 'lesson', 'name' => Permission::SEE_LESSON_MATERIALS, 'alias_name' => 'Clases 3. Acceso a los materiales de la lección'],
+        ['category' => 'lesson', 'name' => Permission::SEE_LESSON_RECORDINGS, 'alias_name' => 'Clases: 4. Acceso a las grabaciones de la lección'],
+        ['category' => 'lesson', 'name' => Permission::SEE_LESSON_PARTICIPANTS, 'alias_name' => 'Clases 5. Acceso al listado de asistencia de la lección'],
 
         // Tests
-        ['category' => 'tests', 'name' => Permission::GENERATE_TESTS, 'alias_name' => 'Acceso al menu de tests']
+        ['category' => 'tests', 'name' => Permission::GENERATE_TESTS, 'alias_name' => 'Tests: 0. Acceso al menu de tests']
     ];
 
     private $categories = [
