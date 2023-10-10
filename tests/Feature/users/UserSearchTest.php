@@ -2,10 +2,8 @@
 
 namespace Tests\Feature;
 
-use App\Models\Group;
-use App\Models\GroupUsers;
+
 use App\Models\User;
-use Illuminate\Database\Eloquent\Factories\Sequence;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;

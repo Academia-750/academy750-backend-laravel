@@ -3,14 +3,15 @@ namespace App\Http\Controllers\Api\v1;
 
 use App\Core\Resources\Storage\Storage;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Api\v1\Materials\CreateMaterialRequest;
-use App\Http\Requests\Api\v1\Materials\CreateTagRequest;
+use App\Http\Requests\Api\v1\Materials\MaterialCreateRequest;
+use App\Http\Requests\Api\v1\Materials\MateriaTagCreateRequest;
 
-use App\Http\Requests\Api\v1\Materials\CreateWorkspaceRequest;
-use App\Http\Requests\Api\v1\Materials\EditMaterialRequest;
-use App\Http\Requests\Api\v1\Materials\ListMaterialRequest;
-use App\Http\Requests\Api\v1\Materials\ListTagRequest;
-use App\Http\Requests\Api\v1\Materials\ListWorkspaceRequest;
+use App\Http\Requests\Api\v1\Materials\WorkspaceCreateRequest;
+use App\Http\Requests\Api\v1\Materials\MaterialEditRequest;
+use App\Http\Requests\Api\v1\Materials\MaterialListRequest;
+use App\Http\Requests\Api\v1\Materials\MaterialTagListRequest;
+use App\Http\Requests\Api\v1\Materials\WorkspaceListRequest;
+use App\Http\Requests\Api\v1\Materials\WorkspaceSearchRequest;
 use App\Http\Resources\Api\Material\v1\MaterialResource;
 use App\Http\Resources\Api\Material\v1\WorkspaceResource;
 use App\Models\Material;
@@ -39,7 +40,7 @@ class MaterialController extends Controller
      *      {"name": "Fire", "id": 1, "type": "material" }
      * }
      */
-    public function postCreateTag(CreateTagRequest $request)
+    public function postCreateTag(MateriaTagCreateRequest $request)
     {
         $duplicated = Tag::query()->where('name', $request->get('name'))->where('type', 'material')->count();
 
@@ -128,7 +129,7 @@ class MaterialController extends Controller
      *   "total": 2
      * }
      */
-    public function getTagList(ListTagRequest $request)
+    public function getTagList(MaterialTagListRequest $request)
     {
         try {
             $conditions = removeNull([
@@ -177,12 +178,13 @@ class MaterialController extends Controller
      * @apiResource App\Http\Resources\Api\Material\v1\WorkspaceResource
      * @apiResourceModel App\Models\Workspace
      */
-    public function postCreateWorkspace(CreateWorkspaceRequest $request)
+    public function postCreateWorkspace(WorkspaceCreateRequest $request)
     {
         try {
             $workspace = Workspace::create([
                 'name' => $request->get('name'),
-                'type' => 'material', // In the future can be different types of workspace
+                'type' => 'material',
+                // In the future can be different types of workspace
             ]);
 
 
@@ -206,7 +208,7 @@ class MaterialController extends Controller
      * @apiResourceModel App\Models\Workspace
      * @response status=404 scenario="Workspace Not found"
      */
-    public function putEditWorkspace(CreateWorkspaceRequest $request, $workspace_id)
+    public function putEditWorkspace(WorkspaceCreateRequest $request, $workspace_id)
     {
         $workspace = Workspace::find($workspace_id);
 
@@ -330,7 +332,7 @@ class MaterialController extends Controller
      *       "total": 1
      *  }
      */
-    public function getWorkspaceList(ListWorkspaceRequest $request)
+    public function getWorkspaceList(WorkspaceListRequest $request)
     {
 
         try {
@@ -374,7 +376,7 @@ class MaterialController extends Controller
      * @apiResourceModel App\Models\Material
      * @response status=404 scenario="Workspace Not found"
      */
-    public function postAddMaterial(CreateMaterialRequest $request, $workspaceId)
+    public function postAddMaterial(MaterialCreateRequest $request, $workspaceId)
     {
         try {
             $workspace = Workspace::find($workspaceId);
@@ -416,7 +418,7 @@ class MaterialController extends Controller
      * @response status=404 scenario="Material Not found"
      * @response status=424 scenario="Override URL fail, we can not delete file from the source"
      */
-    public function putEditMaterial(EditMaterialRequest $request, $materialId)
+    public function putEditMaterial(MaterialEditRequest $request, $materialId)
     {
         try {
             $material = Material::find($materialId);
@@ -564,7 +566,7 @@ class MaterialController extends Controller
      *       "total": 1
      *  }
      */
-    public function getMaterialList(ListMaterialRequest $request)
+    public function getMaterialList(MaterialListRequest $request)
     {
         try {
             $conditions = [
@@ -600,4 +602,54 @@ class MaterialController extends Controller
         }
     }
 
+
+
+    /**
+     * Workspaces: Search
+     *
+     * Search workspaces
+     * This is an Open API and doesn't provide sensitive information
+     * @authenticated
+     * @response {
+     *     "results": [
+     *        "id" : "1" ,
+     *        "name" : "Workspace Name"
+     *      ],
+     *  }
+     */
+    public function getWorkspaceSearch(WorkspaceSearchRequest $request)
+    {
+        try {
+            $conditions = removeNull([
+                parseFilter(['name'], $request->get('content'), 'or_like')
+            ]);
+
+
+            $query = Workspace::query()->where(function ($query) use ($conditions) {
+                foreach ($conditions as $condition) {
+                    $condition($query);
+                }
+            });
+
+            $results = $query
+                ->select('id', 'name')
+                ->orderBy('created_at', 'desc')
+                ->limit($request->get('limit') ?? 5)
+                ->get();
+
+
+            return response()->json([
+                'status' => 'successfully',
+                'results' => $results,
+            ]);
+
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
 }
