@@ -156,6 +156,7 @@ class StudentLessonMaterialsListTest extends TestCase
         $this->assertEquals($data['results'][0]['tags'], $material->tags);
         $this->assertEquals($data['results'][0]['lesson_id'], $lesson->id);
         $this->assertEquals($data['results'][0]['lesson_name'], $lesson->name);
+        $this->assertEquals($data['results'][0]['workspace'], $material->workspace->name);
 
         $this->assertNotNull($data['results'][0]['created_at']);
         $this->assertNotNull($data['results'][0]['updated_at']);

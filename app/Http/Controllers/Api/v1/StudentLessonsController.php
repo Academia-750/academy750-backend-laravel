@@ -119,6 +119,7 @@ class StudentLessonsController extends Controller
      *        "lesson_name" : 'Advance Lesson' ,
      *        "lesson_id" : 34 ,
      *        "has_url": true,
+     *        "workspace": "name",
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -154,12 +155,13 @@ class StudentLessonsController extends Controller
 
             $conditions = [
                 parseFilter('lesson_material.lesson_id', $request->get('lessons'), 'in'),
-                parseFilter('type', $request->get('type')),
+                parseFilter('materials.type', $request->get('type')),
                 parseFilter(['materials.tags'], $request->get('tags'), 'or_like'),
                 parseFilter(['materials.name'], $request->get('content'), 'or_like')
             ];
 
             $query = DB::table('materials')
+                ->join('workspaces', 'workspaces.id', '=', 'materials.workspace_id')
                 ->join('lesson_material', 'lesson_material.material_id', '=', 'materials.id')
                 ->join('lessons', 'lesson_material.lesson_id', '=', 'lessons.id')
                 ->join('lesson_user', 'lesson_user.lesson_id', '=', 'lesson_material.lesson_id')
@@ -169,8 +171,9 @@ class StudentLessonsController extends Controller
                     'lessons.name as lesson_name',
                     'lessons.id as lesson_id',
                     'materials.name as name',
-                    'materials.type',
-                    'materials.tags',
+                    'materials.type as type',
+                    'materials.tags as tags',
+                    'workspaces.name as workspace',
                     'lesson_material.material_id',
                     'lesson_material.created_at as created_at',
                     'lesson_material.updated_at as updated_at'
