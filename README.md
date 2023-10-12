@@ -303,6 +303,7 @@ Permissions are handle by Spatie
 ### Oppositions and Tests
 
 * oppositions: List of oppositions (big exams for goverment job), a opposition has several topics and questions.
+* opposition_user: Pivot table between users and oppositions. WARNING! Requires manual updated directly on the database
 ---
 * topic_group: All opposition topics stay between 3 groups: Generic, Law, Specific.
 * topic: A topic belongs to a group.

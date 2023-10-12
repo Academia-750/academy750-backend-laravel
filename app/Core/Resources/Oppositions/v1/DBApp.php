@@ -43,7 +43,6 @@ class DBApp implements OppositionsInterface
             return ((array) $item)['opposition_id'];
         }, $allowedOppositions);
 
-        \Log::debug($oppositionIds);
 
         return $this->model::applyFilters()
             ->applySorts()
