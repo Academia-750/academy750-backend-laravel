@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\v1\Materials;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateWorkspaceRequest extends FormRequest
+class WorkspaceCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {

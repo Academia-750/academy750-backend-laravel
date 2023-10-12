@@ -5,6 +5,8 @@ use App\Http\Controllers\Api\v1\MaterialController;
 
 Route::post('workspace', [MaterialController::class, 'postCreateWorkspace'])->middleware('onlyAdmin');
 Route::get('workspace/list', [MaterialController::class, 'getWorkspaceList'])->middleware('onlyAdmin');
+Route::get('workspace/search', [MaterialController::class, 'getWorkspaceSearch']); // This is open API
+
 Route::put('workspace/{workspaceId}', [MaterialController::class, 'putEditWorkspace'])->middleware('onlyAdmin');
 Route::delete('workspace/{workspaceId}', [MaterialController::class, 'deleteWorkspace'])->middleware('onlyAdmin');
 Route::get('workspace/{workspaceId}/info', [MaterialController::class, 'getWorkspaceInfo'])->middleware('onlyAdmin');

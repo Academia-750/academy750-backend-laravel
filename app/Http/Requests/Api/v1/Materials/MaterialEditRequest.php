@@ -2,11 +2,10 @@
 
 namespace App\Http\Requests\Api\v1\Materials;
 
-use App\Models\Material;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class CreateMaterialRequest extends FormRequest
+class MaterialEditRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,14 +16,19 @@ class CreateMaterialRequest extends FormRequest
     {
         return [
             'name' => [
-                'required',
                 'string',
                 config('constants.string_request_regex')
             ],
-            'type' => [
-                'required',
+            'tags' => [
+                'array'
+            ],
+            'tags.*' => [
                 'string',
-                Rule::in(Material::allowedTypes())
+                config('constants.string_request_regex')
+            ],
+            'url' => [
+                'string',
+                'url'
             ],
         ];
     }
@@ -33,14 +37,17 @@ class CreateMaterialRequest extends FormRequest
     {
         return [
             'name' => [
-                'description' => 'Material Name (can be updated later)',
+                'description' => 'Material Name',
                 'example' => "Fire Laws V1"
             ],
-            'type' => [
-                'description' => 'Material type from allowed types (Can not be updated): ' . join(Material::allowedTypes()),
-                'example' => 'material',
+            'tags' => [
+                'description' => 'Material Tags',
+                'example' => ['Fire', 'Law']
             ],
-
+            'url' => [
+                'description' => 'Material URL',
+                'example' => "https://my-cloud.com/file/123dade123d"
+            ],
         ];
     }
 }

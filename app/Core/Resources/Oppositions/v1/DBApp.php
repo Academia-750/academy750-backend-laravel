@@ -14,51 +14,79 @@ class DBApp implements OppositionsInterface
 {
     protected $model;
 
-    public function __construct(Opposition $opposition ){
+    public function __construct(Opposition $opposition)
+    {
         $this->model = $opposition;
     }
 
-    public function index(){
-        $queryResults = $this->model::applyFilters()
+    public function index($request)
+    {
+
+        // This need to be refactor in 2 APIS for admin and for user
+        if ($request->user()->hasRole('admin')) {
+            return $this->model::applyFilters()
+                ->applySorts()
+                ->where('is_available', 'yes')
+                ->applyIncludes()
+                ->jsonPaginate();
+        }
+
+        $allowedOppositions = DB::select(
+            'call get_available_oppositions_by_user(?)',
+            array(
+                $request->user()->id
+            )
+        );
+
+        // Cast STD to Array
+        $oppositionIds = array_map(function ($item) {
+            return ((array) $item)['opposition_id'];
+        }, $allowedOppositions);
+
+
+        return $this->model::applyFilters()
             ->applySorts()
+            ->whereIn('id', $oppositionIds)
             ->where('is_available', 'yes')
             ->applyIncludes()
             ->jsonPaginate();
 
-        return $queryResults;
     }
 
-    public function create( $request ): \App\Models\Opposition{
+    public function create($request): \App\Models\Opposition
+    {
         try {
 
             DB::beginTransaction();
-                $oppositionCreated = $this->model->query()->create([
-                    'name' => $request->get('name'),
-                    'period' => $request->get('period'),
-                    'is_available' => 'yes'
-                ]);
+            $oppositionCreated = $this->model->query()->create([
+                'name' => $request->get('name'),
+                'period' => $request->get('period'),
+                'is_available' => 'yes'
+            ]);
             DB::commit();
 
             return $this->model->applyIncludes()->findOrFail($oppositionCreated->getKey());
 
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
 
     }
 
-    public function read( $opposition ): \App\Models\Opposition{
+    public function read($opposition): \App\Models\Opposition
+    {
         return $this->model->applyIncludes()->findOrFail($opposition->getKey());
     }
 
-    public function update( $request, $opposition ): \App\Models\Opposition{
+    public function update($request, $opposition): \App\Models\Opposition
+    {
         try {
 
             DB::beginTransaction();
-                $opposition->name = $request->get('name') ?? $opposition->name;
-                $opposition->period = $request->get('period') ?? $opposition->period;
-                $opposition->save();
+            $opposition->name = $request->get('name') ?? $opposition->name;
+            $opposition->period = $request->get('period') ?? $opposition->period;
+            $opposition->save();
             DB::commit();
 
             return $this->model->applyIncludes()->findOrFail($opposition->getKey());
@@ -70,11 +98,12 @@ class DBApp implements OppositionsInterface
 
     }
 
-    public function delete( $opposition ): void{
+    public function delete($opposition): void
+    {
         try {
 
             DB::beginTransaction();
-                ActionsOppositionsRecords::deleteOpposition($opposition);
+            ActionsOppositionsRecords::deleteOpposition($opposition);
             DB::commit();
 
         } catch (\Exception $e) {
@@ -84,7 +113,8 @@ class DBApp implements OppositionsInterface
 
     }
 
-    public function mass_selection_for_action( $request ): array{
+    public function mass_selection_for_action($request): array
+    {
         try {
 
             DB::beginTransaction();

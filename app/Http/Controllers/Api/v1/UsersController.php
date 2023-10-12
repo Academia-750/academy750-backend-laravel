@@ -191,7 +191,6 @@ class UsersController extends Controller
      * Search for users (Normally for auto complete purposes)
      * Only for Admin
      * @authenticated
-     * @response status=409 scenario="The user already belongs the group"
      * @response {
      *     "results": [
      *        "id" : "1" ,
@@ -201,8 +200,7 @@ class UsersController extends Controller
      *        "dni" : "74370249W" ,
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
-     *      ],
-     *       "total": 1
+     *      ]
      *  }
      */
     public function search(SearchUserRequest $request)

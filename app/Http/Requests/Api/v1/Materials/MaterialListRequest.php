@@ -6,7 +6,7 @@ use App\Models\Material;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ListMaterialRequest extends FormRequest
+class MaterialListRequest extends FormRequest
 {
     public function authorize(): bool
     {

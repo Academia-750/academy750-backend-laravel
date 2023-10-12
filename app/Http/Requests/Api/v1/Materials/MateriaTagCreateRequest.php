@@ -4,7 +4,7 @@ namespace App\Http\Requests\Api\v1\Materials;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateTagRequest extends FormRequest
+class MateriaTagCreateRequest extends FormRequest
 {
     public function authorize(): bool
     {

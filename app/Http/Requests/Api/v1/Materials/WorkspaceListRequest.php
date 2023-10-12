@@ -5,7 +5,7 @@ namespace App\Http\Requests\Api\v1\Materials;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class ListTagRequest extends FormRequest
+class WorkspaceListRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -17,7 +17,7 @@ class ListTagRequest extends FormRequest
         return [
             'orderBy' => [
                 'string',
-                Rule::in(['name', 'created_at', 'updated_at'])
+                Rule::in(['name', 'created_at', 'updated_at', 'materials_count'])
             ],
             'order' => [
                 Rule::in([1, -1])
@@ -48,16 +48,16 @@ class ListTagRequest extends FormRequest
                 'description' => 'Order 1 ASC -1 DESC',
                 'example' => -1,
             ],
-            'offset' => [
-                'description' => 'Offset of records to be skipped (page*limit) (Pagination)',
-                'example' => 0,
-            ],
             'limit' => [
                 'description' => 'Limit of records returned (Pagination)',
                 'example' => 10,
             ],
+            'offset' => [
+                'description' => 'Offset of records to be skipped (page*limit) (Pagination)',
+                'example' => 0,
+            ],
             'content' => [
-                'description' => 'Search by substring match (tag name)',
+                'description' => 'Search by substring match (name)',
                 'example' => '',
             ],
         ];
