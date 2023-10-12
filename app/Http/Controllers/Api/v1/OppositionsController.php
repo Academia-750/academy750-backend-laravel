@@ -8,6 +8,7 @@ use App\Http\Requests\Api\v1\Oppositions\CreateOppositionRequest;
 use App\Http\Requests\Api\v1\Oppositions\UpdateOppositionRequest;
 use App\Http\Requests\Api\v1\Oppositions\ActionForMassiveSelectionOppositionsRequest;
 use App\Http\Requests\Api\v1\Oppositions\ImportOppositionsRequest;
+use Illuminate\Http\Request;
 
 /**
  * @group Oppositions
@@ -29,9 +30,9 @@ class OppositionsController extends Controller
      * List of available opposition
      * @authenticated
      */
-    public function index()
+    public function index(Request $request)
     {
-        return $this->oppositionsInterface->index();
+        return $this->oppositionsInterface->index($request);
     }
 
     /**

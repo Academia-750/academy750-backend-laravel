@@ -163,7 +163,6 @@ class DBApp implements TestsInterface
                     'have_been_show_test' => 'yes'
                 ]);
             }
-            \Log::debug($test->id);
 
             DB::select(
                 "call update_used_questions_procedure(?)",

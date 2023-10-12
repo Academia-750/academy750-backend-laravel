@@ -33,7 +33,8 @@ class StatisticsDataHistoryStudent
 
             if ($nameProcedure === 'get_results_by_topic_total_procedure') {
                 $topicsDataStatistic[] = self::callProcedureGetResultsByTopicTotal(
-                    $topicEloquentOrm->getKey(), $data['student_id']
+                    $topicEloquentOrm->getKey(),
+                    $data['student_id']
                 )[0];
             } else {
                 \Log::debug(
