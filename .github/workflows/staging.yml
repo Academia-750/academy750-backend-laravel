@@ -93,3 +93,13 @@ jobs:
             APP_ENV=documentation php artisan scribe:generate
             sudo service supervisor restart
             echo "🎉 Docs ready!"
+
+      - name: Updating Docs
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.SERVER }}
+          username: ubuntu
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            sudo service supervisor restart
