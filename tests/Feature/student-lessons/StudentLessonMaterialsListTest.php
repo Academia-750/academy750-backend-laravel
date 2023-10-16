@@ -7,6 +7,7 @@ use App\Models\Lesson;
 use App\Models\Material;
 use App\Models\Permission;
 use App\Models\User;
+use App\Models\Workspace;
 use DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -117,6 +118,10 @@ class StudentLessonMaterialsListTest extends TestCase
 
         $this->get("api/v1/student-lessons/materials?" . Arr::query(["type" => "material", 'lessons' => "no_array"]))->assertStatus(422); // Not an array
         $this->get("api/v1/student-lessons/materials?" . Arr::query(["type" => "material", 'lessons' => ["no-id"]]))->assertStatus(422); // Not id
+
+        $this->get("api/v1/student-lessons/materials?" . Arr::query(["type" => "material", 'workspaces' => "no_id"]))->assertStatus(422); // Not id
+        $this->get("api/v1/student-lessons/materials?" . Arr::query(["type" => "material", 'workspaces' => [-33]]))->assertStatus(422); // Negative Value
+
     }
 
 
@@ -185,6 +190,45 @@ class StudentLessonMaterialsListTest extends TestCase
         $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'lessons' => [$this->lessons[0]->id, $this->lessons[1]->id]]))->assertStatus(200);
         $this->assertEquals($response['total'], 4);
 
+    }
+
+    /** @test */
+    public function filter_by_workspace_id_200(): void
+    {
+        $workspace = Workspace::factory()->create();
+        // This lesson got already 2 materials. Now in total got 5, only 3 from the workspace
+        $this->lessons[0]->materials()->attach(
+            Material::factory()
+                ->withUrl()
+                ->count(3)
+                ->create(['type' => 'material', 'workspace_id' => $workspace->id])
+        );
+
+        $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'workspaces' => [$workspace->id]]))->assertStatus(200);
+
+        $this->assertEquals($response['total'], 3);
+
+        // All 3 results belong to the workspace that we searched
+        $worksapces = $this->map($response['results'], 'workspace');
+        $this->assertEquals($worksapces, [$workspace->name, $workspace->name, $workspace->name]);
+
+        // Search with 2 worskaces, second has nothing
+        $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'workspaces' => [$workspace->id, 99]]))->assertStatus(200);
+        $this->assertEquals($response['total'], 3);
+
+    }
+
+    /** @test */
+    public function filter_by_several_workspace_id_200(): void
+    {
+        $lesson1Workspaces = $this->map($this->lessons[0]->materials()->get()->toArray(), 'workspace_id');
+
+        $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'workspaces' => $lesson1Workspaces]))->assertStatus(200);
+
+        $this->assertEquals($response['total'], 2);
+        // We just search of lesson 1.
+        $this->assertEquals($response['results'][0]['lesson_id'], $this->lessons[0]->id);
+        $this->assertEquals($response['results'][1]['lesson_id'], $this->lessons[0]->id);
     }
 
 

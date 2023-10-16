@@ -156,6 +156,7 @@ class StudentLessonsController extends Controller
             $conditions = [
                 parseFilter('lesson_material.lesson_id', $request->get('lessons'), 'in'),
                 parseFilter('materials.type', $request->get('type')),
+                parseFilter('workspaces.id', $request->get('workspaces'), 'in'),
                 parseFilter(['materials.tags'], $request->get('tags'), 'or_like'),
                 parseFilter(['materials.name'], $request->get('content'), 'or_like')
             ];

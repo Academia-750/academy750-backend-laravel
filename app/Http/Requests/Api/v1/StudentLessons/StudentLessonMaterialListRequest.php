@@ -47,6 +47,14 @@ class StudentLessonMaterialListRequest extends FormRequest
                 'required',
                 'string',
             ],
+            'workspaces' => [
+                'array'
+            ],
+            'workspaces.*' => [
+                'required',
+                'integer',
+                'min:0'
+            ],
             'orderBy' => [
                 'string',
                 Rule::in(['name', 'lesson_name', 'created_at', 'updated_at'])
@@ -82,6 +90,10 @@ class StudentLessonMaterialListRequest extends FormRequest
             'lessons' => [
                 'description' => 'Filter by lesson id, only for authorized lessons',
                 'example' => [332, 123]
+            ],
+            'workspaces' => [
+                'description' => 'Filter material bu workspaces',
+                'example' => [22, 24]
             ],
             'orderBy' => [
                 'description' => 'Property to order by [name, lesson_name, created_at, updated_at]',
