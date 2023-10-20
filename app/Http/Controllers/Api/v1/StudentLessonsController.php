@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\StudentLessons\StudentLessonInfoRequest;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonSearchRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -254,6 +255,75 @@ class StudentLessonsController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'results' => $results
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+
+    /**
+     * Students: Lesson Info
+     *
+     * Get the lesson information
+     * Required `see-lessons` permission and to have access to this lesson.
+     * @authenticated
+     * @response {
+     *     "result": [
+     *        "id": 1,
+     *        "name" : "Law Part 2" ,
+     *        "date" : "2023-02-03" ,
+     *        "start_time" : '10:00' ,
+     *        "end_time" : '12:00' ,
+     *        "description" : "We will go through the chapter 2 of the book" ,
+     *        "is_online" : false ,
+     *        "color": "#990033",
+     *        "will_join": 0,
+     *        "user_id": 1,
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ]
+     *  }
+     * @response status=403 scenario="Required `see-lessons` and `material-lessons` OR `recording-lessons` permissions"
+     * @response status=403 scenario="You don't have access to this lesson"
+     * @response status=404 scenario="Lesson not found"
+     */
+    public function getStudentLessonInfo(StudentLessonInfoRequest $request, int $lessonId)
+    {
+        try {
+            $lesson = Lesson::query()->where('id', $lessonId)->first();
+
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Lesson Not found'
+                ], 404);
+            }
+
+            $query = $request->user()->lessons()->where('lessons.id', $lessonId);
+
+            $results = (clone $query)
+                ->select('lessons.*', 'lesson_group.color', 'lesson_user.will_join', 'lesson_user.user_id')
+                ->leftJoin(...Lesson::getColorSQL())
+                ->get()
+                // URL is hidden, requires specials permissions for it
+                ->makeHidden(['pivot', 'url'])->toArray();
+
+
+            if (!isset($results[0])) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Not authorized to see this lesson information'
+                ], 403);
+            }
+            return response()->json([
+                'status' => 'successfully',
+                'result' => $results[0]
             ]);
 
         } catch (\Exception $err) {
