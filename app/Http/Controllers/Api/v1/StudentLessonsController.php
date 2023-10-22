@@ -169,6 +169,7 @@ class StudentLessonsController extends Controller
                 ->join('lesson_user', 'lesson_user.lesson_id', '=', 'lesson_material.lesson_id')
                 ->where('lesson_user.user_id', $request->user()->id)
                 ->where('lessons.is_active', true)
+                ->groupBy('lesson_material.material_id')
                 ->select([
                     'lesson_material.material_id',
                     'materials.name as name',
@@ -179,7 +180,6 @@ class StudentLessonsController extends Controller
                     'materials.updated_at as updated_at'
                 ])
                 ->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
-                ->groupBy('lesson_material.material_id')
 
             ;
 
@@ -189,17 +189,20 @@ class StudentLessonsController extends Controller
             );
 
             $results = (clone $query)
+
                 ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
-                ->get([]);
+                ->get();
 
-            $total = (clone $query)->count();
+
+            $total = (clone $query)->selectRaw('count(*) OVER() as total')->pluck('total');
+
 
             return response()->json([
                 'status' => 'successfully',
                 'results' => $results,
-                'total' => $total
+                'total' => isset($total[0]) ? $total[0] : 0
             ]);
 
 

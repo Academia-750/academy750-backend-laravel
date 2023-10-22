@@ -132,6 +132,7 @@ class StudentLessonMaterialsListTest extends TestCase
     {
 
         $data = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material']))->assertStatus(200);
+
         $this->assertEquals(count($data['results']), 4);
         $this->assertEquals($data['total'], 4);
     }
@@ -152,15 +153,12 @@ class StudentLessonMaterialsListTest extends TestCase
         $data = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'limit' => 1]))->assertStatus(200);
         $this->assertEquals(count($data['results']), 1);
         $material = Material::find($data['results'][0]['material_id']);
-        $lesson = Lesson::find($data['results'][0]['lesson_id']);
 
         $this->assertNotNull($material);
         $this->assertEquals($data['results'][0]['material_id'], $material->id);
         $this->assertEquals($data['results'][0]['name'], $material->name);
         $this->assertEquals($data['results'][0]['type'], $material->type);
         $this->assertEquals($data['results'][0]['tags'], $material->tags);
-        $this->assertEquals($data['results'][0]['lesson_id'], $lesson->id);
-        $this->assertEquals($data['results'][0]['lesson_name'], $lesson->name);
         $this->assertEquals($data['results'][0]['workspace'], $material->workspace->name);
 
         $this->assertNotNull($data['results'][0]['created_at']);
@@ -226,9 +224,11 @@ class StudentLessonMaterialsListTest extends TestCase
         $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'workspaces' => $lesson1Workspaces]))->assertStatus(200);
 
         $this->assertEquals($response['total'], 2);
-        // We just search of lesson 1.
-        $this->assertEquals($response['results'][0]['lesson_id'], $this->lessons[0]->id);
-        $this->assertEquals($response['results'][1]['lesson_id'], $this->lessons[0]->id);
+
+        $names = Workspace::query()->whereIn('id', $lesson1Workspaces)->pluck('name');
+
+        $this->assertContains($response['results'][0]['workspace'], $names);
+        $this->assertContains($response['results'][1]['workspace'], $names);
     }
 
 
@@ -314,7 +314,7 @@ class StudentLessonMaterialsListTest extends TestCase
             rsort($sorted);
 
             $this->assertEquals($attributeList, $sorted);
-        }, ['name', 'lesson_name']);
+        }, ['name']);
     }
 
     /** @test */
@@ -433,6 +433,7 @@ class StudentLessonMaterialsListTest extends TestCase
         $noActiveLesson->materials()->attach(Material::factory()->withUrl()->count(2)->create(['type' => 'material']));
 
         $response = $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'lessons' => [$noActiveLesson->id]]))->assertStatus(200);
+
         $this->assertEquals($response['total'], 0);
 
     }
@@ -444,4 +445,44 @@ class StudentLessonMaterialsListTest extends TestCase
         $lesson = Lesson::factory()->create(['is_active' => true]);
         $this->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material', 'lessons' => [$lesson->id]]))->assertStatus(403);
     }
+
+
+    /** @test */
+    public function materials_dont_appear_duplicated_200(): void
+    {
+        // We use new user in this test to make it more simple
+        $user = User::factory()
+            ->student()
+            ->allowedTo(
+                [
+                    Permission::SEE_LESSONS,
+                    Permission::SEE_LESSON_MATERIALS,
+                    Permission::SEE_LESSON_RECORDINGS
+                ]
+            )->create();
+
+        // We create 2 materials
+        $materials = Material::factory()
+            ->withUrl()
+            ->count(2)
+            ->sequence(['tags' => 'fire'], ['tags' => 'water'])
+            ->create(['type' => 'material']);
+
+        // The 2 lesson has the exactly 2 materials
+        $this->lessons = Lesson::factory()
+            ->withStudents($user)
+            ->count(2)
+            ->create(['is_active' => true])
+            ->each(function ($lesson) use ($materials) {
+                $lesson->materials()->attach($materials);
+            });
+
+        $response = $this->actingAs($user)->get("api/v1/student-lessons/materials?" . Arr::query(['type' => 'material']))->assertStatus(200);
+
+        // The user has 2 materials in 2 lessons, but is only 2 materials not 4 (as they are the same)
+        $this->assertEquals($response['total'], 2);
+        $this->assertEquals(count($response['results']), 2);
+
+    }
+
 }

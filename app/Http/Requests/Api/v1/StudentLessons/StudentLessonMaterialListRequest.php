@@ -57,7 +57,7 @@ class StudentLessonMaterialListRequest extends FormRequest
             ],
             'orderBy' => [
                 'string',
-                Rule::in(['name', 'lesson_name', 'created_at', 'updated_at'])
+                Rule::in(['name', 'created_at', 'updated_at'])
             ],
             'order' => [
                 Rule::in([1, -1])
