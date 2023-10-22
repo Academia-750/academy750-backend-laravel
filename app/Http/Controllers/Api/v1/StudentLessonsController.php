@@ -170,16 +170,17 @@ class StudentLessonsController extends Controller
                 ->where('lesson_user.user_id', $request->user()->id)
                 ->where('lessons.is_active', true)
                 ->select([
-                    'lessons.name as lesson_name',
-                    'lessons.id as lesson_id',
+                    'lesson_material.material_id',
                     'materials.name as name',
                     'materials.type as type',
                     'materials.tags as tags',
                     'workspaces.name as workspace',
-                    'lesson_material.material_id',
-                    'lesson_material.created_at as created_at',
-                    'lesson_material.updated_at as updated_at'
-                ])->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
+                    'materials.created_at as created_at',
+                    'materials.updated_at as updated_at'
+                ])
+                ->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
+                ->groupBy('lesson_material.material_id')
+
             ;
 
             filterToQuery(
