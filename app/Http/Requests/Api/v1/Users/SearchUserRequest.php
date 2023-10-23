@@ -18,7 +18,8 @@ class SearchUserRequest extends FormRequest
         return [
             'content' => [
                 'nullable',
-                'alpha_num',
+                'string',
+                config('constants.string_request_regex')
             ],
             'limit' => [
                 'integer',

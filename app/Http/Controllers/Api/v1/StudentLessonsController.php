@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\v1\StudentLessons\StudentLessonInfoRequest;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonSearchRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -119,6 +120,7 @@ class StudentLessonsController extends Controller
      *        "lesson_name" : 'Advance Lesson' ,
      *        "lesson_id" : 34 ,
      *        "has_url": true,
+     *        "workspace": "name",
      *        "created_at" : "Iso Date",
      *        "updated_at" : "Iso Date"
      *      ],
@@ -154,28 +156,42 @@ class StudentLessonsController extends Controller
 
             $conditions = [
                 parseFilter('lesson_material.lesson_id', $request->get('lessons'), 'in'),
-                parseFilter('type', $request->get('type')),
+                parseFilter('materials.type', $request->get('type')),
+                parseFilter('workspaces.id', $request->get('workspaces'), 'in'),
                 parseFilter(['materials.tags'], $request->get('tags'), 'or_like'),
                 parseFilter(['materials.name'], $request->get('content'), 'or_like')
             ];
 
             $query = DB::table('materials')
+                ->join('workspaces', 'workspaces.id', '=', 'materials.workspace_id')
                 ->join('lesson_material', 'lesson_material.material_id', '=', 'materials.id')
                 ->join('lessons', 'lesson_material.lesson_id', '=', 'lessons.id')
                 ->join('lesson_user', 'lesson_user.lesson_id', '=', 'lesson_material.lesson_id')
                 ->where('lesson_user.user_id', $request->user()->id)
                 ->where('lessons.is_active', true)
                 ->select([
-                    'lessons.name as lesson_name',
-                    'lessons.id as lesson_id',
-                    'materials.name as name',
-                    'materials.type',
-                    'materials.tags',
                     'lesson_material.material_id',
-                    'lesson_material.created_at as created_at',
-                    'lesson_material.updated_at as updated_at'
-                ])->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
+                    'materials.name as name',
+                    'materials.type as type',
+                    'materials.tags as tags',
+                    'workspaces.name as workspace',
+                    'materials.created_at as created_at',
+                    'materials.updated_at as updated_at'
+                ])
+                ->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
             ;
+
+            // Only first groupBy is required, but production crash if we dont all all the elements to the groupby
+            $query
+                ->groupBy('lesson_material.material_id')
+                ->groupBy('materials.name')
+                ->groupBy('materials.type')
+                ->groupBy('materials.tags')
+                ->groupBy('materials.created_at')
+                ->groupBy('materials.updated_at')
+                ->groupBy('workspaces.name')
+                ->groupBy('materials.url');
+
 
             filterToQuery(
                 $query,
@@ -186,14 +202,16 @@ class StudentLessonsController extends Controller
                 ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
                 ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
-                ->get([]);
+                ->get();
 
-            $total = (clone $query)->count();
+
+            $total = (clone $query)->selectRaw('count(*) OVER() as total')->pluck('total');
+
 
             return response()->json([
                 'status' => 'successfully',
                 'results' => $results,
-                'total' => $total
+                'total' => isset($total[0]) ? $total[0] : 0
             ]);
 
 
@@ -250,6 +268,75 @@ class StudentLessonsController extends Controller
             return response()->json([
                 'status' => 'successfully',
                 'results' => $results
+            ]);
+
+        } catch (\Exception $err) {
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
+
+
+    /**
+     * Students: Lesson Info
+     *
+     * Get the lesson information
+     * Required `see-lessons` permission and to have access to this lesson.
+     * @authenticated
+     * @response {
+     *     "result": [
+     *        "id": 1,
+     *        "name" : "Law Part 2" ,
+     *        "date" : "2023-02-03" ,
+     *        "start_time" : '10:00' ,
+     *        "end_time" : '12:00' ,
+     *        "description" : "We will go through the chapter 2 of the book" ,
+     *        "is_online" : false ,
+     *        "color": "#990033",
+     *        "will_join": 0,
+     *        "user_id": 1,
+     *        "created_at" : "Iso Date",
+     *        "updated_at" : "Iso Date"
+     *      ]
+     *  }
+     * @response status=403 scenario="Required `see-lessons` and `material-lessons` OR `recording-lessons` permissions"
+     * @response status=403 scenario="You don't have access to this lesson"
+     * @response status=404 scenario="Lesson not found"
+     */
+    public function getStudentLessonInfo(StudentLessonInfoRequest $request, int $lessonId)
+    {
+        try {
+            $lesson = Lesson::query()->where('id', $lessonId)->first();
+
+            if (!$lesson) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Lesson Not found'
+                ], 404);
+            }
+
+            $query = $request->user()->lessons()->where('lessons.id', $lessonId);
+
+            $results = (clone $query)
+                ->select('lessons.*', 'lesson_group.color', 'lesson_user.will_join', 'lesson_user.user_id')
+                ->leftJoin(...Lesson::getColorSQL())
+                ->get()
+                // URL is hidden, requires specials permissions for it
+                ->makeHidden(['pivot', 'url'])->toArray();
+
+
+            if (!isset($results[0])) {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'Not authorized to see this lesson information'
+                ], 403);
+            }
+            return response()->json([
+                'status' => 'successfully',
+                'result' => $results[0]
             ]);
 
         } catch (\Exception $err) {

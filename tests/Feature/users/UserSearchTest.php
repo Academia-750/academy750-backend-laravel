@@ -73,6 +73,15 @@ class UserSearchTest extends TestCase
         $this->assertEquals($res['results'][0]['id'], $user->id);
     }
 
+    /** @test */
+    public function content_format_200(): void
+    {
+        array_map(function ($valid_string) {
+            $this->get("api/v1/users/search?" . Arr::query(['content' => $valid_string]))->assertStatus(200);
+        }, $this->valid_string_input);
+
+    }
+
 
     /** @test */
     public function find_user_by_last_name_200(): void

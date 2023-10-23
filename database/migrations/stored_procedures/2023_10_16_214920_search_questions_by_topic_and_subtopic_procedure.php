@@ -31,7 +31,7 @@ return new class extends Migration {
               questions q
             where
               q.questionable_id = tema_id
-              and q.question like CONCAT('%', buscado, '%')
+              and q.question like CONCAT('%', buscado, '%')  COLLATE utf8mb4_general_ci
             union
               distinct
             SELECT
@@ -43,8 +43,8 @@ return new class extends Migration {
               s2.topic_id = tema_id
               and q2.questionable_id = s2.id
               and (
-                q2.question like CONCAT('%', buscado, '%')
-                or s2.name like CONCAT('%', buscado, '%')
+                q2.question like CONCAT('%', buscado, '%')  COLLATE utf8mb4_general_ci
+                or s2.name like CONCAT('%', buscado, '%')  COLLATE utf8mb4_general_ci
               );
             END
             ";

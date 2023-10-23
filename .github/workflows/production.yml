@@ -63,5 +63,15 @@ jobs:
             composer require --dev knuckleswtf/scribe
             php artisan route:clear
             APP_ENV=documentation php artisan scribe:generate
-            supervisorctl restart all
             echo "🎉 Docs ready!"
+
+      - name: Restarting Supervisor
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ env.SERVER }}
+          username: ${{ env.SSH_USER }}
+          key: ${{ env.SSH_PRIVATE_KEY }}
+          port: ${{ env.SSH_PORT }}
+          script: |
+            cd ${{ env.FOLDER_NAME }}
+            supervisorctl restart all
