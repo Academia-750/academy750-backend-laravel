@@ -169,7 +169,6 @@ class StudentLessonsController extends Controller
                 ->join('lesson_user', 'lesson_user.lesson_id', '=', 'lesson_material.lesson_id')
                 ->where('lesson_user.user_id', $request->user()->id)
                 ->where('lessons.is_active', true)
-                ->groupBy('lesson_material.material_id')
                 ->select([
                     'lesson_material.material_id',
                     'materials.name as name',
@@ -180,8 +179,19 @@ class StudentLessonsController extends Controller
                     'materials.updated_at as updated_at'
                 ])
                 ->selectRaw('CASE WHEN LENGTH(materials.url) > 0 THEN 1 ELSE 0 END AS `has_url` ')
-
             ;
+
+            // Only first groupBy is required, but production crash if we dont all all the elements to the groupby
+            $query
+                ->groupBy('lesson_material.material_id')
+                ->groupBy('materials.name')
+                ->groupBy('materials.type')
+                ->groupBy('materials.tags')
+                ->groupBy('materials.created_at')
+                ->groupBy('materials.updated_at')
+                ->groupBy('workspaces.name')
+                ->groupBy('materials.url');
+
 
             filterToQuery(
                 $query,
@@ -189,9 +199,8 @@ class StudentLessonsController extends Controller
             );
 
             $results = (clone $query)
-
                 ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
-                ->offset($request->get('offset') ?? 0)
+                ->offset($request->get('off set') ?? 0)
                 ->limit($request->get('limit') ?? 20)
                 ->get();
 
