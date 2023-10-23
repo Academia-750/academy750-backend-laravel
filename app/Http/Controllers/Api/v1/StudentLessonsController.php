@@ -200,7 +200,7 @@ class StudentLessonsController extends Controller
 
             $results = (clone $query)
                 ->orderBy($request->get('orderBy') ?? 'updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
-                ->offset($request->get('off set') ?? 0)
+                ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
                 ->get();
 

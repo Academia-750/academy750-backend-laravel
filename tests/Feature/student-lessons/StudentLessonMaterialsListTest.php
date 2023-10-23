@@ -276,6 +276,7 @@ class StudentLessonMaterialsListTest extends TestCase
         // Verify that each page we return a different object
         $ids = [$data1['results'][0]['material_id'], $data2['results'][0]['material_id'], $data3['results'][0]['material_id'], $data['results'][0]['material_id']];
 
+
         $this->assertEquals(count(array_unique($ids)), 4);
         $this->assertEquals(count($data['results']), 1);
         $this->assertEquals($data['total'], 4);
@@ -314,7 +315,7 @@ class StudentLessonMaterialsListTest extends TestCase
             rsort($sorted);
 
             $this->assertEquals($attributeList, $sorted);
-        }, ['name']);
+        }, ['name', 'workspace']);
     }
 
     /** @test */
