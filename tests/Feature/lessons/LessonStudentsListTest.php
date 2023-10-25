@@ -101,6 +101,42 @@ class LessonStudentsListTest extends TestCase
     }
 
     /** @test */
+    public function no_admin_has_sensitive_data_protected_200(): void
+    {
+        $user = User::factory()->student()->create();
+
+        $user->givePermissionTo([Permission::SEE_LESSONS, Permission::SEE_LESSON_PARTICIPANTS]);
+
+        $data = $this->actingAs($user)->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1])); //->assertStatus(200);
+
+        $student = $this->lesson->students()->where('user_id', $data['results'][0]['user_id'])->first();
+
+        $this->assertNotNull($student);
+        $this->assertEquals($data['results'][0]['user_id'], $student->id);
+        $this->assertEquals($data['results'][0]['uuid'], $student->uuid);
+        $this->assertNull($data['results'][0]['group_id']);
+        $this->assertNull($data['results'][0]['group_name']);
+        $this->assertEquals($data['results'][0]['will_join'], false);
+        /** Sensitive Data Check */
+        $this->assertEquals($data['results'][0]['dni'], User::protectedDNI($student->dni));
+        $this->assertEquals($data['results'][0]['full_name'], User::protectedName($student->full_name));
+        $this->assertNotEquals($data['results'][0]['dni'], $student->dni);
+        $this->assertNotEquals($data['results'][0]['full_name'], $student->full_name);
+    }
+
+    /** @test */
+    public function sensitive_information_format_200(): void
+    {
+
+        $this->assertEquals(User::protectedDNI('00000000T'), '0-------T');
+        $this->assertEquals(User::protectedName('Mat Rome Tart'), 'Mat R. T.');
+        $this->assertEquals(User::protectedName('Mat Rome Tart Peter Lamas'), 'Mat R. T. P. L.');
+        $this->assertEquals(User::protectedName('Mat'), 'Mat');
+    }
+
+
+
+    /** @test */
     public function get_all_students_detail_200(): void
     {
         $data = $this->get("api/v1/lesson/{$this->lesson->id}/students?" . Arr::query(['limit' => 1]))->assertStatus(200);

@@ -563,14 +563,16 @@ class LessonsController extends Controller
      * @authenticated
      * @urlParam lessonId integer Lesson Id
      * Required Admin permissions or SEE_JOIN and SEE_LESSON_PARTICIPANTS
+     * The sensitive data will be protected with exception
+     * of the admin role "00000000T" => "0*******T" , "Juan Lopez Vega" => "Juan L. V."
      * @response {
      *     "results": [
      *        "user_id": 1,
      *        "user_uuid" : "uuid" ,
      *        "group_name" : "My Group" ,
      *        "group_id" : 3,
-     *        "dni" : "00000000T" ,
-     *        "full_name" : "Alex Menir" ,
+     *        "dni" : "0*******T" ,
+     *        "full_name" : "Juan L. V." ,
      *        "uuid" : "users' uuid" ,
      *        "user_id" : 22 ,
      *        "will_join" : 0,
@@ -625,7 +627,10 @@ class LessonsController extends Controller
             );
 
             $results = (clone $query)
-                ->orderBy($request->get('orderBy') ?? 'lesson_user.updated_at', ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc')
+                ->orderBy(
+                    $request->get('orderBy') ?? 'lesson_user.updated_at',
+                    ($request->get('order') ?? "-1") === "-1" ? 'desc' : 'asc'
+                )
                 ->offset($request->get('offset') ?? 0)
                 ->limit($request->get('limit') ?? 20)
                 ->get();
@@ -636,6 +641,15 @@ class LessonsController extends Controller
 
             $groups = $lesson->groups();
 
+            /**
+             * Protected sensitive data for non admin roles
+             */
+            if (!$request->user()->hasRole('admin')) {
+                foreach ($results as $atendee) {
+                    $atendee->dni = User::protectedDNI($atendee->dni);
+                    $atendee->full_name = User::protectedName($atendee->full_name);
+                }
+            }
 
             return response()->json([
                 'status' => 'successfully',
