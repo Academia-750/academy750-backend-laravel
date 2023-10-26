@@ -38,6 +38,21 @@ Running the seeder will create
 
 If something fails install the php required extensions.
 
+### ENV
+
+- **APP_** Laravel APP env variables. Im not fully sure how much are they bieng used.
+- **DB_**: Database connection env. Note that for testing we use memory sql.
+- **CLOUDINARY_URL** URL to upload the files. Used on Materials API.
+- **MAIL_** Env to config the email notifications. We have several notifications
+ - Reset password
+ - Lesson Activated
+- **APP_MAIL_ADDRESS** The `from` for the email notifications
+- **APP_MAIL_ADDRESS_IMPUGNACIONES** The seeder will create special user with this emails where all the test impugnations will be sent to
+- **LOG_** Laravel Log Env variables
+
+Other ENV variables we need to verify if are being used or are just legacy debt.
+
+
 ### Set Up the database
 
 :warning: Is **STRICTLY FORBIDDEN** modify the database directly. We will always add a new migration.
