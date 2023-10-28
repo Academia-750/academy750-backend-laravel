@@ -80,6 +80,10 @@ GRANT ALL ON `bomberosapimysql`.* TO `bomberos`@`localhost`;
 
 > php artisan db:seed
 
+In order to create new migrations can follow laravel normal proceedment.
+In order to update procedures can follow [update procedure tutorial](https://www.notion.so/tianlu/How-to-update-a-Procedure-5e0ca197145c4e859223fb4d0fb5131d?pvs=4) on our wiki.
+
+
 
 ## Run locally
 

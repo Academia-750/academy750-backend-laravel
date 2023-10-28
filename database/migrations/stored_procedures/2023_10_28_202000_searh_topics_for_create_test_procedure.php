@@ -26,8 +26,8 @@ return new class extends Migration {
             INNER JOIN topics B ON B.id = C.topic_id
             INNER JOIN questions D ON D.questionable_id = C.id
                 WHERE A.opposition_id = oposicion_id
-                AND A.oppositionable_type = 'App\\Models\\Subtopic'
-                AND D.questionable_type = 'App\\Models\\Subtopic'
+                AND A.oppositionable_type = 'App\\\\Models\\\\Subtopic'
+                AND D.questionable_type = 'App\\\\Models\\\\Subtopic'
                 AND FIND_IN_SET(B.topic_group_id, grupos_ids) > 0
                 AND B.is_available = 'yes'
                 AND C.is_available = 'yes'
@@ -40,8 +40,8 @@ return new class extends Migration {
             INNER JOIN topics B ON A.oppositionable_id = B.id
             INNER JOIN questions C ON C.questionable_id = B.id
                 WHERE A.opposition_id = oposicion_id
-                AND A.oppositionable_type = 'App\\Models\\Topic'
-                AND C.questionable_type = 'App\\Models\\Topic'
+                AND A.oppositionable_type = 'App\\\\Models\\\\Topic'
+                AND C.questionable_type = 'App\\\\Models\\\\Topic'
                 AND FIND_IN_SET(B.topic_group_id, grupos_ids) > 0
                 AND B.is_available = 'yes'
                 AND C.is_visible = 'yes'
