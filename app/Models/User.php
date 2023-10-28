@@ -306,4 +306,24 @@ class User extends Authenticatable
         return $this->belongsToMany(Lesson::class)->withPivot(['group_name', 'group_id', 'will_join'])->withTimestamps();
     }
 
+    public static function protectedDNI($dni)
+    {
+        return substr($dni, 0, 1) . '-------' . substr($dni, 8, 1);
+    }
+
+    public static function protectedName($fullName)
+    {
+        $listNames = explode(' ', $fullName);
+        $name = array_shift($listNames);
+
+
+        // Get the first full name and the rest just the initial letter `Albert Mart Ken` => `Albert M. K.`
+        $surnames = array_map(function ($surname) {
+            return substr($surname, 0, 1) . '.';
+        }, $listNames);
+
+        return implode(' ', [$name, ...$surnames]);
+
+    }
+
 }

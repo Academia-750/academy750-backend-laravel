@@ -19,7 +19,7 @@ return new class extends Migration {
             IN oposicion_id INT,
             IN grupos_ids TEXT
         )
-BEGIN
+        BEGIN
             SELECT B.id, COUNT(*) as 'cantidad'
                 FROM oppositionables A
             INNER JOIN subtopics C ON C.id = A.oppositionable_id
@@ -27,6 +27,7 @@ BEGIN
             INNER JOIN questions D ON D.questionable_id = C.id
                 WHERE A.opposition_id = oposicion_id
                 AND A.oppositionable_type = 'App\\\\Models\\\\Subtopic'
+                AND D.questionable_type = 'App\\\\Models\\\\Subtopic'
                 AND FIND_IN_SET(B.topic_group_id, grupos_ids) > 0
                 AND B.is_available = 'yes'
                 AND C.is_available = 'yes'
@@ -40,6 +41,7 @@ BEGIN
             INNER JOIN questions C ON C.questionable_id = B.id
                 WHERE A.opposition_id = oposicion_id
                 AND A.oppositionable_type = 'App\\\\Models\\\\Topic'
+                AND C.questionable_type = 'App\\\\Models\\\\Topic'
                 AND FIND_IN_SET(B.topic_group_id, grupos_ids) > 0
                 AND B.is_available = 'yes'
                 AND C.is_visible = 'yes'

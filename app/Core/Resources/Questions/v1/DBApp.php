@@ -16,7 +16,8 @@ class DBApp implements QuestionsInterface
 {
     protected Question $model;
 
-    public function __construct(Question $question ){
+    public function __construct(Question $question)
+    {
         $this->model = $question;
     }
 
@@ -129,27 +130,13 @@ class DBApp implements QuestionsInterface
         } catch (\Exception $e) {
             DB::rollback();
             // \Log::debug($e->getMessage());
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
     public function topics_relationship_get_questions($topic)
     {
-        if (request()?->query('filter') && request()?->query('filter')['search']) {
-            $questions_id = DB::select(
-                "call search_question_in_topics_and_subtopics_procedure(?,?)",
-                array(request()?->query('filter')['search'], $topic->getKey())
-            ); //search_question_in_topics_and_subtopics
 
-           $questions_id = collect($questions_id)->pluck('id')->toArray();
-
-            return Question::query()
-                ->whereIn('id', $questions_id)
-                ->applyFilters()
-                ->applySorts()
-                ->applyIncludes()
-                ->jsonPaginate();
-        }
 
         return $topic
             ->questions()
@@ -254,7 +241,7 @@ class DBApp implements QuestionsInterface
             return "Successfully";
         } catch (\Exception $e) {
             DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
@@ -272,7 +259,7 @@ class DBApp implements QuestionsInterface
             return "Successfully";
         } catch (\Exception $e) {
             //DB::rollback();
-            abort(500,$e->getMessage());
+            abort(500, $e->getMessage());
         }
     }
 
@@ -282,7 +269,7 @@ class DBApp implements QuestionsInterface
 
         foreach ($filesQuestions as $file) {
 
-            $job = ( new QuestionsImport(Auth::user(), $file->getClientOriginalName()) );
+            $job = (new QuestionsImport(Auth::user(), $file->getClientOriginalName()));
 
             $job->import($file);
 

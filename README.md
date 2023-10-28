@@ -38,6 +38,21 @@ Running the seeder will create
 
 If something fails install the php required extensions.
 
+### ENV
+
+- **APP_** Laravel APP env variables. Im not fully sure how much are they bieng used.
+- **DB_**: Database connection env. Note that for testing we use memory sql.
+- **CLOUDINARY_URL** URL to upload the files. Used on Materials API.
+- **MAIL_** Env to config the email notifications. We have several notifications
+ - Reset password
+ - Lesson Activated
+- **APP_MAIL_ADDRESS** The `from` for the email notifications
+- **APP_MAIL_ADDRESS_IMPUGNACIONES** The seeder will create special user with this emails where all the test impugnations will be sent to
+- **LOG_** Laravel Log Env variables
+
+Other ENV variables we need to verify if are being used or are just legacy debt.
+
+
 ### Set Up the database
 
 :warning: Is **STRICTLY FORBIDDEN** modify the database directly. We will always add a new migration.
@@ -64,6 +79,10 @@ GRANT ALL ON `bomberosapimysql`.* TO `bomberos`@`localhost`;
 4 - Run the Seeder (To get the super admin access as well as the roles permissions)
 
 > php artisan db:seed
+
+In order to create new migrations can follow laravel normal proceedment.
+In order to update procedures can follow [update procedure tutorial](https://www.notion.so/tianlu/How-to-update-a-Procedure-5e0ca197145c4e859223fb4d0fb5131d?pvs=4) on our wiki.
+
 
 
 ## Run locally
