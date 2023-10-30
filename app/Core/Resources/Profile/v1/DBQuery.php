@@ -51,7 +51,7 @@ class DBQuery implements ProfileInterface
         try {
 
             DB::beginTransaction();
-            $user = User::query()->findOrFailOr(Auth::user()?->getKey());
+            $user = User::query()->where('id', Auth::user()->id)->first();
 
             ActionsAccountUser::disableAccountUser($user);
 
