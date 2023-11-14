@@ -419,6 +419,7 @@ class LessonsController extends Controller
      * Lesson Student: Add Group
      *
      * Sync group of active students to a lesson.
+     * Return the total of students of that group in the lesson
      * @authenticated
      * @urlParam lessonId integer required Lesson ID
      * @response {"message": "successfully", "count": 10 }
@@ -446,12 +447,12 @@ class LessonsController extends Controller
 
 
 
-            $studentsIds = $lesson->syncGroup($group);
+            $countAfterSync = $lesson->syncGroup($group);
 
 
             return response()->json([
                 'status' => 'successfully',
-                'count' => count($studentsIds)
+                'count' => $countAfterSync
             ]);
 
         } catch (\Exception $err) {
