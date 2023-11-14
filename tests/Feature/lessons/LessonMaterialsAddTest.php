@@ -7,9 +7,8 @@ use App\Models\Material;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 
@@ -36,7 +35,7 @@ class LessonMaterialsAddTest extends TestCase
 
         $this->actingAs($this->user);
 
-        $this->lesson = Lesson::factory()->active()->create();
+        $this->lesson = Lesson::factory()->create();
 
         $this->material = Material::factory()->create();
     }
@@ -47,14 +46,14 @@ class LessonMaterialsAddTest extends TestCase
     public function not_logged_401(): void
     {
         Auth::logout();
-        $this->post("api/v1/lesson/{$this->material->id}/material")->assertStatus(401);
+        $this->post("api/v1/lesson/{$this->lesson->id}/material")->assertStatus(401);
     }
 
     /** @test */
     public function only_admin_403(): void
     {
         $user = User::factory()->student()->create();
-        $this->actingAs($user)->post("api/v1/lesson/{$this->material->id}/material")->assertStatus(403);
+        $this->actingAs($user)->post("api/v1/lesson/{$this->lesson->id}/material")->assertStatus(403);
     }
 
     /** @test */
@@ -67,17 +66,17 @@ class LessonMaterialsAddTest extends TestCase
     /** @test */
     public function material_not_found_404(): void
     {
-        $this->post("api/v1/lesson/{$this->material->id}/material", ['material_id' => 99])->assertStatus(404);
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => 99])->assertStatus(404);
     }
 
 
     /** @test */
     public function wrong_parameters_422(): void
     {
-        $this->post("api/v1/lesson/{$this->material->id}/material", [])->assertStatus(422); // Missing material_id
-        $this->post("api/v1/lesson/{$this->material->id}/material", ['material_id' => -23])->assertStatus(422); // No negative value
-        $this->post("api/v1/lesson/{$this->material->id}/material", ['material_id' => 2.23])->assertStatus(422); // No decimal
-        $this->post("api/v1/lesson/{$this->material->id}/material", ['material_id' => 'not-uuid'])->assertStatus(422); // Not ID
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", [])->assertStatus(422); // Missing material_id
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => -23])->assertStatus(422); // No negative value
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => 2.23])->assertStatus(422); // No decimal
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => 'not-uuid'])->assertStatus(422); // Not ID
     }
 
 
@@ -85,7 +84,7 @@ class LessonMaterialsAddTest extends TestCase
     /** @test */
     public function add_material_to_lesson_200(): void
     {
-        $this->post("api/v1/lesson/{$this->material->id}/material", ['material_id' => $this->material->id])->assertStatus(200);
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => $this->material->id])->assertStatus(200);
 
         $material = $this->lesson->materials()->find($this->material->id);
 
@@ -96,10 +95,37 @@ class LessonMaterialsAddTest extends TestCase
     }
 
     /** @test */
-    public function student_already_exists_409(): void
+    public function material_already_exists_409(): void
     {
-        $this->post("api/v1/lesson/{$this->material->id}/material", ['material_id' => $this->material->id])->assertStatus(200);
-        $this->post("api/v1/lesson/{$this->material->id}/material", ['material_id' => $this->material->id])->assertStatus(409);
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => $this->material->id])->assertStatus(200);
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => $this->material->id])->assertStatus(409);
     }
 
+    /** @test */
+    public function add_material_non_active_lesson_no_notify_email_200(): void
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
+
+        $this->lesson->students()->attach(User::factory()->student()->count(2)->create());
+
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => $this->material->id])->assertStatus(200);
+
+        Notification::assertCount(0);
+    }
+
+    /** @test */
+    public function add_material_active_lesson_notify_email_200(): void
+    {
+        Notification::fake();
+        Notification::assertNothingSent();
+
+        $this->lesson->students()->attach(User::factory()->student()->count(2)->create());
+
+        $this->lesson->update(['is_active' => true]);
+
+        $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => $this->material->id])->assertStatus(200);
+
+        Notification::assertCount(2);
+    }
 }

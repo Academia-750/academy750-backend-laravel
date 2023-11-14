@@ -711,6 +711,10 @@ class LessonsController extends Controller
 
             $lesson->materials()->save($material);
 
+            if ($lesson->is_active) {
+                $lesson->notifyUsers();
+            }
+
             return response()->json([
                 'status' => 'successfully'
             ]);
