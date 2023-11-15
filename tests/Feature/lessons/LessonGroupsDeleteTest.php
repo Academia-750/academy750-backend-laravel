@@ -6,6 +6,7 @@ use App\Models\Group;
 use App\Models\GroupUsers;
 use App\Models\Lesson;
 use App\Models\User;
+use DB;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Arr;
@@ -112,7 +113,7 @@ class LessonGroupsDeleteTest extends TestCase
     }
 
     /** @test */
-    public function delete_group_not_affect_other_groups_200(): void
+    public function delete_group_not_affect_other_groups_in_the_same_lesson_200(): void
     {
 
         $group = Group::factory()->create();
@@ -126,5 +127,26 @@ class LessonGroupsDeleteTest extends TestCase
         $this->assertEquals($this->lesson->students()->count(), 3);
         // Remaining 3 students are all from the group which was not deleted
         $this->assertEquals($this->lesson->students()->pluck('group_id')->toArray(), [$group->id, $group->id, $group->id]);
+    }
+
+    /** @test */
+    public function delete_group_not_affect_the_group_in_other_lessons_200(): void
+    {
+        // Lesson 2 has the same students of lesson 1 (of the same group)
+        $lesson2 = Lesson::factory()->create();
+        $lesson2->students()->attach($this->lesson->students()->get(), ['group_id' => $this->group->id, 'group_name' => $this->group->name]);
+        $this->assertEquals($this->lesson->students()->count(), 2);
+
+        $this->assertEquals($lesson2->students()->count(), 2);
+
+
+        $data = $this->delete("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200)->json();
+        $this->assertEquals($data['count'], 2);
+
+
+        // Lesson students are deleted. Lesson 2 students remain the same
+        $this->assertEquals($this->lesson->students()->count(), 0);
+        $this->assertEquals($lesson2->students()->count(), 2);
+
     }
 }

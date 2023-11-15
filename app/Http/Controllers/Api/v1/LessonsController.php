@@ -540,8 +540,8 @@ class LessonsController extends Controller
                 ], 404);
             }
 
-            // Will delete any student that doesnt belong to the group anymore. Add the current active ones
-            $result = $lesson->students()->newPivotStatement()->where('group_id', $group->id)->delete();
+            // Delete all the students of the group for this lesson
+            $result = DB::table('lesson_user')->where('group_id', $group->id)->where('lesson_id', $lesson->id)->delete();
 
             return response()->json([
                 'status' => 'successfully',
