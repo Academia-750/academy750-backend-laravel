@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Lesson;
 use App\Models\Material;
 use App\Models\User;
+use App\Notifications\Api\NewMaterialAvailable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Auth;
@@ -127,5 +128,22 @@ class LessonMaterialsAddTest extends TestCase
         $this->post("api/v1/lesson/{$this->lesson->id}/material", ['material_id' => $this->material->id])->assertStatus(200);
 
         Notification::assertCount(2);
+
+        $students = $this->lesson->students()->get();
+        Notification::assertSentTo($students[0], NewMaterialAvailable::class);
+        Notification::assertSentTo($students[1], NewMaterialAvailable::class);
+    }
+
+    /** @test */
+    public function test_new_material_notification_content(): void
+    {
+        $student = $this->lesson->students->first();
+        $date = date('d/m/Y', strtotime($this->lesson->date));
+        $notification = new NewMaterialAvailable($this->lesson, $this->material);
+        $rendered = $notification->toMail($student)->render();
+
+        $this->assertStringContainsString("Se ha incorporado el material {$this->material->name}", $rendered);
+        $this->assertStringContainsString("a la clase {$this->lesson->name}", $rendered);
+        $this->assertStringContainsString("del día {$date}", $rendered);
     }
 }

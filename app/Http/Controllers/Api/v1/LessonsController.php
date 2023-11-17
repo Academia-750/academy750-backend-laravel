@@ -712,7 +712,7 @@ class LessonsController extends Controller
             $lesson->materials()->save($material);
 
             if ($lesson->is_active) {
-                $lesson->notifyUsers();
+                $lesson->notifyNewMaterial($material);
             }
 
             return response()->json([

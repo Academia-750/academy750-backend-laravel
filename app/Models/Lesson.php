@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\Api\NewLessonAvailable;
+use App\Notifications\Api\NewMaterialAvailable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -129,6 +130,22 @@ class Lesson extends Model
             $student->notify(
                 new NewLessonAvailable(
                     $lesson
+                )
+            );
+        }
+    }
+
+    public function notifyNewMaterial(Material $material)
+    {
+
+        $students = $this->students()->get();
+        $lesson = Lesson::find($this->id); // Get a fresh copy of the lesson
+
+        foreach ($students as $student) {
+            $student->notify(
+                new NewMaterialAvailable(
+                    $lesson,
+                    $material
                 )
             );
         }
