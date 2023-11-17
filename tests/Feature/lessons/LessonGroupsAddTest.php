@@ -122,8 +122,33 @@ class LessonGroupsAddTest extends TestCase
         // One user got disabled
         $this->group->users()->whereNull('discharged_at')->first()->update(['discharged_at' => now()]);
 
+        // sync group
         $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
         $this->assertEquals($data['count'], 3); // Only Active users
+
+    }
+
+
+    /** @test */
+    public function group_sync_lesson_with_attendees_200(): void
+    {
+        $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+
+        $this->assertEquals($data['count'], 4); // Only Active users
+
+        $this->lesson->students()->newPivotStatement()->update(['will_join' => true]);
+
+        // We add a new user to the group
+        $this->group->users()->save(GroupUsers::factory()->create(['group_id' => $this->group->id]));
+
+        // sync group
+        $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+        $this->assertEquals($data['count'], 5); // Only Active users
+
+        $willJoinCount = $this->lesson->students()->wherePivot('will_join', true)->count();
+
+        $this->assertEquals($willJoinCount, 4); // The 4 before have still will join marked as true
+
 
     }
 

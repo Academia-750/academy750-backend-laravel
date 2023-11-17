@@ -419,6 +419,7 @@ class LessonsController extends Controller
      * Lesson Student: Add Group
      *
      * Sync group of active students to a lesson.
+     * Return the total of students of that group in the lesson
      * @authenticated
      * @urlParam lessonId integer required Lesson ID
      * @response {"message": "successfully", "count": 10 }
@@ -446,12 +447,12 @@ class LessonsController extends Controller
 
 
 
-            $studentsIds = $lesson->syncGroup($group);
+            $countAfterSync = $lesson->syncGroup($group);
 
 
             return response()->json([
                 'status' => 'successfully',
-                'count' => count($studentsIds)
+                'count' => $countAfterSync
             ]);
 
         } catch (\Exception $err) {
@@ -539,8 +540,8 @@ class LessonsController extends Controller
                 ], 404);
             }
 
-            // Will delete any student that doesnt belong to the group anymore. Add the current active ones
-            $result = $lesson->students()->newPivotStatement()->where('group_id', $group->id)->delete();
+            // Delete all the students of the group for this lesson
+            $result = DB::table('lesson_user')->where('group_id', $group->id)->where('lesson_id', $lesson->id)->delete();
 
             return response()->json([
                 'status' => 'successfully',
@@ -709,6 +710,10 @@ class LessonsController extends Controller
             }
 
             $lesson->materials()->save($material);
+
+            if ($lesson->is_active) {
+                $lesson->notifyNewMaterial($material);
+            }
 
             return response()->json([
                 'status' => 'successfully'

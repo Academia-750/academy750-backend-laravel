@@ -3,6 +3,7 @@
 namespace App\Notifications\Api;
 
 use App\Models\Lesson;
+use App\Models\Material;
 use App\Models\Opposition;
 use App\Models\Question;
 use App\Models\Topic;
@@ -12,19 +13,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class NewLessonAvailable extends Notification implements ShouldQueue
+class NewMaterialAvailable extends Notification implements ShouldQueue
 {
     use Queueable;
 
     private Lesson $lesson;
+    private Material $material;
 
     /**
      * @param Lesson $lesson
+     * @param Material $material
      */
-    public function __construct(Lesson $lesson)
+    public function __construct(Lesson $lesson, Material $material)
     {
 
         $this->lesson = $lesson;
+        $this->material = $material;
 
     }
 
@@ -38,10 +42,10 @@ class NewLessonAvailable extends Notification implements ShouldQueue
         $date = date('d/m/Y', strtotime($this->lesson->date));
 
         return (new MailMessage)
-            ->subject("Clase {$this->lesson->name} disponible")
+            ->subject("Clase {$this->lesson->name} - Nuevo Material")
             ->greeting("<p class='center-text text-size-20 typography-greeting-text'>{$this->lesson->name}</p>")
-            ->line("Hola! La clase  {$this->lesson->name} del día {$date} ya se encuentra activada.")
-            ->line('Podrás consultar los archivos vinculados a la misma desde tu área "Mis Clases". Así mismo, en tu apartado "Materiales", aparecerán los nuevos documentos.')
+            ->line(" Se ha incorporado el material {$this->material->name} a la clase {$this->lesson->name} del día {$date}.")
+            ->line('Podrás consultarlo desde  “Mis Clases" o en el apartado "Materiales".')
             ->line("¡A darle caña!")
             ->salutation("Firma");
     }

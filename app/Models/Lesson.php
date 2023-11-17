@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\Api\NewLessonAvailable;
+use App\Notifications\Api\NewMaterialAvailable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -95,19 +96,28 @@ class Lesson extends Model
     public function syncGroup($group)
     {
         // Will delete any student that doesnt belong to the group anymore. Add the current active ones
-        DB::table('lesson_user')->where('lesson_id', $this->id)->where('group_id', $group->id)->delete();
+        DB::table('lesson_user')
+            ->join('group_users', 'group_users.id', '=', 'lesson_user.group_id')
+            ->where('lesson_user.lesson_id', $this->id)
+            ->where('lesson_user.group_id', $group->id)
+            ->whereNotNull('group_users.discharged_at')
+            ->delete();
 
         $studentsIds = $group->users()
             ->whereNull('discharged_at')
             ->whereNotExists(
                 function ($query) {
-                    $query->select('lesson_user.id')->from('lesson_user')->where('lesson_user.lesson_id', $this->id)->whereRaw('`lesson_user`.`user_id` = `group_users`.`user_id`');
+                    $query->select('lesson_user.id')
+                        ->from('lesson_user')
+                        ->where('lesson_user.lesson_id', $this->id)
+                        ->whereRaw('`lesson_user`.`user_id` = `group_users`.`user_id`');
                 }
             )->pluck('user_id');
 
+
         $this->students()->attach($studentsIds, ['group_id' => $group->id, 'group_name' => $group->name]);
 
-        return $studentsIds;
+        return $this->students()->where('group_id', $group->id)->count();
     }
 
     public function notifyUsers()
@@ -120,6 +130,22 @@ class Lesson extends Model
             $student->notify(
                 new NewLessonAvailable(
                     $lesson
+                )
+            );
+        }
+    }
+
+    public function notifyNewMaterial(Material $material)
+    {
+
+        $students = $this->students()->get();
+        $lesson = Lesson::find($this->id); // Get a fresh copy of the lesson
+
+        foreach ($students as $student) {
+            $student->notify(
+                new NewMaterialAvailable(
+                    $lesson,
+                    $material
                 )
             );
         }
