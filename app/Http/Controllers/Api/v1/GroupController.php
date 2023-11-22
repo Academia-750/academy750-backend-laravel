@@ -118,6 +118,11 @@ class GroupController extends Controller
             Group::query()->find($group->id)->update($data);
             $updated = Group::query()->find($groupId);
 
+            // Updated cache relations
+            if ($data['name'] !== $group->name) {
+                \DB::table('lesson_user')->where('group_id', $group->id)->update(['group_name' => $data['name']]);
+            }
+
             return GroupResource::make($updated)->response()->setStatusCode(200);
 
 
