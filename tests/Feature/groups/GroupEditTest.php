@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Group;
+use App\Models\Lesson;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -122,6 +123,23 @@ class GroupEditTest extends TestCase
     {
         $otherGroup = Group::factory()->create();
         $this->put("api/v1/group/{$this->group->id}", ['color' => $otherGroup['color']])->assertStatus(409);
+    }
+
+    /** @test */
+    public function edit_group_updates_lesson_group_name_200(): void
+    {
+        $lesson = Lesson::factory()->create();
+        $lesson->students()->attach(
+            User::factory()->student()->count(2)->create(),
+            ['group_id' => $this->group->id, 'group_name' => $this->group->name]
+        );
+
+        $this->put("api/v1/group/{$this->group->id}", ['name' => 'Other Name'])->assertStatus(200);
+
+        $group_names = $lesson->students()->withPivot(['group_name'])->get()->pluck('pivot.group_name')->toArray();
+
+        // Both students group name are updated
+        $this->assertEquals(['Other Name', 'Other Name'], $group_names);
     }
 
 }
