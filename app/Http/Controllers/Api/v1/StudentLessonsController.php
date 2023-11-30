@@ -5,7 +5,10 @@ namespace App\Http\Controllers\Api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonInfoRequest;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonSearchRequest;
+use App\Models\Permission;
 use App\Models\User;
+use File;
+use Illuminate\Encryption\Encrypter;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonJoinRequest;
 use App\Http\Requests\Api\v1\StudentLessons\StudentLessonListRequest;
@@ -16,7 +19,7 @@ use App\Models\Material;
 use DB;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Log;
-
+use \Laravel\Sanctum\PersonalAccessToken;
 
 
 /**
@@ -27,6 +30,7 @@ use Illuminate\Support\Facades\Log;
  */
 class StudentLessonsController extends Controller
 {
+
 
     /**
      * Students: Lesson Calendar
@@ -474,9 +478,10 @@ class StudentLessonsController extends Controller
 
 
     /**
-     * Students: Download Material
+     * Students: Material URL
      *
-     * Allow students to get download or access the material URL.
+     * Returns a encripted wrapped of that represents the real URL, together a token and a cookie.
+     * This material can be revela using this URL (which is calling to the downloadFile function)
      * Required `material-lessons` and `recording-lessons` permission according to the type of material
      * Admin users can use also the API with no permissions required
      *
@@ -491,7 +496,7 @@ class StudentLessonsController extends Controller
      * @response status=409 scenario="Material not available"
      * @response status=424 scenario="Error generating the PDF URL"
      */
-    public function downloadMaterial(Request $request, int $materialId)
+    public function getUrl(Request $request, int $materialId)
     {
         try {
             $material = Material::find($materialId);
@@ -533,6 +538,7 @@ class StudentLessonsController extends Controller
             /** We handle Download errors differently */
             try {
                 $url = $material->downloadUrl($request->user());
+
             } catch (\Exception $err) {
                 Log::error($err->getMessage());
                 return response()->json([
@@ -541,12 +547,23 @@ class StudentLessonsController extends Controller
                 ], 424);
             }
 
-            return response()->json([
-                'status' => 'successfully',
-                'url' => $url,
-            ]);
+            // Recordings can not be download safe as the player needs the right video
+            if ($material->type === 'recording') {
+                return response()
+                    ->json([
+                        'status' => 'successfully',
+                        'url' => $url,
+                    ]);
+            }
 
-
+            [$cookie, $url] = Material::secureURL($request, $url);
+            return response()
+                ->json([
+                    'status' => 'successfully',
+                    'url' => $url,
+                ])
+                // The download URL is public. But we use this cookie to verify the ownership
+                ->withCookie($cookie);
         } catch (\Exception $err) {
 
             Log::error($err->getMessage());
@@ -557,5 +574,52 @@ class StudentLessonsController extends Controller
         }
     }
 
+    /**
+     * Download Resource
+     *
+     * Download or redirect to a URL.
+     * The URL is not exposed to the user and is validate Via Cookies and user tokens
+     * This URL receives a token and collects a cookie left in the browser of the user
+     * who call getURL.
+     *
+     * ONLY if the cookie belongs to the user for which the token is generated, it will
+     * download or redirect to the URL
+     *
+     * @urlParam code Token Code
+     * @authenticated
+     * @response Binary File or a URL redirection
+     * @response status=404 scenario="Wrong Token, missed cookie, any is expired, user doesn't match"
+     */
+    public function downloadFile(Request $request, string $code)
+    {
+        try {
+            [$url, $error] = Material::unlockSafeURL($request, $code);
+
+            if ($error) {
+                // To trick the user we don't say the reason
+                return response()->json([
+                    'status' => 'error',
+                    'error' => $error
+                ], 404);
+            }
+
+            // Check if the host is the same as your Laravel application's host
+            $parsedUrl = parse_url($url);
+            $internalUrl = isset($parsedUrl['host']) && $parsedUrl['host'] === $request->getHost();
+
+            return $internalUrl ?
+                response()->download(public_path($parsedUrl['path']))
+                :
+                response()->redirectTo($url, 302);
+
+        } catch (\Exception $err) {
+
+            Log::error($err->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'error' => $err->getMessage()
+            ], 500);
+        }
+    }
 
 }

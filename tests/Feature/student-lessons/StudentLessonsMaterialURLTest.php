@@ -9,7 +9,6 @@ use App\Models\Lesson;
 use App\Models\Material;
 use App\Models\Permission;
 use App\Models\User;
-use DocumentType;
 use File;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -18,7 +17,7 @@ use Mockery;
 use Tests\TestCase;
 
 
-class StudentLessonsMaterialDownloadTest extends TestCase
+class StudentLessonsMaterialURLTest extends TestCase
 {
     use RefreshDatabase;
     use WithFaker;
@@ -77,7 +76,7 @@ class StudentLessonsMaterialDownloadTest extends TestCase
     public function not_logged_401(): void
     {
         Auth::logout();
-        $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(401);
+        $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(401);
     }
 
 
@@ -86,29 +85,29 @@ class StudentLessonsMaterialDownloadTest extends TestCase
     {
 
         $user = User::factory()->student()->create(); // Missing SEE LESSONS
-        $this->actingAs($user)->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(403);
+        $this->actingAs($user)->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(403);
 
         $user->permissions()->detach();
         $user->givePermissionTo(Permission::SEE_LESSON_RECORDINGS); // Wrong Permission type
-        $this->actingAs($user)->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(403);
+        $this->actingAs($user)->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(403);
 
         $user->permissions()->detach();
         $user->givePermissionTo(Permission::SEE_LESSON_MATERIALS); // Wrong Permission type
-        $this->actingAs($user)->get("api/v1/student-lessons/{$this->recording->id}/download")->assertStatus(403);
+        $this->actingAs($user)->get("api/v1/student-lessons/{$this->recording->id}/url")->assertStatus(403);
 
     }
 
     /** @test */
     public function not_found_404(): void
     {
-        $this->get("api/v1/student-lessons/404/download")->assertStatus(404);
+        $this->get("api/v1/student-lessons/404/url")->assertStatus(404);
     }
 
     /** @test */
     public function material_not_in_lesson_409(): void
     {
         $material = Material::factory()->create();
-        $this->get("api/v1/student-lessons/{$material->id}/download")->assertStatus(409);
+        $this->get("api/v1/student-lessons/{$material->id}/url")->assertStatus(409);
     }
 
     /** @test */
@@ -117,13 +116,13 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         $this->lesson->is_active = false;
         $this->lesson->save();
 
-        $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(409);
+        $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(409);
     }
 
     /** @test */
     public function download_recording_url_200(): void
     {
-        $data = $this->get("api/v1/student-lessons/{$this->recording->id}/download")->assertStatus(200);
+        $data = $this->get("api/v1/student-lessons/{$this->recording->id}/url")->assertStatus(200);
         $this->assertEquals($data['url'], $this->recording->url);
     }
 
@@ -134,8 +133,17 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         $this->material->url = $url; // This type will be defined to UNKONW
         $this->material->save();
 
-        $data = $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(200);
-        $this->assertEquals($data['url'], $url);
+        $data = $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(200);
+
+        // URL is generated and saved in a token
+
+        $token = $this->user->tokens()->where('name', Material::$TOKEN_NAME)->first();
+        $this->assertEquals($token['abilities'][0], $url);
+        $this->assertEquals($token['id'], $this->user->id);
+
+        // SECURE URL is returned
+        $this->assertStringContainsString('/api/v1/resource/' . $token->plainTextToken, $data['url']);
+        $data->assertCookie(Material::$TOKEN_NAME);
     }
 
 
@@ -148,8 +156,8 @@ class StudentLessonsMaterialDownloadTest extends TestCase
 
         $admin = User::factory()->admin()->create();
 
-        $this->actingAs($admin)->get("api/v1/student-lessons/{$this->recording->id}/download")->assertStatus(200);
-        $this->actingAs($admin)->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(200);
+        $this->actingAs($admin)->get("api/v1/student-lessons/{$this->recording->id}/url")->assertStatus(200);
+        $this->actingAs($admin)->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(200);
     }
     /** @test */
     public function download_pdf_watermark_200(): void
@@ -160,8 +168,10 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         $this->material->url = 'http://test.url/mypdf.pdf';
         $this->material->save();
 
-        $data = $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(200);
-        $this->assertEquals($data['url'], 'internal-url');
+        $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(200);
+        $token = $this->user->tokens()->where('name', Material::$TOKEN_NAME)->first();
+        $this->assertEquals($token['abilities'][0], 'internal-url');
+        $this->assertEquals($token['id'], $this->user->id);
     }
 
     /** @test */
@@ -173,7 +183,7 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         $this->material->url = 'http://test.url/mypdf.pdf';
         $this->material->save();
 
-        $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(424);
+        $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(424);
     }
 
     /** @test */
@@ -185,8 +195,11 @@ class StudentLessonsMaterialDownloadTest extends TestCase
         $this->material->url = 'http://test.url/mypdf.png';
         $this->material->save();
 
-        $data = $this->get("api/v1/student-lessons/{$this->material->id}/download")->assertStatus(200);
-        $this->assertEquals($data['url'], 'internal-image-url');
+        $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(200);
+
+        $token = $this->user->tokens()->where('name', Material::$TOKEN_NAME)->first();
+        $this->assertEquals($token['abilities'][0], 'internal-image-url');
+        $this->assertEquals($token['id'], $this->user->id);
     }
 
     /** @test */
