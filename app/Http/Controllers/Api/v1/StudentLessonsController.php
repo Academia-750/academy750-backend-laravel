@@ -589,6 +589,7 @@ class StudentLessonsController extends Controller
      * @authenticated
      * @response Binary File or a URL redirection
      * @response status=404 scenario="Wrong Token, missed cookie, any is expired, user doesn't match"
+     * @response status=424 scenario="Trying to download an external url but failed"
      */
     public function downloadFile(Request $request, string $code)
     {
@@ -606,9 +607,16 @@ class StudentLessonsController extends Controller
             // Check if the host is the same as your Laravel application's host
             $parsedUrl = parse_url($url);
             $internalUrl = isset($parsedUrl['host']) && $parsedUrl['host'] === $request->getHost();
-            $downloadUrl = $internalUrl ? public_path($parsedUrl['path']) : $url;
 
-            return \Response::download($downloadUrl);
+            if ($internalUrl) {
+                return \Response::download(public_path($parsedUrl['path']));
+            }
+
+            $filename = \Str::random();
+            $tempImage = tempnam(sys_get_temp_dir(), $filename);
+            copy($url, $tempImage);
+
+            return response()->download($tempImage, $filename);
 
 
         } catch (\Exception $err) {

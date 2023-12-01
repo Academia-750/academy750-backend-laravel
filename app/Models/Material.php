@@ -126,8 +126,6 @@ class Material extends Model
         $cookie = \Cookie::make(self::$TOKEN_NAME, $json, $seconds / 60)->withSameSite('None');
         $cookie->setSecureDefault(true);
 
-        \Log::debug($cookie);
-
         return [$cookie, $url];
     }
 

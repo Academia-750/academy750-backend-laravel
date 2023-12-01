@@ -66,7 +66,7 @@ class StudentLessonDownloadMaterialTest extends TestCase
 
         // Mock the Watermark to avoid generate a real file
         $mock = $this->partialMock(Watermark::class);
-        $mock->shouldReceive('pdf')->once()->andReturn('http://mydomoain.com/temp/file.pdf');
+        $mock->shouldReceive('pdf')->once()->andReturn('http://localhost/temp/file.pdf');
 
 
         // We dont call to the API but we need to simulate the request to get the SECURE URL
@@ -168,7 +168,7 @@ class StudentLessonDownloadMaterialTest extends TestCase
     /** @test */
     public function download_file_200(): void
     {
-        $data = $this->get($this->secureUrl)->assertStatus(200);
+        $this->get($this->secureUrl)->assertStatus(200);
     }
 
 
