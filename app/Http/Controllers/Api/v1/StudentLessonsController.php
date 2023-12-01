@@ -606,11 +606,10 @@ class StudentLessonsController extends Controller
             // Check if the host is the same as your Laravel application's host
             $parsedUrl = parse_url($url);
             $internalUrl = isset($parsedUrl['host']) && $parsedUrl['host'] === $request->getHost();
+            $downloadUrl = $internalUrl ? public_path($parsedUrl['path']) : $url;
 
-            return $internalUrl ?
-                response()->download(public_path($parsedUrl['path']))
-                :
-                response()->redirectTo($url, 302);
+            return \Response::download($downloadUrl);
+
 
         } catch (\Exception $err) {
 

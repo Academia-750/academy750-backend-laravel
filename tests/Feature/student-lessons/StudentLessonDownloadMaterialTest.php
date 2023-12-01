@@ -14,7 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Mockery;
 use Tests\TestCase;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Routing\ResponseFactory;
 
 
 class StudentLessonDownloadMaterialTest extends TestCase
@@ -81,6 +81,8 @@ class StudentLessonDownloadMaterialTest extends TestCase
 
         $this->disableCookieEncryption(); // Our cookie is already encrypted
         $this->withCookie($cookie->getName(), $cookie->getValue());
+
+        \Response::partialMock()->shouldReceive('download')->andReturn("ok");
 
     }
 
@@ -164,39 +166,39 @@ class StudentLessonDownloadMaterialTest extends TestCase
 
 
     /** @test */
-    public function download_file_302(): void
+    public function download_file_200(): void
     {
-        $this->get($this->secureUrl)->assertStatus(302);
+        $data = $this->get($this->secureUrl)->assertStatus(200);
     }
 
 
     /** @test */
     public function use_token_twice_404(): void
     {
-        $this->get($this->secureUrl)->assertStatus(302);
+        $this->get($this->secureUrl)->assertStatus(200);
         $this->get($this->secureUrl)->assertStatus(404);
     }
 
 
     /** @test */
-    public function tokens_are_deleted_302(): void
+    public function tokens_are_deleted_200(): void
     {
         $tokensCount = $this->user->tokens()->where('name', Material::$TOKEN_NAME)->count();
         $this->assertEquals($tokensCount, 1);
 
-        $this->get($this->secureUrl)->assertStatus(302);
+        $this->get($this->secureUrl)->assertStatus(200);
         $tokensCount = $this->user->tokens()->where('name', Material::$TOKEN_NAME)->count();
         $this->assertEquals($tokensCount, 0);
     }
 
     /** @test */
-    public function only_delete_user_tokens_302(): void
+    public function only_delete_user_tokens_200(): void
     {
         $other = User::factory()->create();
         $other->createToken(Material::$TOKEN_NAME);
 
 
-        $this->get($this->secureUrl)->assertStatus(302);
+        $this->get($this->secureUrl)->assertStatus(200);
 
         $tokensCount = $other->tokens()->where('name', Material::$TOKEN_NAME)->count();
         $this->assertEquals($tokensCount, 1);
