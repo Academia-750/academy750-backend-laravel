@@ -123,7 +123,10 @@ class Material extends Model
         // Generate Cookie
         $payload = ['uuid' => $request->user()->uuid, 'ip' => $request->ip()];
         $json = \Crypt::encryptString(json_encode($payload));
-        $cookie = \Cookie::make(self::$TOKEN_NAME, $json, $seconds / 60);
+        $cookie = \Cookie::make(self::$TOKEN_NAME, $json, $seconds / 60)->withSameSite('None');
+        $cookie->setSecureDefault(true);
+
+        \Log::debug($cookie);
 
         return [$cookie, $url];
     }
