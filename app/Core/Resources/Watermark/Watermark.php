@@ -22,6 +22,7 @@ class Watermark
         /**
          * In local we return HTTP, otherwise HTTPS
          */
+
         return asset($path, app()->environment() !== 'local');
     }
 

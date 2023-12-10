@@ -95,13 +95,28 @@ class Lesson extends Model
      */
     public function syncGroup($group)
     {
+
+
+
         // Will delete any student that doesnt belong to the group anymore. Add the current active ones
         DB::table('lesson_user')
-            ->join('group_users', 'group_users.id', '=', 'lesson_user.group_id')
+            ->join('group_users', function ($join) use ($group) {
+                $join->on('group_users.group_id', '=', 'lesson_user.group_id');
+                $join->on('group_users.user_id', '=', 'lesson_user.user_id');
+                $join->whereRaw('`group_users`.`discharged_at` IS NOT NULL');
+                $join->whereRaw("NOT EXISTS (
+                    SELECT `group2`.`user_id` FROM `group_users` `group2`
+                    WHERE `group2`.`group_id` = ?
+                    AND  `group2`.`user_id` = `lesson_user`.`user_id`
+                    AND `group2`.`discharged_at` IS NULL)",
+                    [$group->id]
+                );
+            })
             ->where('lesson_user.lesson_id', $this->id)
             ->where('lesson_user.group_id', $group->id)
-            ->whereNotNull('group_users.discharged_at')
             ->delete();
+
+
 
         $studentsIds = $group->users()
             ->whereNull('discharged_at')
@@ -113,7 +128,6 @@ class Lesson extends Model
                         ->whereRaw('`lesson_user`.`user_id` = `group_users`.`user_id`');
                 }
             )->pluck('user_id');
-
 
         $this->students()->attach($studentsIds, ['group_id' => $group->id, 'group_name' => $group->name]);
 

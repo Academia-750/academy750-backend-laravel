@@ -148,10 +148,58 @@ class LessonGroupsAddTest extends TestCase
         $willJoinCount = $this->lesson->students()->wherePivot('will_join', true)->count();
 
         $this->assertEquals($willJoinCount, 4); // The 4 before have still will join marked as true
-
-
     }
 
+    /** @test */
+    public function group_sync_lesson_with_attendees_on_removing_200(): void
+    {
+        $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+
+        $this->assertEquals($data['count'], 4); // Only Active users
+
+        $this->lesson->students()->newPivotStatement()->update(['will_join' => true]);
+
+
+
+        $this->group->users()->first()->update(['discharged_at' => now()]);
+
+        // sync group
+        $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+        $this->assertEquals($data['count'], 3); // Only Active users
+
+        $willJoinCount = $this->lesson->students()->wherePivot('will_join', true)->count();
+
+        $this->assertEquals($willJoinCount, 3); // The 3 active users will join
+    }
+
+    /** @test */
+    public function group_sync_lesson_with_attendees_on_removed_and_re_added_200(): void
+    {
+        $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+
+        $this->assertEquals($data['count'], 4); // Only Active users
+
+        $this->lesson->students()->newPivotStatement()->update(['will_join' => true]);
+
+
+
+        $this->group->users()->first()->update(['discharged_at' => now()]);
+        // Will add him again so even if he was discharge now is not
+        $student = $this->group->users()->first();
+
+        GroupUsers::create([
+            'group_id' => $this->group->id,
+            'user_id' => $student->user_id,
+        ]);
+
+        // sync group
+        $data = $this->post("api/v1/lesson/{$this->lesson->id}/group", ['group_id' => $this->group->id])->assertStatus(200);
+        $this->assertEquals($data['count'], 4); // Only Active users
+
+        $willJoinCount = $this->lesson->students()->wherePivot('will_join', true)->count();
+
+        $this->assertEquals($willJoinCount, 4); // The first user was removed and re joined so is deleted his attendee
+    }
     /** @test */
     public function add_2_groups_200(): void
     {

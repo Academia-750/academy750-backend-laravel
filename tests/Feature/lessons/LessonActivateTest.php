@@ -102,7 +102,8 @@ class LessonActivateTest extends TestCase
         $students = GroupUsers::factory()->group($group)->count(2)->create();
         GroupUsers::factory()->group($group)->discharged()->count(1)->create();
 
-        $this->lesson->students()->attach($students, ['group_id' => $group->id, 'group_name' => $group->name]);
+
+        $this->lesson->students()->attach($students->pluck('user_id'), ['group_id' => $group->id, 'group_name' => $group->name]);
 
         $this->assertEquals($this->lesson->students()->where('group_id', $group->id)->count(), 2);
 
@@ -239,7 +240,7 @@ class LessonActivateTest extends TestCase
         $group = Group::factory()->create();
         $students = GroupUsers::factory()->group($group)->count(2)->create();
         // And are attached to the lessons
-        $this->lesson->students()->attach($students, ['group_id' => $group->id, 'group_name' => $group->name]);
+        $this->lesson->students()->attach($students->pluck('user_id'), ['group_id' => $group->id, 'group_name' => $group->name]);
         $this->assertEquals($this->lesson->students()->where('group_id', $group->id)->count(), 2);
 
         // Now 1 user is discharged
