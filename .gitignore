@@ -22,5 +22,5 @@ yarn-error.log
 /public/doc.pdf
 /public/temp/*
 /public/test_temp
-!/public/temp/.htaccess
+!/public/temp/.gitkeep
 /storage/app/public/users/images/*
