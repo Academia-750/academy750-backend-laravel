@@ -30,6 +30,9 @@ class MaterialEditRequest extends FormRequest
                 'string',
                 'url'
             ],
+            'watermark' => [
+                'boolean'
+            ],
         ];
     }
 

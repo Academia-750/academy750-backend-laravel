@@ -433,7 +433,9 @@ class MaterialController extends Controller
             $data = removeNull([
                 'name' => $request->get('name'),
                 'tags' => $request->get('tags') ? join(',', $request->get('tags')) : null,
-                'url' => $request->get('url')
+                'url' => $request->get('url'),
+                'watermark' => $request->get('watermark'),
+
             ]);
 
             // Overriding URL => Delete old file
