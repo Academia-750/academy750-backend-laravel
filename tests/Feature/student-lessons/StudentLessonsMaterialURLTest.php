@@ -143,9 +143,12 @@ class StudentLessonsMaterialURLTest extends TestCase
     /** @test */
     public function download_material_type_200(): void
     {
-        $url = 'http://test.url';
-        $this->material->url = $url; // This type will be defined to UNKONW
+        $url = 'http://test.url/123.pdf';
+        $this->material->url = 'http://test.pdf'; // Will be recognize as PDF
         $this->material->save();
+
+        $mock = $this->partialMock(Watermark::class);
+        $mock->shouldReceive('pdf')->once()->andReturn($url);
 
         $data = $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(200);
 
