@@ -48,7 +48,7 @@ class StudentLessonDownloadMaterialTest extends TestCase
             Permission::SEE_LESSON_RECORDINGS,
         ])->create();
 
-        $this->material = Material::factory()->withUrl('http://example/myFile.pdf')->create(['type' => 'material']);
+        $this->material = Material::factory()->withUrl('http://example/myFile.pdf')->create(['type' => 'material', "watermark" => 1]);
 
 
         // Our Lesson has 1 student, 1 material and 1 recording

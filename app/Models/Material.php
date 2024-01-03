@@ -28,7 +28,8 @@ class Material extends Model
         'type',
         'url',
         'tags',
-        'workspace_id'
+        'workspace_id',
+        'watermark'
     ];
 
     protected $attributes = [
@@ -80,6 +81,10 @@ class Material extends Model
     {
 
         if ($this->type === 'recording') {
+            return $this->url;
+        }
+
+        if (!$this->watermark) {
             return $this->url;
         }
 

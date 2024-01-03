@@ -480,8 +480,8 @@ class StudentLessonsController extends Controller
     /**
      * Students: Material URL
      *
-     * Returns a encripted wrapped of that represents the real URL, together a token and a cookie.
-     * This material can be revela using this URL (which is calling to the downloadFile function)
+     * Returns a encrypted wrapped of that represents the real URL, together a token and a cookie.
+     * This material can be reveal using this URL (which is calling to the downloadFile function)
      * Required `material-lessons` and `recording-lessons` permission according to the type of material
      * Admin users can use also the API with no permissions required
      *
@@ -538,7 +538,6 @@ class StudentLessonsController extends Controller
             /** We handle Download errors differently */
             try {
                 $url = $material->downloadUrl($request->user());
-
             } catch (\Exception $err) {
                 Log::error($err->getMessage());
                 return response()->json([
@@ -547,8 +546,9 @@ class StudentLessonsController extends Controller
                 ], 424);
             }
 
-            // Recordings can not be download safe as the player needs the right video
-            if ($material->type === 'recording') {
+            // If the download URL is the same as the original
+            // They mean they don't need security and can be sent directly
+            if ($url === $material->url) {
                 return response()
                     ->json([
                         'status' => 'successfully',

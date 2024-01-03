@@ -46,7 +46,7 @@ class StudentLessonsMaterialURLTest extends TestCase
             Permission::SEE_LESSON_RECORDINGS,
         ])->create();
 
-        $this->material = Material::factory()->withUrl()->create(['type' => 'material']);
+        $this->material = Material::factory()->withUrl()->create(['type' => 'material', 'watermark' => 1]);
         $this->recording = Material::factory()->withUrl()->create(['type' => 'recording']);
 
 
@@ -54,7 +54,7 @@ class StudentLessonsMaterialURLTest extends TestCase
         $this->lesson = Lesson::factory()
             ->withStudents($this->user)
             ->withMaterials([$this->material, $this->recording])
-            ->create(['is_active' => true]);
+            ->create(['is_active' => true,]);
 
         $this->actingAs($this->user);
 
@@ -127,11 +127,28 @@ class StudentLessonsMaterialURLTest extends TestCase
     }
 
     /** @test */
+    public function download_material_no_watermark_200(): void
+    {
+        $mock = $this->partialMock(Watermark::class);
+        $mock->shouldReceive('pdf')->never();
+        $mock->shouldReceive('image')->never();
+
+
+        $this->material->watermark = 0;
+        $this->material->save();
+
+        $data = $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(200);
+        $this->assertEquals($data['url'], $this->material->url);
+    }
+    /** @test */
     public function download_material_type_200(): void
     {
-        $url = 'http://test.url';
-        $this->material->url = $url; // This type will be defined to UNKONW
+        $url = 'http://test.url/123.pdf';
+        $this->material->url = 'http://test.pdf'; // Will be recognize as PDF
         $this->material->save();
+
+        $mock = $this->partialMock(Watermark::class);
+        $mock->shouldReceive('pdf')->once()->andReturn($url);
 
         $data = $this->get("api/v1/student-lessons/{$this->material->id}/url")->assertStatus(200);
 

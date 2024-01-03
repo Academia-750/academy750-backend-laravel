@@ -163,7 +163,10 @@ class StudentLessonMaterialsListTest extends TestCase
 
         $this->assertNotNull($data['results'][0]['created_at']);
         $this->assertNotNull($data['results'][0]['updated_at']);
+
         $this->assertFalse(isset($data['results'][0]['url'])); // We don't expose the URL in this end point
+        $this->assertFalse(isset($data['results'][0]['watermark'])); // We don't expose the watermark value in this end point
+
         $this->assertEquals($data['results'][0]['has_url'], 1);
 
     }

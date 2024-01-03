@@ -74,6 +74,8 @@ class MaterialEditTest extends TestCase
         $this->put("api/v1/material/{$this->material->id}", ['name' => '!!'])->assertStatus(422);
         // URL
         $this->put("api/v1/material/{$this->material->id}", ['url' => 'not_url'])->assertStatus(422);
+        // Watermark
+        $this->put("api/v1/material/{$this->material->id}", ['watermark' => 'no_boolean'])->assertStatus(422);
 
     }
     /** @test */
@@ -92,7 +94,8 @@ class MaterialEditTest extends TestCase
         $body = [
             'name' => $this->faker->word(),
             'url' => $this->faker->url(),
-            'tags' => $this->faker->words()
+            'tags' => $this->faker->words(),
+            'watermark' => 1
         ];
 
         $data = $this->put("api/v1/material/{$this->material->id}", $body)->assertStatus(200)->json();
@@ -101,6 +104,7 @@ class MaterialEditTest extends TestCase
         $this->assertEquals($data['result']['type'], $this->material->type);
         $this->assertEquals($data['result']['tags'], join(',', $body['tags']));
         $this->assertEquals($data['result']['url'], $body['url']);
+        $this->assertEquals($data['result']['watermark'], $body['watermark']);
     }
 
 
@@ -115,6 +119,18 @@ class MaterialEditTest extends TestCase
         $tags = $this->faker->words();
         $data = $this->put("api/v1/material/{$this->material->id}", ['tags' => $tags])->assertStatus(200)->json();
         $this->assertEquals($data['result']['tags'], join(',', $tags));
+    }
+
+    /** @test */
+    public function update_watermkar_200(): void
+    {
+        $this->assertEquals($this->material->watermark, false);
+        // Add Watermark
+        $data = $this->put("api/v1/material/{$this->material->id}", ['watermark' => true])->assertStatus(200)->json();
+        $this->assertEquals($data['result']['watermark'], true);
+        // Remove watermark
+        $data = $this->put("api/v1/material/{$this->material->id}", ['watermark' => false])->assertStatus(200)->json();
+        $this->assertEquals($data['result']['watermark'], false);
     }
 
     /** @test */
